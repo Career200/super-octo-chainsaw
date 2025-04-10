@@ -177,6 +177,7 @@ ul {
 }
 
 .terminal {
+  max-width: 524px;
   background-color: #000;
   color: #00ff99;
   font-family: "Courier New", Courier, monospace;
@@ -188,6 +189,7 @@ ul {
   overflow-x: auto;
   box-shadow: 0 0 8px #0f0;
   position: relative;
+  margin: 32px auto;
 }
 
 /* Optional CRT flicker effect */
