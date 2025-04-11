@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMI GLOBAL — MESSAGES</title>
+    <link rel="stylesheet" href="./styles/imi-global-theme.css" />
+  </head>
+  <body>
+    <div class="nav-toggle" onclick="toggleNav()">≡</div>
+    <nav class="tactical-nav" id="tacticalNav">
+      <ul>
+        <li><a href="./index.html">Home</a></li>
+        <li>
+          Available documents
+          <ul>
+            <li><a href="./onyx-spec.html">ONYX initiative</a></li>
+          </ul>
+        </li>
+        <li>
+          My data
+          <ul>
+            <li><a href="#/profile.html">Profile</a></li>
+            <li><a href="#/profile.html#settings">Settings</a></li>
+            <li><a href="#/profile.html#security">Security</a></li>
+            <li><a href="#/team.html">Team</a></li>
+            <li>
+              <a href="./messages.html">Messages<span class="tag"> 1</span></a>
+            </li>
+            <li><a href="#/logistics.html">Logistics</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <header>
+      <h1>Messages</h1>
+      <div class="user-info">
+        <span>USER-0469</span>
+      </div>
+    </header>
+    <main class="content">
+      <!--  -->
+      <p>General chat</p>
+      <div id="ops-chat" class="terminal-chat"></div>
+      <form id="chat-form" autocomplete="off">
+        <input type="text" id="chat-input" placeholder="Type your message…" />
+        <button type="submit">Send</button>
+      </form>
+      <!--  -->
+      <p>Personal messages</p>
+
+      <div class="message">
+        <strong>From:</strong> <span>Adm. Ariel Lusair</span>
+        <p>Subject: Welcome aboard</p>
+        <p>
+          Message: >>> Iacob, please review. You think neurocorrect is on
+          full-blast by now? I don't want these guys to think me the bad guy
+          just cause I insisted on frying their brain and putting them on
+          silicone diet for the rest of their life. And after MENA they should
+          know it's in their own best interest.
+          <br />
+          <br />
+          Оникс! Привет.<br />
+          Поздравляю с успешным завершением "MENA-1"! Надеюсь, биомоды вам не
+          пригодились, а если пригодились - то помогли.<br />
+          Поскольку мы все еще на стоянке и обслуживании, у вас есть время на
+          <i>местный</i> контракт - центральное командование отводит вам SA-558,
+          ищите в агентах. Без вас мы в Бразилию не полетим, не волнуйтесь... Но
+          все же поторопитесь. Ваш СО, Рина Эшоль, ждет в точке сбора - у неё
+          аллергия на боевой дух, так что никакого панибратства, мой вам совет.
+          <br />
+          <br />
+          Удачи, и буду рад поприветствовать вас лично, увидимся на борту!
+          <br /><br />
+          От лица всей команды эйрзепа Shamaen, <br />
+          Sumus Tempestae
+        </p>
+      </div>
+      <div class="message-read">
+        <strong>From:</strong> <span>CSec automated</span>
+        <p>Subject: New C-Sec protocols</p>
+        <p>
+          Message: New C-Sec protocols are effective immediately. Please review
+          the attached document for details and ensure compliance. Failure to do
+          so may result in disciplinary action.
+        </p>
+        <hr />
+        <a href="#">Download document</a>
+        <hr />
+        <p>Sent: 07.04.2023</p>
+      </div>
+    </main>
+    <footer>
+      <p>IMI GLOBAL OPS HUB</p>
+    </footer>
+    <script src="./scripts/nav.js"></script>
+    <script src="./scripts/chat.js"></script>
+  </body>
+</html>
