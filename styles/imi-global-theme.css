@@ -314,6 +314,7 @@ ul {
     height: 16px;
     border-radius: 50%;
     background: #00ff99;
+    box-shadow: 0 0 8px #00ff99;
     color: #000;
     display: flex;
     align-items: center;
