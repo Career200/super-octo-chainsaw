@@ -1,47 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IMI GLOBAL — TAC HOME</title>
-    <link rel="stylesheet" href="./styles/imi-global-theme.css" />
-  </head>
-  <body>
-    <div class="nav-toggle" onclick="toggleNav()">≡</div>
-    <nav class="tactical-nav" id="tacticalNav">
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li>
-          Available documents
-          <ul>
-            <li><a href="./onyx-spec.html">ONYX initiative</a></li>
-          </ul>
-        </li>
-        <li>
-          My data
-          <ul>
-            <li><a href="./team.html">Team</a></li>
-            <li>
-              <a href="./messages.html">Messages<span class="tag"> 1</span></a>
-            </li>
-            <li><a href="./logistics.html">Logistics</a></li>
-            <li>
-              <a href="./contract.html">Contracts<span class="tag"> 1</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-    <main>
-      <div class="dashboard">
-        <header>
-          <div class="logo">IMI GLOBAL</div>
-          <div class="user-info">
-            <span>USER-0469</span>
-          </div>
-        </header>
-        <div class="terminal">
-          <pre>
+---
+import HTML from '../layouts/html.astro';
+import Layout from '../layouts/layout.astro';
+---
+
+<HTML title="IMI GLOBAL — TAC HOME">
+  <Layout>
+    <div class="terminal">
+      <pre>
 +-------------------------------------------------------------+
 |  ███ IMI GLOBAL OPS HUB ███                                 |
 |                                                             |
@@ -69,15 +34,7 @@
 |        █   █        |    89.5 | Xia Wang                    |
 |   █      █      █   |    88.2 | Ivan Konstantinovich Kuleb..|
 +---------------------+         +-----------------------------+
-</pre
-          >
-        </div>
-      </div>
-    </main>
-    <footer>
-      <div>USER-0469</div>
-    </footer>
-
-    <script src="./scripts/nav.js"></script>
-  </body>
-</html>
+</pre>
+    </div>
+  </Layout>
+</HTML>
