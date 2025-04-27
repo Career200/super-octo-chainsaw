@@ -1,56 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IMI GLOBAL — MESSAGES</title>
-    <link rel="stylesheet" href="./styles/imi-global-theme.css" />
-  </head>
-  <body>
-    <div class="nav-toggle" onclick="toggleNav()">≡</div>
-    <nav class="tactical-nav" id="tacticalNav">
-      <ul>
-        <li><a href="./index.html">Home</a></li>
-        <li>
-          Available documents
-          <ul>
-            <li><a href="./onyx-spec.html">ONYX initiative</a></li>
-          </ul>
-        </li>
-        <li>
-          My data
-          <ul>
-            <li><a href="./team.html">Team</a></li>
-            <li>
-              <a href="./messages.html">Messages<span class="tag"> 1</span></a>
-            </li>
-            <li><a href="./logistics.html">Logistics</a></li>
-            <li>
-              <a href="./contract.html">Contracts<span class="tag"> 1</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+---
+import HTML from '../layouts/html.astro';
+import Layout from '../layouts/layout.astro';
+import '../styles/messages.css';
+---
+
+<HTML title="IMI GLOBAL — MESSAGES">
+  <Layout>
     <header>
       <h1>Messages</h1>
-      <div class="user-info">
-        <span>USER-0469</span>
-      </div>
     </header>
-    <main class="content">
+    <div class="content">
       <!--  -->
-      <p>General chat</p>
+      <h4 style="padding-top: 0;">General chat</h4>
       <div id="ops-chat" class="terminal-chat"></div>
       <form id="chat-form" autocomplete="off">
         <input type="text" id="chat-input" placeholder="Type your message…" />
         <button type="submit">Send</button>
       </form>
       <!--  -->
-      <p>Personal messages</p>
+      <h4>Personal messages</h4>
 
       <div class="message">
-        <strong>From:</strong> <span>Adm. Ariel Lusair</span>
+        <strong>From:</strong>
+        <span>Adm. Ariel Lusair</span>
         <p>Subject: Welcome aboard</p>
         <p>
           Message: >>> Якоб, глянь-ка, достаточно дружелюбно по-твоему?
@@ -60,13 +32,13 @@
           <br />
           <br />
           Оникс! Привет.<br />
-          Поздравляю с успешным завершением "MENA-1"! Надеюсь, биомоды вам не
-          пригодились, а если пригодились - то помогли.<br />
+          Поздравляю с успешным завершением "MENA-1"! Надеюсь, биомоды вам не пригодились,
+          а если пригодились - то помогли.<br />
           Поскольку мы все еще на стоянке и обслуживании, у вас есть время на
           <i>местный</i> контракт - центральное командование отводит вам SA-558,
           ищите в агентах. Без вас мы в Бразилию не полетим, не волнуйтесь... Но
-          все же поторопитесь. Ваш СО, Рина Эшоль, ждет в точке сбора - у неё
-          аллергия на боевой дух, так что никакого панибратства, мой вам совет.
+          все же поторопитесь. Ваш СО, Рина Эшоль, ждет в точке сбора - у неё аллергия
+          на боевой дух, так что никакого панибратства, мой вам совет.
           <br />
           <br />
           Удачи, и буду рад поприветствовать вас лично, увидимся на борту!
@@ -76,7 +48,8 @@
         </p>
       </div>
       <div class="message-read">
-        <strong>From:</strong> <span>Adm. Ariel Lusair</span>
+        <strong>From:</strong>
+        <span>Adm. Ariel Lusair</span>
         <p>Subject: COPY - Комментарии к спецификации отряда “ONYX”</p>
         <blockquote>
           <p>
@@ -95,10 +68,10 @@
             </li>
             <li>
               Я сделаю вид, что не видел
-              <span class="redacted">[☠☠☠☠]</span> в списке. А тебе, Хаим,
-              спасибо за нефильтрованную версию. Если уж вы решитесь брать, то
-              мне нужен отчет CSec о её лояльности. А то мы рискуем получить
-              гениального крысёныша с доступом в серверную.
+              <span class="redacted">[☠☠☠☠]</span> в списке. А тебе, Хаим, спасибо
+              за нефильтрованную версию. Если уж вы решитесь брать, то мне нужен
+              отчет CSec о её лояльности. А то мы рискуем получить гениального крысёныша
+              с доступом в серверную.
             </li>
           </ol>
 
@@ -118,7 +91,8 @@
         </blockquote>
       </div>
       <div class="message-read">
-        <strong>From:</strong> <span>CSec automated</span>
+        <strong>From:</strong>
+        <span>CSec automated</span>
         <p>Subject: New C-Sec protocols</p>
         <p>
           Message: New C-Sec protocols are effective immediately. Please review
@@ -130,11 +104,7 @@
         <hr />
         <p>Sent: 07.04.2023</p>
       </div>
-    </main>
-    <footer>
-      <p>IMI GLOBAL OPS HUB</p>
-    </footer>
-    <script src="./scripts/nav.js"></script>
-    <script src="./scripts/chat.js"></script>
-  </body>
-</html>
+    </div>
+    <script src="../scripts/chat.ts"></script>
+  </Layout>
+</HTML>

@@ -53,7 +53,7 @@ let warningCount = 0;
 
 const input = document.querySelector("input");
 
-input.addEventListener("input", () => {
+input?.addEventListener("input", () => {
   input.value = input.value.replace(
     /[^a-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/g,
     ""
@@ -62,11 +62,11 @@ input.addEventListener("input", () => {
 
 const chatBox = document.getElementById("ops-chat");
 
-function randomItem(arr) {
+function randomItem(arr: any[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function trimOverflowingMessages(container) {
+function trimOverflowingMessages(container: HTMLElement) {
   while (container.scrollHeight > container.clientHeight) {
     if (container.firstChild) {
       container.removeChild(container.firstChild);
@@ -76,7 +76,8 @@ function trimOverflowingMessages(container) {
   }
 }
 
-function addChatMessage(user, message) {
+function addChatMessage(user?: string, message?: string) {
+  if (!chatBox) return;
   const chatUser = user || randomItem(usernames);
   const isEnglish = Math.random() < 0.2;
   const chatMessage =
@@ -108,16 +109,19 @@ function startChatFeed() {
   setTimeout(() => {
     addChatMessage();
   }, Math.random() * 1000 + 2000);
-  // start interval
 }
 
 const fixedUsername = "YOU";
 const formEl = document.getElementById("chat-form");
-const inputEl = document.getElementById("chat-input");
+const inputEl = document.getElementById(
+  "chat-input"
+) as HTMLInputElement | null;
 
-formEl.addEventListener("submit", (e) => {
+formEl?.addEventListener("submit", (e) => {
   e.preventDefault();
-  const val = inputEl.value.trim();
+  if (!inputEl) return;
+  if (!chatBox) return;
+  const val = inputEl?.value.trim();
   if (!val) return;
 
   const timestamp = new Date().toLocaleTimeString("en-GB", { hour12: false });
@@ -149,8 +153,8 @@ formEl.addEventListener("submit", (e) => {
 
 // if the user was warned 2 times, death
 const disableChat = () => {
-  formEl.remove();
-  inputEl.remove();
+  formEl?.remove();
+  inputEl?.remove();
   setTimeout(() => {
     document.body.innerHTML = "";
     const bones = document.createElement("div");
@@ -180,6 +184,7 @@ const disableChat = () => {
   }, 2000);
 
   clearInterval(chatFeedInterval);
+  if (!chatBox) return;
   chatBox.innerHTML = "Chat disabled.";
 };
 

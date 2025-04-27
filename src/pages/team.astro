@@ -1,45 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IMI GLOBAL — My team</title>
-    <link rel="stylesheet" href="./styles/imi-global-theme.css" />
-  </head>
-  <body>
-    <div class="nav-toggle" onclick="toggleNav()">≡</div>
-    <nav class="tactical-nav" id="tacticalNav">
-      <ul>
-        <li><a href="./index.html">Home</a></li>
-        <li>
-          Available documents
-          <ul>
-            <li><a href="./onyx-spec.html">ONYX initiative</a></li>
-          </ul>
-        </li>
-        <li>
-          My data
-          <ul>
-            <li><a href="./team.html">Team</a></li>
-            <li>
-              <a href="./messages.html">Messages<span class="tag"> 1</span></a>
-            </li>
-            <li><a href="./logistics.html">Logistics</a></li>
-            <li>
-              <a href="./contract.html">Contracts<span class="tag"> 1</span></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-    <div class="dashboard">
-      <header>
-        <div class="logo">IMI GLOBAL</div>
-        <div class="user-info">
-          <span>USER-0469</span>
-        </div>
-      </header>
-    </div>
+---
+import HTML from '../layouts/html.astro';
+import Layout from '../layouts/layout.astro';
+import '../styles/team.css';
+---
+
+<HTML title="IMI GLOBAL — My team">
+  <Layout>
     <div class="content">
       <h1 class="center">ONYX strike group candidates</h1>
       <h2 class="with-symbol">✦ Role: Solo</h2>
@@ -124,8 +90,7 @@
           <h3><span class="redacted">UNDISCLOSEDUNDISCLOSED</span></h3>
           <p>
             <span class="redacted"
-              >Come up with anything, it's a placeholder for your
-              character.</span
+              >Come up with anything, it's a placeholder for your character.</span
             >
           </p>
           <span>UNDISCLOSED, R4 access required</span>
@@ -158,8 +123,7 @@
           <h3><span class="redacted">XXXUNDISCLOSED</span></h3>
           <p>
             <span class="redacted"
-              >Come up with anything, it's a placeholder for your
-              character.</span
+              >Come up with anything, it's a placeholder for your character.</span
             >
           </p>
           <span>UNDISCLOSED, R4 access required</span>
@@ -253,10 +217,5 @@
         </div>
       </div>
     </div>
-    <footer>
-      <div>USER-0469</div>
-    </footer>
-
-    <script src="./scripts/nav.js"></script>
-  </body>
-</html>
+  </Layout>
+</HTML>
