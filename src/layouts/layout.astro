@@ -1,0 +1,42 @@
+---
+import '../styles/layout.css';
+import Modal from '../components/modal.astro';
+---
+
+<main>
+  <slot />
+  <footer>
+    <div class="box">
+      <div class="box col">
+        <span>IMI GLOBAL</span>
+        <span>USER-0469</span>
+      </div>
+      <Modal id="tacticalNav" buttonClass="nav-toggle" buttonText="≡">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li>
+            <span>Available documents</span>
+            <ul>
+              <li><a href="/documents/onyx-spec">ONYX initiative</a></li>
+            </ul>
+          </li>
+          <li>
+            <span>My data</span>
+            <ul>
+              <li><a href="/team">Team</a></li>
+              <li>
+                <a href="/messages">Messages<span class="tag"> 1</span></a>
+              </li>
+              <li><a href="/logistics">Logistics</a></li>
+              <li>
+                <a href="/contracts/sa558"
+                  >Contracts<span class="tag"> 1</span></a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </Modal>
+    </div>
+  </footer>
+</main>

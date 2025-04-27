@@ -1,0 +1,72 @@
+.terminal {
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  max-width: 524px;
+  background-color: #000;
+  color: #00ff99;
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(0.52rem, 2.1vw, 13px);
+  line-height: 1.4;
+  padding: 1rem;
+  border: 2px solid #0f0;
+  border-radius: 4px;
+  overflow-x: auto;
+  box-shadow: 0 0 8px #0f0;
+  position: relative;
+  margin: 32px auto;
+}
+@media (max-width: 500px) {
+  .terminal {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    margin: 16px auto;
+    width: 100%;
+  }
+}
+
+.terminal::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 255, 100, 0.05),
+    rgba(0, 255, 100, 0.3) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  animation: flicker 0.1s infinite;
+  z-index: 1;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.96;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.95;
+  }
+}
+
+.terminal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 255, 0, 0.02) 50%, transparent 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 2;
+}

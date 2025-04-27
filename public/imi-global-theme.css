@@ -1,0 +1,109 @@
+@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
+
+:root {
+  --bg: #0e0f11; /*  */
+  --bg-alt: #1a1c1f; /*  */
+  --fg: #c4f2e6; /*  */
+  --fg-soft: #aaa;
+  --accent: #00ffcc; /*  */
+  --accent-muted: #0ff2c2a0; /*  */
+  --footer: #90ffb7; /*  */
+  --border: #2f3237; /*  */
+  --border-light: #2a2d32; /*  */
+  --code-bg: #1c1e22;
+  --link: #00f0ff;
+}
+
+.box {
+  display: flex;
+  justify-content: space-between;
+  &.col {
+    flex-direction: column;
+  }
+  gap: 5px;
+}
+
+header {
+  background-color: var(--bg-alt);
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 2rem;
+}
+
+.content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+h1 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--accent);
+  &.center {
+    margin: 8px auto;
+  }
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 8px;
+  &.with-symbol {
+    &::first-letter {
+      font-size: 1.8rem;
+    }
+  }
+}
+
+h4 {
+  margin: 0;
+  padding: 1rem 0;
+  color: var(--fg);
+}
+
+.tag {
+  font-size: 0.9rem;
+  color: var(--fg-soft);
+}
+
+::selection {
+  background: #00ffcc44;
+}
+
+code {
+  background: var(--code-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  color: #fff;
+}
+
+blockquote {
+  background: var(--code-bg);
+  padding: 4px 12px;
+  border-left: 4px solid var(--accent);
+  margin: 8px 0;
+  color: var(--fg-soft);
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ol {
+  padding: 4px 0px 4px 24px;
+}
+ul {
+  padding: 12px 48px;
+}
+
+.redacted {
+  background-color: black;
+  color: black;
+  border-radius: 2px;
+  padding: 0 0.2em;
+}
