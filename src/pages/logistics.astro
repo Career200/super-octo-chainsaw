@@ -2,6 +2,9 @@
 import HTML from '../layouts/html.astro';
 import Layout from '../layouts/layout.astro';
 import Document from '../components/document.astro';
+
+import charsheet1 from '../assets/charsheets/charsheet1.jpg';
+import charsheet2 from '../assets/charsheets/charsheet2.jpg';
 ---
 
 <HTML title="IMI GLOBAL — MY LOGISTICS">
@@ -69,18 +72,8 @@ import Document from '../components/document.astro';
             пока что взгляните на чарник, как он есть - наверняка пригодится
           </p>
           <br />
-          <img
-            src="./assets/charsheets/charsheet1.jpg"
-            alt="2020"
-            width="100%"
-            height="100%"
-          />
-          <img
-            src="./assets/charsheets/charsheet2.jpg"
-            alt="2020"
-            width="100%"
-            height="100%"
-          />
+          <img src={charsheet1.src} alt="2020" width="100%" height="100%" />
+          <img src={charsheet2.src} alt="2020" width="100%" height="100%" />
         </p>
       </div>
     </Document>
