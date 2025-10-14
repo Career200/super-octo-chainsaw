@@ -1,6 +1,6 @@
 ---
 import '../styles/layout.css';
-import Modal from '../components/modal.astro';
+import Sidebar from '../components/sidebar.astro';
 import { baseString } from '../../astro.config.mjs';
 
 const links = {
@@ -21,7 +21,7 @@ const links = {
         <span>IMI GLOBAL</span>
         <span>USER-0469</span>
       </div>
-      <Modal id="tacticalNav" buttonClass="nav-toggle" buttonText="≡">
+      <Sidebar id="tacticalNav" buttonClass="nav-toggle" buttonText="≡">
         <ul>
           <li><a href={links.home}>Home</a></li>
           <li>
@@ -46,7 +46,7 @@ const links = {
             </ul>
           </li>
         </ul>
-      </Modal>
+      </Sidebar>
     </div>
   </footer>
 </main>
