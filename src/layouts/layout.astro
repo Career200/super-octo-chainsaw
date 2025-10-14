@@ -1,6 +1,16 @@
 ---
 import '../styles/layout.css';
 import Modal from '../components/modal.astro';
+import { baseString } from '../../astro.config.mjs';
+
+const links = {
+  home: baseString,
+  onyx: baseString + 'documents/onyx-spec',
+  team: baseString + 'team',
+  messages: baseString + 'messages',
+  logistics: baseString + 'logistics',
+  sa558: baseString + 'contracts/sa558'
+};
 ---
 
 <main>
@@ -13,30 +23,25 @@ import Modal from '../components/modal.astro';
       </div>
       <Modal id="tacticalNav" buttonClass="nav-toggle" buttonText="≡">
         <ul>
-          <li><a href="/super-octo-chainsaw/">Home</a></li>
+          <li><a href={links.home}>Home</a></li>
           <li>
             <span>Available documents</span>
             <ul>
               <li>
-                <a href="/super-octo-chainsaw/documents/onyx-spec"
-                  >ONYX initiative</a>
+                <a href={links.onyx}>ONYX initiative</a>
               </li>
             </ul>
           </li>
           <li>
             <span>My data</span>
             <ul>
-              <li><a href="/super-octo-chainsaw/team">Team</a></li>
+              <li><a href={links.team}>Team</a></li>
               <li>
-                <a href="/super-octo-chainsaw/messages"
-                  >Messages<span class="tag"> 1</span></a
-                >
+                <a href={links.messages}>Messages<span class="tag"> 1</span></a>
               </li>
-              <li><a href="/super-octo-chainsaw/logistics">Logistics</a></li>
+              <li><a href={links.logistics}>Logistics</a></li>
               <li>
-                <a href="/super-octo-chainsaw/contracts/sa558"
-                  >Contracts<span class="tag"> 1</span></a
-                >
+                <a href={links.sa558}>Contracts<span class="tag"> 1</span></a>
               </li>
             </ul>
           </li>
