@@ -51,18 +51,9 @@ const englishMessages = [
 
 let warningCount = 0;
 
-const input = document.querySelector("input");
-
-input?.addEventListener("input", () => {
-  input.value = input.value.replace(
-    /[^a-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/g,
-    ""
-  );
-});
-
 const chatBox = document.getElementById("ops-chat");
 
-function randomItem(arr: any[]) {
+function randomItem<T>(arr: T[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 

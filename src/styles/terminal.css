@@ -5,16 +5,16 @@
   align-items: center;
   width: 90%;
   max-width: 524px;
-  background-color: #000;
-  color: #00ff99;
+  background-color: var(--bg-black);
+  color: var(--terminal-green);
   font-family: "Courier New", Courier, monospace;
   font-size: clamp(0.52rem, 2.1vw, 13px);
   line-height: 1.4;
   padding: 1rem;
-  border: 2px solid #0f0;
+  border: 2px solid var(--border-green);
   border-radius: 4px;
   overflow-x: auto;
-  box-shadow: 0 0 8px #0f0;
+  box-shadow: 0 0 8px var(--border-green);
   position: relative;
   margin: 32px auto;
 }
@@ -37,8 +37,8 @@
   pointer-events: none;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(0, 255, 100, 0.05),
-    rgba(0, 255, 100, 0.3) 1px,
+    var(--terminal-green-scanline),
+    var(--terminal-green-scanline-bright) 1px,
     transparent 1px,
     transparent 2px
   );
@@ -65,7 +65,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(0, 255, 0, 0.02) 50%, transparent 50%);
+  background: linear-gradient(var(--terminal-green-glow) 50%, transparent 50%);
   background-size: 100% 4px;
   pointer-events: none;
   z-index: 2;

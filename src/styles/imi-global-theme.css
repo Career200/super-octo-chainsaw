@@ -1,17 +1,42 @@
 @import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
 
 :root {
-  --bg: #0e0f11; /*  */
-  --bg-alt: #1a1c1f; /*  */
-  --fg: #c4f2e6; /*  */
+  --bg: #0e0f11;
+  --bg-alt: #1a1c1f;
+  --bg-black: #000;
+  --bg-card: rgba(0, 0, 0, 0.6);
+  --bg-card-hover: rgba(0, 0, 0, 0.8);
+
+  --fg: #c4f2e6;
   --fg-soft: #aaa;
-  --accent: #00ffcc; /*  */
-  --accent-muted: #0ff2c2a0; /*  */
-  --footer: #90ffb7; /*  */
-  --border: #2f3237; /*  */
-  --border-light: #2a2d32; /*  */
+  --fg-white: #fff;
+
+  --accent: #00ffcc;
+  --accent-muted: #0ff2c2a0;
+  --accent-subtle: rgba(0, 255, 204, 0.1);
+
+  --terminal-green: #00ff99;
+  --terminal-green-bright: #0f0;
+  --terminal-green-glow: rgba(0, 255, 0, 0.02);
+  --terminal-green-scanline: rgba(0, 255, 100, 0.05);
+  --terminal-green-scanline-bright: rgba(0, 255, 100, 0.3);
+
+  --footer: #90ffb7;
+  --border: #2f3237;
+  --border-light: #2a2d32;
+  --border-green: #0f0;
+  --border-green-dark: rgb(33, 88, 33);
   --code-bg: #1c1e22;
   --link: #00f0ff;
+
+  --status-busy: #ff0000;
+  --status-mixed: #ffff00;
+
+  --selection-bg: #00ffcc44;
+
+  --message-border: #00ff99;
+  --message-border-muted: #00ffcc2e;
+  --message-border-hover: #009a7b2e;
 }
 
 .box {
@@ -67,14 +92,14 @@ h4 {
 }
 
 ::selection {
-  background: #00ffcc44;
+  background: var(--selection-bg);
 }
 
 code {
   background: var(--code-bg);
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  color: #fff;
+  color: var(--fg-white);
 }
 
 blockquote {
@@ -102,8 +127,8 @@ ul {
 }
 
 .redacted {
-  background-color: black;
-  color: black;
+  background-color: var(--bg-black);
+  color: var(--bg-black);
   border-radius: 2px;
   padding: 0 0.2em;
 }
