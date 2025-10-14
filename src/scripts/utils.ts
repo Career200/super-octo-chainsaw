@@ -1,8 +1,11 @@
-const saveToLocalStorage = (key: string, value: Record<string, any>) => {
+export const saveToLocalStorage = (
+  key: string,
+  value: Record<string, unknown>
+) => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
-const getFromLocalStorage = (key: string) => {
+export const getFromLocalStorage = (key: string) => {
   const value = localStorage.getItem(key);
   return value ? JSON.parse(value) : null;
 };
