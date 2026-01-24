@@ -1,0 +1,218 @@
+---
+import HTML from '../layouts/html.astro';
+import Layout from '../layouts/layout.astro';
+---
+
+<HTML title="IMI GLOBAL — TAC HOME">
+  <style>
+    .container {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    /* Panels */
+    .panel {
+      overflow-y: auto;
+      max-height: 75vh;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 5px;
+    }
+
+    /* Body Grid */
+    .body-grid {
+      display: grid;
+      grid-template-areas:
+        '. head .'
+        'larm torso rarm'
+        'lleg . rleg';
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .body-part {
+      background: var(--code-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .body-part h3 {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .sp-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--footer);
+    }
+
+    /* Assign grid areas */
+    #part-head {
+      grid-area: head;
+    }
+    #part-torso {
+      grid-area: torso;
+    }
+    #part-left_arm {
+      grid-area: larm;
+    }
+    #part-right_arm {
+      grid-area: rarm;
+    }
+    #part-left_leg {
+      grid-area: lleg;
+    }
+    #part-right_leg {
+      grid-area: rleg;
+    }
+
+    /* Armor Layers */
+    .layer-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .layer {
+      background: var(--bg);
+      border-left: 4px solid var(--accent);
+      padding: 4px 6px;
+      font-size: 12px;
+    }
+
+    .layer.hard {
+      border-left-color: var(--link);
+    }
+
+    /* Armor Inventory */
+    .armor-item {
+      border: 1px solid var(--border-light);
+      padding: 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: var(--code-bg);
+    }
+
+    .armor-item h4 {
+      margin: 0 0 4px 0;
+      color: var(--accent);
+    }
+
+    .armor-stats {
+      font-size: 13px;
+      color: var(--fg-soft);
+    }
+
+    .sp-value {
+      font-weight: bold;
+      color: var(--footer);
+    }
+
+    .sp-total {
+      color: var(--footer);
+    }
+
+    .sp-breakdown {
+      color: var(--fg-soft);
+      font-size: 13px;
+    }
+
+    .sp-layer {
+      cursor: help;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: var(--border-light);
+    }
+
+    .sp-layer.hard {
+      border-bottom: 2px solid var(--link);
+    }
+
+    .sp-layer.soft {
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .button-wear {
+      background: var(--accent-muted);
+      color: var(--fg);
+    }
+
+    .button-wear:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .button-remove {
+      background: var(--accent);
+      color: #000;
+    }
+  </style>
+  <Layout>
+    <header>
+      <h1>Armor Configuration Terminal</h1>
+    </header>
+    <div class="container">
+      <!-- BODY ARMOR STATUS -->
+      <div class="panel" id="character-armor-panel">
+        <h2>Character Armor</h2>
+        <div class="body-grid">
+          <div class="body-part" id="part-head">
+            <h3>Head</h3>
+            SP: <span class="sp-value" id="sp-head"></span>
+            <div class="layer-list" id="layers-head"></div>
+          </div>
+
+          <div class="body-part" id="part-torso">
+            <h3>Torso</h3>
+            SP: <span class="sp-value" id="sp-torso"></span>
+            <div class="layer-list" id="layers-torso"></div>
+          </div>
+
+          <div class="body-part" id="part-left_arm">
+            <h3>Left Arm</h3>
+            SP: <span class="sp-value" id="sp-left_arm"></span>
+            <div class="layer-list" id="layers-left_arm"></div>
+          </div>
+
+          <div class="body-part" id="part-right_arm">
+            <h3>Right Arm</h3>
+            SP: <span class="sp-value" id="sp-right_arm"></span>
+            <div class="layer-list" id="layers-right_arm"></div>
+          </div>
+
+          <div class="body-part" id="part-left_leg">
+            <h3>Left Leg</h3>
+            SP: <span class="sp-value" id="sp-left_leg"></span>
+            <div class="layer-list" id="layers-left_leg"></div>
+          </div>
+
+          <div class="body-part" id="part-right_leg">
+            <h3>Right Leg</h3>
+            SP: <span class="sp-value" id="sp-right_leg"></span>
+            <div class="layer-list" id="layers-right_leg"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="armor-inventory-panel">
+        <h2>Armor Inventory</h2>
+        <div id="armor-list"></div>
+      </div>
+    </div>
+  </Layout>
+  <script src="../scripts/armor/index.ts"></script>
+</HTML>
