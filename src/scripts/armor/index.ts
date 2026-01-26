@@ -1,5 +1,5 @@
 import { $ownedArmor } from "../../stores/armor";
-import { renderEffectiveSP, renderLayers } from "./render/body";
+import { renderEffectiveSP, renderLayers, renderEV } from "./render/body";
 import { renderOwnedInventory } from "./render/inventory";
 import { renderShop } from "./render/shop";
 import {
@@ -13,6 +13,7 @@ function renderAll() {
   renderShop();
   renderEffectiveSP();
   renderLayers();
+  renderEV();
   renderArmorSummary();
   updateOwnedSummary();
 }

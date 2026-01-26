@@ -50,7 +50,7 @@
   grid-template-areas:
     ". head ."
     "larm torso rarm"
-    "lleg . rleg";
+    "lleg ev rleg";
   gap: 12px;
   margin-top: 10px;
 }
@@ -86,6 +86,48 @@
 }
 #part-right_leg {
   grid-area: rleg;
+}
+
+/* EV Display */
+.ev-display {
+  grid-area: ev;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border: 1px dashed var(--border-light);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.ev-label {
+  font-size: 14px;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.ev-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--fg-soft);
+}
+
+.ev-display.has-penalty .ev-value {
+  color: #c44;
+}
+
+.ev-layer-penalty {
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  font-size: 10px;
+  color: var(--fg-soft);
+  text-align: center;
 }
 
 /* Armor Layers */

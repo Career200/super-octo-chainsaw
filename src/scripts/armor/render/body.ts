@@ -1,5 +1,5 @@
-import { BODY_PARTS, getEffectiveSP } from "../core";
-import { getBodyPartLayers } from "../../../stores/armor";
+import { BODY_PARTS, PART_NAMES, getEffectiveSP, getTotalEV } from "../core";
+import { getBodyPartLayers, getAllOwnedArmor } from "../../../stores/armor";
 
 export function renderEffectiveSP() {
   for (const part of BODY_PARTS) {
@@ -52,5 +52,27 @@ export function renderLayers() {
       div.textContent = `${layer.name} (SP ${layer.spCurrent}/${layer.spMax})`;
       container.appendChild(div);
     }
+  }
+}
+
+export function renderEV() {
+  const display = document.getElementById("ev-display");
+  const valueEl = document.getElementById("ev-value");
+  if (!display || !valueEl) return;
+
+  const wornArmor = getAllOwnedArmor().filter((a) => a.worn);
+  const { ev, maxLayers, maxLocation } = getTotalEV(getBodyPartLayers, wornArmor);
+
+  valueEl.textContent = ev > 0 ? `-${ev}` : "0";
+  display.classList.toggle("has-penalty", ev > 0);
+
+  const existingPenalty = display.querySelector(".ev-layer-penalty");
+  if (existingPenalty) existingPenalty.remove();
+
+  if (maxLayers >= 2 && maxLocation) {
+    const penaltyBox = document.createElement("div");
+    penaltyBox.className = "ev-layer-penalty";
+    penaltyBox.textContent = `layering penalty — ${PART_NAMES[maxLocation]}`;
+    display.appendChild(penaltyBox);
   }
 }

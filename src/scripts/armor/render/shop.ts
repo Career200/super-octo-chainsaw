@@ -20,19 +20,18 @@ export function renderShop() {
     title.appendChild(typeIcon);
     title.appendChild(document.createTextNode(template.name));
 
-    const sp = document.createElement("span");
-    sp.className = "armor-sp";
-    sp.textContent = `${template.spMax}`;
+    const stats = document.createElement("span");
+    stats.className = "armor-sp";
+    stats.textContent = template.ev
+      ? `${template.spMax} | EV: ${template.ev}`
+      : `${template.spMax}`;
 
     header.appendChild(title);
-    header.appendChild(sp);
+    header.appendChild(stats);
 
-    const stats = document.createElement("div");
-    stats.className = "armor-stats";
-    const statParts = [];
-    if (template.ev) statParts.push(`EV: ${template.ev}`);
-    if (template.cost) statParts.push(`${template.cost}eb`);
-    stats.textContent = statParts.join(" | ");
+    const cost = document.createElement("div");
+    cost.className = "armor-stats";
+    cost.textContent = template.cost ? `${template.cost}eb` : "";
 
     const buyBtn = document.createElement("button");
     buyBtn.className = "button-buy";
@@ -42,7 +41,7 @@ export function renderShop() {
     });
 
     item.appendChild(header);
-    if (statParts.length > 0) item.appendChild(stats);
+    if (template.cost) item.appendChild(cost);
     item.appendChild(buyBtn);
     container.appendChild(item);
   }

@@ -26,6 +26,15 @@ export const BODY_PARTS: BodyPartName[] = [
   "right_leg",
 ];
 
+export const PART_NAMES: Record<BodyPartName, string> = {
+  head: "Head",
+  torso: "Torso",
+  left_arm: "Left Arm",
+  right_arm: "Right Arm",
+  left_leg: "Left Leg",
+  right_leg: "Right Leg",
+};
+
 // Static template - defines what an armor type IS
 export interface ArmorTemplate {
   templateId: string;
@@ -103,4 +112,34 @@ export function calculateDamage(
 export function generateId(prefix: string): string {
   const random = Math.random().toString(36).substring(2, 8);
   return `${prefix}_${random}`;
+}
+
+export interface EVResult {
+  ev: number;
+  maxLayers: number;
+  maxLocation: BodyPartName | null;
+}
+
+// Calculate EV penalty:
+// - Every worn armor piece contributes its base EV
+// - Layer penalty comes from the body part with the most layers
+export function getTotalEV(
+  getLayersForPart: (part: BodyPartName) => ArmorPiece[],
+  allWornArmor: ArmorPiece[],
+): EVResult {
+  const baseEV = allWornArmor.reduce((sum, armor) => sum + (armor.ev ?? 0), 0);
+
+  let maxLayers = 0;
+  let maxLocation: BodyPartName | null = null;
+  for (const part of BODY_PARTS) {
+    const layers = getLayersForPart(part).filter((l) => l.worn);
+    if (layers.length > maxLayers) {
+      maxLayers = layers.length;
+      maxLocation = part;
+    }
+  }
+
+  const layerPenalty = maxLayers >= 3 ? 3 : maxLayers >= 2 ? 1 : 0;
+
+  return { ev: baseEV + layerPenalty, maxLayers, maxLocation };
 }

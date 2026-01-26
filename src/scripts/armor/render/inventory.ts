@@ -35,12 +35,14 @@ export function renderOwnedInventory() {
     title.appendChild(typeIcon);
     title.appendChild(document.createTextNode(armor.name));
 
-    const sp = document.createElement("span");
-    sp.className = "armor-sp";
-    sp.textContent = `${armor.spCurrent}/${armor.spMax}`;
+    const stats = document.createElement("span");
+    stats.className = "armor-sp";
+    stats.textContent = armor.ev
+      ? `${armor.spCurrent}/${armor.spMax} | EV: ${armor.ev}`
+      : `${armor.spCurrent}/${armor.spMax}`;
 
     header.appendChild(title);
-    header.appendChild(sp);
+    header.appendChild(stats);
 
     const actions = document.createElement("div");
     actions.className = "armor-actions";
