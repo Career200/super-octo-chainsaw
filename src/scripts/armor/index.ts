@@ -8,6 +8,7 @@ import {
   acquireArmor,
   armorTemplates,
 } from "../../stores/armor";
+import { confirm } from "../ui/popover";
 
 // --- Body Part SP Display ---
 
@@ -110,8 +111,14 @@ function renderOwnedInventory() {
     const discardBtn = document.createElement("button");
     discardBtn.className = "button-discard";
     discardBtn.textContent = "Discard";
-    discardBtn.addEventListener("click", () => {
-      if (confirm(`Discard ${armor.name}?`)) {
+    discardBtn.addEventListener("click", async () => {
+      const confirmed = await confirm(discardBtn, {
+        message: `Discard ${armor.name}?`,
+        confirmText: "Discard",
+        cancelText: "Keep",
+        type: "danger",
+      });
+      if (confirmed) {
         discardArmor(armor.id);
       }
     });
