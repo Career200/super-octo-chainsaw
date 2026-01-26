@@ -1,4 +1,5 @@
 import { acquireArmor, armorTemplates } from "../../../stores/armor";
+import { renderBodyPartsCoverage } from "./common";
 
 export function renderShop() {
   const container = document.getElementById("armor-store");
@@ -29,20 +30,29 @@ export function renderShop() {
     header.appendChild(title);
     header.appendChild(stats);
 
-    const cost = document.createElement("div");
-    cost.className = "armor-stats";
-    cost.textContent = template.cost ? `${template.cost}eb` : "";
+    const coverage = renderBodyPartsCoverage(template.bodyParts);
+
+    const actions = document.createElement("div");
+    actions.className = "store-actions";
+
+    const handleAcquire = () => acquireArmor(template.templateId);
 
     const buyBtn = document.createElement("button");
     buyBtn.className = "button-buy";
-    buyBtn.textContent = "Acquire";
-    buyBtn.addEventListener("click", () => {
-      acquireArmor(template.templateId);
-    });
+    buyBtn.textContent = template.cost ? `Buy (${template.cost}eb)` : "Buy";
+    buyBtn.addEventListener("click", handleAcquire);
+
+    const takeBtn = document.createElement("button");
+    takeBtn.className = "button-take";
+    takeBtn.textContent = "Take (Free)";
+    takeBtn.addEventListener("click", handleAcquire);
+
+    actions.appendChild(buyBtn);
+    actions.appendChild(takeBtn);
 
     item.appendChild(header);
-    if (template.cost) item.appendChild(cost);
-    item.appendChild(buyBtn);
+    item.appendChild(coverage);
+    item.appendChild(actions);
     container.appendChild(item);
   }
 }

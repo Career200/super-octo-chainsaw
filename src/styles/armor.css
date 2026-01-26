@@ -190,6 +190,10 @@
   background: var(--code-bg);
 }
 
+.armor-item.armor-worn {
+  border-color: var(--accent);
+}
+
 .armor-item h4,
 .store-item h4 {
   margin: 0;
@@ -232,6 +236,31 @@
 .armor-stats {
   font-size: 13px;
   color: var(--fg-soft);
+}
+
+/* Body Parts Coverage */
+.body-parts-coverage {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.coverage-badge {
+  display: inline-block;
+  padding: 2px 5px;
+  font-size: 10px;
+  font-weight: bold;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+}
+
+.coverage-badge.coverage-full {
+  padding: 2px 12px;
+  letter-spacing: 1px;
 }
 
 .empty-message {
@@ -300,9 +329,25 @@
   flex: 1;
 }
 
-.store-item button {
-  width: 100%;
+.store-actions {
+  display: flex;
+  gap: 8px;
   margin-top: 8px;
+}
+
+.store-actions button {
+  flex: 1;
+}
+
+.button-take {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
+}
+
+.button-take:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* === Collapsible Panel (armor summary) === */

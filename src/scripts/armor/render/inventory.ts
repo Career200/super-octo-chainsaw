@@ -4,6 +4,7 @@ import {
   discardArmor,
 } from "../../../stores/armor";
 import { confirm, notify } from "../../ui/popover";
+import { renderBodyPartsCoverage } from "./common";
 
 export function renderOwnedInventory() {
   const container = document.getElementById("armor-list");
@@ -23,7 +24,7 @@ export function renderOwnedInventory() {
 
   for (const armor of owned) {
     const item = document.createElement("div");
-    item.className = "armor-item";
+    item.className = armor.worn ? "armor-item armor-worn" : "armor-item";
 
     const header = document.createElement("div");
     header.className = "armor-header";
@@ -43,6 +44,8 @@ export function renderOwnedInventory() {
 
     header.appendChild(title);
     header.appendChild(stats);
+
+    const coverage = renderBodyPartsCoverage(armor.bodyParts);
 
     const actions = document.createElement("div");
     actions.className = "armor-actions";
@@ -76,6 +79,7 @@ export function renderOwnedInventory() {
     actions.appendChild(discardBtn);
 
     item.appendChild(header);
+    item.appendChild(coverage);
     item.appendChild(actions);
     container.appendChild(item);
   }
