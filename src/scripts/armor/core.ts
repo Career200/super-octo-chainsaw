@@ -16,7 +16,12 @@ export interface ArmorPiece {
   spTotal: number;
   spCurrent: number;
   bodyParts: BodyPartName[];
-  worn: boolean;
+  ev?: number;
+  worn?: boolean;
+  description?: string;
+
+  // weaponMount?: boolean;
+  // linkedWeaponId?: string;
 }
 
 export type BodyPartName =
