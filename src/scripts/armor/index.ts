@@ -8,7 +8,7 @@ import {
   acquireArmor,
   armorTemplates,
 } from "../../stores/armor";
-import { confirm } from "../ui/popover";
+import { confirm, notify } from "../ui/popover";
 
 // --- Body Part SP Display ---
 
@@ -106,7 +106,12 @@ function renderOwnedInventory() {
     const toggleBtn = document.createElement("button");
     toggleBtn.className = armor.worn ? "button-remove" : "button-wear";
     toggleBtn.textContent = armor.worn ? "Remove" : "Wear";
-    toggleBtn.addEventListener("click", () => toggleArmor(armor.id));
+    toggleBtn.addEventListener("click", () => {
+      const result = toggleArmor(armor.id);
+      if (!result.success) {
+        notify(toggleBtn, { message: result.error, type: "error" });
+      }
+    });
 
     const discardBtn = document.createElement("button");
     discardBtn.className = "button-discard";

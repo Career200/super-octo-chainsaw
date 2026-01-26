@@ -196,8 +196,84 @@ function injectStyles() {
     .popover-danger .popover-btn-confirm:hover {
       background: #e55;
     }
+
+    .popover-notify {
+      min-width: 150px;
+    }
+
+    .popover-notify .popover-message {
+      margin: 0;
+    }
+
+    .popover-notify-error {
+      border-color: #c44;
+    }
+
+    .popover-notify-error .popover-message {
+      color: #f88;
+    }
+
+    .popover-notify-success {
+      border-color: var(--accent, #00ffcc);
+    }
+
+    .popover-notify-success .popover-message {
+      color: var(--accent, #00ffcc);
+    }
   `;
   document.head.appendChild(style);
+}
+
+// --- Notify (non-blocking notification) ---
+
+export interface NotifyOptions {
+  message: string;
+  type?: "error" | "info" | "success";
+  duration?: number;
+}
+
+export function notify(
+  anchor: HTMLElement,
+  options: NotifyOptions,
+): void {
+  closeActivePopover();
+
+  const { message, type = "info", duration = 3000 } = options;
+
+  const popover = document.createElement("div");
+  popover.className = `popover popover-notify popover-notify-${type}`;
+  popover.setAttribute("popover", "manual");
+
+  popover.innerHTML = `<p class="popover-message">${message}</p>`;
+
+  document.body.appendChild(popover);
+  activePopover = popover;
+
+  positionPopover(popover, anchor);
+
+  const cleanup = () => {
+    popover.hidePopover();
+    popover.remove();
+    if (activePopover === popover) {
+      activePopover = null;
+    }
+  };
+
+  const onClickOutside = (e: MouseEvent) => {
+    if (!popover.contains(e.target as Node)) {
+      document.removeEventListener("click", onClickOutside);
+      cleanup();
+    }
+  };
+
+  setTimeout(() => {
+    document.addEventListener("click", onClickOutside);
+  }, 0);
+
+  setTimeout(() => {
+    document.removeEventListener("click", onClickOutside);
+    cleanup();
+  }, duration);
 }
 
 // Auto-inject styles when module loads

@@ -105,41 +105,44 @@ export function discardArmor(instanceId: string): void {
 
 // --- Actions: Equip/Unequip ---
 
-export function wearArmor(instanceId: string): boolean {
+export type WearResult = { success: true } | { success: false; error: string };
+
+export function wearArmor(instanceId: string): WearResult {
   const armor = getArmorPiece(instanceId);
-  if (!armor || armor.worn) return false;
+  if (!armor || armor.worn) return { success: false, error: "Armor not found" };
 
   // Check constraints for each body part
   for (const part of armor.bodyParts) {
     const layers = getBodyPartLayers(part);
 
     if (layers.length >= 3) {
-      console.warn(`Cannot add more than 3 layers to ${part}`);
-      return false;
+      const partLabel = part.replace("_", " ");
+      return { success: false, error: `Cannot add more than 3 layers to ${partLabel}` };
     }
 
     if (armor.type === "hard" && layers.some((l) => l.type === "hard")) {
-      console.warn(`Only 1 hard armor allowed per ${part}`);
-      return false;
+      const partLabel = part.replace("_", " ");
+      return { success: false, error: `Only 1 hard armor allowed per ${partLabel}` };
     }
   }
 
   updateInstance(instanceId, { worn: true });
-  return true;
+  return { success: true };
 }
 
 export function removeArmor(instanceId: string): void {
   updateInstance(instanceId, { worn: false });
 }
 
-export function toggleArmor(instanceId: string): void {
+export function toggleArmor(instanceId: string): WearResult {
   const armor = getArmorPiece(instanceId);
-  if (!armor) return;
+  if (!armor) return { success: false, error: "Armor not found" };
 
   if (armor.worn) {
     removeArmor(instanceId);
+    return { success: true };
   } else {
-    wearArmor(instanceId);
+    return wearArmor(instanceId);
   }
 }
 
