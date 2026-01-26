@@ -9,21 +9,6 @@ const proportionalArmorBonus = (diff: number): number => {
 
 export type ArmorType = "soft" | "hard";
 
-export interface ArmorPiece {
-  id: string;
-  name: string;
-  type: ArmorType;
-  spTotal: number;
-  spCurrent: number;
-  bodyParts: BodyPartName[];
-  ev?: number;
-  worn?: boolean;
-  description?: string;
-
-  // weaponMount?: boolean;
-  // linkedWeaponId?: string;
-}
-
 export type BodyPartName =
   | "head"
   | "torso"
@@ -41,15 +26,39 @@ export const BODY_PARTS: BodyPartName[] = [
   "right_leg",
 ];
 
+// Static template - defines what an armor type IS
+export interface ArmorTemplate {
+  templateId: string;
+  name: string;
+  type: ArmorType;
+  spMax: number;
+  bodyParts: BodyPartName[];
+  ev?: number;
+  cost?: number;
+  description?: string;
+}
+
+// Instance - an actual owned piece of armor (persistent state)
+export interface ArmorInstance {
+  id: string; // unique instance ID (e.g., "vest_a3f8")
+  templateId: string; // references ArmorTemplate
+  spCurrent: number;
+  worn: boolean;
+}
+
+// Merged view for rendering - template + instance state
+export interface ArmorPiece extends ArmorTemplate {
+  id: string; // instance ID
+  spCurrent: number;
+  worn: boolean;
+}
+
 // Calculate effective SP using proportional armor rule
-// Pure function - takes layers, returns SP
 export function getEffectiveSP(layers: ArmorPiece[]): number {
   const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
   if (!activeLayers.length) return 0;
 
-  // Sort by SP ascending for inside-out calculation
   const sorted = [...activeLayers].sort((a, b) => a.spCurrent - b.spCurrent);
-
   let effectiveSP = sorted[0].spCurrent;
 
   for (let i = 1; i < sorted.length; i++) {
@@ -61,7 +70,6 @@ export function getEffectiveSP(layers: ArmorPiece[]): number {
 }
 
 // Calculate damage penetration through armor layers
-// Returns remaining damage that gets through to the body
 export function calculateDamage(
   layers: ArmorPiece[],
   damage: number,
@@ -69,9 +77,7 @@ export function calculateDamage(
   const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
   const degradation = new Map<string, number>();
 
-  // Sort outermost first (descending SP)
   const sorted = [...activeLayers].sort((a, b) => b.spCurrent - a.spCurrent);
-
   let remainingDamage = damage;
 
   for (const layer of sorted) {
@@ -91,4 +97,10 @@ export function calculateDamage(
   }
 
   return { penetrating: remainingDamage, degradation };
+}
+
+// Generate unique instance ID
+export function generateId(prefix: string): string {
+  const random = Math.random().toString(36).substring(2, 8);
+  return `${prefix}_${random}`;
 }

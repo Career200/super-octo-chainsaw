@@ -7,7 +7,7 @@ import Layout from '../layouts/layout.astro';
   <style>
     .container {
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
+      grid-template-columns: 1.2fr 1fr 1fr;
       gap: 20px;
       padding: 20px;
     }
@@ -160,6 +160,54 @@ import Layout from '../layouts/layout.astro';
       background: var(--accent);
       color: #000;
     }
+
+    .button-discard {
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--fg-soft);
+    }
+
+    .button-discard:hover {
+      border-color: #c44;
+      color: #c44;
+    }
+
+    .button-buy {
+      background: var(--link);
+      color: #000;
+    }
+
+    .button-buy:hover {
+      background: var(--accent);
+    }
+
+    .armor-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .armor-actions button {
+      flex: 1;
+    }
+
+    .store-item {
+      border: 1px solid var(--border-light);
+      padding: 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: var(--code-bg);
+    }
+
+    .store-item h4 {
+      margin: 0 0 4px 0;
+      color: var(--link);
+    }
+
+    .empty-message {
+      color: var(--fg-soft);
+      font-style: italic;
+    }
   </style>
   <Layout>
     <header>
@@ -209,8 +257,13 @@ import Layout from '../layouts/layout.astro';
       </div>
 
       <div class="panel" id="armor-inventory-panel">
-        <h2>Armor Inventory</h2>
+        <h2>Owned Armor</h2>
         <div id="armor-list"></div>
+      </div>
+
+      <div class="panel" id="armor-store-panel">
+        <h2>Armor Store</h2>
+        <div id="armor-store"></div>
       </div>
     </div>
   </Layout>

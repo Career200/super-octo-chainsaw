@@ -1,82 +1,112 @@
 import { atom } from "nanostores";
-import type { ArmorPiece, BodyPartName } from "../scripts/armor/core";
-import { armorDefaults } from "../scripts/armor/equipment";
+import {
+  generateId,
+  type ArmorInstance,
+  type ArmorPiece,
+  type BodyPartName,
+} from "../scripts/armor/core";
+import { armorTemplates, getTemplate } from "../scripts/armor/equipment";
 
-// Persistent state: just the mutable parts (spCurrent, worn)
-export interface ArmorItemState {
-  spCurrent: number;
-  worn: boolean;
-}
+// Persistent state: owned armor instances
+export type OwnedArmorState = Record<string, ArmorInstance>;
 
-export type ArmorInventoryState = Record<string, ArmorItemState>;
+const STORAGE_KEY = "owned-armor";
 
-const STORAGE_KEY = "armor-inventory";
-
-// Initialize from defaults
-function getInitialState(): ArmorInventoryState {
-  const state: ArmorInventoryState = {};
-  for (const [id, armor] of Object.entries(armorDefaults)) {
-    state[id] = { spCurrent: armor.spTotal, worn: false };
-  }
-  return state;
-}
-
-// Load from localStorage or use defaults
-function loadState(): ArmorInventoryState {
-  if (typeof localStorage === "undefined") return getInitialState();
+// Load from localStorage or start empty
+function loadState(): OwnedArmorState {
+  if (typeof localStorage === "undefined") return {};
 
   const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) return getInitialState();
+  if (!stored) return {};
 
   try {
-    return JSON.parse(stored) as ArmorInventoryState;
+    return JSON.parse(stored) as OwnedArmorState;
   } catch {
-    return getInitialState();
+    return {};
   }
 }
 
-// The persistent store
-export const $armorInventory = atom<ArmorInventoryState>(loadState());
+// The persistent store - owned armor instances
+export const $ownedArmor = atom<OwnedArmorState>(loadState());
 
 // Persist on change
-$armorInventory.subscribe((state) => {
+$ownedArmor.subscribe((state) => {
   if (typeof localStorage !== "undefined") {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 });
 
-// Derived: get full armor piece with current state
-export function getArmorPiece(id: string): ArmorPiece | null {
-  const base = armorDefaults[id];
-  if (!base) return null;
+// --- Derived Getters ---
 
-  const state = $armorInventory.get()[id] ?? {
-    spCurrent: base.spTotal,
-    worn: false,
-  };
+// Merge instance with its template to get full ArmorPiece
+export function getArmorPiece(instanceId: string): ArmorPiece | null {
+  const instance = $ownedArmor.get()[instanceId];
+  if (!instance) return null;
+
+  const template = getTemplate(instance.templateId);
+  if (!template) return null;
 
   return {
-    ...base,
-    spCurrent: state.spCurrent,
-    worn: state.worn,
+    ...template,
+    id: instance.id,
+    spCurrent: instance.spCurrent,
+    worn: instance.worn,
   };
 }
 
-// Derived: get all armor pieces with current state
-export function getAllArmor(): ArmorPiece[] {
-  return Object.keys(armorDefaults).map((id) => getArmorPiece(id)!);
+// Get all owned armor as ArmorPieces
+export function getAllOwnedArmor(): ArmorPiece[] {
+  return Object.keys($ownedArmor.get())
+    .map((id) => getArmorPiece(id))
+    .filter((piece): piece is ArmorPiece => piece !== null);
 }
 
-// Derived: get layers for a body part
+// Get worn armor layers for a body part
 export function getBodyPartLayers(part: BodyPartName): ArmorPiece[] {
-  return getAllArmor().filter(
+  return getAllOwnedArmor().filter(
     (armor) => armor.worn && armor.bodyParts.includes(part),
   );
 }
 
-// Actions
-export function wearArmor(id: string): boolean {
-  const armor = getArmorPiece(id);
+// --- Actions: Inventory Management ---
+
+// Buy/acquire a new armor piece (spawns instance from template)
+export function acquireArmor(templateId: string): ArmorInstance | null {
+  const template = getTemplate(templateId);
+  if (!template) return null;
+
+  const instance: ArmorInstance = {
+    id: generateId(templateId),
+    templateId,
+    spCurrent: template.spMax,
+    worn: false,
+  };
+
+  $ownedArmor.set({
+    ...$ownedArmor.get(),
+    [instance.id]: instance,
+  });
+
+  return instance;
+}
+
+// Sell/discard an armor piece
+export function discardArmor(instanceId: string): void {
+  const state = { ...$ownedArmor.get() };
+
+  // Unequip first if worn
+  if (state[instanceId]?.worn) {
+    state[instanceId] = { ...state[instanceId], worn: false };
+  }
+
+  delete state[instanceId];
+  $ownedArmor.set(state);
+}
+
+// --- Actions: Equip/Unequip ---
+
+export function wearArmor(instanceId: string): boolean {
+  const armor = getArmorPiece(instanceId);
   if (!armor || armor.worn) return false;
 
   // Check constraints for each body part
@@ -94,57 +124,70 @@ export function wearArmor(id: string): boolean {
     }
   }
 
-  updateItem(id, { worn: true });
+  updateInstance(instanceId, { worn: true });
   return true;
 }
 
-export function removeArmor(id: string): void {
-  updateItem(id, { worn: false });
+export function removeArmor(instanceId: string): void {
+  updateInstance(instanceId, { worn: false });
 }
 
-export function toggleArmor(id: string): void {
-  const armor = getArmorPiece(id);
+export function toggleArmor(instanceId: string): void {
+  const armor = getArmorPiece(instanceId);
   if (!armor) return;
 
   if (armor.worn) {
-    removeArmor(id);
+    removeArmor(instanceId);
   } else {
-    wearArmor(id);
+    wearArmor(instanceId);
   }
 }
 
-// Damage system
-export function damageArmor(id: string, amount: number = 1): void {
-  const current = $armorInventory.get()[id];
-  if (!current) return;
+// --- Actions: Damage/Repair ---
 
-  updateItem(id, { spCurrent: Math.max(0, current.spCurrent - amount) });
-}
+export function damageArmor(instanceId: string, amount: number = 1): void {
+  const instance = $ownedArmor.get()[instanceId];
+  if (!instance) return;
 
-export function repairArmor(id: string, amount?: number): void {
-  const base = armorDefaults[id];
-  const current = $armorInventory.get()[id];
-  if (!base || !current) return;
-
-  const newSP = amount
-    ? Math.min(base.spTotal, current.spCurrent + amount)
-    : base.spTotal;
-
-  updateItem(id, { spCurrent: newSP });
-}
-
-// Reset all armor to defaults
-export function resetArmor(): void {
-  $armorInventory.set(getInitialState());
-}
-
-// Helper to update a single item immutably
-function updateItem(id: string, updates: Partial<ArmorItemState>): void {
-  const current = $armorInventory.get()[id];
-  if (!current) return;
-
-  $armorInventory.set({
-    ...$armorInventory.get(),
-    [id]: { ...current, ...updates },
+  updateInstance(instanceId, {
+    spCurrent: Math.max(0, instance.spCurrent - amount),
   });
 }
+
+export function repairArmor(instanceId: string, amount?: number): void {
+  const instance = $ownedArmor.get()[instanceId];
+  if (!instance) return;
+
+  const template = getTemplate(instance.templateId);
+  if (!template) return;
+
+  const newSP = amount
+    ? Math.min(template.spMax, instance.spCurrent + amount)
+    : template.spMax;
+
+  updateInstance(instanceId, { spCurrent: newSP });
+}
+
+// --- Actions: Reset ---
+
+export function resetOwnedArmor(): void {
+  $ownedArmor.set({});
+}
+
+// --- Helper ---
+
+function updateInstance(
+  instanceId: string,
+  updates: Partial<ArmorInstance>,
+): void {
+  const current = $ownedArmor.get()[instanceId];
+  if (!current) return;
+
+  $ownedArmor.set({
+    ...$ownedArmor.get(),
+    [instanceId]: { ...current, ...updates },
+  });
+}
+
+// --- Re-export templates for store UI ---
+export { armorTemplates, getTemplate };
