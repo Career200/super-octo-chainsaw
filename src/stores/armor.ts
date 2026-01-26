@@ -1,4 +1,4 @@
-import { persistentMap } from "@nanostores/persistent";
+import { atom } from "nanostores";
 import type { ArmorPiece, BodyPartName } from "../scripts/armor/core";
 import { armorDefaults } from "../scripts/armor/equipment";
 
@@ -10,6 +10,8 @@ export interface ArmorItemState {
 
 export type ArmorInventoryState = Record<string, ArmorItemState>;
 
+const STORAGE_KEY = "armor-inventory";
+
 // Initialize from defaults
 function getInitialState(): ArmorInventoryState {
   const state: ArmorInventoryState = {};
@@ -19,11 +21,29 @@ function getInitialState(): ArmorInventoryState {
   return state;
 }
 
-// The persistent store - survives page navigation and refresh
-export const $armorInventory = persistentMap<ArmorInventoryState>(
-  "armor:",
-  getInitialState(),
-);
+// Load from localStorage or use defaults
+function loadState(): ArmorInventoryState {
+  if (typeof localStorage === "undefined") return getInitialState();
+
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (!stored) return getInitialState();
+
+  try {
+    return JSON.parse(stored) as ArmorInventoryState;
+  } catch {
+    return getInitialState();
+  }
+}
+
+// The persistent store
+export const $armorInventory = atom<ArmorInventoryState>(loadState());
+
+// Persist on change
+$armorInventory.subscribe((state) => {
+  if (typeof localStorage !== "undefined") {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+});
 
 // Derived: get full armor piece with current state
 export function getArmorPiece(id: string): ArmorPiece | null {
@@ -74,21 +94,12 @@ export function wearArmor(id: string): boolean {
     }
   }
 
-  $armorInventory.setKey(id, {
-    ...$armorInventory.get()[id],
-    worn: true,
-  });
+  updateItem(id, { worn: true });
   return true;
 }
 
 export function removeArmor(id: string): void {
-  const current = $armorInventory.get()[id];
-  if (!current) return;
-
-  $armorInventory.setKey(id, {
-    ...current,
-    worn: false,
-  });
+  updateItem(id, { worn: false });
 }
 
 export function toggleArmor(id: string): void {
@@ -107,10 +118,7 @@ export function damageArmor(id: string, amount: number = 1): void {
   const current = $armorInventory.get()[id];
   if (!current) return;
 
-  $armorInventory.setKey(id, {
-    ...current,
-    spCurrent: Math.max(0, current.spCurrent - amount),
-  });
+  updateItem(id, { spCurrent: Math.max(0, current.spCurrent - amount) });
 }
 
 export function repairArmor(id: string, amount?: number): void {
@@ -122,16 +130,21 @@ export function repairArmor(id: string, amount?: number): void {
     ? Math.min(base.spTotal, current.spCurrent + amount)
     : base.spTotal;
 
-  $armorInventory.setKey(id, {
-    ...current,
-    spCurrent: newSP,
-  });
+  updateItem(id, { spCurrent: newSP });
 }
 
 // Reset all armor to defaults
 export function resetArmor(): void {
-  const initial = getInitialState();
-  for (const [id, state] of Object.entries(initial)) {
-    $armorInventory.setKey(id, state);
-  }
+  $armorInventory.set(getInitialState());
+}
+
+// Helper to update a single item immutably
+function updateItem(id: string, updates: Partial<ArmorItemState>): void {
+  const current = $armorInventory.get()[id];
+  if (!current) return;
+
+  $armorInventory.set({
+    ...$armorInventory.get(),
+    [id]: { ...current, ...updates },
+  });
 }
