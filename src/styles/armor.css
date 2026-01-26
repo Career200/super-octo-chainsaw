@@ -1,0 +1,421 @@
+/* Armor Page Layout */
+.container {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  flex-grow: 1;
+}
+
+/* Panels */
+.panel {
+  overflow-y: auto;
+  max-height: calc(100vh - 40px - 75px - 32px);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.panel-heading h2 {
+  color: var(--accent);
+  flex: 1;
+}
+
+.armor-legend {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+.armor-legend .armor-type-icon {
+  transform: scale(1.5);
+  margin: 0 2px 0 6px;
+}
+
+/* Body Grid */
+.body-grid {
+  display: grid;
+  grid-template-areas:
+    ". head ."
+    "larm torso rarm"
+    "lleg . rleg";
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.body-part {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.body-part h3 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+/* Assign grid areas */
+#part-head {
+  grid-area: head;
+}
+#part-torso {
+  grid-area: torso;
+}
+#part-left_arm {
+  grid-area: larm;
+}
+#part-right_arm {
+  grid-area: rarm;
+}
+#part-left_leg {
+  grid-area: lleg;
+}
+#part-right_leg {
+  grid-area: rleg;
+}
+
+/* Armor Layers */
+.layer-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layer {
+  background: var(--bg);
+  border-left: 4px solid var(--accent);
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.layer.hard {
+  border-left-color: var(--link);
+}
+
+/* SP Display */
+.sp-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--footer);
+}
+
+.sp-total {
+  color: var(--footer);
+}
+
+.sp-breakdown {
+  color: var(--fg-soft);
+  font-size: 13px;
+}
+
+.sp-layer {
+  cursor: help;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--border-light);
+}
+
+.sp-layer.hard {
+  border-bottom: 2px solid var(--link);
+}
+
+.sp-layer.soft {
+  border-bottom: 2px solid var(--accent);
+}
+
+/* Armor Items (Owned & Store) */
+.armor-item,
+.store-item {
+  border: 1px solid var(--border-light);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: var(--code-bg);
+}
+
+.armor-item h4,
+.store-item h4 {
+  margin: 0;
+  color: var(--accent);
+}
+
+.store-item h4 {
+  color: var(--link);
+}
+
+/* Header row: title + SP */
+.armor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.armor-sp {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--footer);
+  white-space: nowrap;
+}
+
+.armor-type-icon {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+  margin-left: 4px;
+  bottom: 3px;
+  font-size: 10px;
+  color: var(--terminal-green-bright);
+
+  transform: scale(2.5);
+  transform-origin: center;
+}
+
+.armor-stats {
+  font-size: 13px;
+  color: var(--fg-soft);
+}
+
+.empty-message {
+  color: var(--fg-soft);
+  font-style: italic;
+}
+
+/* Buttons */
+.container button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.button-wear {
+  background: var(--accent-muted);
+  color: var(--fg);
+  border: none;
+}
+
+.button-wear:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+.button-remove {
+  background: var(--accent);
+  color: #000;
+  border: none;
+}
+
+.button-discard {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
+}
+
+.button-discard:hover {
+  border-color: #c44;
+  color: #c44;
+}
+
+.button-buy {
+  background: var(--link);
+  color: #000;
+  border: none;
+}
+
+.button-buy:hover {
+  background: var(--accent);
+}
+
+.armor-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.armor-actions button {
+  flex: 1;
+}
+
+.store-item button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* === Collapsible Panel (armor summary) === */
+
+/* Hidden by default on desktop */
+.armor-summary,
+.owned-summary,
+.expand-indicator {
+  display: none;
+}
+
+/* === Responsive: Below 1024px === */
+@media (max-width: 1023px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .panel {
+    max-height: none;
+  }
+
+  /* Collapsible panels */
+  .panel-collapsible {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .panel-collapsible .armor-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .panel-collapsible .body-grid,
+  .panel-collapsible .panel-content {
+    display: none;
+  }
+
+  .panel-collapsible.expanded .armor-summary,
+  .panel-collapsible.expanded .owned-summary {
+    display: none;
+  }
+
+  /* Owned armor summary list */
+  .owned-summary {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--fg-soft);
+    line-height: 1.4;
+  }
+
+  .owned-summary .owned-worn {
+    color: color-mix(in srgb, var(--fg-soft), white 33%);
+  }
+
+  .owned-summary .owned-stashed {
+    color: color-mix(in srgb, var(--fg-soft), black 33%);
+  }
+
+  .panel-collapsible.expanded .body-grid {
+    display: grid;
+  }
+
+  .panel-collapsible.expanded .panel-content {
+    display: block;
+  }
+
+  .panel-collapsible.expanded {
+    cursor: default;
+  }
+
+  /* Panel count badge */
+  .panel-count {
+    font-size: 13px;
+    font-weight: normal;
+    color: var(--fg-soft);
+  }
+
+  .panel-count:not(:empty)::before {
+    content: "(";
+  }
+
+  .panel-count:not(:empty)::after {
+    content: ")";
+  }
+
+  /* Expand indicator */
+  .panel-collapsible .expand-indicator {
+    display: block;
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
+  }
+
+  .panel-collapsible .expand-indicator::before,
+  .panel-collapsible .expand-indicator::after {
+    content: "";
+    position: absolute;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
+  /* Chevron down icon */
+  .panel-collapsible .expand-indicator::before {
+    width: 10px;
+    height: 2px;
+    top: 9px;
+    left: 1px;
+    transform: rotate(45deg);
+  }
+
+  .panel-collapsible .expand-indicator::after {
+    width: 10px;
+    height: 2px;
+    top: 9px;
+    right: 1px;
+    transform: rotate(-45deg);
+  }
+
+  .panel-collapsible:hover .expand-indicator {
+    opacity: 1;
+  }
+
+  .panel-collapsible.expanded .expand-indicator {
+    transform: rotate(180deg);
+  }
+
+  /* Summary chips */
+  .summary-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--code-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .summary-chip .label {
+    color: var(--fg-soft);
+  }
+
+  .summary-chip .value {
+    font-weight: bold;
+    color: var(--footer);
+  }
+}

@@ -1,239 +1,20 @@
 ---
 import HTML from '../layouts/html.astro';
 import Layout from '../layouts/layout.astro';
+import '../styles/armor.css';
 ---
 
 <HTML title="IMI GLOBAL — TAC HOME">
-  <style is:global>
-    .container {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
-      gap: 20px;
-      padding: 20px;
-    }
-
-    /* Panels */
-    .panel {
-      overflow-y: auto;
-      max-height: 75vh;
-      background: var(--bg-alt);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 15px;
-    }
-
-    .panel h2 {
-      margin-top: 0;
-      color: var(--accent);
-      border-bottom: 1px solid var(--border-light);
-      padding-bottom: 5px;
-    }
-
-    /* Body Grid */
-    .body-grid {
-      display: grid;
-      grid-template-areas:
-        '. head .'
-        'larm torso rarm'
-        'lleg . rleg';
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .body-part {
-      background: var(--code-bg);
-      border: 1px solid var(--border-light);
-      border-radius: 6px;
-      padding: 10px;
-    }
-
-    .body-part h3 {
-      margin: 0 0 5px 0;
-      font-size: 14px;
-      color: var(--accent);
-    }
-
-    .sp-value {
-      font-size: 18px;
-      font-weight: bold;
-      color: var(--footer);
-    }
-
-    /* Assign grid areas */
-    #part-head {
-      grid-area: head;
-    }
-    #part-torso {
-      grid-area: torso;
-    }
-    #part-left_arm {
-      grid-area: larm;
-    }
-    #part-right_arm {
-      grid-area: rarm;
-    }
-    #part-left_leg {
-      grid-area: lleg;
-    }
-    #part-right_leg {
-      grid-area: rleg;
-    }
-
-    /* Armor Layers */
-    .layer-list {
-      margin-top: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .layer {
-      background: var(--bg);
-      border-left: 4px solid var(--accent);
-      padding: 4px 6px;
-      font-size: 12px;
-    }
-
-    .layer.hard {
-      border-left-color: var(--link);
-    }
-
-    /* Armor Inventory */
-    .armor-item {
-      border: 1px solid var(--border-light);
-      padding: 8px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      background: var(--code-bg);
-    }
-
-    .armor-item h4 {
-      margin: 0 0 4px 0;
-      color: var(--accent);
-    }
-
-    .armor-stats {
-      font-size: 13px;
-      color: var(--fg-soft);
-    }
-
-    .sp-value {
-      font-weight: bold;
-      color: var(--footer);
-    }
-
-    .sp-total {
-      color: var(--footer);
-    }
-
-    .sp-breakdown {
-      color: var(--fg-soft);
-      font-size: 13px;
-    }
-
-    .sp-layer {
-      cursor: help;
-      padding: 1px 4px;
-      border-radius: 3px;
-      background: var(--border-light);
-    }
-
-    .sp-layer.hard {
-      border-bottom: 2px solid var(--link);
-    }
-
-    .sp-layer.soft {
-      border-bottom: 2px solid var(--accent);
-    }
-
-    .container button {
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 13px;
-      font-family: inherit;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-    }
-
-    .button-wear {
-      background: var(--accent-muted);
-      color: var(--fg);
-      border: none;
-    }
-
-    .button-wear:hover {
-      background: var(--accent);
-      color: #000;
-    }
-
-    .button-remove {
-      background: var(--accent);
-      color: #000;
-      border: none;
-    }
-
-    .button-discard {
-      background: transparent;
-      border: 1px solid var(--border-light);
-      color: var(--fg-soft);
-    }
-
-    .button-discard:hover {
-      border-color: #c44;
-      color: #c44;
-    }
-
-    .button-buy {
-      background: var(--link);
-      color: #000;
-      border: none;
-    }
-
-    .button-buy:hover {
-      background: var(--accent);
-    }
-
-    .armor-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .armor-actions button {
-      flex: 1;
-    }
-
-    .store-item button {
-      width: 100%;
-      margin-top: 8px;
-    }
-
-    .store-item {
-      border: 1px solid var(--border-light);
-      padding: 8px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      background: var(--code-bg);
-    }
-
-    .store-item h4 {
-      margin: 0 0 4px 0;
-      color: var(--link);
-    }
-
-    .empty-message {
-      color: var(--fg-soft);
-      font-style: italic;
-    }
-  </style>
   <Layout>
-    <header>
-      <h1>Armor Configuration Terminal</h1>
-    </header>
     <div class="container">
       <!-- BODY ARMOR STATUS -->
-      <div class="panel" id="character-armor-panel">
-        <h2>Character Armor</h2>
+      <div class="panel panel-collapsible expanded" id="character-armor-panel">
+        <div class="panel-heading">
+          <h2>Character Armor</h2>
+        </div>
+        <!-- Compact summary for mobile collapsed state -->
+        <div class="armor-summary" id="armor-summary"></div>
+        <!-- Full body grid -->
         <div class="body-grid">
           <div class="body-part" id="part-head">
             <h3>Head</h3>
@@ -271,16 +52,25 @@ import Layout from '../layouts/layout.astro';
             <div class="layer-list" id="layers-right_leg"></div>
           </div>
         </div>
+        <div class="expand-indicator"></div>
       </div>
 
-      <div class="panel" id="armor-inventory-panel">
-        <h2>Owned Armor</h2>
-        <div id="armor-list"></div>
+      <div class="panel panel-collapsible" id="armor-inventory-panel">
+        <div class="panel-heading">
+          <h2>Owned Armor <span class="panel-count" id="owned-count"></span></h2>
+          <span class="armor-legend"><span class="armor-type-icon">⬡</span>Hard <span class="armor-type-icon">≈</span>Soft</span>
+        </div>
+        <div class="owned-summary" id="owned-summary"></div>
+        <div class="panel-content" id="armor-list"></div>
+        <div class="expand-indicator"></div>
       </div>
 
-      <div class="panel" id="armor-store-panel">
-        <h2>Armor Store</h2>
-        <div id="armor-store"></div>
+      <div class="panel panel-collapsible" id="armor-store-panel">
+        <div class="panel-heading">
+          <h2>Armor Store</h2>
+        </div>
+        <div class="panel-content" id="armor-store"></div>
+        <div class="expand-indicator"></div>
       </div>
     </div>
   </Layout>
