@@ -21,7 +21,8 @@ const fullWithHead: BodyPartName[] = [
   "right_leg",
 ];
 
-export const armorCatalog: Record<string, ArmorPiece> = {
+// Static armor definitions (immutable base data)
+export const armorDefaults: Record<string, ArmorPiece> = {
   // --- STREET / LIGHT ---
   vest: {
     id: "vest",
@@ -234,3 +235,6 @@ export const armorCatalog: Record<string, ArmorPiece> = {
     worn: false,
   },
 };
+
+// Legacy alias - prefer using the store for mutable state
+export const armorCatalog = armorDefaults;

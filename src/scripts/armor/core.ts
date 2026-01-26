@@ -7,16 +7,16 @@ const proportionalArmorBonus = (diff: number): number => {
   return 0;
 };
 
-type ArmorType = "soft" | "hard";
+export type ArmorType = "soft" | "hard";
 
 export interface ArmorPiece {
-  id: string; // unique identifier
+  id: string;
   name: string;
   type: ArmorType;
-  spTotal: number; // max SP
-  spCurrent: number; // current SP
-  bodyParts: BodyPartName[]; // parts this armor covers
-  worn: boolean; // on/off
+  spTotal: number;
+  spCurrent: number;
+  bodyParts: BodyPartName[];
+  worn: boolean;
 }
 
 export type BodyPartName =
@@ -27,98 +27,63 @@ export type BodyPartName =
   | "left_leg"
   | "right_leg";
 
-interface BodyPart {
-  layers: ArmorPiece[]; // max 3 layers, only 1 hard
+export const BODY_PARTS: BodyPartName[] = [
+  "head",
+  "torso",
+  "left_arm",
+  "right_arm",
+  "left_leg",
+  "right_leg",
+];
+
+// Calculate effective SP using proportional armor rule
+// Pure function - takes layers, returns SP
+export function getEffectiveSP(layers: ArmorPiece[]): number {
+  const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
+  if (!activeLayers.length) return 0;
+
+  // Sort by SP ascending for inside-out calculation
+  const sorted = [...activeLayers].sort((a, b) => a.spCurrent - b.spCurrent);
+
+  let effectiveSP = sorted[0].spCurrent;
+
+  for (let i = 1; i < sorted.length; i++) {
+    const diff = Math.abs(sorted[i].spCurrent - effectiveSP);
+    effectiveSP = sorted[i].spCurrent + proportionalArmorBonus(diff);
+  }
+
+  return effectiveSP;
 }
 
-export class CharacterArmor {
-  body: Record<BodyPartName, BodyPart>;
+// Calculate damage penetration through armor layers
+// Returns remaining damage that gets through to the body
+export function calculateDamage(
+  layers: ArmorPiece[],
+  damage: number,
+): { penetrating: number; degradation: Map<string, number> } {
+  const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
+  const degradation = new Map<string, number>();
 
-  constructor() {
-    this.body = {
-      head: { layers: [] },
-      torso: { layers: [] },
-      left_arm: { layers: [] },
-      right_arm: { layers: [] },
-      left_leg: { layers: [] },
-      right_leg: { layers: [] },
-    };
-  }
+  // Sort outermost first (descending SP)
+  const sorted = [...activeLayers].sort((a, b) => b.spCurrent - a.spCurrent);
 
-  // add armor layer to body part
-  addArmor(armor: ArmorPiece) {
-    for (const part of armor.bodyParts) {
-      const layers = this.body[part].layers;
+  let remainingDamage = damage;
 
-      if (layers.length >= 3) {
-        console.warn(`Cannot add more than 3 layers to ${part}`);
-        continue;
-      }
+  for (const layer of sorted) {
+    if (remainingDamage <= 0) break;
 
-      if (armor.type === "hard" && layers.some((l) => l.type === "hard")) {
-        console.warn(`Only 1 hard armor allowed per ${part}`);
-        continue;
-      }
+    const threshold =
+      layer.type === "soft" ? layer.spCurrent : layer.spCurrent + 1;
 
-      layers.push(armor);
-      armor.worn = true;
+    if (remainingDamage > threshold) {
+      degradation.set(layer.id, 1);
+      remainingDamage -= threshold;
+    } else {
+      degradation.set(layer.id, 1);
+      remainingDamage = 0;
+      break;
     }
   }
 
-  // remove armor layer
-  removeArmor(armor: ArmorPiece) {
-    for (const part of armor.bodyParts) {
-      this.body[part].layers = this.body[part].layers.filter(
-        (l) => l.id !== armor.id,
-      );
-    }
-    armor.worn = false;
-  }
-
-  // calculate effective SP per body part using proportional armor rule
-  getEffectiveSP(part: BodyPartName): number {
-    const layers = this.body[part].layers.filter((l) => l.worn);
-    if (!layers.length) return 0;
-
-    // sort by SP ascending for inside-out calculation
-    const sorted = [...layers].sort((a, b) => a.spCurrent - b.spCurrent);
-
-    let effectiveSP = sorted[0].spCurrent;
-
-    for (let i = 1; i < sorted.length; i++) {
-      const diff = Math.abs(sorted[i].spCurrent - effectiveSP);
-      effectiveSP = sorted[i].spCurrent + proportionalArmorBonus(diff);
-    }
-
-    return effectiveSP;
-  }
-
-  // apply damage to a body part
-  hit(part: BodyPartName, damage: number) {
-    const layers = this.body[part].layers.filter((l) => l.worn);
-
-    // sort outermost first (descending SP)
-    const sorted = [...layers].sort((a, b) => b.spCurrent - a.spCurrent);
-
-    let remainingDamage = damage;
-
-    for (const layer of sorted) {
-      if (layer.spCurrent <= 0) continue;
-
-      const threshold =
-        layer.type === "soft" ? layer.spCurrent : layer.spCurrent + 1;
-
-      if (remainingDamage > threshold) {
-        layer.spCurrent = Math.max(layer.spCurrent - 1, 0);
-        remainingDamage -= threshold;
-      } else {
-        // hit stopped
-        layer.spCurrent = Math.max(layer.spCurrent - 1, 0);
-        remainingDamage = 0;
-        break;
-      }
-    }
-
-    return remainingDamage; // leftover damage to body
-  }
+  return { penetrating: remainingDamage, degradation };
 }

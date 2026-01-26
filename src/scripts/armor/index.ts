@@ -1,31 +1,29 @@
-import { CharacterArmor, type BodyPartName, type ArmorPiece } from "./core";
-import { armorCatalog } from "./equipment";
+import { BODY_PARTS, getEffectiveSP } from "./core";
+import {
+  $armorInventory,
+  getAllArmor,
+  getBodyPartLayers,
+  toggleArmor,
+} from "../../stores/armor";
 
-const characterArmor = new CharacterArmor();
-
-function getConditionPercent(armor: ArmorPiece): number {
-  // will use for color coding
-  return Math.round((armor.spCurrent / armor.spTotal) * 100);
-}
-
+// Render effective SP for each body part
 function renderEffectiveSP() {
-  (Object.keys(characterArmor.body) as BodyPartName[]).forEach((part) => {
+  for (const part of BODY_PARTS) {
     const container = document.getElementById(`sp-${part}`);
-    if (!container) return;
+    if (!container) continue;
 
-    const layers = characterArmor.body[part].layers.filter(
-      (l) => l.worn && l.spCurrent > 0,
-    );
-    const total = characterArmor.getEffectiveSP(part);
+    const layers = getBodyPartLayers(part);
+    const total = getEffectiveSP(layers);
 
     container.innerHTML = "";
 
-    // TOTAL
+    // Total SP value
     const totalSpan = document.createElement("span");
     totalSpan.className = "sp-total";
     totalSpan.textContent = total.toString();
     container.appendChild(totalSpan);
 
+    // Breakdown if multiple layers
     if (layers.length > 1) {
       const breakdown = document.createElement("span");
       breakdown.className = "sp-breakdown";
@@ -36,122 +34,82 @@ function renderEffectiveSP() {
         const chip = document.createElement("span");
         chip.className = `sp-layer ${layer.type}`;
         chip.textContent = layer.spCurrent.toString();
-
-        chip.title = `${layer.name} — ${layer.spCurrent}/${layer.spTotal} SP)`;
-
+        chip.title = `${layer.name} — ${layer.spCurrent}/${layer.spTotal} SP`;
         container.appendChild(chip);
 
         if (i < layers.length - 1) {
           const plus = document.createElement("span");
           plus.textContent = " + ";
-          breakdown.appendChild(plus);
           container.appendChild(plus);
         }
       });
     }
-  });
+  }
 }
 
+// Render armor layers on each body part
 function renderLayers() {
-  (Object.keys(characterArmor.body) as BodyPartName[]).forEach((part) => {
+  for (const part of BODY_PARTS) {
     const container = document.getElementById(`layers-${part}`);
-    if (!container) return;
+    if (!container) continue;
 
     container.innerHTML = "";
 
-    characterArmor.body[part].layers
-      .filter((l) => l.worn)
-      .forEach((layer) => {
-        const div = document.createElement("div");
-        div.className = `layer ${layer.type}`;
-        div.textContent = `${layer.name} (SP ${layer.spCurrent}/${layer.spTotal})`;
-        container.appendChild(div);
-      });
-  });
+    for (const layer of getBodyPartLayers(part)) {
+      const div = document.createElement("div");
+      div.className = `layer ${layer.type}`;
+      div.textContent = `${layer.name} (SP ${layer.spCurrent}/${layer.spTotal})`;
+      container.appendChild(div);
+    }
+  }
 }
 
-function createArmorCard(armor: ArmorPiece): HTMLElement {
-  const item = document.createElement("div");
-  item.className = "armor-item";
-  item.id = `armor-${armor.id}`;
-
-  const title = document.createElement("h4");
-  title.textContent = armor.name;
-
-  const stats = document.createElement("div");
-  stats.className = "armor-stats";
-  stats.innerHTML = `
-    Type: ${armor.type === "hard" ? "Hard" : "Soft"}<br>
-    SP: <span id="${armor.id}-sp">${armor.spCurrent}</span>/${armor.spTotal}
-  `;
-
-  const btn = document.createElement("button");
-  btn.id = `toggle-${armor.id}`;
-  btn.className = "button-wear";
-  btn.textContent = "Wear";
-
-  btn.addEventListener("click", () => toggleArmor(armor));
-
-  item.appendChild(title);
-  item.appendChild(stats);
-  item.appendChild(btn);
-
-  return item;
-}
-
-function renderInventoryList() {
+// Render armor inventory list
+function renderInventory() {
   const container = document.getElementById("armor-list");
   if (!container) return;
 
   container.innerHTML = "";
 
-  Object.values(armorCatalog).forEach((armor) => {
-    container.appendChild(createArmorCard(armor));
-  });
+  for (const armor of getAllArmor()) {
+    const item = document.createElement("div");
+    item.className = "armor-item";
+
+    const title = document.createElement("h4");
+    title.textContent = armor.name;
+
+    const stats = document.createElement("div");
+    stats.className = "armor-stats";
+    stats.innerHTML = `
+      Type: ${armor.type === "hard" ? "Hard" : "Soft"}<br>
+      SP: ${armor.spCurrent}/${armor.spTotal}
+    `;
+
+    const btn = document.createElement("button");
+    btn.className = armor.worn ? "button-remove" : "button-wear";
+    btn.textContent = armor.worn ? "Remove" : "Wear";
+    btn.addEventListener("click", () => toggleArmor(armor.id));
+
+    item.appendChild(title);
+    item.appendChild(stats);
+    item.appendChild(btn);
+    container.appendChild(item);
+  }
 }
 
-function renderInventory() {
-  Object.values(armorCatalog).forEach((armor) => {
-    const spEl = document.getElementById(`${armor.id}-sp`);
-    if (spEl) spEl.textContent = armor.spCurrent.toString();
-
-    const btn = document.getElementById(
-      `toggle-${armor.id}`,
-    ) as HTMLButtonElement | null;
-    if (btn) {
-      btn.textContent = armor.worn ? "Remove" : "Wear";
-      btn.classList.remove("button-wear", "button-remove");
-      btn.classList.add(armor.worn ? "button-remove" : "button-wear");
-    }
-  });
-}
-
+// Render everything
 function renderAll() {
-  renderInventoryList(); // must run first
+  renderInventory();
   renderEffectiveSP();
   renderLayers();
-  renderInventory();
 }
 
-function toggleArmor(armor: ArmorPiece) {
-  if (armor.worn) {
-    characterArmor.removeArmor(armor);
-  } else {
-    characterArmor.addArmor(armor);
-  }
+// Subscribe to store changes - this is the reactive part
+$armorInventory.subscribe(() => {
   renderAll();
-}
+});
 
-function bindArmorButtons() {
-  Object.values(armorCatalog).forEach((armor) => {
-    const btn = document.getElementById(`toggle-${armor.id}`);
-    if (!btn) return;
-
-    btn.addEventListener("click", () => toggleArmor(armor));
-  });
-}
-
+// Initial render on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
-  bindArmorButtons();
   renderAll();
 });
