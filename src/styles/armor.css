@@ -2,19 +2,19 @@
 .container {
   display: grid;
   grid-template-columns: 240px repeat(3, 1fr);
-  gap: 20px;
-  padding: 20px;
+  gap: 12px;
+  padding: 18px;
   flex-grow: 1;
 }
 
 /* Panels */
 .panel {
   overflow-y: auto;
-  max-height: calc(100vh - 40px - 75px - 32px);
+  max-height: calc(100vh - 40px - 75px - 10px);
   background: var(--bg-alt);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 15px;
+  border-radius: 6px;
+  padding: 6px;
 }
 
 .panel-heading {
@@ -48,11 +48,82 @@
 .body-grid {
   display: grid;
   grid-template-areas:
-    ". head ."
+    "sw head ."
     "larm torso rarm"
     "lleg ev rleg";
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
   margin-top: 10px;
+}
+
+/* SkinWeave Implant */
+.skinweave-display {
+  grid-area: sw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border: 1px dashed var(--border-light);
+  border-radius: 6px;
+  padding: 10px;
+  min-height: 80px;
+}
+
+.skinweave-display.installed {
+  border-style: solid;
+  border-color: var(--accent-muted);
+}
+
+.skinweave-label {
+  font-size: 11px;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.skinweave-select {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  color: var(--fg);
+  font-size: 14px;
+  font-family: inherit;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.skinweave-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.skinweave-sp {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--fg-soft);
+}
+
+.skinweave-sp .current {
+  font-weight: bold;
+}
+
+.skinweave-repair {
+  margin-top: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  color: var(--fg-soft);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.skinweave-repair:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .body-part {
@@ -172,6 +243,18 @@
 }
 .layer-health.health-critical {
   background: var(--health-critical);
+}
+
+/* SkinWeave layer - visually distinct */
+.layer.layer-skinweave {
+  background: var(--bg-alt);
+  border: 1px dashed var(--accent-muted);
+  opacity: 0.8;
+}
+
+.layer.layer-skinweave .layer-name {
+  font-style: italic;
+  color: var(--accent-muted);
 }
 
 /* SP Display */
@@ -780,12 +863,12 @@
 
 /* Damage history panel - limit width on desktop */
 #damage-history-panel {
-  max-width: 240px;
+  max-width: 222px;
 }
 
 /* Character armor panel - minimum width on desktop */
 #character-armor-panel {
-  min-width: 296px;
+  min-width: 300px;
 }
 
 /* === Collapsible Panel (armor summary) === */

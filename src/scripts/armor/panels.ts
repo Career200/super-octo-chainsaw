@@ -1,5 +1,6 @@
 import { BODY_PARTS, PART_ABBREV, getEffectiveSP, getTotalEV } from "./core";
 import { getAllOwnedArmor, getBodyPartLayers } from "../../stores/armor";
+import { getSkinWeaveSP } from "../../stores/skinweave";
 
 export function renderArmorSummary() {
   const container = document.getElementById("armor-summary");
@@ -9,7 +10,8 @@ export function renderArmorSummary() {
 
   for (const part of BODY_PARTS) {
     const layers = getBodyPartLayers(part);
-    const total = getEffectiveSP(layers);
+    const skinWeaveSP = getSkinWeaveSP(part);
+    const total = getEffectiveSP(layers, skinWeaveSP);
 
     const chip = document.createElement("div");
     chip.className = "summary-chip";

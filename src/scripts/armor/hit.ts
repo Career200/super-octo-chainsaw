@@ -9,6 +9,7 @@ import {
 } from "./core";
 import { damageArmor, getArmorPiece, getBodyPartLayers } from "../../stores/armor";
 import { recordDamage, type ArmorDamageEntry } from "../../stores/damage-history";
+import { getSkinWeaveSP, damageSkinWeave } from "../../stores/skinweave";
 import { createPopover, notify } from "../ui/popover";
 import {
   createSingleSelect,
@@ -92,6 +93,8 @@ export interface DamageOptions {
    *  - true: soft loses 1 + floor(over/5), hard loses 1 + floor(over/6)
    *  - false: all layers lose exactly 1 SP (vanilla staged penetration) */
   scaledDegradation?: boolean;
+  /** SkinWeave SP for this body part (0 if not installed) */
+  skinWeaveSP?: number;
 }
 
 /**
@@ -120,14 +123,14 @@ export function calculateDamage(
   damage: number,
   options: DamageOptions = {},
 ): DamageResult {
-  const { scaledDegradation = true } = options;
+  const { scaledDegradation = true, skinWeaveSP = 0 } = options;
   const degradation = new Map<string, number>();
 
-  if (activeLayers.length === 0) {
+  if (activeLayers.length === 0 && skinWeaveSP <= 0) {
     return { penetrating: damage, degradation };
   }
 
-  const effectiveSP = getEffectiveSP(activeLayers);
+  const effectiveSP = getEffectiveSP(activeLayers, skinWeaveSP);
   if (damage <= effectiveSP) {
     return { penetrating: 0, degradation };
   }
@@ -140,7 +143,7 @@ export function calculateDamage(
   }
 
   // Top layer gets additional scaled degradation, with cascade on overflow
-  if (scaledDegradation) {
+  if (scaledDegradation && activeLayers.length > 0) {
     const topLayer = activeLayers[0];
     const divisor = topLayer.type === "soft" ? 5 : 6;
     const totalTopDeg = 1 + Math.floor(over / divisor);
@@ -171,12 +174,18 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   const activeBefore = sortByLayerOrder(
     layers.filter((l) => l.worn && l.spCurrent > 0),
   );
+  const skinWeaveSP = getSkinWeaveSP(bodyPart);
 
-  const result = calculateDamage(activeBefore, damage);
+  const result = calculateDamage(activeBefore, damage, { skinWeaveSP });
 
   // Apply degradation to each armor piece at this specific body part
   for (const [armorId, amount] of result.degradation) {
     damageArmor(armorId, bodyPart, amount);
+  }
+
+  // SkinWeave takes 1 damage when armor is penetrated (always bottom layer)
+  if (result.penetrating > 0 && skinWeaveSP > 0) {
+    damageSkinWeave(bodyPart, 1);
   }
 
   // Check for layer flip (top layer changed)
@@ -363,7 +372,8 @@ export function setupHitButton() {
           }
 
           const layers = getBodyPartLayers(part);
-          const effectiveSP = getEffectiveSP(layers);
+          const skinWeaveSP = getSkinWeaveSP(part);
+          const effectiveSP = getEffectiveSP(layers, skinWeaveSP);
           const result = applyHit(part, damage);
 
           // Build armor damage entries for history
@@ -378,9 +388,18 @@ export function setupHitButton() {
             };
           });
 
-          if (result.degradation.size > 0) {
-            const armorDamageStr = Array.from(result.degradation.entries())
-              .map(([id, sp]) => `${id}: -${sp} SP`)
+          // Add SkinWeave damage to history if it was damaged
+          if (result.penetrating > 0 && skinWeaveSP > 0) {
+            armorDamageEntries.push({
+              armorId: "skinweave",
+              armorName: "SkinWeave",
+              spLost: 1,
+            });
+          }
+
+          if (armorDamageEntries.length > 0) {
+            const armorDamageStr = armorDamageEntries
+              .map((e) => `${e.armorName}: -${e.spLost} SP`)
               .join(", ");
             console.log(
               `[${partLabel}] ${damage} ${typeLabel} damage → ${result.penetrating} penetrating | Armor: ${armorDamageStr}`,

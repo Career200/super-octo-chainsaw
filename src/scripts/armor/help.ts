@@ -25,7 +25,8 @@ export function setupArmorHelp() {
       </blockquote>
       <section>
         <h4>Hard vs Soft Armor</h4>
-        <p>Armor is classified as <strong>hard</strong> (metal/ceramic/composite) or <strong>soft</strong> (ballistic fabric) — affecting layering rules, degradation rates, and how certain weapons interact with it.</p>
+        <p>Armor is classified as <strong>hard</strong> (metal/ceramic/composite) or <strong>soft</strong>
+        (ballistic fabric) — affecting layering rules, degradation rates, and how certain weapons interact with it.</p>
       </section>
       <section>
         <h4>Layered Protection</h4>
@@ -49,6 +50,18 @@ export function setupArmorHelp() {
         <h4>Layer Rotation</h4>
         <p>As your top layer shreds, another becomes your primary protection.
         Your backup armor <strong>takes point</strong>, spreading wear across your gear.</p>
+      </section>
+      <section>
+        <h4>Implanted armor</h4>
+        <p>Implanted armor provides a baseline protection that's always active. It follows the same proportional SP
+        armor rules, but cannot be removed. There are three types of implanted armor:
+        <strong>SkinWeave</strong> - a biotech mod, the result of hard work of thousands of nanomachines weaving
+        protective fibers into your skin. <strong>Subdermal Armor</strong> - a mesh/ballistic plastic plates, surgically
+        implanted into the torso. <strong>Body plating</strong> - ablative plastic shell with metal energy absorbing honeycomb
+        directly anchored to the skin.
+        </p>
+        <p>SkinWeave ranges from SP8 (impossible to notice) to SP14 (rubbery to the touch). Subdermal armor offers SP20 and
+        is difficult to notice. Body plating provides SP25, but is bulky and highly visible.</p>
       </section>
     `;
 

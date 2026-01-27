@@ -79,17 +79,29 @@ export function sortByLayerOrder<T extends { spCurrent: number }>(
 }
 
 // Calculate effective SP using proportional armor rule
-export function getEffectiveSP(layers: ArmorPiece[]): number {
+export function getEffectiveSP(
+  layers: ArmorPiece[],
+  skinWeaveSP: number = 0,
+): number {
   const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
-  if (!activeLayers.length) return 0;
+
+  if (!activeLayers.length && skinWeaveSP <= 0) return 0;
 
   const sorted = [...activeLayers].sort((a, b) => b.spCurrent - a.spCurrent);
-  let effectiveSP = sorted[0].spCurrent;
+
+  let effectiveSP = sorted.length > 0 ? sorted[0].spCurrent : skinWeaveSP;
 
   for (let i = 1; i < sorted.length; i++) {
     const layer = sorted[i];
     const diff = effectiveSP - layer.spCurrent;
     const bonus = Math.min(layer.spCurrent, proportionalArmorBonus(diff));
+    effectiveSP += bonus;
+  }
+
+  // SkinWeave is always bottom layer - add its proportional bonus last
+  if (skinWeaveSP > 0 && sorted.length > 0) {
+    const diff = effectiveSP - skinWeaveSP;
+    const bonus = Math.min(skinWeaveSP, proportionalArmorBonus(diff));
     effectiveSP += bonus;
   }
 
