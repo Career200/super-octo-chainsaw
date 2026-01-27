@@ -267,7 +267,7 @@
 }
 
 .armor-stats {
-  font-size: 13px;
+  font-size: var(--font-ui);
   color: var(--fg-soft);
 }
 
@@ -290,7 +290,7 @@
 .coverage-badge {
   display: inline-block;
   padding: 2px 5px;
-  font-size: 12px;
+  font-size: var(--font-ui);
   font-weight: bold;
   background: var(--bg);
   border: 1px solid var(--border-light);
@@ -324,7 +324,7 @@
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--font-ui);
   font-family: inherit;
   transition:
     background 0.15s,
@@ -408,7 +408,7 @@
   padding: 4px 12px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--font-ui);
   font-family: inherit;
   transition:
     background 0.15s,
@@ -532,7 +532,10 @@
 
 .repair-selectable {
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
 }
 
 .repair-selectable:hover {
@@ -602,7 +605,7 @@
 .popover-help h4 {
   margin: 0 0 4px 0;
   color: var(--fg);
-  font-size: 13px;
+  font-size: var(--font-ui);
 }
 
 .popover-help p {
@@ -657,59 +660,48 @@
 }
 
 /* Hit Popover Body Part Selector */
-.popover-hit {
-  min-width: 220px;
-}
-
-.hit-body-selector {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 12px;
-}
-
-.hit-body-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 4px;
+.hit-body-select .select-options {
   justify-items: center;
+  gap: 3px;
+  grid-template-columns: auto auto auto auto auto;
 }
 
-.hit-body-tag {
-  display: inline-block;
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: bold;
-  background: var(--bg);
-  border: 1px solid var(--border-light);
-  border-radius: 3px;
-  color: var(--fg-soft);
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.15s,
-    color 0.15s;
-  font-family: inherit;
+.hit-body-select .select-option {
   min-width: 32px;
+  padding: 4px 8px;
   text-align: center;
+  text-transform: uppercase;
+  font-size: var(--font-ui);
 }
 
-.hit-body-tag.selected {
+.hit-body-select .select-option-all,
+.hit-body-select .select-option-none {
+  font-size: var(--font-ui-sm);
+  padding: 4px 10px;
+}
+
+.hit-body-select .select-option-ignoresp {
+  font-size: var(--font-ui-xs);
+  padding: 4px 6px;
+  letter-spacing: 0.3px;
+}
+
+/* Hit Popover */
+.popover-hit {
+  width: min(360px, calc(100vw - 72px));
+}
+
+.popover-hit .select-option.selected {
+  background: var(--danger);
   border-color: var(--danger);
-  color: var(--danger);
+  color: #fff;
 }
 
 @media (hover: hover) {
-  /* disable hover effects on touch devices */
-  .hit-body-tag:hover {
+  .popover-hit .select-option:hover:not(.selected) {
     border-color: var(--danger);
     color: var(--danger);
   }
-}
-
-.hit-body-tag-full {
-  padding: 4px 12px;
-  letter-spacing: 1px;
 }
 
 /* === Collapsible Panel (armor summary) === */
@@ -787,7 +779,7 @@
 
   /* Panel count badge */
   .panel-count {
-    font-size: 13px;
+    font-size: var(--font-ui);
     font-weight: normal;
     color: var(--fg-soft);
   }

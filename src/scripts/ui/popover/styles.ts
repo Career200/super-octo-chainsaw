@@ -11,7 +11,7 @@ export function injectStyles() {
       padding: 12px 16px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
       min-width: 200px;
-      max-width: 300px;
+      max-width: 400px;
       z-index: 1000;
     }
 
@@ -46,7 +46,7 @@ export function injectStyles() {
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: var(--font-ui);
       font-family: inherit;
       transition: background 0.15s, color 0.15s;
     }

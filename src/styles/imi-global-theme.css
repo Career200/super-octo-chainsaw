@@ -40,6 +40,11 @@
   --message-border: #00ff99;
   --message-border-muted: #00ffcc2e;
   --message-border-hover: #009a7b2e;
+
+  /* UI font sizes */
+  --font-ui: 13px;
+  --font-ui-sm: 11px;
+  --font-ui-xs: 10px;
 }
 
 .box {

@@ -9,6 +9,77 @@ import {
 } from "./core";
 import { damageArmor, getBodyPartLayers } from "../../stores/armor";
 import { createPopover, notify } from "../ui/popover";
+import {
+  createSingleSelect,
+  createMultiSelect,
+  type SelectOption,
+} from "../ui/select";
+
+export type DamageType =
+  | "normal"
+  | "ap"
+  | "edged"
+  | "mono"
+  | "slug"
+  | "fire"
+  | "explosive";
+
+const BODY_PART_OPTIONS: SelectOption<BodyPartName>[] = BODY_PARTS.map(
+  (part) => ({
+    value: part,
+    label: PART_ABBREV[part],
+  }),
+);
+
+const BODY_PART_GRID = `
+  "all . head . none"
+  ". left_arm torso right_arm ."
+  ". left_leg ignoresp right_leg ."
+`;
+
+const DAMAGE_TYPE_OPTIONS: SelectOption<DamageType>[] = [
+  {
+    value: "normal",
+    label: "Normal",
+    description: "Standard damage. Full SP, full penetrating damage.",
+  },
+  {
+    value: "ap",
+    label: "AP",
+    description:
+      "Armor Piercing. SP to 1/2, but penetrating damage also halved. Designed to punch through armor at the cost of wound severity.",
+  },
+  {
+    value: "edged",
+    label: "Edged",
+    description:
+      "Blades, knives, swords. SP to 1/2 against soft armor only. Hard armor provides full protection.",
+  },
+  {
+    value: "mono",
+    label: "Mono",
+    description:
+      "Monoweapons (monomolecular edge). SP to 1/3 vs soft armor, SP to 2/3 vs hard armor. Cuts through almost anything.",
+  },
+  {
+    value: "slug",
+    label: "Slug",
+    description:
+      "Shotgun slugs. SP to 1/2 like AP, but penetrating damage is NOT halved. High mass, high impact.",
+  },
+  {
+    value: "fire",
+    label: "Fire",
+    description:
+      "Thermal damage. SP full if total fire damage below 15, and for fireproofed or sufficiently sealed armor, otherwise ignored - too intense - and armor damaged by 4/round. Requires a COOL (Pain Editor bonus applies) save or spend next turn to drop and roll. May cause ongoing burn effects. NOTE: use 'ignore SP' tag if armor is not fireproofed, decrease armor health by 4 manually.",
+  },
+  {
+    value: "explosive",
+    label: "Explosive",
+    description:
+      "Explosive/blast damage. SP to 1/3. Half penetrating damage is blunt/concussion - remove after a successful BT save(additinal check, after stun/shock (if successful)). Soft armor takes 2 SP ablation immediately; hard armor takes 1/4 its SP as ablation. Worn equipment may be damaged. Note: may imply shrapnel (1d10 to random location unless behind cover). Deafens unless Level Dampeners are employed.",
+  },
+];
 
 export interface DamageResult {
   penetrating: number;
@@ -60,7 +131,6 @@ export function calculateDamage(
     return { penetrating: 0, degradation };
   }
 
-  // Armor penetrated
   const over = damage - effectiveSP;
 
   // All layers get base 1 degradation
@@ -95,7 +165,6 @@ export function calculateDamage(
   return { penetrating: over, degradation };
 }
 
-// Apply damage to a body part and return the result
 export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   const layers = getBodyPartLayers(bodyPart);
   const activeBefore = sortByLayerOrder(
@@ -140,92 +209,55 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
 function createBodyPartSelector(): {
   element: HTMLElement;
   getSelected: () => BodyPartName[];
+  isNoneSelected: () => boolean;
+  isIgnoreSP: () => boolean;
 } {
-  const selected = new Set<BodyPartName>();
+  let ignoreSP = false;
 
-  const container = document.createElement("div");
-  container.className = "hit-body-selector";
+  const multiSelect = createMultiSelect<BodyPartName>({
+    options: BODY_PART_OPTIONS,
+    defaultValue: ["head"],
+    showAllButton: true,
+    allButtonLabel: "Full",
+    showNoneButton: true,
+    noneButtonLabel: "None",
+    noneDeselectValue: "head",
+    gridTemplateAreas: BODY_PART_GRID,
+    allGridArea: "all",
+    noneGridArea: "none",
+    className: "hit-body-select",
+  });
 
-  const updateFullState = () => {
-    const fullTag = container.querySelector('[data-part="full"]');
-    if (!fullTag) return;
+  const ignoreSPBtn = document.createElement("button");
+  ignoreSPBtn.type = "button";
+  ignoreSPBtn.className = "select-option select-option-ignoresp";
+  ignoreSPBtn.textContent = "Ignore SP";
+  ignoreSPBtn.title = "Bypass armor completely (fire, EMP, etc.)";
+  ignoreSPBtn.style.gridArea = "ignoresp";
+  ignoreSPBtn.addEventListener("click", () => {
+    ignoreSP = !ignoreSP;
+    ignoreSPBtn.classList.toggle("selected", ignoreSP);
+  });
 
-    const allSelected = BODY_PARTS.every((p) => selected.has(p));
-    fullTag.classList.toggle("selected", allSelected);
-  };
-
-  const createTag = (part: BodyPartName | "full") => {
-    const tag = document.createElement("button");
-    tag.type = "button";
-    tag.className = "hit-body-tag";
-    tag.dataset.part = part;
-    tag.textContent = part === "full" ? "FULL" : PART_ABBREV[part];
-
-    if (part === "full") {
-      tag.classList.add("hit-body-tag-full");
-    }
-
-    tag.addEventListener("click", () => {
-      if (part === "full") {
-        const allSelected = BODY_PARTS.every((p) => selected.has(p));
-        if (allSelected) {
-          // Deselect all
-          selected.clear();
-          container
-            .querySelectorAll(".hit-body-tag")
-            .forEach((t) => t.classList.remove("selected"));
-        } else {
-          // Select all
-          BODY_PARTS.forEach((p) => selected.add(p));
-          container
-            .querySelectorAll(".hit-body-tag")
-            .forEach((t) => t.classList.add("selected"));
-        }
-      } else {
-        if (selected.has(part)) {
-          selected.delete(part);
-          tag.classList.remove("selected");
-        } else {
-          selected.add(part);
-          tag.classList.add("selected");
-        }
-        updateFullState();
-      }
-    });
-
-    return tag;
-  };
-
-  // Build grid layout: . H . / LA T RA / LL FULL RL
-  const row1 = document.createElement("div");
-  row1.className = "hit-body-row";
-  row1.appendChild(document.createElement("span")); // empty
-  row1.appendChild(createTag("head"));
-  row1.appendChild(document.createElement("span")); // empty
-
-  const row2 = document.createElement("div");
-  row2.className = "hit-body-row";
-  row2.appendChild(createTag("left_arm"));
-  row2.appendChild(createTag("torso"));
-  row2.appendChild(createTag("right_arm"));
-
-  const row3 = document.createElement("div");
-  row3.className = "hit-body-row";
-  row3.appendChild(createTag("left_leg"));
-  row3.appendChild(createTag("full"));
-  row3.appendChild(createTag("right_leg"));
-
-  container.appendChild(row1);
-  container.appendChild(row2);
-  container.appendChild(row3);
+  const container = multiSelect.element.querySelector(".select-options");
+  container?.appendChild(ignoreSPBtn);
 
   return {
-    element: container,
-    getSelected: () => Array.from(selected),
+    element: multiSelect.element,
+    getSelected: () => multiSelect.getSelected(),
+    isNoneSelected: () => multiSelect.isNoneSelected(),
+    isIgnoreSP: () => ignoreSP,
   };
 }
 
-// Setup the "I'm hit" button
+function createDamageTypeSelector() {
+  return createSingleSelect<DamageType>({
+    options: DAMAGE_TYPE_OPTIONS,
+    defaultValue: "normal",
+    showDescription: true,
+  });
+}
+
 export function setupHitButton() {
   const btn = document.getElementById("btn-im-hit");
   if (!btn) return;
@@ -238,17 +270,27 @@ export function setupHitButton() {
       className: "popover-danger popover-hit",
     });
 
-    // Body part selector
     const selectorLabel = document.createElement("p");
     selectorLabel.className = "popover-message";
     selectorLabel.textContent = "Where?";
 
-    const { element: selector, getSelected } = createBodyPartSelector();
+    const {
+      element: selector,
+      getSelected,
+      isNoneSelected,
+      isIgnoreSP,
+    } = createBodyPartSelector();
 
-    // Damage input
+    const typeLabel = document.createElement("p");
+    typeLabel.className = "popover-message";
+    typeLabel.textContent = "What hit you?";
+
+    const { element: typeSelector, getSelected: getDamageType } =
+      createDamageTypeSelector();
+
     const inputLabel = document.createElement("p");
     inputLabel.className = "popover-message";
-    inputLabel.textContent = "How much?";
+    inputLabel.textContent = "Raw damage?";
 
     const input = document.createElement("input");
     input.type = "number";
@@ -256,7 +298,6 @@ export function setupHitButton() {
     input.placeholder = "Damage";
     input.min = "0";
 
-    // Actions
     const actions = document.createElement("div");
     actions.className = "popover-actions";
 
@@ -271,21 +312,49 @@ export function setupHitButton() {
     confirmBtn.addEventListener("click", () => {
       const damage = parseInt(input.value, 10);
       const parts = getSelected();
-      if (!isNaN(damage) && damage > 0 && parts.length > 0) {
+      const damageType = getDamageType();
+      const isNone = isNoneSelected();
+      const ignoringArmor = isIgnoreSP();
+
+      if (!isNaN(damage) && damage > 0 && (parts.length > 0 || isNone)) {
+        const typeLabel =
+          DAMAGE_TYPE_OPTIONS.find((o) => o.value === damageType)?.label ??
+          damageType;
+
+        if (isNone) {
+          console.log(
+            `[Non-locational] ${damage} ${typeLabel} damage → ${damage} penetrating`,
+          );
+          console.warn(`⚠️ CHARACTER TAKES ${damage} DAMAGE (non-locational)`);
+          cleanup();
+          return;
+        }
+
         for (const part of parts) {
-          const result = applyHit(part, damage);
           const partLabel = PART_NAMES[part];
+
+          if (ignoringArmor) {
+            console.log(
+              `[${partLabel}] ${damage} ${typeLabel} damage → ${damage} penetrating (SP ignored)`,
+            );
+            console.warn(
+              `⚠️ CHARACTER TAKES ${damage} DAMAGE TO ${partLabel.toUpperCase()}`,
+            );
+            continue;
+          }
+
+          const result = applyHit(part, damage);
 
           if (result.degradation.size > 0) {
             const armorDamage = Array.from(result.degradation.entries())
               .map(([id, sp]) => `${id}: -${sp} SP`)
               .join(", ");
             console.log(
-              `[${partLabel}] ${damage} damage → ${result.penetrating} penetrating | Armor: ${armorDamage}`,
+              `[${partLabel}] ${damage} ${typeLabel} damage → ${result.penetrating} penetrating | Armor: ${armorDamage}`,
             );
           } else {
             console.log(
-              `[${partLabel}] ${damage} damage → ${result.penetrating} penetrating (no armor)`,
+              `[${partLabel}] ${damage} ${typeLabel} damage → ${result.penetrating} penetrating (no armor)`,
             );
           }
 
@@ -311,6 +380,8 @@ export function setupHitButton() {
 
     popover.appendChild(selectorLabel);
     popover.appendChild(selector);
+    popover.appendChild(typeLabel);
+    popover.appendChild(typeSelector);
     popover.appendChild(inputLabel);
     popover.appendChild(input);
     popover.appendChild(actions);
