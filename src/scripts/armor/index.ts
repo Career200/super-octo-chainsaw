@@ -5,6 +5,7 @@ import { renderOwnedInventory } from "./render/inventory";
 import { renderShop } from "./render/shop";
 import { initHistory } from "./render/history";
 import { setupSkinWeave } from "./render/skinweave";
+import { setupImplants } from "./render/implants";
 import {
   renderArmorSummary,
   updateOwnedSummary,
@@ -42,5 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupHitButton();
   setupArmorHelp();
   setupSkinWeave();
+  setupImplants();
   initHistory();
 });
