@@ -23,7 +23,7 @@ export function injectStyles() {
     }
 
     .popover-danger {
-      border-color: #c44;
+      border-color: var(--danger);
     }
 
     .popover-message {
@@ -69,12 +69,12 @@ export function injectStyles() {
     }
 
     .popover-danger .popover-btn-confirm {
-      background: #c44;
+      background: var(--danger);
       color: #fff;
     }
 
     .popover-danger .popover-btn-confirm:hover {
-      background: #e55;
+      background: var(--danger-hover);
     }
 
     .popover-notify {
@@ -86,7 +86,7 @@ export function injectStyles() {
     }
 
     .popover-notify-error {
-      border-color: #c44;
+      border-color: var(--danger);
     }
 
     .popover-notify-error .popover-message {

@@ -7,6 +7,7 @@ import {
   updateOwnedSummary,
   setupCollapsiblePanels,
 } from "./panels";
+import { setupHitButton } from "./hit";
 
 function renderAll() {
   renderOwnedInventory();
@@ -27,4 +28,5 @@ $ownedArmor.subscribe(() => {
 document.addEventListener("DOMContentLoaded", () => {
   renderAll();
   setupCollapsiblePanels();
+  setupHitButton();
 });

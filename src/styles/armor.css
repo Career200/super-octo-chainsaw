@@ -116,7 +116,7 @@
 }
 
 .ev-display.has-penalty .ev-value {
-  color: #c44;
+  color: var(--danger);
 }
 
 .ev-layer-penalty {
@@ -175,7 +175,7 @@
 }
 
 .layer-health.health-critical {
-  background: #c44;
+  background: var(--danger);
 }
 
 /* SP Display */
@@ -251,7 +251,7 @@
 }
 
 .armor-sp .health-critical {
-  color: #c44;
+  color: var(--danger);
 }
 
 .armor-type-icon {
@@ -339,8 +339,8 @@
 }
 
 .button-discard:hover {
-  border-color: #c44;
-  color: #c44;
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .button-buy {
@@ -382,6 +382,23 @@
 .button-take:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.button-hit {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+
+.button-hit:hover {
+  background: var(--danger);
+  color: #fff;
 }
 
 /* === Collapsible Panel (armor summary) === */
