@@ -1,6 +1,8 @@
 import {
   BODY_PARTS,
   PART_ABBREV,
+  PART_NAMES,
+  getEffectiveSP,
   type ArmorPiece,
   type BodyPartName,
 } from "./core";
@@ -12,126 +14,87 @@ export interface DamageResult {
   degradation: Map<string, number>;
 }
 
+export interface DamageOptions {
+  /** Scale degradation by damage over threshold. Default: true
+   *  - true: soft loses 1 + floor(over/5), hard loses 1 + floor(over/6)
+   *  - false: all layers lose exactly 1 SP (vanilla staged penetration) */
+  scaledDegradation?: boolean;
+}
+
 /**
- * Calculate damage penetration through armor layers.
+ * Calculate damage penetration through layered armor.
  *
  * ARMOR MECHANICS:
- * - Layers processed highest SP first
- * - Soft armor: threshold = SP, degrades 1 if penetrated + 1 per 5 over
- * - Hard armor: threshold = SP + 1, degrades 1 if penetrated + 1 per 6 over
- * - If damage ≤ threshold: stopped, no degradation
- * - If damage > threshold: armor degrades, remainder passes to next layer
+ * - Protection uses EFFECTIVE SP (proportional armor bonus for layers)
+ * - If damage ≤ effective SP: stopped, no degradation
+ * - If damage > effective SP: penetrating damage to character, layers degrade
  *
- * STATISTICAL BREAKDOWN (6d6 - 8-38, mean 23):
+ * DEGRADATION (when penetrated):
+ * - All layers: base 1 SP loss
+ * - scaledDegradation: true (default)
+ *   - Top layer only: additional floor(over / 5) for soft, floor(over / 6) for hard
+ *   - If top layer reduced to 0, excess cascades to next layer
+ * - scaledDegradation: false (vanilla)
+ *   - All layers lose exactly 1 SP
  *
- * Example: Hard SP 23 (outer) + Soft SP 12 (inner)
- *
- * | Damage | % hits | Hard -SP | Penetrating | Soft -SP | To char |
- * |--------|--------|----------|-------------|----------|---------|
- * | 8-24   | ~58%   | 0        | 0           | 0        | 0       |
- * | 25-29  | ~22%   | 1        | 1-5         | 0        | 0       |
- * | 30-35  | ~16%   | 2        | 6-11        | 0        | 0       |
- * | 36     | ~3%    | 3        | 12          | 0        | 0       |
- * | 37-38  | ~1%    | 3        | 13-14       | 1        | 1-2     |
- *
- * SURVIVABILITY:
- * - ~99% of hits cause no injury with fresh armor
- * - Hard degrades ~0.66 SP/hit average → lasts ~35 hits
- * - Soft barely touched while hard holds
- * - After hard breaks: soft lasts ~4 hits, ~11 dmg/hit to character
- *
- * NOTE: As armor degrades, threshold drops, more hits penetrate,
- * degradation accelerates. Death spiral once outer layer fails.
+ * NOTE: Armor health is tracked per-body-part. A jacket hit on the arm
+ * doesn't degrade the torso protection.
  */
 export function calculateDamage(
   layers: ArmorPiece[],
   damage: number,
+  options: DamageOptions = {},
 ): DamageResult {
-  const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
+  const { scaledDegradation = true } = options;
   const degradation = new Map<string, number>();
 
-  const sorted = [...activeLayers].sort((a, b) => b.spCurrent - a.spCurrent);
-  let remainingDamage = damage;
+  // Sort by current SP descending - highest SP is "top" layer
+  const activeLayers = layers
+    .filter((l) => l.worn && l.spCurrent > 0)
+    .sort((a, b) => b.spCurrent - a.spCurrent);
 
-  for (const layer of sorted) {
-    if (remainingDamage <= 0) break;
+  if (activeLayers.length === 0) {
+    return { penetrating: damage, degradation };
+  }
 
-    const threshold =
-      layer.type === "soft" ? layer.spCurrent : layer.spCurrent + 1;
+  const effectiveSP = getEffectiveSP(activeLayers);
+  if (damage <= effectiveSP) {
+    return { penetrating: 0, degradation };
+  }
 
-    if (remainingDamage > threshold) {
-      // Armor penetrated - 1 base + extra per 5 (soft) or 6 (hard)
-      const over = remainingDamage - threshold;
-      const divisor = layer.type === "soft" ? 5 : 6;
-      const spLoss = 1 + Math.floor(over / divisor);
-      degradation.set(layer.id, spLoss);
-      remainingDamage = over;
+  // Armor penetrated
+  const over = damage - effectiveSP;
+
+  // All layers get base 1 degradation
+  for (const layer of activeLayers) {
+    degradation.set(layer.id, 1);
+  }
+
+  // Top layer gets additional scaled degradation, with cascade on overflow
+  if (scaledDegradation) {
+    const topLayer = activeLayers[0];
+    const divisor = topLayer.type === "soft" ? 5 : 6;
+    const totalTopDeg = 1 + Math.floor(over / divisor);
+
+    if (totalTopDeg <= topLayer.spCurrent) {
+      degradation.set(topLayer.id, totalTopDeg);
     } else {
-      // Armor stopped the hit - no degradation
-      remainingDamage = 0;
-      break;
+      // Overflow: cap top layer, cascade excess
+      degradation.set(topLayer.id, topLayer.spCurrent);
+      let leftover = totalTopDeg - topLayer.spCurrent;
+
+      for (let i = 1; i < activeLayers.length && leftover > 0; i++) {
+        const layer = activeLayers[i];
+        const baseDeg = degradation.get(layer.id)!;
+        const canAdd = Math.max(0, layer.spCurrent - baseDeg);
+        const toAdd = Math.min(leftover, canAdd);
+        degradation.set(layer.id, baseDeg + toAdd);
+        leftover -= toAdd;
+      }
     }
   }
 
-  return { penetrating: remainingDamage, degradation };
-}
-
-/**
- * Vanilla staged penetration rules.
- *
- * ARMOR MECHANICS:
- * - Layers processed highest SP first
- * - Soft armor: threshold = SP
- * - Hard armor: threshold = SP + 1
- * - If damage ≤ threshold: stopped, no degradation
- * - If damage > threshold: armor degrades by 1, remainder passes to next layer
- *
- * STATISTICAL BREAKDOWN (6d6 - 8-38, mean 23):
- *
- * Example: Hard SP 23 (outer) + Soft SP 12 (inner)
- *
- * | Damage | % hits | Hard -SP | Penetrating | Soft -SP | To char |
- * |--------|--------|----------|-------------|----------|---------|
- * | 8-24   | ~58%   | 0        | 0           | 0        | 0       |
- * | 25-38  | ~42%   | 1        | 1-14        | 0-1      | 0-2     |
- *
- * SURVIVABILITY:
- * - ~99% of hits cause no injury with fresh armor
- * - Hard degrades ~0.42 SP/hit average → lasts ~55 hits
- * - Much slower degradation than scaled version
- * - More forgiving against high damage spikes
- *
- * NOTE: Simpler but armor lasts longer. Less punishing for
- * unlucky high-damage rolls.
- */
-export function calculateDamageVanilla(
-  layers: ArmorPiece[],
-  damage: number,
-): DamageResult {
-  const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
-  const degradation = new Map<string, number>();
-
-  const sorted = [...activeLayers].sort((a, b) => b.spCurrent - a.spCurrent);
-  let remainingDamage = damage;
-
-  for (const layer of sorted) {
-    if (remainingDamage <= 0) break;
-
-    const threshold =
-      layer.type === "soft" ? layer.spCurrent : layer.spCurrent + 1;
-
-    if (remainingDamage > threshold) {
-      // Armor penetrated - always loses 1 SP
-      degradation.set(layer.id, 1);
-      remainingDamage = remainingDamage - threshold;
-    } else {
-      // Armor stopped the hit - no degradation
-      remainingDamage = 0;
-      break;
-    }
-  }
-
-  return { penetrating: remainingDamage, degradation };
+  return { penetrating: over, degradation };
 }
 
 // Apply damage to a body part and return the result
@@ -282,8 +245,29 @@ export function setupHitButton() {
       const damage = parseInt(input.value, 10);
       const parts = getSelected();
       if (!isNaN(damage) && damage > 0 && parts.length > 0) {
-        // TODO: apply damage to selected body parts
-        console.log("Damage:", damage, "Parts:", parts);
+        for (const part of parts) {
+          const result = applyHit(part, damage);
+          const partLabel = PART_NAMES[part];
+
+          if (result.degradation.size > 0) {
+            const armorDamage = Array.from(result.degradation.entries())
+              .map(([id, sp]) => `${id}: -${sp} SP`)
+              .join(", ");
+            console.log(
+              `[${partLabel}] ${damage} damage → ${result.penetrating} penetrating | Armor: ${armorDamage}`,
+            );
+          } else {
+            console.log(
+              `[${partLabel}] ${damage} damage → ${result.penetrating} penetrating (no armor)`,
+            );
+          }
+
+          if (result.penetrating > 0) {
+            console.warn(
+              `⚠️ CHARACTER TAKES ${result.penetrating} DAMAGE TO ${partLabel.toUpperCase()}`,
+            );
+          }
+        }
       }
       cleanup();
     });
