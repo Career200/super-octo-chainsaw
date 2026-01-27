@@ -19,24 +19,18 @@ export function renderEffectiveSP() {
     if (layers.length > 1) {
       const breakdown = document.createElement("span");
       breakdown.className = "sp-breakdown";
-      breakdown.textContent = " = ";
+      breakdown.textContent = ` = ${layers.map((l) => l.spCurrent).join(" + ")}`;
       container.appendChild(breakdown);
-
-      layers.forEach((layer, i) => {
-        const chip = document.createElement("span");
-        chip.className = `sp-layer ${layer.type}`;
-        chip.textContent = layer.spCurrent.toString();
-        chip.title = `${layer.name} — ${layer.spCurrent}/${layer.spMax} SP`;
-        container.appendChild(chip);
-
-        if (i < layers.length - 1) {
-          const plus = document.createElement("span");
-          plus.textContent = " + ";
-          container.appendChild(plus);
-        }
-      });
     }
   }
+}
+
+function getHealthClass(percent: number): string {
+  if (percent >= 100) return "health-full";
+  if (percent >= 75) return "health-good";
+  if (percent >= 50) return "health-worn";
+  if (percent >= 25) return "health-damaged";
+  return "health-critical";
 }
 
 export function renderLayers() {
@@ -48,8 +42,20 @@ export function renderLayers() {
 
     for (const layer of getBodyPartLayers(part)) {
       const div = document.createElement("div");
-      div.className = `layer ${layer.type}`;
-      div.textContent = `${layer.name} (SP ${layer.spCurrent}/${layer.spMax})`;
+      div.className = "layer";
+      div.title = `${layer.name} — ${layer.spCurrent}/${layer.spMax} SP`;
+
+      const name = document.createElement("span");
+      name.className = "layer-name";
+      name.textContent = layer.name;
+
+      const healthPercent = (layer.spCurrent / layer.spMax) * 100;
+      const healthBar = document.createElement("span");
+      healthBar.className = `layer-health ${getHealthClass(healthPercent)}`;
+      healthBar.style.width = `${healthPercent}%`;
+
+      div.appendChild(name);
+      div.appendChild(healthBar);
       container.appendChild(div);
     }
   }
