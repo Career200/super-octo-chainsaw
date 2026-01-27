@@ -24,6 +24,10 @@ export function setupArmorHelp() {
         <cite>— Unidentified Fixer, 2015</cite>
       </blockquote>
       <section>
+        <h4>Hard vs Soft Armor</h4>
+        <p>Armor is classified as <strong>hard</strong> (metal/ceramic/composite) or <strong>soft</strong> (ballistic fabric) — affecting layering rules, degradation rates, and how certain weapons interact with it.</p>
+      </section>
+      <section>
         <h4>Layered Protection</h4>
         <p>Multiple armor layers combine using <strong>proportional SP</strong> —
         the strongest layer provides full protection, weaker layers add a bonus (0-5)
@@ -43,7 +47,7 @@ export function setupArmorHelp() {
       </section>
       <section>
         <h4>Layer Rotation</h4>
-        <p>As your top layer shreds, another may step up as primary protection.
+        <p>As your top layer shreds, another becomes your primary protection.
         Your backup armor <strong>takes point</strong>, spreading wear across your gear.</p>
       </section>
     `;
