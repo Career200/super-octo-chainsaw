@@ -222,9 +222,9 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
       "Laminated expoxide plate armor. Bulky and designed in modular sections: helmet, arm & leg coverings, torso and back clamshell.",
   }),
 
-  nkvbda_bodyarmor: template(
+  nkvbda: template(
     "nkvbda",
-    "Russian arms NKVBDA 55",
+    "Russian Arms NKVBDA 55",
     "hard",
     26,
     fullWithHead,
