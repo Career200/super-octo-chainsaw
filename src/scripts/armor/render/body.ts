@@ -1,5 +1,6 @@
 import { BODY_PARTS, PART_NAMES, getEffectiveSP, getTotalEV } from "../core";
 import { getBodyPartLayers, getAllOwnedArmor } from "../../../stores/armor";
+import { getHealthClass } from "./common";
 
 export function renderEffectiveSP() {
   for (const part of BODY_PARTS) {
@@ -23,14 +24,6 @@ export function renderEffectiveSP() {
       container.appendChild(breakdown);
     }
   }
-}
-
-function getHealthClass(percent: number): string {
-  if (percent >= 100) return "health-full";
-  if (percent >= 75) return "health-good";
-  if (percent >= 50) return "health-worn";
-  if (percent >= 25) return "health-damaged";
-  return "health-critical";
 }
 
 export function renderLayers() {

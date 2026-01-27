@@ -1,5 +1,13 @@
 import { BODY_PARTS, type BodyPartName } from "../core";
 
+export function getHealthClass(percent: number): string {
+  if (percent >= 100) return "health-full";
+  if (percent >= 75) return "health-good";
+  if (percent >= 50) return "health-worn";
+  if (percent >= 25) return "health-damaged";
+  return "health-critical";
+}
+
 const PART_ABBREV: Record<BodyPartName, string> = {
   head: "H",
   torso: "T",

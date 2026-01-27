@@ -4,7 +4,7 @@ import {
   discardArmor,
 } from "../../../stores/armor";
 import { confirm, notify } from "../../ui/popover";
-import { renderBodyPartsCoverage } from "./common";
+import { renderBodyPartsCoverage, getHealthClass } from "./common";
 
 export function renderOwnedInventory() {
   const container = document.getElementById("armor-list");
@@ -38,9 +38,17 @@ export function renderOwnedInventory() {
 
     const stats = document.createElement("span");
     stats.className = "armor-sp";
-    stats.textContent = armor.ev
-      ? `${armor.spCurrent}/${armor.spMax} | EV: ${armor.ev}`
-      : `${armor.spCurrent}/${armor.spMax}`;
+
+    const healthPercent = (armor.spCurrent / armor.spMax) * 100;
+    const currentSp = document.createElement("span");
+    currentSp.className = getHealthClass(healthPercent);
+    currentSp.textContent = armor.spCurrent.toString();
+
+    stats.appendChild(currentSp);
+    stats.appendChild(document.createTextNode(`/${armor.spMax}`));
+    if (armor.ev) {
+      stats.appendChild(document.createTextNode(` | EV: ${armor.ev}`));
+    }
 
     header.appendChild(title);
     header.appendChild(stats);

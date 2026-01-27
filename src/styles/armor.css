@@ -230,8 +230,28 @@
 .armor-sp {
   font-size: 14px;
   font-weight: bold;
-  color: var(--footer);
+  color: var(--link);
   white-space: nowrap;
+}
+
+.armor-sp .health-full {
+  color: var(--link);
+}
+
+.armor-sp .health-good {
+  color: var(--accent);
+}
+
+.armor-sp .health-worn {
+  color: var(--accent-muted);
+}
+
+.armor-sp .health-damaged {
+  color: #ca4;
+}
+
+.armor-sp .health-critical {
+  color: #c44;
 }
 
 .armor-type-icon {
