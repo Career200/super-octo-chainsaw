@@ -1,4 +1,4 @@
-import { BODY_PARTS, getEffectiveSP } from "./core";
+import { BODY_PARTS, getEffectiveSP, getTotalEV } from "./core";
 import { getAllOwnedArmor, getBodyPartLayers } from "../../stores/armor";
 
 const PART_LABELS: Record<string, string> = {
@@ -35,6 +35,24 @@ export function renderArmorSummary() {
     chip.appendChild(value);
     container.appendChild(chip);
   }
+
+  const wornArmor = getAllOwnedArmor().filter((a) => a.worn);
+  const evResult = getTotalEV(getBodyPartLayers, wornArmor);
+
+  const evChip = document.createElement("div");
+  evChip.className = "summary-chip summary-chip-ev";
+
+  const evLabel = document.createElement("span");
+  evLabel.className = "label";
+  evLabel.textContent = "EV";
+
+  const evValue = document.createElement("span");
+  evValue.className = "value";
+  evValue.textContent = evResult.ev.toString();
+
+  evChip.appendChild(evLabel);
+  evChip.appendChild(evValue);
+  container.appendChild(evChip);
 }
 
 export function updateOwnedSummary() {

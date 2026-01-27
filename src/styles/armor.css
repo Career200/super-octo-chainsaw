@@ -1,7 +1,7 @@
 /* Armor Page Layout */
 .container {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
+  grid-template-columns: 240px repeat(3, 1fr);
   gap: 20px;
   padding: 20px;
   flex-grow: 1;
@@ -273,8 +273,9 @@
 
 /* Coverage Row (button + badges) */
 .armor-coverage-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-top: 6px;
@@ -418,6 +419,81 @@
 .button-hit:hover {
   background: var(--danger);
   color: #fff;
+}
+
+.button-clear {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: var(--font-ui);
+  font-family: inherit;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.button-clear:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* === Damage History === */
+.history-entry {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.history-time {
+  font-size: 11px;
+  color: var(--fg-soft);
+}
+
+.history-damage {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--danger);
+}
+
+.history-details {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.history-line {
+  color: var(--fg-soft);
+}
+
+.history-label {
+  color: var(--fg-soft);
+  opacity: 0.7;
+}
+
+.history-penetrating {
+  color: var(--danger);
+  font-weight: bold;
+}
+
+.history-blocked {
+  color: var(--accent);
+}
+
+.history-ignored {
+  color: var(--accent-muted);
+  font-style: italic;
 }
 
 .button-repair {
@@ -704,6 +780,16 @@
   }
 }
 
+/* Damage history panel - limit width on desktop */
+#damage-history-panel {
+  max-width: 240px;
+}
+
+/* Character armor panel - minimum width on desktop */
+#character-armor-panel {
+  min-width: 296px;
+}
+
 /* === Collapsible Panel (armor summary) === */
 
 /* Hidden by default on desktop */
@@ -746,6 +832,20 @@
   .panel-collapsible.expanded .armor-summary,
   .panel-collapsible.expanded .owned-summary {
     display: none;
+  }
+
+  /* Panel width resets for mobile */
+  #damage-history-panel {
+    max-width: none;
+  }
+
+  #character-armor-panel {
+    min-width: 0;
+  }
+
+  #damage-history-panel.expanded .panel-content {
+    max-height: 50vh;
+    overflow-y: auto;
   }
 
   /* Owned armor summary list */
@@ -858,5 +958,9 @@
   .summary-chip .value {
     font-weight: bold;
     color: var(--footer);
+  }
+
+  .summary-chip-ev .value {
+    color: var(--danger);
   }
 }

@@ -7,6 +7,15 @@ import '../styles/armor.css';
 <HTML title="IMI GLOBAL — TAC HOME">
   <Layout>
     <div class="container">
+      <div class="panel panel-collapsible" id="damage-history-panel">
+        <div class="panel-heading">
+          <h2>Damage History <span class="panel-count" id="history-count"></span></h2>
+          <button class="button-clear" id="btn-clear-history">Clear</button>
+        </div>
+        <div class="panel-content" id="damage-history-list"></div>
+        <div class="expand-indicator"></div>
+      </div>
+
       <!-- BODY ARMOR STATUS -->
       <div class="panel panel-collapsible expanded" id="character-armor-panel">
         <div class="panel-heading">
@@ -78,6 +87,7 @@ import '../styles/armor.css';
         <div class="panel-content" id="armor-store"></div>
         <div class="expand-indicator"></div>
       </div>
+
     </div>
   </Layout>
   <script src="../scripts/armor/index.ts"></script>

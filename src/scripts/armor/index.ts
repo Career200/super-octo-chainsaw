@@ -2,6 +2,7 @@ import { $ownedArmor } from "../../stores/armor";
 import { renderEffectiveSP, renderLayers, renderEV } from "./render/body";
 import { renderOwnedInventory } from "./render/inventory";
 import { renderShop } from "./render/shop";
+import { initHistory } from "./render/history";
 import {
   renderArmorSummary,
   updateOwnedSummary,
@@ -31,4 +32,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCollapsiblePanels();
   setupHitButton();
   setupArmorHelp();
+  initHistory();
 });

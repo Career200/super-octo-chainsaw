@@ -7,7 +7,8 @@ import {
   type ArmorPiece,
   type BodyPartName,
 } from "./core";
-import { damageArmor, getBodyPartLayers } from "../../stores/armor";
+import { damageArmor, getArmorPiece, getBodyPartLayers } from "../../stores/armor";
+import { recordDamage, type ArmorDamageEntry } from "../../stores/damage-history";
 import { createPopover, notify } from "../ui/popover";
 import {
   createSingleSelect,
@@ -326,6 +327,15 @@ export function setupHitButton() {
             `[Non-locational] ${damage} ${typeLabel} damage → ${damage} penetrating`,
           );
           console.warn(`⚠️ CHARACTER TAKES ${damage} DAMAGE (non-locational)`);
+          recordDamage({
+            rawDamage: damage,
+            damageType,
+            bodyParts: "none",
+            effectiveSP: 0,
+            armorDamage: [],
+            penetrating: damage,
+            ignoredArmor: false,
+          });
           cleanup();
           return;
         }
@@ -340,17 +350,40 @@ export function setupHitButton() {
             console.warn(
               `⚠️ CHARACTER TAKES ${damage} DAMAGE TO ${partLabel.toUpperCase()}`,
             );
+            recordDamage({
+              rawDamage: damage,
+              damageType,
+              bodyParts: [part],
+              effectiveSP: 0,
+              armorDamage: [],
+              penetrating: damage,
+              ignoredArmor: true,
+            });
             continue;
           }
 
+          const layers = getBodyPartLayers(part);
+          const effectiveSP = getEffectiveSP(layers);
           const result = applyHit(part, damage);
 
+          // Build armor damage entries for history
+          const armorDamageEntries: ArmorDamageEntry[] = Array.from(
+            result.degradation.entries(),
+          ).map(([id, sp]) => {
+            const armor = getArmorPiece(id);
+            return {
+              armorId: id,
+              armorName: armor?.name ?? id,
+              spLost: sp,
+            };
+          });
+
           if (result.degradation.size > 0) {
-            const armorDamage = Array.from(result.degradation.entries())
+            const armorDamageStr = Array.from(result.degradation.entries())
               .map(([id, sp]) => `${id}: -${sp} SP`)
               .join(", ");
             console.log(
-              `[${partLabel}] ${damage} ${typeLabel} damage → ${result.penetrating} penetrating | Armor: ${armorDamage}`,
+              `[${partLabel}] ${damage} ${typeLabel} damage → ${result.penetrating} penetrating | Armor: ${armorDamageStr}`,
             );
           } else {
             console.log(
@@ -363,6 +396,16 @@ export function setupHitButton() {
               `⚠️ CHARACTER TAKES ${result.penetrating} DAMAGE TO ${partLabel.toUpperCase()}`,
             );
           }
+
+          recordDamage({
+            rawDamage: damage,
+            damageType,
+            bodyParts: [part],
+            effectiveSP,
+            armorDamage: armorDamageEntries,
+            penetrating: result.penetrating,
+            ignoredArmor: false,
+          });
         }
       }
       cleanup();
