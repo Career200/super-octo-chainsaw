@@ -1,4 +1,4 @@
-import { BODY_PARTS, PART_NAMES, getEffectiveSP, getTotalEV } from "../core";
+import { BODY_PARTS, PART_NAMES, getEffectiveSP, getTotalEV, sortByLayerOrder } from "../core";
 import { getBodyPartLayers, getAllOwnedArmor } from "../../../stores/armor";
 import { getHealthClass } from "./common";
 
@@ -18,9 +18,10 @@ export function renderEffectiveSP() {
     container.appendChild(totalSpan);
 
     if (layers.length > 1) {
+      const sorted = sortByLayerOrder(layers);
       const breakdown = document.createElement("span");
       breakdown.className = "sp-breakdown";
-      breakdown.textContent = ` = ${layers.map((l) => l.spCurrent).join(" + ")}`;
+      breakdown.textContent = ` = ${sorted.map((l) => l.spCurrent).join(" + ")}`;
       container.appendChild(breakdown);
     }
   }
@@ -33,7 +34,9 @@ export function renderLayers() {
 
     container.innerHTML = "";
 
-    for (const layer of getBodyPartLayers(part)) {
+    const sorted = sortByLayerOrder(getBodyPartLayers(part));
+
+    for (const layer of sorted) {
       const div = document.createElement("div");
       div.className = "layer";
       div.title = `${layer.name} — ${layer.spCurrent}/${layer.spMax} SP`;

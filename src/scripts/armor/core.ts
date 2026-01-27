@@ -72,6 +72,12 @@ export interface ArmorPiece extends ArmorTemplate {
   worn: boolean;
 }
 
+export function sortByLayerOrder<T extends { spCurrent: number }>(
+  layers: T[],
+): T[] {
+  return [...layers].sort((a, b) => b.spCurrent - a.spCurrent);
+}
+
 // Calculate effective SP using proportional armor rule
 export function getEffectiveSP(layers: ArmorPiece[]): number {
   const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);

@@ -3,11 +3,12 @@ import {
   PART_ABBREV,
   PART_NAMES,
   getEffectiveSP,
+  sortByLayerOrder,
   type ArmorPiece,
   type BodyPartName,
 } from "./core";
 import { damageArmor, getBodyPartLayers } from "../../stores/armor";
-import { createPopover } from "../ui/popover";
+import { createPopover, notify } from "../ui/popover";
 
 export interface DamageResult {
   penetrating: number;
@@ -39,19 +40,16 @@ export interface DamageOptions {
  *
  * NOTE: Armor health is tracked per-body-part. A jacket hit on the arm
  * doesn't degrade the torso protection.
+ *
+ * @param activeLayers - Pre-filtered (worn, spCurrent > 0) and sorted by spCurrent desc
  */
 export function calculateDamage(
-  layers: ArmorPiece[],
+  activeLayers: ArmorPiece[],
   damage: number,
   options: DamageOptions = {},
 ): DamageResult {
   const { scaledDegradation = true } = options;
   const degradation = new Map<string, number>();
-
-  // Sort by current SP descending - highest SP is "top" layer
-  const activeLayers = layers
-    .filter((l) => l.worn && l.spCurrent > 0)
-    .sort((a, b) => b.spCurrent - a.spCurrent);
 
   if (activeLayers.length === 0) {
     return { penetrating: damage, degradation };
@@ -100,11 +98,40 @@ export function calculateDamage(
 // Apply damage to a body part and return the result
 export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   const layers = getBodyPartLayers(bodyPart);
-  const result = calculateDamage(layers, damage);
+  const activeBefore = sortByLayerOrder(
+    layers.filter((l) => l.worn && l.spCurrent > 0),
+  );
+
+  const result = calculateDamage(activeBefore, damage);
 
   // Apply degradation to each armor piece at this specific body part
   for (const [armorId, amount] of result.degradation) {
     damageArmor(armorId, bodyPart, amount);
+  }
+
+  // Check for layer flip (top layer changed)
+  if (activeBefore.length >= 2 && result.degradation.size > 0) {
+    const topBefore = activeBefore[0];
+    const activeAfter = sortByLayerOrder(
+      activeBefore
+        .map((l) => ({
+          ...l,
+          spCurrent: l.spCurrent - (result.degradation.get(l.id) ?? 0),
+        }))
+        .filter((l) => l.spCurrent > 0),
+    );
+    const topAfter = activeAfter[0];
+
+    if (topAfter && topBefore.id !== topAfter.id) {
+      const anchor = document.getElementById(`part-${bodyPart}`);
+      if (anchor) {
+        notify(anchor, {
+          message: `${topBefore.name} shredded — ${topAfter.name} taking point`,
+          type: "info",
+          duration: 6000,
+        });
+      }
+    }
   }
 
   return result;
