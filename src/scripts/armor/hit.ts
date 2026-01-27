@@ -7,8 +7,15 @@ import {
   type ArmorPiece,
   type BodyPartName,
 } from "./core";
-import { damageArmor, getArmorPiece, getBodyPartLayers } from "../../stores/armor";
-import { recordDamage, type ArmorDamageEntry } from "../../stores/damage-history";
+import {
+  damageArmor,
+  getArmorPiece,
+  getBodyPartLayers,
+} from "../../stores/armor";
+import {
+  recordDamage,
+  type ArmorDamageEntry,
+} from "../../stores/damage-history";
 import { getSkinWeaveSP, damageSkinWeave } from "../../stores/skinweave";
 import { createPopover, notify } from "../ui/popover";
 import {
@@ -55,13 +62,13 @@ const DAMAGE_TYPE_OPTIONS: SelectOption<DamageType>[] = [
     value: "edged",
     label: "Edged",
     description:
-      "Blades, knives, swords. SP to 1/2 against soft armor only. Hard armor provides full protection.",
+      "Blades, knives, swords. SP to 1/2 against soft armor only. Hard armor provides full protection. Use top layer to determine armor type",
   },
   {
     value: "mono",
     label: "Mono",
     description:
-      "Monoweapons (monomolecular edge). SP to 1/3 vs soft armor, SP to 2/3 vs hard armor. Cuts through almost anything.",
+      "Monoweapons (monomolecular edge). SP to 1/3 vs soft armor, SP to 2/3 vs hard armor (use top layer to determine armor type). Cuts through almost anything.",
   },
   {
     value: "slug",
@@ -79,7 +86,7 @@ const DAMAGE_TYPE_OPTIONS: SelectOption<DamageType>[] = [
     value: "explosive",
     label: "Explosive",
     description:
-      "Explosive/blast damage. SP to 1/3. Half penetrating damage is blunt/concussion - remove after a successful BT save(additinal check, after stun/shock (if successful)). Soft armor takes 2 SP ablation immediately; hard armor takes 1/4 its SP as ablation. Worn equipment may be damaged. Note: may imply shrapnel (1d10 to random location unless behind cover). Deafens unless Level Dampeners are employed.",
+      "Explosive/blast damage. Use 1/3 of lowest SP of all affected body parts. Half penetrating damage is blunt/concussion - remove after a successful BT save(additinal check, after stun/shock (if successful)). Soft armor takes 2 SP ablation immediately; hard armor takes 1/4 its SP as ablation. Worn equipment may be damaged. Note: may imply shrapnel (1d10 to random location unless behind cover). Deafens unless Level Dampeners are employed.",
   },
 ];
 
