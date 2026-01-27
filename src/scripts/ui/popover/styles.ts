@@ -35,7 +35,10 @@ export function injectStyles() {
     .popover-actions {
       display: flex;
       gap: 8px;
-      justify-content: flex-end;
+    }
+
+    .popover-actions .popover-btn {
+      flex: 1;
     }
 
     .popover-btn {

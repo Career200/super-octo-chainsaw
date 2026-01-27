@@ -8,6 +8,20 @@ export function getHealthClass(percent: number): string {
   return "health-critical";
 }
 
+export function findMostDamagedPart(
+  bodyParts: BodyPartName[],
+  spByPart: Partial<Record<BodyPartName, number>>,
+  maxSP: number,
+): { part: BodyPartName; sp: number } {
+  return bodyParts.reduce(
+    (worst, part) => {
+      const partSP = spByPart[part] ?? maxSP;
+      return partSP < worst.sp ? { part, sp: partSP } : worst;
+    },
+    { part: bodyParts[0], sp: spByPart[bodyParts[0]] ?? maxSP },
+  );
+}
+
 function applyDamageIndicator(element: HTMLElement, percent: number) {
   const healthClass = getHealthClass(percent);
   if (healthClass === "health-damaged" || healthClass === "health-critical") {

@@ -15,7 +15,7 @@ export function setupArmorHelp() {
       <h3>Armor Mechanics</h3>
       <section>
         <h4>Stopping Power (SP)</h4>
-        <p>SP is your armor's ability to stop damage. When hit, your armor's SP is
+        <p><strong>SP</strong> is your armor's ability to stop damage. When hit, your armor's SP is
         subtracted from the damage — the remainder hits you. If damage is less than
         your SP, you walk away clean.</p>
       </section>

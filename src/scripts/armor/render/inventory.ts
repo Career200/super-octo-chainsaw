@@ -2,9 +2,15 @@ import {
   getAllOwnedArmor,
   toggleArmor,
   discardArmor,
+  setArmorSP,
 } from "../../../stores/armor";
-import { confirm, notify } from "../../ui/popover";
-import { renderBodyPartsCoverage, getHealthClass } from "./common";
+import { confirm, notify, createPopover } from "../../ui/popover";
+import {
+  renderBodyPartsCoverage,
+  getHealthClass,
+  findMostDamagedPart,
+} from "./common";
+import { PART_ABBREV, type BodyPartName } from "../core";
 
 export function renderOwnedInventory() {
   const container = document.getElementById("armor-list");
@@ -53,7 +59,31 @@ export function renderOwnedInventory() {
     header.appendChild(title);
     header.appendChild(stats);
 
-    const coverage = renderBodyPartsCoverage(armor.bodyParts, armor.spByPart, armor.spMax);
+    const coverageRow = document.createElement("div");
+    coverageRow.className = "armor-coverage-row";
+
+    const repairBtn = document.createElement("button");
+    repairBtn.className = "button-repair";
+    repairBtn.textContent = "Repair/Break";
+    repairBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openRepairPopover(
+        repairBtn,
+        armor.id,
+        armor.spMax,
+        armor.bodyParts,
+        armor.spByPart,
+      );
+    });
+
+    const coverage = renderBodyPartsCoverage(
+      armor.bodyParts,
+      armor.spByPart,
+      armor.spMax,
+    );
+
+    coverageRow.appendChild(repairBtn);
+    coverageRow.appendChild(coverage);
 
     const actions = document.createElement("div");
     actions.className = "armor-actions";
@@ -87,8 +117,133 @@ export function renderOwnedInventory() {
     actions.appendChild(discardBtn);
 
     item.appendChild(header);
-    item.appendChild(coverage);
+    item.appendChild(coverageRow);
     item.appendChild(actions);
     container.appendChild(item);
   }
+}
+
+function openRepairPopover(
+  anchor: HTMLElement,
+  armorId: string,
+  maxSP: number,
+  bodyParts: BodyPartName[],
+  spByPart: Partial<Record<BodyPartName, number>>,
+) {
+  const { part: mostDamagedPart, sp: lowestSP } = findMostDamagedPart(
+    bodyParts,
+    spByPart,
+    maxSP,
+  );
+
+  const selectedParts = new Set<BodyPartName>([mostDamagedPart]);
+  let sp = lowestSP;
+
+  const badgeElements = new Map<BodyPartName, HTMLElement>();
+
+  const updateDisplay = () => {
+    const percent = (sp / maxSP) * 100;
+    const healthClass = getHealthClass(percent);
+
+    spValue.textContent = sp.toString();
+    spValue.className = `repair-sp-value ${healthClass}`;
+
+    popover.className = `popover popover-repair popover-repair-${healthClass}`;
+
+    minusBtn.disabled = sp <= 0;
+    plusBtn.disabled = sp >= maxSP;
+
+    for (const [part, badge] of badgeElements) {
+      badge.classList.toggle("selected", selectedParts.has(part));
+    }
+  };
+
+  const { popover, cleanup, reposition } = createPopover(anchor, {
+    className: "popover-repair",
+    backdrop: true,
+  });
+
+  const partSelector = document.createElement("div");
+  partSelector.className = "repair-part-selector";
+
+  for (const part of bodyParts) {
+    const badge = document.createElement("button");
+    badge.type = "button";
+    badge.className = "coverage-badge repair-selectable";
+    badge.textContent = PART_ABBREV[part];
+    badge.title = part.replace("_", " ");
+
+    badge.addEventListener("click", () => {
+      if (selectedParts.has(part)) {
+        if (selectedParts.size > 1) {
+          selectedParts.delete(part);
+        }
+      } else {
+        selectedParts.add(part);
+      }
+      updateDisplay();
+    });
+
+    badgeElements.set(part, badge);
+    partSelector.appendChild(badge);
+  }
+
+  const spRow = document.createElement("div");
+  spRow.className = "repair-sp-row";
+
+  const minusBtn = document.createElement("button");
+  minusBtn.type = "button";
+  minusBtn.className = "repair-btn repair-btn-minus";
+  minusBtn.textContent = "−";
+  minusBtn.addEventListener("click", () => {
+    if (sp > 0) {
+      sp--;
+      updateDisplay();
+    }
+  });
+
+  const spValue = document.createElement("span");
+  spValue.className = "repair-sp-value";
+  spValue.textContent = sp.toString();
+
+  const plusBtn = document.createElement("button");
+  plusBtn.type = "button";
+  plusBtn.className = "repair-btn repair-btn-plus";
+  plusBtn.textContent = "+";
+  plusBtn.addEventListener("click", () => {
+    if (sp < maxSP) {
+      sp++;
+      updateDisplay();
+    }
+  });
+
+  spRow.appendChild(minusBtn);
+  spRow.appendChild(spValue);
+  spRow.appendChild(plusBtn);
+
+  const actions = document.createElement("div");
+  actions.className = "popover-actions";
+
+  const dismissBtn = document.createElement("button");
+  dismissBtn.className = "popover-btn popover-btn-cancel";
+  dismissBtn.textContent = "Dismiss";
+  dismissBtn.addEventListener("click", cleanup);
+
+  const applyBtn = document.createElement("button");
+  applyBtn.className = "popover-btn popover-btn-confirm";
+  applyBtn.textContent = "Apply";
+  applyBtn.addEventListener("click", () => {
+    setArmorSP(armorId, sp, Array.from(selectedParts));
+    cleanup();
+  });
+
+  actions.appendChild(dismissBtn);
+  actions.appendChild(applyBtn);
+
+  popover.appendChild(partSelector);
+  popover.appendChild(spRow);
+  popover.appendChild(actions);
+
+  updateDisplay();
+  reposition();
 }

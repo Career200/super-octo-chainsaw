@@ -210,6 +210,30 @@ export function repairArmor(
   updateInstance(instanceId, { spByPart: newSpByPart });
 }
 
+export function setArmorSP(
+  instanceId: string,
+  sp: number,
+  parts?: BodyPartName[],
+): void {
+  const instance = $ownedArmor.get()[instanceId];
+  if (!instance) return;
+
+  const template = getTemplate(instance.templateId);
+  if (!template) return;
+
+  const clampedSP = Math.max(0, Math.min(template.spMax, sp));
+  const newSpByPart = { ...instance.spByPart };
+
+  const partsToUpdate = parts ?? template.bodyParts;
+  for (const part of partsToUpdate) {
+    if (template.bodyParts.includes(part)) {
+      newSpByPart[part] = clampedSP;
+    }
+  }
+
+  updateInstance(instanceId, { spByPart: newSpByPart });
+}
+
 // --- Actions: Reset ---
 
 export function resetOwnedArmor(): void {

@@ -271,6 +271,15 @@
   color: var(--fg-soft);
 }
 
+/* Coverage Row (button + badges) */
+.armor-coverage-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
 /* Body Parts Coverage */
 .body-parts-coverage {
   display: flex;
@@ -411,6 +420,132 @@
   color: #fff;
 }
 
+.button-repair {
+  padding: 2px 8px;
+  font-size: 12px;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  color: var(--fg-soft);
+}
+
+.button-repair:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Repair Popover */
+.popover-repair {
+  min-width: 160px;
+}
+
+.repair-sp-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.repair-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 18px;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.repair-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.repair-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.repair-sp-value {
+  font-size: 24px;
+  font-weight: bold;
+  min-width: 48px;
+  text-align: center;
+}
+
+/* Repair SP value health colors */
+.repair-sp-value.health-full {
+  color: var(--link);
+}
+
+.repair-sp-value.health-good {
+  color: var(--accent);
+}
+
+.repair-sp-value.health-worn {
+  color: var(--accent-muted);
+}
+
+.repair-sp-value.health-damaged {
+  color: #ca4;
+}
+
+.repair-sp-value.health-critical {
+  color: var(--danger);
+}
+
+/* Repair popover health-based border colors */
+.popover.popover-repair-health-full {
+  border-color: var(--link);
+}
+
+.popover.popover-repair-health-good {
+  border-color: var(--accent);
+}
+
+.popover.popover-repair-health-worn {
+  border-color: var(--accent-muted);
+}
+
+.popover.popover-repair-health-damaged {
+  border-color: #ca4;
+}
+
+.popover.popover-repair-health-critical {
+  border-color: var(--danger);
+}
+
+/* Repair part selector */
+.repair-part-selector {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.repair-selectable {
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.repair-selectable:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.repair-selectable.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
 /* Help Trigger */
 .help-trigger {
   display: inline-flex;
@@ -428,7 +563,9 @@
   font-weight: bold;
   cursor: pointer;
   vertical-align: middle;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 
 .help-trigger:hover {
@@ -437,8 +574,9 @@
 }
 
 /* Help Popover */
-.popover-help {
-  max-width: min(340px, calc(100vw - 32px));
+.popover.popover-help {
+  width: min(660px, calc(100vw - 72px));
+  max-width: none;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
 }
