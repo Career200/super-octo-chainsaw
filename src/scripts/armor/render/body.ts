@@ -1,6 +1,6 @@
 import { BODY_PARTS, PART_NAMES, getEffectiveSP, getTotalEV, sortByLayerOrder } from "../core";
 import { getBodyPartLayers, getAllOwnedArmor } from "../../../stores/armor";
-import { getHealthClass } from "./common";
+import { getHealthClassFromSP } from "./common";
 
 export function renderEffectiveSP() {
   for (const part of BODY_PARTS) {
@@ -45,9 +45,9 @@ export function renderLayers() {
       name.className = "layer-name";
       name.textContent = layer.name;
 
-      const healthPercent = (layer.spCurrent / layer.spMax) * 100;
       const healthBar = document.createElement("span");
-      healthBar.className = `layer-health ${getHealthClass(healthPercent)}`;
+      const healthPercent = (layer.spCurrent / layer.spMax) * 100;
+      healthBar.className = `layer-health ${getHealthClassFromSP(layer.spCurrent, layer.spMax)}`;
       healthBar.style.width = `${healthPercent}%`;
 
       div.appendChild(name);

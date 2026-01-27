@@ -3,11 +3,13 @@ import {
   toggleArmor,
   discardArmor,
   setArmorSP,
+  getArmorPiece,
 } from "../../../stores/armor";
+import { recordManipulation } from "../../../stores/damage-history";
 import { confirm, notify, createPopover } from "../../ui/popover";
 import {
   renderBodyPartsCoverage,
-  getHealthClass,
+  getHealthClassFromSP,
   findMostDamagedPart,
 } from "./common";
 import { PART_ABBREV, type BodyPartName } from "../core";
@@ -45,9 +47,8 @@ export function renderOwnedInventory() {
     const stats = document.createElement("span");
     stats.className = "armor-sp";
 
-    const healthPercent = (armor.spCurrent / armor.spMax) * 100;
     const currentSp = document.createElement("span");
-    currentSp.className = getHealthClass(healthPercent);
+    currentSp.className = getHealthClassFromSP(armor.spCurrent, armor.spMax);
     currentSp.textContent = armor.spCurrent.toString();
 
     stats.appendChild(currentSp);
@@ -143,8 +144,7 @@ function openRepairPopover(
   const allBadge = document.createElement("button");
 
   const updateDisplay = () => {
-    const percent = (sp / maxSP) * 100;
-    const healthClass = getHealthClass(percent);
+    const healthClass = getHealthClassFromSP(sp, maxSP);
 
     spValue.textContent = sp.toString();
     spValue.className = `repair-sp-value ${healthClass}`;
@@ -258,7 +258,22 @@ function openRepairPopover(
   applyBtn.className = "popover-btn popover-btn-confirm";
   applyBtn.textContent = "Apply";
   applyBtn.addEventListener("click", () => {
-    setArmorSP(armorId, sp, Array.from(selectedParts));
+    const armor = getArmorPiece(armorId);
+    const partsArray = Array.from(selectedParts);
+
+    const oldSP = spByPart[partsArray[0]] ?? maxSP;
+
+    if (oldSP !== sp && armor) {
+      recordManipulation({
+        armorId,
+        armorName: armor.name,
+        bodyParts: partsArray,
+        oldSP,
+        newSP: sp,
+      });
+    }
+
+    setArmorSP(armorId, sp, partsArray);
     cleanup();
   });
 
