@@ -140,6 +140,7 @@ function openRepairPopover(
   let sp = lowestSP;
 
   const badgeElements = new Map<BodyPartName, HTMLElement>();
+  const allBadge = document.createElement("button");
 
   const updateDisplay = () => {
     const percent = (sp / maxSP) * 100;
@@ -156,6 +157,11 @@ function openRepairPopover(
     for (const [part, badge] of badgeElements) {
       badge.classList.toggle("selected", selectedParts.has(part));
     }
+
+    allBadge.classList.toggle(
+      "selected",
+      selectedParts.size === bodyParts.length,
+    );
   };
 
   const { popover, cleanup, reposition } = createPopover(anchor, {
@@ -187,6 +193,25 @@ function openRepairPopover(
     badgeElements.set(part, badge);
     partSelector.appendChild(badge);
   }
+
+  allBadge.type = "button";
+  allBadge.className = "coverage-badge repair-selectable repair-all-badge";
+  allBadge.textContent = "All";
+
+  allBadge.addEventListener("click", () => {
+    const allSelected = selectedParts.size === bodyParts.length;
+    if (allSelected) {
+      selectedParts.clear();
+      selectedParts.add(mostDamagedPart);
+    } else {
+      for (const part of bodyParts) {
+        selectedParts.add(part);
+      }
+    }
+    updateDisplay();
+  });
+
+  partSelector.appendChild(allBadge);
 
   const spRow = document.createElement("div");
   spRow.className = "repair-sp-row";

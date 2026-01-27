@@ -546,6 +546,10 @@
   color: #000;
 }
 
+.repair-all-badge {
+  margin-left: 4px;
+}
+
 /* Help Trigger */
 .help-trigger {
   display: inline-flex;
