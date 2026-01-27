@@ -91,7 +91,3 @@ export function recordManipulation(
 export function clearHistory(): void {
   $damageHistory.set([]);
 }
-
-export function getHistory(): HistoryEntry[] {
-  return $damageHistory.get();
-}

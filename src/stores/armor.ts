@@ -83,7 +83,7 @@ export function getBodyPartLayers(part: BodyPartName): ArmorPiece[] {
     );
 }
 
-// --- Actions: Inventory Management ---
+// --- Actions ---
 
 // Buy/acquire a new armor piece (spawns instance from template)
 export function acquireArmor(templateId: string): ArmorInstance | null {
@@ -110,14 +110,11 @@ export function acquireArmor(templateId: string): ArmorInstance | null {
   return instance;
 }
 
-// Sell/discard an armor piece
 export function discardArmor(instanceId: string): void {
   const state = { ...$ownedArmor.get() };
   delete state[instanceId];
   $ownedArmor.set(state);
 }
-
-// --- Actions: Equip/Unequip ---
 
 export type WearResult = { success: true } | { success: false; error: string };
 
@@ -149,7 +146,7 @@ export function wearArmor(instanceId: string): WearResult {
   return { success: true };
 }
 
-export function removeArmor(instanceId: string): void {
+function removeArmor(instanceId: string): void {
   updateInstance(instanceId, { worn: false });
 }
 
@@ -164,8 +161,6 @@ export function toggleArmor(instanceId: string): WearResult {
     return wearArmor(instanceId);
   }
 }
-
-// --- Actions: Damage/Repair ---
 
 export function damageArmor(
   instanceId: string,
@@ -182,30 +177,6 @@ export function damageArmor(
     ...instance.spByPart,
     [part]: Math.max(0, currentSP - amount),
   };
-
-  updateInstance(instanceId, { spByPart: newSpByPart });
-}
-
-export function repairArmor(
-  instanceId: string,
-  part?: BodyPartName,
-  amount?: number,
-): void {
-  const instance = $ownedArmor.get()[instanceId];
-  if (!instance) return;
-
-  const template = getTemplate(instance.templateId);
-  if (!template) return;
-
-  const newSpByPart = { ...instance.spByPart };
-  const partsToRepair = part ? [part] : template.bodyParts;
-
-  for (const p of partsToRepair) {
-    const currentSP = instance.spByPart[p] ?? 0;
-    newSpByPart[p] = amount
-      ? Math.min(template.spMax, currentSP + amount)
-      : template.spMax;
-  }
 
   updateInstance(instanceId, { spByPart: newSpByPart });
 }
@@ -234,23 +205,18 @@ export function setArmorSP(
   updateInstance(instanceId, { spByPart: newSpByPart });
 }
 
-// --- Actions: Reset ---
-
-export function resetOwnedArmor(): void {
-  $ownedArmor.set({});
-}
-
-// --- Helper ---
+// --- Helpers ---
 
 function updateInstance(
   instanceId: string,
   updates: Partial<ArmorInstance>,
 ): void {
-  const current = $ownedArmor.get()[instanceId];
+  const state = $ownedArmor.get();
+  const current = state[instanceId];
   if (!current) return;
 
   $ownedArmor.set({
-    ...$ownedArmor.get(),
+    ...state,
     [instanceId]: { ...current, ...updates },
   });
 }

@@ -1,14 +1,5 @@
-import { BODY_PARTS, getEffectiveSP, getTotalEV } from "./core";
+import { BODY_PARTS, PART_ABBREV, getEffectiveSP, getTotalEV } from "./core";
 import { getAllOwnedArmor, getBodyPartLayers } from "../../stores/armor";
-
-const PART_LABELS: Record<string, string> = {
-  head: "Head",
-  torso: "Torso",
-  left_arm: "L.Arm",
-  right_arm: "R.Arm",
-  left_leg: "L.Leg",
-  right_leg: "R.Leg",
-};
 
 export function renderArmorSummary() {
   const container = document.getElementById("armor-summary");
@@ -25,7 +16,7 @@ export function renderArmorSummary() {
 
     const label = document.createElement("span");
     label.className = "label";
-    label.textContent = PART_LABELS[part] || part;
+    label.textContent = PART_ABBREV[part];
 
     const value = document.createElement("span");
     value.className = "value";
