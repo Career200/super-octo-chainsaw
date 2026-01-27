@@ -7,6 +7,7 @@ export interface CreatePopoverOptions {
 export interface PopoverInstance {
   popover: HTMLElement;
   cleanup: () => void;
+  reposition: () => void;
 }
 
 let activePopover: HTMLElement | null = null;
@@ -14,7 +15,6 @@ let activeOverlay: HTMLElement | null = null;
 
 export function createPopover(
   anchor: HTMLElement,
-  content: string,
   options: CreatePopoverOptions = {},
 ): PopoverInstance {
   closeActivePopover();
@@ -32,12 +32,11 @@ export function createPopover(
   const popover = document.createElement("div");
   popover.className = `popover ${className}`.trim();
   popover.setAttribute("popover", "manual");
-  popover.innerHTML = content;
 
   document.body.appendChild(popover);
   activePopover = popover;
 
-  positionPopover(popover, anchor);
+  const reposition = () => positionPopover(popover, anchor);
 
   let onClickOutside: ((e: MouseEvent) => void) | null = null;
 
@@ -83,7 +82,7 @@ export function createPopover(
 
   document.addEventListener("keydown", onKeydown);
 
-  return { popover, cleanup };
+  return { popover, cleanup, reposition };
 }
 
 function positionPopover(popover: HTMLElement, anchor: HTMLElement) {

@@ -10,12 +10,17 @@ export interface NotifyOptions {
 export function notify(anchor: HTMLElement, options: NotifyOptions): void {
   const { message, type = "info", duration = 3000, backdrop = false } = options;
 
-  const content = `<p class="popover-message">${message}</p>`;
-
-  const { cleanup } = createPopover(anchor, content, {
+  const { popover, cleanup, reposition } = createPopover(anchor, {
     backdrop,
     className: `popover-notify popover-notify-${type}`,
   });
+
+  const msg = document.createElement("p");
+  msg.className = "popover-message";
+  msg.textContent = message;
+  popover.appendChild(msg);
+
+  reposition();
 
   setTimeout(cleanup, duration);
 }

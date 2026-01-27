@@ -78,36 +78,6 @@ export function getEffectiveSP(layers: ArmorPiece[]): number {
   return effectiveSP;
 }
 
-// Calculate damage penetration through armor layers
-export function calculateDamage(
-  layers: ArmorPiece[],
-  damage: number,
-): { penetrating: number; degradation: Map<string, number> } {
-  const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
-  const degradation = new Map<string, number>();
-
-  const sorted = [...activeLayers].sort((a, b) => b.spCurrent - a.spCurrent);
-  let remainingDamage = damage;
-
-  for (const layer of sorted) {
-    if (remainingDamage <= 0) break;
-
-    const threshold =
-      layer.type === "soft" ? layer.spCurrent : layer.spCurrent + 1;
-
-    if (remainingDamage > threshold) {
-      degradation.set(layer.id, 1);
-      remainingDamage -= threshold;
-    } else {
-      degradation.set(layer.id, 1);
-      remainingDamage = 0;
-      break;
-    }
-  }
-
-  return { penetrating: remainingDamage, degradation };
-}
-
 // Generate unique instance ID
 export function generateId(prefix: string): string {
   const random = Math.random().toString(36).substring(2, 8);

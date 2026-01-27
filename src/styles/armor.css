@@ -224,7 +224,6 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-bottom: 4px;
 }
 
 .armor-sp {
@@ -277,13 +276,12 @@
   display: flex;
   justify-content: flex-end;
   gap: 4px;
-  margin: 4px 0;
 }
 
 .coverage-badge {
   display: inline-block;
   padding: 2px 5px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
   background: var(--bg);
   border: 1px solid var(--border-light);
@@ -393,12 +391,37 @@
   cursor: pointer;
   font-size: 13px;
   font-family: inherit;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .button-hit:hover {
   background: var(--danger);
   color: #fff;
+}
+
+/* Hit Popover Input */
+.popover-danger .popover-input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  color: var(--fg);
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.popover-danger .popover-input:focus {
+  outline: none;
+  border-color: var(--danger);
+}
+
+.popover-danger .popover-input::placeholder {
+  color: var(--fg-soft);
 }
 
 /* === Collapsible Panel (armor summary) === */

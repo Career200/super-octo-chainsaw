@@ -21,32 +21,40 @@ export function confirm(
       backdrop = true,
     } = options;
 
-    const content = `
-      <p class="popover-message">${message}</p>
-      <div class="popover-actions">
-        <button class="popover-btn popover-btn-cancel">${cancelText}</button>
-        <button class="popover-btn popover-btn-confirm">${confirmText}</button>
-      </div>
-    `;
-
-    const { popover, cleanup } = createPopover(anchor, content, {
+    const { popover, cleanup, reposition } = createPopover(anchor, {
       backdrop,
       className: `popover-${type}`,
       onDismiss: () => resolve(false),
     });
 
-    popover
-      .querySelector(".popover-btn-confirm")!
-      .addEventListener("click", () => {
-        cleanup();
-        resolve(true);
-      });
+    const msg = document.createElement("p");
+    msg.className = "popover-message";
+    msg.textContent = message;
 
-    popover
-      .querySelector(".popover-btn-cancel")!
-      .addEventListener("click", () => {
-        cleanup();
-        resolve(false);
-      });
+    const actions = document.createElement("div");
+    actions.className = "popover-actions";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "popover-btn popover-btn-cancel";
+    cancelBtn.textContent = cancelText;
+    cancelBtn.addEventListener("click", () => {
+      cleanup();
+      resolve(false);
+    });
+
+    const confirmBtn = document.createElement("button");
+    confirmBtn.className = "popover-btn popover-btn-confirm";
+    confirmBtn.textContent = confirmText;
+    confirmBtn.addEventListener("click", () => {
+      cleanup();
+      resolve(true);
+    });
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(confirmBtn);
+    popover.appendChild(msg);
+    popover.appendChild(actions);
+
+    reposition();
   });
 }
