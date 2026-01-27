@@ -7,7 +7,13 @@ export function renderShop() {
 
   container.innerHTML = "";
 
-  for (const template of Object.values(armorTemplates)) {
+  const sortedTemplates = Object.values(armorTemplates).sort((a, b) => {
+    if (a.spMax !== b.spMax) return a.spMax - b.spMax;
+    if (a.type !== b.type) return a.type === "soft" ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
+
+  for (const template of sortedTemplates) {
     const item = document.createElement("div");
     item.className = "store-item";
 
