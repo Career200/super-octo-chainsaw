@@ -8,6 +8,7 @@ import {
   setupCollapsiblePanels,
 } from "./panels";
 import { setupHitButton } from "./hit";
+import { setupArmorHelp } from "./help";
 
 function renderAll() {
   renderOwnedInventory();
@@ -29,4 +30,5 @@ document.addEventListener("DOMContentLoaded", () => {
   renderAll();
   setupCollapsiblePanels();
   setupHitButton();
+  setupArmorHelp();
 });

@@ -83,12 +83,14 @@ export function getEffectiveSP(layers: ArmorPiece[]): number {
   const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
   if (!activeLayers.length) return 0;
 
-  const sorted = [...activeLayers].sort((a, b) => a.spCurrent - b.spCurrent);
+  const sorted = [...activeLayers].sort((a, b) => b.spCurrent - a.spCurrent);
   let effectiveSP = sorted[0].spCurrent;
 
   for (let i = 1; i < sorted.length; i++) {
-    const diff = Math.abs(sorted[i].spCurrent - effectiveSP);
-    effectiveSP = sorted[i].spCurrent + proportionalArmorBonus(diff);
+    const layer = sorted[i];
+    const diff = effectiveSP - layer.spCurrent;
+    const bonus = Math.min(layer.spCurrent, proportionalArmorBonus(diff));
+    effectiveSP += bonus;
   }
 
   return effectiveSP;
