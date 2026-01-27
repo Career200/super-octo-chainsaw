@@ -39,33 +39,48 @@ $ownedArmor.subscribe((state) => {
 // --- Derived Getters ---
 
 // Merge instance with its template to get full ArmorPiece
-export function getArmorPiece(instanceId: string): ArmorPiece | null {
+export function getArmorPiece(
+  instanceId: string,
+  part?: BodyPartName,
+): ArmorPiece | null {
   const instance = $ownedArmor.get()[instanceId];
   if (!instance) return null;
 
   const template = getTemplate(instance.templateId);
   if (!template) return null;
 
+  let spCurrent: number;
+  if (part && instance.spByPart[part] !== undefined) {
+    spCurrent = instance.spByPart[part]!;
+  } else {
+    const values = Object.values(instance.spByPart).filter(
+      (v): v is number => v !== undefined,
+    );
+    spCurrent = values.length > 0 ? Math.min(...values) : 0;
+  }
+
   return {
     ...template,
     id: instance.id,
-    spCurrent: instance.spCurrent,
+    spByPart: instance.spByPart,
+    spCurrent,
     worn: instance.worn,
   };
 }
 
-// Get all owned armor as ArmorPieces
 export function getAllOwnedArmor(): ArmorPiece[] {
   return Object.keys($ownedArmor.get())
     .map((id) => getArmorPiece(id))
     .filter((piece): piece is ArmorPiece => piece !== null);
 }
 
-// Get worn armor layers for a body part
 export function getBodyPartLayers(part: BodyPartName): ArmorPiece[] {
-  return getAllOwnedArmor().filter(
-    (armor) => armor.worn && armor.bodyParts.includes(part),
-  );
+  return Object.keys($ownedArmor.get())
+    .map((id) => getArmorPiece(id, part))
+    .filter(
+      (piece): piece is ArmorPiece =>
+        piece !== null && piece.worn && piece.bodyParts.includes(part),
+    );
 }
 
 // --- Actions: Inventory Management ---
@@ -75,10 +90,15 @@ export function acquireArmor(templateId: string): ArmorInstance | null {
   const template = getTemplate(templateId);
   if (!template) return null;
 
+  const spByPart: Partial<Record<BodyPartName, number>> = {};
+  for (const part of template.bodyParts) {
+    spByPart[part] = template.spMax;
+  }
+
   const instance: ArmorInstance = {
     id: generateId(templateId),
     templateId,
-    spCurrent: template.spMax,
+    spByPart,
     worn: false,
   };
 
@@ -93,12 +113,6 @@ export function acquireArmor(templateId: string): ArmorInstance | null {
 // Sell/discard an armor piece
 export function discardArmor(instanceId: string): void {
   const state = { ...$ownedArmor.get() };
-
-  // Unequip first if worn
-  if (state[instanceId]?.worn) {
-    state[instanceId] = { ...state[instanceId], worn: false };
-  }
-
   delete state[instanceId];
   $ownedArmor.set(state);
 }
@@ -114,15 +128,20 @@ export function wearArmor(instanceId: string): WearResult {
   // Check constraints for each body part
   for (const part of armor.bodyParts) {
     const layers = getBodyPartLayers(part);
+    const partLabel = part.replace("_", " ");
 
     if (layers.length >= 3) {
-      const partLabel = part.replace("_", " ");
-      return { success: false, error: `Cannot add more than 3 layers to ${partLabel}` };
+      return {
+        success: false,
+        error: `Cannot add more than 3 layers to ${partLabel}`,
+      };
     }
 
     if (armor.type === "hard" && layers.some((l) => l.type === "hard")) {
-      const partLabel = part.replace("_", " ");
-      return { success: false, error: `Only 1 hard armor allowed per ${partLabel}` };
+      return {
+        success: false,
+        error: `Only 1 hard armor allowed per ${partLabel}`,
+      };
     }
   }
 
@@ -148,27 +167,47 @@ export function toggleArmor(instanceId: string): WearResult {
 
 // --- Actions: Damage/Repair ---
 
-export function damageArmor(instanceId: string, amount: number = 1): void {
+export function damageArmor(
+  instanceId: string,
+  part: BodyPartName,
+  amount: number = 1,
+): void {
   const instance = $ownedArmor.get()[instanceId];
   if (!instance) return;
 
-  updateInstance(instanceId, {
-    spCurrent: Math.max(0, instance.spCurrent - amount),
-  });
+  const currentSP = instance.spByPart[part];
+  if (currentSP === undefined) return;
+
+  const newSpByPart = {
+    ...instance.spByPart,
+    [part]: Math.max(0, currentSP - amount),
+  };
+
+  updateInstance(instanceId, { spByPart: newSpByPart });
 }
 
-export function repairArmor(instanceId: string, amount?: number): void {
+export function repairArmor(
+  instanceId: string,
+  part?: BodyPartName,
+  amount?: number,
+): void {
   const instance = $ownedArmor.get()[instanceId];
   if (!instance) return;
 
   const template = getTemplate(instance.templateId);
   if (!template) return;
 
-  const newSP = amount
-    ? Math.min(template.spMax, instance.spCurrent + amount)
-    : template.spMax;
+  const newSpByPart = { ...instance.spByPart };
+  const partsToRepair = part ? [part] : template.bodyParts;
 
-  updateInstance(instanceId, { spCurrent: newSP });
+  for (const p of partsToRepair) {
+    const currentSP = instance.spByPart[p] ?? 0;
+    newSpByPart[p] = amount
+      ? Math.min(template.spMax, currentSP + amount)
+      : template.spMax;
+  }
+
+  updateInstance(instanceId, { spByPart: newSpByPart });
 }
 
 // --- Actions: Reset ---

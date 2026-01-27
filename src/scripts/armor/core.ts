@@ -60,13 +60,14 @@ export interface ArmorTemplate {
 export interface ArmorInstance {
   id: string; // unique instance ID (e.g., "vest_a3f8")
   templateId: string; // references ArmorTemplate
-  spCurrent: number;
+  spByPart: Partial<Record<BodyPartName, number>>;
   worn: boolean;
 }
 
 // Merged view for rendering - template + instance state
 export interface ArmorPiece extends ArmorTemplate {
   id: string; // instance ID
+  spByPart: Partial<Record<BodyPartName, number>>;
   spCurrent: number;
   worn: boolean;
 }

@@ -53,7 +53,7 @@ export function renderOwnedInventory() {
     header.appendChild(title);
     header.appendChild(stats);
 
-    const coverage = renderBodyPartsCoverage(armor.bodyParts);
+    const coverage = renderBodyPartsCoverage(armor.bodyParts, armor.spByPart, armor.spMax);
 
     const actions = document.createElement("div");
     actions.className = "armor-actions";

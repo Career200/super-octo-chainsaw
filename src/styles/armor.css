@@ -34,7 +34,7 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--fg-soft);
   white-space: nowrap;
 }
@@ -295,6 +295,16 @@
   letter-spacing: 1px;
 }
 
+.coverage-badge.health-damaged {
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+.coverage-badge.health-critical {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 .empty-message {
   color: var(--fg-soft);
   font-style: italic;
@@ -462,10 +472,17 @@
   text-align: center;
 }
 
-.hit-body-tag:hover,
 .hit-body-tag.selected {
   border-color: var(--danger);
   color: var(--danger);
+}
+
+@media (hover: hover) {
+  /* disable hover effects on touch devices */
+  .hit-body-tag:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
 }
 
 .hit-body-tag-full {

@@ -8,23 +8,41 @@ export function getHealthClass(percent: number): string {
   return "health-critical";
 }
 
+function applyDamageIndicator(element: HTMLElement, percent: number) {
+  const healthClass = getHealthClass(percent);
+  if (healthClass === "health-damaged" || healthClass === "health-critical") {
+    element.classList.add(healthClass);
+  }
+}
+
 export function renderBodyPartsCoverage(
   bodyParts: BodyPartName[],
+  spByPart?: Partial<Record<BodyPartName, number>>,
+  spMax?: number,
 ): HTMLElement {
   const container = document.createElement("div");
   container.className = "body-parts-coverage";
 
-  const isFullBody = BODY_PARTS.every((part) => bodyParts.includes(part));
+  const isFullBody = bodyParts.length >= BODY_PARTS.length;
 
   if (isFullBody) {
     const badge = document.createElement("span");
     badge.className = "coverage-badge coverage-full";
+    // For full body, use worst part health
+    if (spByPart && spMax) {
+      const minSP = Math.min(...bodyParts.map((p) => spByPart[p] ?? spMax));
+      applyDamageIndicator(badge, (minSP / spMax) * 100);
+    }
     badge.textContent = "Full";
     container.appendChild(badge);
   } else {
     for (const part of bodyParts) {
       const badge = document.createElement("span");
       badge.className = "coverage-badge";
+      if (spByPart && spMax) {
+        const partSP = spByPart[part] ?? spMax;
+        applyDamageIndicator(badge, (partSP / spMax) * 100);
+      }
       badge.textContent = PART_ABBREV[part];
       badge.title = part.replaceAll("_", " ");
       container.appendChild(badge);
