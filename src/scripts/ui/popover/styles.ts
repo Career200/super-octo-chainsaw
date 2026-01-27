@@ -93,7 +93,7 @@ export function injectStyles() {
     }
 
     .popover-notify-error .popover-message {
-      color: #f88;
+      color: var(--danger-hover, #f88);
     }
 
     .popover-notify-success {

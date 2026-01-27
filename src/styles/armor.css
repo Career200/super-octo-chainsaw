@@ -159,23 +159,19 @@
 }
 
 .layer-health.health-full {
-  background: var(--link);
+  background: var(--health-full);
 }
-
 .layer-health.health-good {
-  background: var(--accent);
+  background: var(--health-good);
 }
-
 .layer-health.health-worn {
-  background: var(--accent-muted);
+  background: var(--health-worn);
 }
-
 .layer-health.health-damaged {
-  background: #ca4;
+  background: var(--health-damaged);
 }
-
 .layer-health.health-critical {
-  background: var(--danger);
+  background: var(--health-critical);
 }
 
 /* SP Display */
@@ -234,23 +230,19 @@
 }
 
 .armor-sp .health-full {
-  color: var(--link);
+  color: var(--health-full);
 }
-
 .armor-sp .health-good {
-  color: var(--accent);
+  color: var(--health-good);
 }
-
 .armor-sp .health-worn {
-  color: var(--accent-muted);
+  color: var(--health-worn);
 }
-
 .armor-sp .health-damaged {
-  color: #ca4;
+  color: var(--health-damaged);
 }
-
 .armor-sp .health-critical {
-  color: var(--danger);
+  color: var(--health-critical);
 }
 
 .armor-type-icon {
@@ -306,13 +298,13 @@
 }
 
 .coverage-badge.health-damaged {
-  border-color: var(--warning);
-  color: var(--warning);
+  border-color: var(--health-damaged);
+  color: var(--health-damaged);
 }
 
 .coverage-badge.health-critical {
-  border-color: var(--danger);
-  color: var(--danger);
+  border-color: var(--health-critical);
+  color: var(--health-critical);
 }
 
 .empty-message {
@@ -350,7 +342,8 @@
   border: none;
 }
 
-.button-discard {
+.button-discard,
+.button-take {
   background: transparent;
   border: 1px solid var(--border-light);
   color: var(--fg-soft);
@@ -359,6 +352,11 @@
 .button-discard:hover {
   border-color: var(--danger);
   color: var(--danger);
+}
+
+.button-take:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .button-buy {
@@ -371,60 +369,21 @@
   background: var(--accent);
 }
 
-.armor-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.armor-actions button {
-  flex: 1;
-}
-
+.armor-actions,
 .store-actions {
   display: flex;
   gap: 8px;
   margin-top: 8px;
 }
 
+.armor-actions button,
 .store-actions button {
   flex: 1;
 }
 
-.button-take {
-  background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--fg-soft);
-}
-
-.button-take:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.button-hit {
-  background: transparent;
-  border: 1px solid var(--danger);
-  color: var(--danger);
-  padding: 4px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: var(--font-ui);
-  font-family: inherit;
-  transition:
-    background 0.15s,
-    color 0.15s;
-}
-
-.button-hit:hover {
-  background: var(--danger);
-  color: #fff;
-}
-
+.button-hit,
 .button-clear {
   background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--fg-soft);
   padding: 4px 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -434,6 +393,21 @@
     background 0.15s,
     border-color 0.15s,
     color 0.15s;
+}
+
+.button-hit {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.button-hit:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.button-clear {
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
 }
 
 .button-clear:hover {
@@ -501,23 +475,19 @@
 }
 
 .history-entry-manipulation.health-full {
-  border-left-color: var(--link);
+  border-left-color: var(--health-full);
 }
-
 .history-entry-manipulation.health-good {
-  border-left-color: var(--accent);
+  border-left-color: var(--health-good);
 }
-
 .history-entry-manipulation.health-worn {
-  border-left-color: var(--accent-muted);
+  border-left-color: var(--health-worn);
 }
-
 .history-entry-manipulation.health-damaged {
-  border-left-color: #ca4;
+  border-left-color: var(--health-damaged);
 }
-
 .history-entry-manipulation.health-critical {
-  border-left-color: var(--danger);
+  border-left-color: var(--health-critical);
 }
 
 .history-repair {
@@ -594,44 +564,36 @@
 
 /* Repair SP value health colors */
 .repair-sp-value.health-full {
-  color: var(--link);
+  color: var(--health-full);
 }
-
 .repair-sp-value.health-good {
-  color: var(--accent);
+  color: var(--health-good);
 }
-
 .repair-sp-value.health-worn {
-  color: var(--accent-muted);
+  color: var(--health-worn);
 }
-
 .repair-sp-value.health-damaged {
-  color: #ca4;
+  color: var(--health-damaged);
 }
-
 .repair-sp-value.health-critical {
-  color: var(--danger);
+  color: var(--health-critical);
 }
 
 /* Repair popover health-based border colors */
 .popover.popover-repair-health-full {
-  border-color: var(--link);
+  border-color: var(--health-full);
 }
-
 .popover.popover-repair-health-good {
-  border-color: var(--accent);
+  border-color: var(--health-good);
 }
-
 .popover.popover-repair-health-worn {
-  border-color: var(--accent-muted);
+  border-color: var(--health-worn);
 }
-
 .popover.popover-repair-health-damaged {
-  border-color: #ca4;
+  border-color: var(--health-damaged);
 }
-
 .popover.popover-repair-health-critical {
-  border-color: var(--danger);
+  border-color: var(--health-critical);
 }
 
 /* Repair part selector */
