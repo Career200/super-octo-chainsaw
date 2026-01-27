@@ -35,6 +35,15 @@ export const PART_NAMES: Record<BodyPartName, string> = {
   right_leg: "Right Leg",
 };
 
+export const PART_ABBREV: Record<BodyPartName, string> = {
+  head: "H",
+  torso: "T",
+  left_arm: "LA",
+  right_arm: "RA",
+  left_leg: "LL",
+  right_leg: "RL",
+};
+
 // Static template - defines what an armor type IS
 export interface ArmorTemplate {
   templateId: string;

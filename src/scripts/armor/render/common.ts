@@ -1,4 +1,4 @@
-import { BODY_PARTS, type BodyPartName } from "../core";
+import { BODY_PARTS, PART_ABBREV, type BodyPartName } from "../core";
 
 export function getHealthClass(percent: number): string {
   if (percent >= 100) return "health-full";
@@ -7,15 +7,6 @@ export function getHealthClass(percent: number): string {
   if (percent >= 25) return "health-damaged";
   return "health-critical";
 }
-
-const PART_ABBREV: Record<BodyPartName, string> = {
-  head: "H",
-  torso: "T",
-  left_arm: "LA",
-  right_arm: "RA",
-  left_leg: "LL",
-  right_leg: "RL",
-};
 
 export function renderBodyPartsCoverage(
   bodyParts: BodyPartName[],

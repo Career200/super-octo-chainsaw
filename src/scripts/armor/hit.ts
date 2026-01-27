@@ -1,4 +1,4 @@
-import type { ArmorPiece, BodyPartName } from "./core";
+import { BODY_PARTS, PART_ABBREV, type ArmorPiece, type BodyPartName } from "./core";
 import { damageArmor, getBodyPartLayers } from "../../stores/armor";
 import { createPopover } from "../ui/popover";
 
@@ -38,10 +38,7 @@ export function calculateDamage(
 }
 
 // Apply damage to a body part and return the result
-export function applyHit(
-  bodyPart: BodyPartName,
-  damage: number,
-): DamageResult {
+export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   const layers = getBodyPartLayers(bodyPart);
   const result = calculateDamage(layers, damage);
 
@@ -51,6 +48,96 @@ export function applyHit(
   }
 
   return result;
+}
+
+
+function createBodyPartSelector(): {
+  element: HTMLElement;
+  getSelected: () => BodyPartName[];
+} {
+  const selected = new Set<BodyPartName>();
+
+  const container = document.createElement("div");
+  container.className = "hit-body-selector";
+
+  const updateFullState = () => {
+    const fullTag = container.querySelector('[data-part="full"]');
+    if (!fullTag) return;
+
+    const allSelected = BODY_PARTS.every((p) => selected.has(p));
+    fullTag.classList.toggle("selected", allSelected);
+  };
+
+  const createTag = (part: BodyPartName | "full") => {
+    const tag = document.createElement("button");
+    tag.type = "button";
+    tag.className = "hit-body-tag";
+    tag.dataset.part = part;
+    tag.textContent = part === "full" ? "FULL" : PART_ABBREV[part];
+
+    if (part === "full") {
+      tag.classList.add("hit-body-tag-full");
+    }
+
+    tag.addEventListener("click", () => {
+      if (part === "full") {
+        const allSelected = BODY_PARTS.every((p) => selected.has(p));
+        if (allSelected) {
+          // Deselect all
+          selected.clear();
+          container
+            .querySelectorAll(".hit-body-tag")
+            .forEach((t) => t.classList.remove("selected"));
+        } else {
+          // Select all
+          BODY_PARTS.forEach((p) => selected.add(p));
+          container
+            .querySelectorAll(".hit-body-tag:not(.hit-body-tag-full)")
+            .forEach((t) => t.classList.add("selected"));
+          tag.classList.add("selected");
+        }
+      } else {
+        if (selected.has(part)) {
+          selected.delete(part);
+          tag.classList.remove("selected");
+        } else {
+          selected.add(part);
+          tag.classList.add("selected");
+        }
+        updateFullState();
+      }
+    });
+
+    return tag;
+  };
+
+  // Build grid layout: . H . / LA T RA / LL FULL RL
+  const row1 = document.createElement("div");
+  row1.className = "hit-body-row";
+  row1.appendChild(document.createElement("span")); // empty
+  row1.appendChild(createTag("head"));
+  row1.appendChild(document.createElement("span")); // empty
+
+  const row2 = document.createElement("div");
+  row2.className = "hit-body-row";
+  row2.appendChild(createTag("left_arm"));
+  row2.appendChild(createTag("torso"));
+  row2.appendChild(createTag("right_arm"));
+
+  const row3 = document.createElement("div");
+  row3.className = "hit-body-row";
+  row3.appendChild(createTag("left_leg"));
+  row3.appendChild(createTag("full"));
+  row3.appendChild(createTag("right_leg"));
+
+  container.appendChild(row1);
+  container.appendChild(row2);
+  container.appendChild(row3);
+
+  return {
+    element: container,
+    getSelected: () => Array.from(selected),
+  };
 }
 
 // Setup the "I'm hit" button
@@ -63,19 +150,28 @@ export function setupHitButton() {
 
     const { popover, cleanup, reposition } = createPopover(btn, {
       backdrop: true,
-      className: "popover-danger",
+      className: "popover-danger popover-hit",
     });
 
-    const msg = document.createElement("p");
-    msg.className = "popover-message";
-    msg.textContent = "How much damage?";
+    // Body part selector
+    const selectorLabel = document.createElement("p");
+    selectorLabel.className = "popover-message";
+    selectorLabel.textContent = "Where?";
+
+    const { element: selector, getSelected } = createBodyPartSelector();
+
+    // Damage input
+    const inputLabel = document.createElement("p");
+    inputLabel.className = "popover-message";
+    inputLabel.textContent = "How much?";
 
     const input = document.createElement("input");
     input.type = "number";
     input.className = "popover-input";
-    input.placeholder = "Enter damage amount";
+    input.placeholder = "Damage";
     input.min = "0";
 
+    // Actions
     const actions = document.createElement("div");
     actions.className = "popover-actions";
 
@@ -86,12 +182,13 @@ export function setupHitButton() {
 
     const confirmBtn = document.createElement("button");
     confirmBtn.className = "popover-btn popover-btn-confirm";
-    confirmBtn.textContent = "Apply Damage";
+    confirmBtn.textContent = "Apply";
     confirmBtn.addEventListener("click", () => {
       const damage = parseInt(input.value, 10);
-      if (!isNaN(damage) && damage > 0) {
-        // TODO: select body part and apply damage
-        console.log("Damage to apply:", damage);
+      const parts = getSelected();
+      if (!isNaN(damage) && damage > 0 && parts.length > 0) {
+        // TODO: apply damage to selected body parts
+        console.log("Damage:", damage, "Parts:", parts);
       }
       cleanup();
     });
@@ -105,7 +202,10 @@ export function setupHitButton() {
 
     actions.appendChild(cancelBtn);
     actions.appendChild(confirmBtn);
-    popover.appendChild(msg);
+
+    popover.appendChild(selectorLabel);
+    popover.appendChild(selector);
+    popover.appendChild(inputLabel);
     popover.appendChild(input);
     popover.appendChild(actions);
 

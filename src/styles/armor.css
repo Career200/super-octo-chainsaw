@@ -424,6 +424,55 @@
   color: var(--fg-soft);
 }
 
+/* Hit Popover Body Part Selector */
+.popover-hit {
+  min-width: 220px;
+}
+
+.hit-body-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.hit-body-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  justify-items: center;
+}
+
+.hit-body-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+  font-family: inherit;
+  min-width: 32px;
+  text-align: center;
+}
+
+.hit-body-tag:hover,
+.hit-body-tag.selected {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.hit-body-tag-full {
+  padding: 4px 12px;
+  letter-spacing: 1px;
+}
+
 /* === Collapsible Panel (armor summary) === */
 
 /* Hidden by default on desktop */
