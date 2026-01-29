@@ -10,11 +10,11 @@
 /* Global transition for interactive feedback (avoids layout properties to prevent thrashing) */
 .container * {
   transition:
-    color 0.15s,
-    background-color 0.15s,
-    border-color 0.15s,
-    opacity 0.15s,
-    transform 0.2s;
+    color var(--transition-speed),
+    background-color var(--transition-speed),
+    border-color var(--transition-speed),
+    opacity var(--transition-speed),
+    transform var(--transition-speed);
 }
 
 /* Panels */
@@ -250,7 +250,7 @@
   bottom: 0;
   height: 3px;
   background: var(--health-color);
-  transition: width 0.2s ease;
+  transition: width var(--transition-speed);
 }
 
 /* SkinWeave layer - visually distinct */

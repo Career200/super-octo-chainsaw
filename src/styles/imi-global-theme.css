@@ -35,6 +35,7 @@
 
   --status-busy: #ff0000;
   --status-mixed: #ffff00;
+  --status-online: #00ff00;
 
   --selection-bg: #00ffcc44;
 
@@ -59,6 +60,16 @@
 
   /* Popover width constraint */
   --popover-max-width: calc(100vw - 72px);
+
+  /* Typography */
+  --font-mono: "Courier New", monospace;
+
+  /* Transitions */
+  --transition-speed: 0.2s;
+
+  /* Glow effects */
+  --glow-accent: 0 0 8px var(--accent);
+  --glow-green: 0 0 8px var(--border-green);
 }
 
 .box {
@@ -104,7 +115,6 @@ h2 {
 
 h4 {
   margin: 0;
-  padding: 1rem 0;
   color: var(--fg);
 }
 
@@ -149,8 +159,33 @@ ul {
 }
 
 .redacted {
+  user-select: none;
   background-color: var(--bg-black);
   color: var(--bg-black);
   border-radius: 2px;
   padding: 0 0.2em;
+}
+
+/* Overlay scrollbars - Firefox */
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-muted) transparent;
+  }
+}
+
+/* Overlay scrollbars - Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }

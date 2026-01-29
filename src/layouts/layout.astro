@@ -9,12 +9,15 @@ const links = {
   team: baseString + 'team',
   messages: baseString + 'messages',
   logistics: baseString + 'logistics',
-  sa558: baseString + 'contracts/sa558'
+  sa558: baseString + 'contracts/sa558',
+  armor: baseString + 'armor'
 };
 ---
 
 <main>
-  <slot />
+  <div class="page-scroll">
+    <slot />
+  </div>
   <footer>
     <div class="box">
       <div class="box col">
@@ -23,7 +26,10 @@ const links = {
       </div>
       <Sidebar id="tacticalNav" buttonClass="nav-toggle" buttonText="≡">
         <ul>
+          <div class="box col">
+
           <li><a href={links.home}>Home</a></li>
+
           <li>
             <span>Available documents</span>
             <ul>
@@ -45,6 +51,15 @@ const links = {
               </li>
             </ul>
           </li>
+          <li>
+            <span>Operational</span>
+            <ul>
+              <li><a href="#"><span class="reconnect">reconnect...</span> Biomon</a></li>
+              <li><a href={links.armor}>Armor</a></li>
+              <li><a href="#">Weapons</a></li>
+            </ul>
+          </li>
+          </div>
         </ul>
       </Sidebar>
     </div>
