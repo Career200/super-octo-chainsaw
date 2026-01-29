@@ -20,7 +20,11 @@ export function getLowestSP(
   return Math.min(...bodyParts.map((p) => spByPart[p] ?? maxSP));
 }
 
-function applyDamageIndicator(element: HTMLElement, current: number, max: number) {
+function applyDamageIndicator(
+  element: HTMLElement,
+  current: number,
+  max: number,
+) {
   const healthClass = getHealthClassFromSP(current, max);
   if (healthClass === "health-damaged" || healthClass === "health-critical") {
     element.classList.add(healthClass);
@@ -36,15 +40,11 @@ export function renderBodyPartsCoverage(
   container.className = "body-parts-coverage";
 
   const isFullBody = bodyParts.length >= BODY_PARTS.length;
+  const useFullShorthand = isFullBody && !spByPart;
 
-  if (isFullBody) {
+  if (useFullShorthand) {
     const badge = document.createElement("span");
     badge.className = "coverage-badge coverage-full";
-    // For full body, use worst part health
-    if (spByPart && spMax) {
-      const minSP = Math.min(...bodyParts.map((p) => spByPart[p] ?? spMax));
-      applyDamageIndicator(badge, minSP, spMax);
-    }
     badge.textContent = "Full";
     container.appendChild(badge);
   } else {

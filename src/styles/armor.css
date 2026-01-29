@@ -154,7 +154,6 @@
   font-size: 11px;
   background: transparent;
   border: 1px solid var(--border-light);
-  border-radius: 3px;
   color: var(--fg-soft);
   cursor: pointer;
   font-family: inherit;
@@ -475,7 +474,6 @@
 .button-repair {
   padding: 2px 8px;
   font-size: 12px;
-  border-radius: 3px;
 }
 
 .button-buy {
@@ -502,15 +500,11 @@
 
 .button-hit,
 .button-clear {
-  background: transparent;
   padding: 4px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: var(--font-ui);
-  font-family: inherit;
 }
 
 .button-hit {
+  background: transparent;
   border: 1px solid var(--danger);
   color: var(--danger);
 }
@@ -601,12 +595,9 @@
   height: 32px;
   padding: 0;
   border: 1px solid var(--border-light);
-  border-radius: 4px;
   background: var(--bg);
   color: var(--fg);
   font-size: 18px;
-  font-family: inherit;
-  cursor: pointer;
 }
 
 .repair-btn:hover:not(:disabled) {
@@ -647,10 +638,6 @@
   background: var(--accent);
   border-color: var(--accent);
   color: #000;
-}
-
-.repair-all-badge {
-  margin-left: 4px;
 }
 
 /* Help Trigger */
@@ -805,10 +792,6 @@
 /* Implants Popover */
 .popover-implants {
   width: min(400px, var(--popover-max-width));
-}
-
-.popover-implants .armor-item {
-  margin-bottom: 8px;
 }
 
 .popover-implants .armor-item:last-child {

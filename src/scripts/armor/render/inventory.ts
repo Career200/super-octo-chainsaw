@@ -51,14 +51,11 @@ function renderArmorItem(
 
   const coverageRow = document.createElement("div");
   coverageRow.className = "armor-coverage-row";
-
-  const repairBtn = document.createElement("button");
-  repairBtn.className = "button-repair";
-  repairBtn.textContent = "Repair/Break";
-  repairBtn.addEventListener("click", (e) => {
+  coverageRow.style.cursor = "pointer";
+  coverageRow.addEventListener("click", (e) => {
     e.stopPropagation();
     openRepairPopover(
-      repairBtn,
+      coverageRow,
       armor.id,
       armor.spMax,
       armor.bodyParts,
@@ -66,13 +63,17 @@ function renderArmorItem(
     );
   });
 
+  const repairLabel = document.createElement("span");
+  repairLabel.className = "button-repair";
+  repairLabel.textContent = "Repair/Break";
+
   const coverage = renderBodyPartsCoverage(
     armor.bodyParts,
     armor.spByPart,
     armor.spMax,
   );
 
-  coverageRow.appendChild(repairBtn);
+  coverageRow.appendChild(repairLabel);
   coverageRow.appendChild(coverage);
 
   item.appendChild(header);
@@ -161,12 +162,12 @@ function openRepairPopover(
   bodyParts: BodyPartName[],
   spByPart: Partial<Record<BodyPartName, number>>,
 ) {
-  // Default to all parts selected, starting at lowest SP
-  const selectedParts = new Set<BodyPartName>(bodyParts);
+  let selected: BodyPartName | "all" = "all";
   let sp = getLowestSP(bodyParts, spByPart, maxSP);
 
   const badgeElements = new Map<BodyPartName, HTMLElement>();
-  const allBadge = document.createElement("button");
+
+  const getSelectedParts = () => (selected === "all" ? bodyParts : [selected]);
 
   const updateDisplay = () => {
     const healthClass = getHealthClassFromSP(sp, maxSP);
@@ -180,13 +181,18 @@ function openRepairPopover(
     plusBtn.disabled = sp >= maxSP;
 
     for (const [part, badge] of badgeElements) {
-      badge.classList.toggle("selected", selectedParts.has(part));
+      badge.classList.toggle("selected", selected === part);
     }
+    allBadge.classList.toggle("selected", selected === "all");
+  };
 
-    allBadge.classList.toggle(
-      "selected",
-      selectedParts.size === bodyParts.length,
-    );
+  const selectPart = (part: BodyPartName | "all") => {
+    selected = part;
+    sp =
+      part === "all"
+        ? getLowestSP(bodyParts, spByPart, maxSP)
+        : (spByPart[part] ?? maxSP);
+    updateDisplay();
   };
 
   const { popover, cleanup, reposition } = createPopover(anchor, {
@@ -203,42 +209,34 @@ function openRepairPopover(
     badge.className = "coverage-badge repair-selectable";
     badge.textContent = PART_ABBREV[part];
     badge.title = part.replace("_", " ");
-
-    badge.addEventListener("click", () => {
-      if (selectedParts.has(part)) {
-        if (selectedParts.size > 1) {
-          selectedParts.delete(part);
-        }
-      } else {
-        selectedParts.add(part);
-      }
-      updateDisplay();
-    });
+    badge.addEventListener("click", () => selectPart(part));
 
     badgeElements.set(part, badge);
     partSelector.appendChild(badge);
   }
 
+  const allBadge = document.createElement("button");
   allBadge.type = "button";
-  allBadge.className = "coverage-badge repair-selectable repair-all-badge";
+  allBadge.className = "coverage-badge repair-selectable";
   allBadge.textContent = "All";
-
-  allBadge.addEventListener("click", () => {
-    // Only select all, don't toggle - user can manually deselect parts
-    for (const part of bodyParts) {
-      selectedParts.add(part);
-    }
-    updateDisplay();
-  });
-
+  allBadge.addEventListener("click", () => selectPart("all"));
   partSelector.appendChild(allBadge);
 
   const spRow = document.createElement("div");
   spRow.className = "repair-sp-row";
 
+  const minBtn = document.createElement("button");
+  minBtn.type = "button";
+  minBtn.className = "repair-btn";
+  minBtn.textContent = "0";
+  minBtn.addEventListener("click", () => {
+    sp = 0;
+    updateDisplay();
+  });
+
   const minusBtn = document.createElement("button");
   minusBtn.type = "button";
-  minusBtn.className = "repair-btn repair-btn-minus";
+  minusBtn.className = "repair-btn";
   minusBtn.textContent = "−";
   minusBtn.addEventListener("click", () => {
     if (sp > 0) {
@@ -253,7 +251,7 @@ function openRepairPopover(
 
   const plusBtn = document.createElement("button");
   plusBtn.type = "button";
-  plusBtn.className = "repair-btn repair-btn-plus";
+  plusBtn.className = "repair-btn";
   plusBtn.textContent = "+";
   plusBtn.addEventListener("click", () => {
     if (sp < maxSP) {
@@ -262,9 +260,20 @@ function openRepairPopover(
     }
   });
 
+  const maxBtn = document.createElement("button");
+  maxBtn.type = "button";
+  maxBtn.className = "repair-btn repair-btn-edge";
+  maxBtn.textContent = maxSP.toString();
+  maxBtn.addEventListener("click", () => {
+    sp = maxSP;
+    updateDisplay();
+  });
+
+  spRow.appendChild(minBtn);
   spRow.appendChild(minusBtn);
   spRow.appendChild(spValue);
   spRow.appendChild(plusBtn);
+  spRow.appendChild(maxBtn);
 
   const actions = document.createElement("div");
   actions.className = "popover-actions";
@@ -279,8 +288,7 @@ function openRepairPopover(
   applyBtn.textContent = "Apply";
   applyBtn.addEventListener("click", () => {
     const armor = getArmorPiece(armorId);
-    const partsArray = Array.from(selectedParts);
-
+    const partsArray = getSelectedParts();
     const oldSP = spByPart[partsArray[0]] ?? maxSP;
 
     if (oldSP !== sp && armor) {
