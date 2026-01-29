@@ -3,9 +3,7 @@ const { id, buttonText, buttonClass } = Astro.props;
 ---
 
 <style>
-  html {
-    scrollbar-gutter: stable; /* prevent layout shift */
-  }
+
   body:has(dialog[open]) {
     overflow: hidden;
   }

@@ -11,8 +11,6 @@ export default [
       sourceType: "module",
     },
     rules: {
-      "no-console": "warn",
-      "no-debugger": "warn",
       "no-unused-vars": "off", // Disabled in favor of @typescript-eslint/no-unused-vars
     },
   },

@@ -29,14 +29,47 @@
   --code-bg: #1c1e22;
   --link: #00f0ff;
 
+  --warning: #ca4;
+  --danger: #c44;
+  --danger-hover: #e55;
+
   --status-busy: #ff0000;
   --status-mixed: #ffff00;
+  --status-online: #00ff00;
 
   --selection-bg: #00ffcc44;
 
   --message-border: #00ff99;
   --message-border-muted: #00ffcc2e;
   --message-border-hover: #009a7b2e;
+
+  /* UI font sizes */
+  --font-ui: 13px;
+  --font-ui-sm: 11px;
+  --font-ui-xs: 10px;
+
+  /* Health state colors */
+  --health-full: var(--link);
+  --health-good: var(--accent);
+  --health-worn: var(--accent-muted);
+  --health-damaged: var(--warning);
+  --health-critical: var(--danger);
+
+  /* Health state utility - set by health-* classes */
+  --health-color: var(--health-full);
+
+  /* Popover width constraint */
+  --popover-max-width: calc(100vw - 72px);
+
+  /* Typography */
+  --font-mono: "Courier New", monospace;
+
+  /* Transitions */
+  --transition-speed: 0.2s;
+
+  /* Glow effects */
+  --glow-accent: 0 0 8px var(--accent);
+  --glow-green: 0 0 8px var(--border-green);
 }
 
 .box {
@@ -82,7 +115,6 @@ h2 {
 
 h4 {
   margin: 0;
-  padding: 1rem 0;
   color: var(--fg);
 }
 
@@ -127,8 +159,33 @@ ul {
 }
 
 .redacted {
+  user-select: none;
   background-color: var(--bg-black);
   color: var(--bg-black);
   border-radius: 2px;
   padding: 0 0.2em;
+}
+
+/* Overlay scrollbars - Firefox */
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-muted) transparent;
+  }
+}
+
+/* Overlay scrollbars - Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }

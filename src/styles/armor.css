@@ -1,0 +1,927 @@
+/* Armor Page Layout */
+.container {
+  display: grid;
+  grid-template-columns: 240px repeat(3, 1fr);
+  gap: 12px;
+  padding: 18px;
+  flex-grow: 1;
+}
+
+/* Global transition for interactive feedback (avoids layout properties to prevent thrashing) */
+.container * {
+  transition:
+    color var(--transition-speed),
+    background-color var(--transition-speed),
+    border-color var(--transition-speed),
+    opacity var(--transition-speed),
+    transform var(--transition-speed);
+}
+
+/* Panels */
+.panel {
+  overflow-y: auto;
+  max-height: calc(100vh - 40px - 75px - 10px);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.panel-heading h2 {
+  color: var(--accent);
+  flex: 1;
+}
+
+.armor-legend {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+.armor-legend .armor-type-icon {
+  transform: scale(1.5);
+  margin: 0 2px 0 6px;
+}
+
+/* Body Grid */
+.body-grid {
+  display: grid;
+  grid-template-areas:
+    "sw head implants"
+    "larm torso rarm"
+    "lleg ev rleg";
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.skinweave-display,
+.implants-display,
+.ev-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border: 1px dashed var(--border-light);
+  border-radius: 6px;
+  padding: 10px;
+  min-height: 80px;
+}
+
+.skinweave-display {
+  grid-area: sw;
+}
+.implants-display {
+  grid-area: implants;
+}
+.ev-display {
+  grid-area: ev;
+}
+
+.skinweave-display.installed,
+.implants-display.has-implants {
+  border-style: solid;
+  border-color: var(--accent-muted);
+}
+
+.implants-display {
+  cursor: pointer;
+}
+
+.implants-display:hover {
+  border-color: var(--accent-muted);
+}
+
+.skinweave-label,
+.implants-label,
+.ev-label {
+  font-size: 14px;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.ev-label {
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.skinweave-desc,
+.implants-desc {
+  font-size: 11px;
+  color: var(--fg-soft);
+  opacity: 0.8;
+  text-align: justify;
+  line-height: 1.3;
+}
+
+.skinweave-desc {
+  margin-bottom: 12px;
+}
+
+.skinweave-select {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  color: var(--fg);
+  font-size: 14px;
+  font-family: inherit;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.skinweave-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.skinweave-repair {
+  margin-top: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.skinweave-repair:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.implants-list {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--fg-soft);
+  text-align: center;
+}
+
+.body-part {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.body-part h3 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+#part-head {
+  grid-area: head;
+}
+#part-torso {
+  grid-area: torso;
+}
+#part-left_arm {
+  grid-area: larm;
+}
+#part-right_arm {
+  grid-area: rarm;
+}
+#part-left_leg {
+  grid-area: lleg;
+}
+#part-right_leg {
+  grid-area: rleg;
+}
+
+.ev-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--fg-soft);
+}
+
+.ev-display.has-penalty .ev-value {
+  color: var(--danger);
+}
+
+.ev-layer-penalty {
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  font-size: 10px;
+  color: var(--fg-soft);
+  text-align: center;
+}
+
+/* Armor Layers */
+.layer-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layer {
+  position: relative;
+  background: var(--bg);
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.layer-name {
+  position: relative;
+  z-index: 1;
+}
+
+.layer-health {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--health-color);
+  transition: width var(--transition-speed);
+}
+
+/* SkinWeave layer - visually distinct */
+.layer.layer-skinweave {
+  background: var(--bg-alt);
+  border: 1px dashed var(--accent-muted);
+  opacity: 0.8;
+}
+
+.layer.layer-skinweave .layer-name {
+  font-style: italic;
+  color: var(--accent-muted);
+}
+
+.sp-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--footer);
+}
+
+.sp-total {
+  color: var(--footer);
+}
+
+.sp-breakdown {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--fg-soft), white 33%);
+}
+
+/* === Health State Utilities === */
+.health-full {
+  --health-color: var(--health-full);
+}
+.health-good {
+  --health-color: var(--health-good);
+}
+.health-worn {
+  --health-color: var(--health-worn);
+}
+.health-damaged {
+  --health-color: var(--health-damaged);
+}
+.health-critical {
+  --health-color: var(--health-critical);
+}
+
+.armor-sp [class*="health-"],
+.repair-sp-value[class*="health-"] {
+  color: var(--health-color);
+}
+
+.coverage-badge.health-damaged,
+.coverage-badge.health-critical {
+  border-color: var(--health-color);
+  color: var(--health-color);
+}
+
+.history-entry-manipulation[class*="health-"] {
+  border-left-color: var(--health-color);
+}
+
+.popover.popover-repair-health-full {
+  border-color: var(--health-full);
+}
+.popover.popover-repair-health-good {
+  border-color: var(--health-good);
+}
+.popover.popover-repair-health-worn {
+  border-color: var(--health-worn);
+}
+.popover.popover-repair-health-damaged {
+  border-color: var(--health-damaged);
+}
+.popover.popover-repair-health-critical {
+  border-color: var(--health-critical);
+}
+
+/* === Card Bases (shared) === */
+.armor-item,
+.store-item,
+.history-entry {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.armor-item.armor-worn {
+  border-color: var(--accent);
+}
+
+.armor-item h4,
+.store-item h4 {
+  margin: 0;
+  color: var(--accent);
+}
+
+.store-item h4 {
+  color: var(--link);
+}
+
+/* Header row: title + SP */
+.armor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.armor-sp {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--link);
+  white-space: nowrap;
+}
+
+.armor-type-icon {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+  margin-left: 4px;
+  bottom: 3px;
+  font-size: 10px;
+  color: var(--terminal-green-bright);
+  transform: scale(2.5);
+  transform-origin: center;
+}
+
+.armor-stats {
+  font-size: var(--font-ui);
+  color: var(--fg-soft);
+}
+
+/* Coverage Row (button + badges) */
+.armor-coverage-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Body Parts Coverage */
+.body-parts-coverage {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.coverage-badge {
+  display: inline-block;
+  padding: 2px 5px;
+  font-size: var(--font-ui);
+  font-weight: bold;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+}
+
+.coverage-badge.coverage-full {
+  padding: 2px 12px;
+  letter-spacing: 1px;
+}
+
+.empty-message {
+  color: var(--fg-soft);
+  font-style: italic;
+}
+
+/* === Buttons === */
+.container button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: var(--font-ui);
+  font-family: inherit;
+}
+
+.button-wear {
+  background: var(--accent-muted);
+  color: var(--fg);
+  border: none;
+}
+
+.button-wear:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+.button-remove {
+  background: var(--accent);
+  color: #000;
+  border: none;
+}
+
+.button-discard,
+.button-take,
+.button-clear,
+.button-repair {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
+}
+
+.button-discard:hover,
+.button-clear:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.button-take:hover,
+.button-repair:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.button-repair {
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.button-buy {
+  background: var(--link);
+  color: #000;
+  border: none;
+}
+
+.button-buy:hover {
+  background: var(--accent);
+}
+
+.armor-actions,
+.store-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.armor-actions button,
+.store-actions button {
+  flex: 1;
+}
+
+.button-hit,
+.button-clear {
+  padding: 4px 12px;
+}
+
+.button-hit {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.button-hit:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* === Damage History === */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.history-time {
+  font-size: 11px;
+  color: var(--fg-soft);
+}
+
+.history-damage {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--danger);
+}
+
+.history-details {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.history-line {
+  color: var(--fg-soft);
+}
+
+.history-label {
+  color: var(--fg-soft);
+  opacity: 0.7;
+}
+
+.history-penetrating {
+  color: var(--danger);
+  font-weight: bold;
+}
+
+.history-blocked {
+  color: var(--accent);
+}
+
+.history-ignored {
+  color: var(--accent-muted);
+  font-style: italic;
+}
+
+.history-entry-manipulation {
+  border-left: 3px solid var(--border-light);
+}
+
+.history-repair {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--link);
+}
+
+.history-break {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--accent-muted);
+}
+
+/* Repair Popover */
+.popover-repair {
+  min-width: 160px;
+}
+
+.repair-sp-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.repair-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 18px;
+}
+
+.repair-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.repair-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.repair-sp-value {
+  font-size: 24px;
+  font-weight: bold;
+  min-width: 48px;
+  text-align: center;
+}
+
+/* Repair part selector */
+.repair-part-selector {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.repair-selectable {
+  cursor: pointer;
+}
+
+.repair-selectable:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.repair-selectable.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+/* Help Trigger */
+.help-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  padding: 0;
+  border: 1px solid var(--fg-soft);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--fg-soft);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.help-trigger:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* === Popovers === */
+.popover.popover-help {
+  width: min(660px, var(--popover-max-width));
+  max-width: none;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.popover-help h3 {
+  margin: 0 0 12px 0;
+  color: var(--accent);
+  font-size: 15px;
+}
+
+.popover-help section {
+  margin-bottom: 12px;
+}
+
+.popover-help section:last-child {
+  margin-bottom: 0;
+}
+
+.popover-help h4 {
+  margin: 0 0 4px 0;
+  color: var(--fg);
+  font-size: var(--font-ui);
+}
+
+.popover-help p {
+  margin: 0;
+  color: var(--fg-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.popover-help strong {
+  color: var(--fg);
+}
+
+.popover-help blockquote {
+  margin: 16px 0 0 0;
+  padding: 8px 12px;
+  border-left: 2px solid var(--border-light);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--fg-soft);
+  line-height: 1.5;
+}
+
+.popover-help blockquote cite {
+  display: block;
+  margin-top: 4px;
+  font-style: normal;
+  opacity: 0.7;
+}
+
+/* Hit Popover Input */
+.popover-danger .popover-input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  color: var(--fg);
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.popover-danger .popover-input:focus {
+  outline: none;
+  border-color: var(--danger);
+}
+
+.popover-danger .popover-input::placeholder {
+  color: var(--fg-soft);
+}
+
+/* Hit Popover Body Part Selector */
+.hit-body-select .select-options {
+  justify-items: center;
+  gap: 3px;
+  grid-template-columns: auto auto auto;
+}
+
+.hit-body-select .select-option {
+  min-width: 32px;
+  padding: 4px 8px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: var(--font-ui);
+}
+
+.hit-body-select .select-option-ignoresp {
+  font-size: var(--font-ui-xs);
+  padding: 4px 6px;
+  letter-spacing: 0.3px;
+}
+
+/* Hit Popover */
+.popover-hit {
+  width: min(360px, var(--popover-max-width));
+}
+
+.popover-hit .select-option.selected {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+/* Hover styles only for pointer devices - prevents sticky hover on touch */
+@media (hover: hover) {
+  .popover-hit .select-option:hover:not(.selected) {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}
+
+/* Implants Popover */
+.popover-implants {
+  width: min(400px, var(--popover-max-width));
+}
+
+.popover-implants .armor-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Implant Group in Owned Inventory */
+.implant-group {
+  margin-bottom: 12px;
+  padding: 8px;
+  border: 1px dashed var(--accent-muted);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.implant-group-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-muted);
+  margin-bottom: 8px;
+}
+
+.implant-group .armor-item {
+  background: var(--bg-alt);
+}
+
+.implant-group .armor-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Damage history panel - limit width on desktop */
+#damage-history-panel {
+  max-width: 222px;
+}
+
+/* Character armor panel - minimum width on desktop */
+#character-armor-panel {
+  min-width: 300px;
+}
+
+/* Hidden by default on desktop */
+.expand-indicator {
+  display: none;
+}
+
+/* === Responsive: Below 1024px === */
+@media (max-width: 1023px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .panel {
+    max-height: none;
+  }
+
+  /* Collapsible panels */
+  .panel-collapsible {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .panel-collapsible .body-grid,
+  .panel-collapsible .panel-content {
+    display: none;
+  }
+
+  /* Panel width resets for mobile */
+  #damage-history-panel {
+    max-width: none;
+  }
+
+  #character-armor-panel {
+    min-width: 0;
+  }
+
+  #damage-history-panel.expanded .panel-content {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .panel-collapsible.expanded .body-grid {
+    display: grid;
+  }
+
+  .panel-collapsible.expanded .panel-content {
+    display: block;
+  }
+
+  .panel-collapsible.expanded {
+    cursor: default;
+  }
+
+  /* Expand indicator */
+  .panel-collapsible .expand-indicator {
+    display: block;
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+  }
+
+  .panel-collapsible .expand-indicator::before,
+  .panel-collapsible .expand-indicator::after {
+    content: "";
+    position: absolute;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
+  /* Chevron down icon */
+  .panel-collapsible .expand-indicator::before {
+    width: 10px;
+    height: 2px;
+    top: 9px;
+    left: 1px;
+    transform: rotate(45deg);
+  }
+
+  .panel-collapsible .expand-indicator::after {
+    width: 10px;
+    height: 2px;
+    top: 9px;
+    right: 1px;
+    transform: rotate(-45deg);
+  }
+
+  .panel-collapsible:hover .expand-indicator {
+    opacity: 1;
+  }
+
+  .panel-collapsible.expanded .expand-indicator {
+    transform: rotate(180deg);
+  }
+}

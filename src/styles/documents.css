@@ -5,17 +5,13 @@
 }
 
 .document {
-  flex-grow: 1;
   padding: 2rem;
   max-width: 960px;
   width: 85%;
-  min-height: 100%;
-  margin: 0 auto;
+  margin: 2rem auto;
   line-height: 1.6;
   font-size: 1rem;
   background-color: var(--bg-alt);
   border: 1px solid var(--border-light);
-  box-shadow: 0 0 8px var(--accent-muted);
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  box-shadow: var(--glow-accent);
 }

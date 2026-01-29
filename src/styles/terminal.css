@@ -7,14 +7,14 @@
   max-width: 524px;
   background-color: var(--bg-black);
   color: var(--terminal-green);
-  font-family: "Courier New", Courier, monospace;
+  font-family: var(--font-mono);
   font-size: clamp(0.52rem, 2.1vw, 13px);
   line-height: 1.4;
   padding: 1rem;
   border: 2px solid var(--border-green);
   border-radius: 4px;
   overflow-x: auto;
-  box-shadow: 0 0 8px var(--border-green);
+  box-shadow: var(--glow-green);
   position: relative;
   margin: 32px auto;
 }
