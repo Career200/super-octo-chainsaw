@@ -7,6 +7,11 @@
   flex-grow: 1;
 }
 
+/* Global transition for interactive feedback (avoids layout properties to prevent thrashing) */
+.container * {
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s, opacity 0.15s, transform 0.2s;
+}
+
 /* Panels */
 .panel {
   overflow-y: auto;
@@ -88,7 +93,6 @@
 
 .implants-display {
   cursor: pointer;
-  transition: border-color 0.15s;
 }
 
 .implants-display:hover {
@@ -427,10 +431,6 @@
   cursor: pointer;
   font-size: var(--font-ui);
   font-family: inherit;
-  transition:
-    background 0.15s,
-    color 0.15s,
-    border-color 0.15s;
 }
 
 .button-wear {
@@ -507,10 +507,6 @@
   cursor: pointer;
   font-size: var(--font-ui);
   font-family: inherit;
-  transition:
-    background 0.15s,
-    border-color 0.15s,
-    color 0.15s;
 }
 
 .button-hit {
@@ -610,9 +606,6 @@
   font-size: 18px;
   font-family: inherit;
   cursor: pointer;
-  transition:
-    border-color 0.15s,
-    color 0.15s;
 }
 
 .repair-btn:hover:not(:disabled) {
@@ -642,10 +635,6 @@
 
 .repair-selectable {
   cursor: pointer;
-  transition:
-    border-color 0.15s,
-    color 0.15s,
-    background 0.15s;
 }
 
 .repair-selectable:hover {
@@ -680,9 +669,6 @@
   font-weight: bold;
   cursor: pointer;
   vertical-align: middle;
-  transition:
-    border-color 0.15s,
-    color 0.15s;
 }
 
 .help-trigger:hover {
@@ -807,6 +793,7 @@
   color: #fff;
 }
 
+/* Hover styles only for pointer devices - prevents sticky hover on touch */
 @media (hover: hover) {
   .popover-hit .select-option:hover:not(.selected) {
     border-color: var(--danger);
@@ -862,11 +849,7 @@
   min-width: 300px;
 }
 
-/* === Collapsible Panel (armor summary) === */
-
 /* Hidden by default on desktop */
-.armor-summary,
-.owned-summary,
 .expand-indicator {
   display: none;
 }
@@ -889,20 +872,8 @@
     cursor: pointer;
   }
 
-  .panel-collapsible .armor-summary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
   .panel-collapsible .body-grid,
   .panel-collapsible .panel-content {
-    display: none;
-  }
-
-  .panel-collapsible.expanded .armor-summary,
-  .panel-collapsible.expanded .owned-summary {
     display: none;
   }
 
@@ -918,22 +889,6 @@
   #damage-history-panel.expanded .panel-content {
     max-height: 50vh;
     overflow-y: auto;
-  }
-
-  .owned-summary {
-    display: block;
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--fg-soft);
-    line-height: 1.4;
-  }
-
-  .owned-summary .owned-worn {
-    color: color-mix(in srgb, var(--fg-soft), white 33%);
-  }
-
-  .owned-summary .owned-stashed {
-    color: color-mix(in srgb, var(--fg-soft), black 33%);
   }
 
   .panel-collapsible.expanded .body-grid {
@@ -957,9 +912,6 @@
     width: 20px;
     height: 20px;
     opacity: 0.5;
-    transition:
-      opacity 0.2s,
-      transform 0.2s;
   }
 
   .panel-collapsible .expand-indicator::before,
@@ -993,30 +945,5 @@
 
   .panel-collapsible.expanded .expand-indicator {
     transform: rotate(180deg);
-  }
-
-  /* Summary chips */
-  .summary-chip {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: var(--code-bg);
-    border: 1px solid var(--border-light);
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 12px;
-  }
-
-  .summary-chip .label {
-    color: var(--fg-soft);
-  }
-
-  .summary-chip .value {
-    font-weight: bold;
-    color: var(--footer);
-  }
-
-  .summary-chip-ev .value {
-    color: var(--danger);
   }
 }

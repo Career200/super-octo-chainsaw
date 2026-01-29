@@ -4,11 +4,7 @@ import { renderOwnedInventory } from "./inventory";
 import { renderShop } from "./shop";
 import { initHistory } from "./history";
 import { setupSkinweave, setupImplants, renderSkinweave } from "./cyberware";
-import {
-  renderArmorSummary,
-  updateOwnedSummary,
-  setupCollapsiblePanels,
-} from "./panels";
+import { setupCollapsiblePanels } from "./panels";
 import { setupHitButton } from "./hit-popover";
 import { setupArmorHelp } from "../help";
 
@@ -18,8 +14,6 @@ function renderAll() {
   renderEffectiveSP();
   renderLayers();
   renderEV();
-  renderArmorSummary();
-  updateOwnedSummary();
   renderSkinweave();
 }
 
