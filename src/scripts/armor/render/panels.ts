@@ -22,9 +22,7 @@ export function renderArmorSummary() {
     const layers = getBodyPartLayers(part);
     const implants = getImplantsForPart(part);
 
-    const implantSP = implants.map((i) => i.spByPart[part] ?? 0);
-
-    const total = getEffectiveSP(layers, { implantSP });
+    const total = getEffectiveSP(layers, { implants, part });
 
     const chip = document.createElement("div");
     chip.className = "summary-chip";

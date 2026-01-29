@@ -63,6 +63,14 @@ function renderDamageEntry(entry: DamageHistoryEntry): HTMLElement {
     details.appendChild(ignored);
   }
 
+  // Top protector (which armor saved you)
+  if (entry.topProtector && entry.effectiveSP > 0) {
+    const protectorLine = document.createElement("div");
+    protectorLine.className = "history-line";
+    protectorLine.innerHTML = `<span class="history-label">Protected by:</span> ${entry.topProtector}`;
+    details.appendChild(protectorLine);
+  }
+
   // Armor degradation
   if (entry.armorDamage.length > 0) {
     const armorLine = document.createElement("div");

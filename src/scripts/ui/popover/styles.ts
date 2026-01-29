@@ -103,6 +103,17 @@ export function injectStyles() {
     .popover-notify-success .popover-message {
       color: var(--accent, #00ffcc);
     }
+
+    .popover-notify-warning {
+      border-color: #f0a500;
+      border-width: 2px;
+      box-shadow: 0 0 12px rgba(240, 165, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .popover-notify-warning .popover-message {
+      color: #f0a500;
+      font-weight: 500;
+    }
   `;
   document.head.appendChild(style);
 }

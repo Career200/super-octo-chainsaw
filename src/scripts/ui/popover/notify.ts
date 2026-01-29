@@ -2,7 +2,7 @@ import { createPopover } from "./base";
 
 export interface NotifyOptions {
   message: string;
-  type?: "error" | "info" | "success";
+  type?: "error" | "info" | "success" | "warning";
   duration?: number;
   backdrop?: boolean;
 }

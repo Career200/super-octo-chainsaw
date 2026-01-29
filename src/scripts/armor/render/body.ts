@@ -2,6 +2,7 @@ import {
   BODY_PARTS,
   PART_NAMES,
   getEffectiveSP,
+  getImplantSP,
   getTotalEV,
   sortByLayerOrder,
 } from "../core";
@@ -23,9 +24,7 @@ export function renderEffectiveSP() {
     const layers = getBodyPartLayers(part);
     const implants = getImplantsForPart(part);
 
-    const implantSP = implants.map((i) => i.spByPart[part] ?? 0);
-
-    const total = getEffectiveSP(layers, { implantSP });
+    const total = getEffectiveSP(layers, { implants, part });
 
     container.innerHTML = "";
 
@@ -34,16 +33,23 @@ export function renderEffectiveSP() {
     totalSpan.textContent = total.toString();
     container.appendChild(totalSpan);
 
-    // Show breakdown if multiple sources
+    // Show breakdown if multiple sources (in layer order)
     const sorted = sortByLayerOrder(layers);
-    const sourceCount = sorted.length + implants.length;
+    const plating = implants.filter((i) => i.layer === "plating");
+    const skinweave = implants.filter((i) => isSkinweave(i));
+    const subdermal = implants.filter((i) => i.layer === "subdermal");
+
+    const activeImplants = [...plating, ...skinweave, ...subdermal].filter(
+      (i) => getImplantSP(i, part) > 0,
+    );
+    const sourceCount = sorted.length + activeImplants.length;
     const hasMultipleSources = sourceCount > 1;
 
     if (hasMultipleSources) {
-      // Order: worn armor, then implants (plating, skinweave, subdermal)
+      // Order: worn armor (by SP), plating, skinweave, subdermal
       const spParts = [
         ...sorted.map((l) => l.spCurrent),
-        ...implantSP.filter((sp) => sp > 0),
+        ...activeImplants.map((i) => getImplantSP(i, part)),
       ];
       const breakdown = document.createElement("span");
       breakdown.className = "sp-breakdown";

@@ -1,20 +1,16 @@
-import { $ownedArmor } from "../../stores/armor";
-import { renderEffectiveSP, renderLayers, renderEV } from "./render/body";
-import { renderOwnedInventory } from "./render/inventory";
-import { renderShop } from "./render/shop";
-import { initHistory } from "./render/history";
-import {
-  setupSkinweave,
-  setupImplants,
-  renderSkinweave,
-} from "./render/cyberware";
+import { $ownedArmor } from "../../../stores/armor";
+import { renderEffectiveSP, renderLayers, renderEV } from "./body";
+import { renderOwnedInventory } from "./inventory";
+import { renderShop } from "./shop";
+import { initHistory } from "./history";
+import { setupSkinweave, setupImplants, renderSkinweave } from "./cyberware";
 import {
   renderArmorSummary,
   updateOwnedSummary,
   setupCollapsiblePanels,
-} from "./render/panels";
-import { setupHitButton } from "./hit";
-import { setupArmorHelp } from "./help";
+} from "./panels";
+import { setupHitButton } from "./hit-popover";
+import { setupArmorHelp } from "../help";
 
 function renderAll() {
   renderOwnedInventory();

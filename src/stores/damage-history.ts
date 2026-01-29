@@ -16,6 +16,7 @@ export interface DamageHistoryEntry {
   damageType: DamageType;
   bodyParts: BodyPartName[] | "none";
   effectiveSP: number;
+  topProtector?: string;
   armorDamage: ArmorDamageEntry[];
   penetrating: number;
   ignoredArmor: boolean;

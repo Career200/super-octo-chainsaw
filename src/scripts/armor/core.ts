@@ -82,32 +82,34 @@ export function sortByLayerOrder<T extends { spCurrent: number }>(
 }
 
 export interface EffectiveSPOptions {
-  implantSP?: number[];
+  implants?: ArmorPiece[];
+  part?: BodyPartName;
+}
+
+export function getImplantSP(implant: ArmorPiece, part?: BodyPartName): number {
+  return part ? (implant.spByPart[part] ?? 0) : implant.spCurrent;
 }
 
 // Calculate effective SP using proportional armor rule
-// Layer order: worn armor -> implants (plating, skinweave, subdermal)
+// All layers sorted by SP (highest first) - strongest layer provides base protection
+// Armor degradation is handled by layers, top to bottom
 export function getEffectiveSP(
   layers: ArmorPiece[],
   options: EffectiveSPOptions = {},
 ): number {
-  const { implantSP = [] } = options;
+  const { implants = [], part } = options;
 
   const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
-  const activeImplants = implantSP.filter((sp) => sp > 0);
+  const activeImplants = implants.filter((i) => getImplantSP(i, part) > 0);
 
-  const hasAnyProtection = activeLayers.length > 0 || activeImplants.length > 0;
-
-  if (!hasAnyProtection) return 0;
+  if (activeLayers.length === 0 && activeImplants.length === 0) {
+    return 0;
+  }
 
   const allSP: number[] = [
-    ...activeLayers.map((l) => l.spCurrent).sort((a, b) => b - a), // worn armor sorted by SP
-    ...activeImplants.sort((a, b) => b - a), // implants sorted by SP
-  ];
-
-  if (allSP.length === 0) return 0;
-
-  allSP.sort((a, b) => b - a);
+    ...activeLayers.map((l) => l.spCurrent),
+    ...activeImplants.map((i) => getImplantSP(i, part)),
+  ].sort((a, b) => b - a);
 
   let effectiveSP = allSP[0];
 
