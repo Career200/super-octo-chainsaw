@@ -9,7 +9,12 @@
 
 /* Global transition for interactive feedback (avoids layout properties to prevent thrashing) */
 .container * {
-  transition: color 0.15s, background-color 0.15s, border-color 0.15s, opacity 0.15s, transform 0.2s;
+  transition:
+    color 0.15s,
+    background-color 0.15s,
+    border-color 0.15s,
+    opacity 0.15s,
+    transform 0.2s;
 }
 
 /* Panels */
@@ -333,10 +338,6 @@
   border-radius: 6px;
   padding: 8px;
   margin-bottom: 8px;
-}
-
-.history-entry {
-  padding: 8px 10px;
 }
 
 .armor-item.armor-worn {
