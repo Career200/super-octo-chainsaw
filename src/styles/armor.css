@@ -747,7 +747,7 @@
 .hit-body-select .select-options {
   justify-items: center;
   gap: 3px;
-  grid-template-columns: auto auto auto auto auto;
+  grid-template-columns: auto auto auto;
 }
 
 .hit-body-select .select-option {
@@ -756,12 +756,6 @@
   text-align: center;
   text-transform: uppercase;
   font-size: var(--font-ui);
-}
-
-.hit-body-select .select-option-all,
-.hit-body-select .select-option-none {
-  font-size: var(--font-ui-sm);
-  padding: 4px 10px;
 }
 
 .hit-body-select .select-option-ignoresp {

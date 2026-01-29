@@ -18,23 +18,12 @@ import {
   type ArmorDamageEntry,
 } from "../../../stores/damage-history";
 import { createPopover } from "../../ui/popover";
-import {
-  createSingleSelect,
-  createMultiSelect,
-  type SelectOption,
-} from "../../ui/select";
-
-const BODY_PART_OPTIONS: SelectOption<BodyPartName>[] = BODY_PARTS.map(
-  (part) => ({
-    value: part,
-    label: PART_ABBREV[part],
-  }),
-);
+import { createSingleSelect } from "../../ui/select";
 
 const BODY_PART_GRID = `
-  "all . head . none"
-  ". left_arm torso right_arm ."
-  ". left_leg ignoresp right_leg ."
+  ". head ignoresp"
+  "left_arm torso right_arm"
+  "left_leg . right_leg"
 `;
 
 function createBodyPartSelector(): {
@@ -44,20 +33,39 @@ function createBodyPartSelector(): {
   isIgnoreSP: () => boolean;
 } {
   let ignoreSP = false;
+  let selected: BodyPartName | null = "head";
 
-  const multiSelect = createMultiSelect<BodyPartName>({
-    options: BODY_PART_OPTIONS,
-    defaultValue: ["head"],
-    showAllButton: true,
-    allButtonLabel: "Full",
-    showNoneButton: true,
-    noneButtonLabel: "None",
-    noneDeselectValue: "head",
-    gridTemplateAreas: BODY_PART_GRID,
-    allGridArea: "all",
-    noneGridArea: "none",
-    className: "hit-body-select",
-  });
+  const wrapper = document.createElement("div");
+  wrapper.className = "select-wrapper hit-body-select";
+
+  const container = document.createElement("div");
+  container.className = "select-options";
+  container.style.display = "grid";
+  container.style.gridTemplateAreas = BODY_PART_GRID;
+  container.style.gap = "4px";
+
+  const updateUI = () => {
+    for (const part of BODY_PARTS) {
+      const btn = container.querySelector(`[data-value="${part}"]`);
+      btn?.classList.toggle("selected", selected === part);
+    }
+  };
+
+  for (const part of BODY_PARTS) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "select-option";
+    btn.dataset.value = part;
+    btn.textContent = PART_ABBREV[part];
+    btn.style.gridArea = part;
+
+    btn.addEventListener("click", () => {
+      selected = selected === part ? null : part;
+      updateUI();
+    });
+
+    container.appendChild(btn);
+  }
 
   const ignoreSPBtn = document.createElement("button");
   ignoreSPBtn.type = "button";
@@ -69,14 +77,15 @@ function createBodyPartSelector(): {
     ignoreSP = !ignoreSP;
     ignoreSPBtn.classList.toggle("selected", ignoreSP);
   });
+  container.appendChild(ignoreSPBtn);
 
-  const container = multiSelect.element.querySelector(".select-options");
-  container?.appendChild(ignoreSPBtn);
+  wrapper.appendChild(container);
+  updateUI();
 
   return {
-    element: multiSelect.element,
-    getSelected: () => multiSelect.getSelected(),
-    isNoneSelected: () => multiSelect.isNoneSelected(),
+    element: wrapper,
+    getSelected: () => (selected ? [selected] : []),
+    isNoneSelected: () => selected === null,
     isIgnoreSP: () => ignoreSP,
   };
 }
