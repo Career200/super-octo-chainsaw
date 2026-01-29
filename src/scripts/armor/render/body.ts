@@ -11,12 +11,8 @@ import {
   getImplantsForPart,
   getInstalledImplants,
   isImplant,
+  isSkinweave,
 } from "../../../stores/armor";
-import {
-  getSkinWeaveSP,
-  getSkinWeaveLevel,
-  isSkinWeaveInstalled,
-} from "../../../stores/skinweave";
 import { getHealthClassFromSP } from "./common";
 
 export function renderEffectiveSP() {
@@ -26,23 +22,10 @@ export function renderEffectiveSP() {
 
     const layers = getBodyPartLayers(part);
     const implants = getImplantsForPart(part);
-    const skinWeaveSP = getSkinWeaveSP(part);
 
-    // Separate plating and subdermal
-    const plating = implants.filter((i) => i.layer === "plating");
-    const subdermal = implants.filter((i) => i.layer === "subdermal");
+    const implantSP = implants.map((i) => i.spByPart[part] ?? 0);
 
-    const platingSP = plating.map((i) => i.spByPart[part] ?? 0);
-    const subdermalSP = subdermal.reduce(
-      (sum, i) => sum + (i.spByPart[part] ?? 0),
-      0,
-    );
-
-    const total = getEffectiveSP(layers, {
-      platingSP,
-      skinWeaveSP,
-      subdermalSP,
-    });
+    const total = getEffectiveSP(layers, { implantSP });
 
     container.innerHTML = "";
 
@@ -53,25 +36,15 @@ export function renderEffectiveSP() {
 
     // Show breakdown if multiple sources
     const sorted = sortByLayerOrder(layers);
-    const sourceCount =
-      sorted.length +
-      plating.length +
-      subdermal.length +
-      (skinWeaveSP > 0 ? 1 : 0);
+    const sourceCount = sorted.length + implants.length;
     const hasMultipleSources = sourceCount > 1;
 
     if (hasMultipleSources) {
-      // Order: worn armor, plating, skinweave, subdermal
+      // Order: worn armor, then implants (plating, skinweave, subdermal)
       const spParts = [
         ...sorted.map((l) => l.spCurrent),
-        ...platingSP,
+        ...implantSP.filter((sp) => sp > 0),
       ];
-      if (skinWeaveSP > 0) {
-        spParts.push(skinWeaveSP);
-      }
-      if (subdermalSP > 0) {
-        spParts.push(subdermalSP);
-      }
       const breakdown = document.createElement("span");
       breakdown.className = "sp-breakdown";
       breakdown.textContent = ` = ${spParts.join(" + ")}`;
@@ -105,8 +78,6 @@ function renderLayerDiv(
 }
 
 export function renderLayers() {
-  const hasSkinWeave = isSkinWeaveInstalled();
-
   for (const part of BODY_PARTS) {
     const container = document.getElementById(`layers-${part}`);
     if (!container) continue;
@@ -115,7 +86,10 @@ export function renderLayers() {
 
     const sorted = sortByLayerOrder(getBodyPartLayers(part));
     const implants = getImplantsForPart(part);
+
+    // Separate implants by layer type for ordering
     const plating = implants.filter((i) => i.layer === "plating");
+    const skinweave = implants.filter((i) => isSkinweave(i));
     const subdermal = implants.filter((i) => i.layer === "subdermal");
 
     // 1. Worn armor (sorted by SP)
@@ -139,11 +113,15 @@ export function renderLayers() {
     }
 
     // 3. SkinWeave
-    if (hasSkinWeave) {
-      const skinWeaveSP = getSkinWeaveSP(part);
-      const skinWeaveLevel = getSkinWeaveLevel();
+    for (const implant of skinweave) {
+      const currentSP = implant.spByPart[part] ?? 0;
       container.appendChild(
-        renderLayerDiv("SkinWeave", skinWeaveSP, skinWeaveLevel, "layer-skinweave"),
+        renderLayerDiv(
+          "SkinWeave",
+          currentSP,
+          implant.spMax,
+          "layer-skinweave",
+        ),
       );
     }
 

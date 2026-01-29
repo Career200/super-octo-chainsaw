@@ -3,15 +3,14 @@ import {
   PART_ABBREV,
   getEffectiveSP,
   getTotalEV,
-} from "./core";
+} from "../core";
 import {
   getAllOwnedArmor,
   getBodyPartLayers,
   getImplantsForPart,
   getInstalledImplants,
   isImplant,
-} from "../../stores/armor";
-import { getSkinWeaveSP } from "../../stores/skinweave";
+} from "../../../stores/armor";
 
 export function renderArmorSummary() {
   const container = document.getElementById("armor-summary");
@@ -21,19 +20,11 @@ export function renderArmorSummary() {
 
   for (const part of BODY_PARTS) {
     const layers = getBodyPartLayers(part);
-    const skinWeaveSP = getSkinWeaveSP(part);
     const implants = getImplantsForPart(part);
 
-    const plating = implants.filter((i) => i.layer === "plating");
-    const subdermal = implants.filter((i) => i.layer === "subdermal");
+    const implantSP = implants.map((i) => i.spByPart[part] ?? 0);
 
-    const platingSP = plating.map((i) => i.spByPart[part] ?? 0);
-    const subdermalSP = subdermal.reduce(
-      (sum, i) => sum + (i.spByPart[part] ?? 0),
-      0,
-    );
-
-    const total = getEffectiveSP(layers, { platingSP, skinWeaveSP, subdermalSP });
+    const total = getEffectiveSP(layers, { implantSP });
 
     const chip = document.createElement("div");
     chip.className = "summary-chip";

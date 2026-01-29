@@ -300,6 +300,29 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
   // IMPLANTS (Cyberware)
   // ===================
 
+  // --- SKINWEAVE ---
+  skinweave_8: template("skinweave_8", "SkinWeave SP 8", "soft", 8, fullWithHead, {
+    layer: "skinweave",
+    description:
+      "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+  }),
+  skinweave_10: template("skinweave_10", "SkinWeave SP 10", "soft", 10, fullWithHead, {
+    layer: "skinweave",
+    description:
+      "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+  }),
+  skinweave_12: template("skinweave_12", "SkinWeave SP 12", "soft", 12, fullWithHead, {
+    layer: "skinweave",
+    description:
+      "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+  }),
+  skinweave_14: template("skinweave_14", "SkinWeave SP 14", "soft", 14, fullWithHead, {
+    layer: "skinweave",
+    description:
+      "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+  }),
+
+  // --- OTHER IMPLANTS ---
   subdermal: template("subdermal", "Subdermal Armor", "soft", 18, torso, {
     layer: "subdermal",
     description:

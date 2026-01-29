@@ -28,7 +28,7 @@ import '../styles/armor.css';
         <div class="body-grid">
           <div class="skinweave-display" id="skinweave-display">
             <span class="skinweave-label">SkinWeave</span>
-            <span class="skinweave-desc">covers all body parts, always calculated as bottom layer</span>
+            <span class="skinweave-desc">covers all body parts, always calculated as bottom layer, <i>does not count toward 3-layer limit</i></span>
             <select class="skinweave-select" id="skinweave-select">
               <option value="0">None</option>
               <option value="8">SP 8</option>
@@ -36,7 +36,6 @@ import '../styles/armor.css';
               <option value="12">SP 12</option>
               <option value="14">SP 14</option>
             </select>
-            <span class="skinweave-sp" id="skinweave-sp"></span>
           </div>
 
           <div class="body-part" id="part-head">
@@ -47,7 +46,7 @@ import '../styles/armor.css';
 
           <div class="implants-display" id="implants-display">
             <span class="implants-label">Armor Implants</span>
-            <span class="implants-desc">click to manage</span>
+            <span class="implants-desc">Subdermal armor and body plating options; <br/> <br/> click to manage</span>
             <div class="implants-list" id="implants-list"></div>
           </div>
 

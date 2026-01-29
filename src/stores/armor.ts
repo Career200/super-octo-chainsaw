@@ -128,7 +128,9 @@ function checkLayerConstraints(
 ): WearResult {
   const wornLayers = getBodyPartLayers(part);
   const implantLayers = getImplantsForPart(part);
-  const totalLayers = wornLayers.length + implantLayers.length;
+  // Skinweave doesn't count toward the 3-layer limit
+  const nonSkinweaveLayers = implantLayers.filter((l) => l.layer !== "skinweave");
+  const totalLayers = wornLayers.length + nonSkinweaveLayers.length;
   const partLabel = part.replace("_", " ");
 
   if (totalLayers >= 3) {
@@ -248,7 +250,19 @@ export function isImplant(templateIdOrPiece: string | ArmorPiece): boolean {
     typeof templateIdOrPiece === "string"
       ? getTemplate(templateIdOrPiece)
       : getTemplate(templateIdOrPiece.templateId);
-  return template?.layer === "plating" || template?.layer === "subdermal";
+  return (
+    template?.layer === "plating" ||
+    template?.layer === "skinweave" ||
+    template?.layer === "subdermal"
+  );
+}
+
+export function isSkinweave(templateIdOrPiece: string | ArmorPiece): boolean {
+  const template =
+    typeof templateIdOrPiece === "string"
+      ? getTemplate(templateIdOrPiece)
+      : getTemplate(templateIdOrPiece.templateId);
+  return template?.layer === "skinweave";
 }
 
 export function getImplantLayer(templateId: string): ArmorLayer | null {
@@ -259,7 +273,10 @@ export function getImplantLayer(templateId: string): ArmorLayer | null {
 export function getImplantTemplates(): typeof armorTemplates {
   return Object.fromEntries(
     Object.entries(armorTemplates).filter(
-      ([_, t]) => t.layer === "plating" || t.layer === "subdermal",
+      ([_, t]) =>
+        t.layer === "plating" ||
+        t.layer === "skinweave" ||
+        t.layer === "subdermal",
     ),
   );
 }
@@ -339,6 +356,54 @@ export function repairImplant(instanceId: string): void {
   }
 
   updateInstance(instanceId, { spByPart: newSpByPart });
+}
+
+// --- Skinweave Helpers ---
+
+export function getInstalledSkinweave(): ArmorPiece | null {
+  const installed = getInstalledImplants().find((p) => isSkinweave(p));
+  return installed ?? null;
+}
+
+export function getSkinweaveLevel(): number {
+  const skinweave = getInstalledSkinweave();
+  return skinweave?.spMax ?? 0;
+}
+
+export function installSkinweave(templateId: string): WearResult {
+  const template = getTemplate(templateId);
+  if (!template || !isSkinweave(templateId)) {
+    return { success: false, error: "Invalid skinweave" };
+  }
+
+  // Uninstall existing skinweave first (only one at a time)
+  const existing = getInstalledSkinweave();
+  if (existing) {
+    uninstallImplant(existing.templateId);
+  }
+
+  // Check if already owned but not installed
+  const ownedInstance = Object.values($ownedArmor.get()).find(
+    (inst) => inst.templateId === templateId,
+  );
+
+  if (ownedInstance) {
+    updateInstance(ownedInstance.id, { worn: true });
+  } else {
+    const instance = acquireArmor(templateId);
+    if (instance) {
+      updateInstance(instance.id, { worn: true });
+    }
+  }
+
+  return { success: true };
+}
+
+export function uninstallSkinweave(): void {
+  const skinweave = getInstalledSkinweave();
+  if (skinweave) {
+    uninstallImplant(skinweave.templateId);
+  }
 }
 
 // --- Re-export templates for store UI ---

@@ -44,7 +44,7 @@ export const PART_ABBREV: Record<BodyPartName, string> = {
   right_leg: "RL",
 };
 
-export type ArmorLayer = "worn" | "plating" | "subdermal";
+export type ArmorLayer = "worn" | "plating" | "skinweave" | "subdermal";
 
 // Static template - defines what an armor type IS
 export interface ArmorTemplate {
@@ -82,49 +82,31 @@ export function sortByLayerOrder<T extends { spCurrent: number }>(
 }
 
 export interface EffectiveSPOptions {
-  platingSP?: number[];
-  skinWeaveSP?: number;
-  subdermalSP?: number;
+  implantSP?: number[];
 }
 
 // Calculate effective SP using proportional armor rule
-// Layer order: worn armor -> body plating -> skinweave -> subdermal
+// Layer order: worn armor -> implants (plating, skinweave, subdermal)
 export function getEffectiveSP(
   layers: ArmorPiece[],
   options: EffectiveSPOptions = {},
 ): number {
-  const { platingSP = [], skinWeaveSP = 0, subdermalSP = 0 } = options;
+  const { implantSP = [] } = options;
 
   const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
-  const activePlating = platingSP.filter((sp) => sp > 0);
+  const activeImplants = implantSP.filter((sp) => sp > 0);
 
-  const hasAnyProtection =
-    activeLayers.length > 0 ||
-    activePlating.length > 0 ||
-    skinWeaveSP > 0 ||
-    subdermalSP > 0;
+  const hasAnyProtection = activeLayers.length > 0 || activeImplants.length > 0;
 
   if (!hasAnyProtection) return 0;
 
-  // Collect all SP values in layer order
   const allSP: number[] = [
     ...activeLayers.map((l) => l.spCurrent).sort((a, b) => b - a), // worn armor sorted by SP
-    ...activePlating.sort((a, b) => b - a), // plating sorted by SP
+    ...activeImplants.sort((a, b) => b - a), // implants sorted by SP
   ];
-
-  // Add skinweave if present
-  if (skinWeaveSP > 0) {
-    allSP.push(skinWeaveSP);
-  }
-
-  // Add subdermal last (below skinweave)
-  if (subdermalSP > 0) {
-    allSP.push(subdermalSP);
-  }
 
   if (allSP.length === 0) return 0;
 
-  // Sort all by SP for proportional calculation
   allSP.sort((a, b) => b - a);
 
   let effectiveSP = allSP[0];
@@ -139,7 +121,6 @@ export function getEffectiveSP(
   return effectiveSP;
 }
 
-// Generate unique instance ID
 export function generateId(prefix: string): string {
   const random = Math.random().toString(36).substring(2, 8);
   return `${prefix}_${random}`;
@@ -154,22 +135,25 @@ export interface EVResult {
 // Calculate EV penalty:
 // - Every worn armor piece and implant contributes its base EV
 // - Layer penalty comes from the body part with the most layers
+// - HOMERULE: Skinweave doesn't count toward the layer limit
 export function getTotalEV(
   allWornArmor: ArmorPiece[],
   allInstalledImplants: ArmorPiece[],
 ): EVResult {
-  // Base EV from worn armor
   let baseEV = allWornArmor.reduce((sum, armor) => sum + (armor.ev ?? 0), 0);
-
-  // Add implant EV
   baseEV += allInstalledImplants.reduce((sum, impl) => sum + (impl.ev ?? 0), 0);
+
+  // HOMERULE: skinweave does not count toward layer limit
+  const nonSkinweaveImplants = allInstalledImplants.filter(
+    (a) => a.layer !== "skinweave",
+  );
 
   let maxLayers = 0;
   let maxLocation: BodyPartName | null = null;
 
   for (const part of BODY_PARTS) {
     const wornAtPart = allWornArmor.filter((a) => a.bodyParts.includes(part));
-    const implantsAtPart = allInstalledImplants.filter((a) =>
+    const implantsAtPart = nonSkinweaveImplants.filter((a) =>
       a.bodyParts.includes(part),
     );
     const totalLayers = wornAtPart.length + implantsAtPart.length;

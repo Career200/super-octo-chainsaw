@@ -3,11 +3,70 @@ import {
   $ownedArmor,
   getImplantTemplates,
   getInstalledImplants,
+  getInstalledSkinweave,
+  getSkinweaveLevel,
   installImplant,
+  installSkinweave,
   uninstallImplant,
+  uninstallSkinweave,
   isImplantInstalled,
+  isSkinweave,
 } from "../../../stores/armor";
 import { getHealthClassFromSP } from "./common";
+
+// ===================
+// SKINWEAVE
+// ===================
+
+export type SkinweaveLevel = 0 | 8 | 10 | 12 | 14;
+
+const SKINWEAVE_TEMPLATE_MAP: Record<SkinweaveLevel, string | null> = {
+  0: null,
+  8: "skinweave_8",
+  10: "skinweave_10",
+  12: "skinweave_12",
+  14: "skinweave_14",
+};
+
+export function renderSkinweave(): void {
+  const display = document.getElementById("skinweave-display");
+  const select = document.getElementById(
+    "skinweave-select",
+  ) as HTMLSelectElement | null;
+
+  if (!display || !select) return;
+
+  const skinweave = getInstalledSkinweave();
+  const isInstalled = skinweave !== null;
+  const level = getSkinweaveLevel();
+
+  display.classList.toggle("installed", isInstalled);
+  select.value = level.toString();
+}
+
+export function setupSkinweave(): void {
+  const select = document.getElementById(
+    "skinweave-select",
+  ) as HTMLSelectElement | null;
+  if (!select) return;
+
+  select.addEventListener("change", () => {
+    const level = parseInt(select.value, 10) as SkinweaveLevel;
+    const templateId = SKINWEAVE_TEMPLATE_MAP[level];
+
+    if (templateId) {
+      installSkinweave(templateId);
+    } else {
+      uninstallSkinweave();
+    }
+  });
+
+  renderSkinweave();
+}
+
+// ===================
+// IMPLANTS
+// ===================
 
 export function renderImplants(): void {
   const display = document.getElementById("implants-display");
@@ -15,7 +74,8 @@ export function renderImplants(): void {
 
   if (!display || !list) return;
 
-  const installed = getInstalledImplants();
+  // Exclude skinweave - it has its own UI section
+  const installed = getInstalledImplants().filter((i) => !isSkinweave(i));
   const hasImplants = installed.length > 0;
 
   display.classList.toggle("has-implants", hasImplants);
@@ -43,7 +103,6 @@ function renderImplantItem(
   const item = document.createElement("div");
   item.className = "armor-item" + (installed ? " armor-worn" : "");
 
-  // Header with name and SP
   const header = document.createElement("div");
   header.className = "armor-header";
 
@@ -70,7 +129,6 @@ function renderImplantItem(
   header.appendChild(sp);
   item.appendChild(header);
 
-  // Stats row
   const stats = document.createElement("div");
   stats.className = "armor-stats";
   const parts = template.bodyParts
@@ -84,7 +142,6 @@ function renderImplantItem(
   stats.textContent = statsText;
   item.appendChild(stats);
 
-  // Description
   if (template.description) {
     const desc = document.createElement("div");
     desc.className = "armor-stats";
@@ -94,7 +151,6 @@ function renderImplantItem(
     item.appendChild(desc);
   }
 
-  // Actions
   const actions = document.createElement("div");
   actions.className = "armor-actions";
 
@@ -155,7 +211,11 @@ export function setupImplants(): void {
     const renderList = () => {
       implantList.innerHTML = "";
       const templates = getImplantTemplates();
-      for (const templateId of Object.keys(templates)) {
+      // Exclude skinweave - it has its own UI section
+      const templateIds = Object.keys(templates).filter(
+        (id) => !isSkinweave(id),
+      );
+      for (const templateId of templateIds) {
         renderImplantItem(templateId, implantList, () => {
           renderList();
           reposition();
@@ -182,7 +242,6 @@ export function setupImplants(): void {
     reposition();
   });
 
-  // Subscribe to changes - now using $ownedArmor
   $ownedArmor.subscribe(() => {
     renderImplants();
   });

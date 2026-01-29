@@ -11,7 +11,7 @@ import { confirm, notify, createPopover } from "../../ui/popover";
 import {
   renderBodyPartsCoverage,
   getHealthClassFromSP,
-  findMostDamagedPart,
+  getLowestSP,
 } from "./common";
 import { PART_ABBREV, type ArmorPiece, type BodyPartName } from "../core";
 
@@ -161,14 +161,9 @@ function openRepairPopover(
   bodyParts: BodyPartName[],
   spByPart: Partial<Record<BodyPartName, number>>,
 ) {
-  const { part: mostDamagedPart, sp: lowestSP } = findMostDamagedPart(
-    bodyParts,
-    spByPart,
-    maxSP,
-  );
-
-  const selectedParts = new Set<BodyPartName>([mostDamagedPart]);
-  let sp = lowestSP;
+  // Default to all parts selected, starting at lowest SP
+  const selectedParts = new Set<BodyPartName>(bodyParts);
+  let sp = getLowestSP(bodyParts, spByPart, maxSP);
 
   const badgeElements = new Map<BodyPartName, HTMLElement>();
   const allBadge = document.createElement("button");
@@ -229,14 +224,9 @@ function openRepairPopover(
   allBadge.textContent = "All";
 
   allBadge.addEventListener("click", () => {
-    const allSelected = selectedParts.size === bodyParts.length;
-    if (allSelected) {
-      selectedParts.clear();
-      selectedParts.add(mostDamagedPart);
-    } else {
-      for (const part of bodyParts) {
-        selectedParts.add(part);
-      }
+    // Only select all, don't toggle - user can manually deselect parts
+    for (const part of bodyParts) {
+      selectedParts.add(part);
     }
     updateDisplay();
   });

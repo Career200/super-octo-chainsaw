@@ -12,18 +12,12 @@ export function getHealthClassFromSP(current: number, max: number): string {
   return getHealthClass((current / max) * 100);
 }
 
-export function findMostDamagedPart(
+export function getLowestSP(
   bodyParts: BodyPartName[],
   spByPart: Partial<Record<BodyPartName, number>>,
   maxSP: number,
-): { part: BodyPartName; sp: number } {
-  return bodyParts.reduce(
-    (worst, part) => {
-      const partSP = spByPart[part] ?? maxSP;
-      return partSP < worst.sp ? { part, sp: partSP } : worst;
-    },
-    { part: bodyParts[0], sp: spByPart[bodyParts[0]] ?? maxSP },
-  );
+): number {
+  return Math.min(...bodyParts.map((p) => spByPart[p] ?? maxSP));
 }
 
 function applyDamageIndicator(element: HTMLElement, current: number, max: number) {
