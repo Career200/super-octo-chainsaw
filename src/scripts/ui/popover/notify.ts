@@ -13,6 +13,7 @@ export function notify(anchor: HTMLElement, options: NotifyOptions): void {
   const { popover, cleanup, reposition } = createPopover(anchor, {
     backdrop,
     className: `popover-notify popover-notify-${type}`,
+    stack: true,
   });
 
   const msg = document.createElement("p");

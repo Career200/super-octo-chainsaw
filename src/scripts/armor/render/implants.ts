@@ -1,11 +1,10 @@
-import { createPopover } from "../../ui/popover";
+import { createPopover, notify } from "../../ui/popover";
 import {
   $ownedArmor,
   getImplantTemplates,
   getInstalledImplants,
   installImplant,
   uninstallImplant,
-  repairImplant,
   isImplantInstalled,
 } from "../../../stores/armor";
 import { getHealthClassFromSP } from "./common";
@@ -99,23 +98,7 @@ function renderImplantItem(
   const actions = document.createElement("div");
   actions.className = "armor-actions";
 
-  if (installed && instance) {
-    // Check if damaged
-    const currentSP = instance.spCurrent;
-    const isDamaged = currentSP < template.spMax;
-
-    if (isDamaged) {
-      const repairBtn = document.createElement("button");
-      repairBtn.className = "button-wear";
-      repairBtn.textContent = "Repair";
-      repairBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        repairImplant(instance.id);
-        onUpdate();
-      });
-      actions.appendChild(repairBtn);
-    }
-
+  if (installed) {
     const removeBtn = document.createElement("button");
     removeBtn.className = "button-discard";
     removeBtn.textContent = "Remove";
@@ -133,8 +116,7 @@ function renderImplantItem(
       e.stopPropagation();
       const result = installImplant(templateId);
       if (!result.success) {
-        // TODO: show error
-        console.error(result.error);
+        notify(installBtn, { message: result.error, type: "error" });
         return;
       }
       onUpdate();
