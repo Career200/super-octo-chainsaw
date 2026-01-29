@@ -56,9 +56,9 @@
   margin-top: 10px;
 }
 
-/* SkinWeave Implant */
-.skinweave-display {
-  grid-area: sw;
+.skinweave-display,
+.implants-display,
+.ev-display {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,12 +70,34 @@
   min-height: 80px;
 }
 
-.skinweave-display.installed {
+.skinweave-display {
+  grid-area: sw;
+}
+.implants-display {
+  grid-area: implants;
+}
+.ev-display {
+  grid-area: ev;
+}
+
+.skinweave-display.installed,
+.implants-display.has-implants {
   border-style: solid;
   border-color: var(--accent-muted);
 }
 
-.skinweave-label {
+.implants-display {
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.implants-display:hover {
+  border-color: var(--accent-muted);
+}
+
+.skinweave-label,
+.implants-label,
+.ev-label {
   font-size: 14px;
   color: var(--fg-soft);
   text-transform: uppercase;
@@ -83,13 +105,22 @@
   margin-bottom: 6px;
 }
 
-.skinweave-desc {
+.ev-label {
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.skinweave-desc,
+.implants-desc {
   font-size: 11px;
   color: var(--fg-soft);
   opacity: 0.8;
-  margin-bottom: 12px;
   text-align: justify;
   line-height: 1.3;
+}
+
+.skinweave-desc {
+  margin-bottom: 12px;
 }
 
 .skinweave-select {
@@ -125,47 +156,6 @@
   color: var(--accent);
 }
 
-/* Implanted Armor Box */
-.implants-display {
-  grid-area: implants;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  border: 1px dashed var(--border-light);
-  border-radius: 6px;
-  padding: 10px;
-  min-height: 80px;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
-
-.implants-display:hover {
-  border-color: var(--accent-muted);
-}
-
-.implants-display.has-implants {
-  border-style: solid;
-  border-color: var(--accent-muted);
-}
-
-.implants-label {
-  font-size: 14px;
-  color: var(--fg-soft);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-}
-
-.implants-desc {
-  font-size: 11px;
-  color: var(--fg-soft);
-  opacity: 0.8;
-  text-align: justify;
-  line-height: 1.3;
-}
-
 .implants-list {
   margin-top: 8px;
   font-size: 12px;
@@ -186,7 +176,6 @@
   color: var(--accent);
 }
 
-/* Assign grid areas */
 #part-head {
   grid-area: head;
 }
@@ -204,27 +193,6 @@
 }
 #part-right_leg {
   grid-area: rleg;
-}
-
-/* EV Display */
-.ev-display {
-  grid-area: ev;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  border: 1px dashed var(--border-light);
-  border-radius: 6px;
-  padding: 10px;
-}
-
-.ev-label {
-  font-size: 14px;
-  color: var(--fg-soft);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: bold;
 }
 
 .ev-value {
@@ -273,23 +241,8 @@
   left: 0;
   bottom: 0;
   height: 3px;
+  background: var(--health-color);
   transition: width 0.2s ease;
-}
-
-.layer-health.health-full {
-  background: var(--health-full);
-}
-.layer-health.health-good {
-  background: var(--health-good);
-}
-.layer-health.health-worn {
-  background: var(--health-worn);
-}
-.layer-health.health-damaged {
-  background: var(--health-damaged);
-}
-.layer-health.health-critical {
-  background: var(--health-critical);
 }
 
 /* SkinWeave layer - visually distinct */
@@ -304,7 +257,6 @@
   color: var(--accent-muted);
 }
 
-/* SP Display */
 .sp-value {
   font-size: 18px;
   font-weight: bold;
@@ -320,14 +272,67 @@
   color: color-mix(in srgb, var(--fg-soft), white 33%);
 }
 
-/* Armor Items (Owned & Store) */
+/* === Health State Utilities === */
+.health-full {
+  --health-color: var(--health-full);
+}
+.health-good {
+  --health-color: var(--health-good);
+}
+.health-worn {
+  --health-color: var(--health-worn);
+}
+.health-damaged {
+  --health-color: var(--health-damaged);
+}
+.health-critical {
+  --health-color: var(--health-critical);
+}
+
+.armor-sp [class*="health-"],
+.repair-sp-value[class*="health-"] {
+  color: var(--health-color);
+}
+
+.coverage-badge.health-damaged,
+.coverage-badge.health-critical {
+  border-color: var(--health-color);
+  color: var(--health-color);
+}
+
+.history-entry-manipulation[class*="health-"] {
+  border-left-color: var(--health-color);
+}
+
+.popover.popover-repair-health-full {
+  border-color: var(--health-full);
+}
+.popover.popover-repair-health-good {
+  border-color: var(--health-good);
+}
+.popover.popover-repair-health-worn {
+  border-color: var(--health-worn);
+}
+.popover.popover-repair-health-damaged {
+  border-color: var(--health-damaged);
+}
+.popover.popover-repair-health-critical {
+  border-color: var(--health-critical);
+}
+
+/* === Card Bases (shared) === */
 .armor-item,
-.store-item {
-  border: 1px solid var(--border-light);
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 8px;
+.store-item,
+.history-entry {
   background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.history-entry {
+  padding: 8px 10px;
 }
 
 .armor-item.armor-worn {
@@ -359,22 +364,6 @@
   white-space: nowrap;
 }
 
-.armor-sp .health-full {
-  color: var(--health-full);
-}
-.armor-sp .health-good {
-  color: var(--health-good);
-}
-.armor-sp .health-worn {
-  color: var(--health-worn);
-}
-.armor-sp .health-damaged {
-  color: var(--health-damaged);
-}
-.armor-sp .health-critical {
-  color: var(--health-critical);
-}
-
 .armor-type-icon {
   position: relative;
   display: inline-block;
@@ -383,7 +372,6 @@
   bottom: 3px;
   font-size: 10px;
   color: var(--terminal-green-bright);
-
   transform: scale(2.5);
   transform-origin: center;
 }
@@ -427,22 +415,12 @@
   letter-spacing: 1px;
 }
 
-.coverage-badge.health-damaged {
-  border-color: var(--health-damaged);
-  color: var(--health-damaged);
-}
-
-.coverage-badge.health-critical {
-  border-color: var(--health-critical);
-  color: var(--health-critical);
-}
-
 .empty-message {
   color: var(--fg-soft);
   font-style: italic;
 }
 
-/* Buttons */
+/* === Buttons === */
 .container button {
   padding: 6px 12px;
   border-radius: 4px;
@@ -473,20 +451,30 @@
 }
 
 .button-discard,
-.button-take {
+.button-take,
+.button-clear,
+.button-repair {
   background: transparent;
   border: 1px solid var(--border-light);
   color: var(--fg-soft);
 }
 
-.button-discard:hover {
+.button-discard:hover,
+.button-clear:hover {
   border-color: var(--danger);
   color: var(--danger);
 }
 
-.button-take:hover {
+.button-take:hover,
+.button-repair:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.button-repair {
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 3px;
 }
 
 .button-buy {
@@ -535,25 +523,7 @@
   color: #fff;
 }
 
-.button-clear {
-  border: 1px solid var(--border-light);
-  color: var(--fg-soft);
-}
-
-.button-clear:hover {
-  border-color: var(--danger);
-  color: var(--danger);
-}
-
 /* === Damage History === */
-.history-entry {
-  background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  padding: 8px 10px;
-  margin-bottom: 8px;
-}
-
 .history-header {
   display: flex;
   justify-content: space-between;
@@ -604,22 +574,6 @@
   border-left: 3px solid var(--border-light);
 }
 
-.history-entry-manipulation.health-full {
-  border-left-color: var(--health-full);
-}
-.history-entry-manipulation.health-good {
-  border-left-color: var(--health-good);
-}
-.history-entry-manipulation.health-worn {
-  border-left-color: var(--health-worn);
-}
-.history-entry-manipulation.health-damaged {
-  border-left-color: var(--health-damaged);
-}
-.history-entry-manipulation.health-critical {
-  border-left-color: var(--health-critical);
-}
-
 .history-repair {
   font-size: 14px;
   font-weight: bold;
@@ -630,20 +584,6 @@
   font-size: 14px;
   font-weight: bold;
   color: var(--accent-muted);
-}
-
-.button-repair {
-  padding: 2px 8px;
-  font-size: 12px;
-  background: transparent;
-  border: 1px solid var(--border-light);
-  border-radius: 3px;
-  color: var(--fg-soft);
-}
-
-.button-repair:hover {
-  border-color: var(--accent);
-  color: var(--accent);
 }
 
 /* Repair Popover */
@@ -690,40 +630,6 @@
   font-weight: bold;
   min-width: 48px;
   text-align: center;
-}
-
-/* Repair SP value health colors */
-.repair-sp-value.health-full {
-  color: var(--health-full);
-}
-.repair-sp-value.health-good {
-  color: var(--health-good);
-}
-.repair-sp-value.health-worn {
-  color: var(--health-worn);
-}
-.repair-sp-value.health-damaged {
-  color: var(--health-damaged);
-}
-.repair-sp-value.health-critical {
-  color: var(--health-critical);
-}
-
-/* Repair popover health-based border colors */
-.popover.popover-repair-health-full {
-  border-color: var(--health-full);
-}
-.popover.popover-repair-health-good {
-  border-color: var(--health-good);
-}
-.popover.popover-repair-health-worn {
-  border-color: var(--health-worn);
-}
-.popover.popover-repair-health-damaged {
-  border-color: var(--health-damaged);
-}
-.popover.popover-repair-health-critical {
-  border-color: var(--health-critical);
 }
 
 /* Repair part selector */
@@ -784,9 +690,9 @@
   color: var(--accent);
 }
 
-/* Help Popover */
+/* === Popovers === */
 .popover.popover-help {
-  width: min(660px, calc(100vw - 72px));
+  width: min(660px, var(--popover-max-width));
   max-width: none;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
@@ -892,7 +798,7 @@
 
 /* Hit Popover */
 .popover-hit {
-  width: min(360px, calc(100vw - 72px));
+  width: min(360px, var(--popover-max-width));
 }
 
 .popover-hit .select-option.selected {
@@ -910,7 +816,7 @@
 
 /* Implants Popover */
 .popover-implants {
-  width: min(400px, calc(100vw - 72px));
+  width: min(400px, var(--popover-max-width));
 }
 
 .popover-implants .armor-item {
@@ -1014,7 +920,6 @@
     overflow-y: auto;
   }
 
-  /* Owned armor summary list */
   .owned-summary {
     display: block;
     margin-top: 8px;
@@ -1041,21 +946,6 @@
 
   .panel-collapsible.expanded {
     cursor: default;
-  }
-
-  /* Panel count badge */
-  .panel-count {
-    font-size: var(--font-ui);
-    font-weight: normal;
-    color: var(--fg-soft);
-  }
-
-  .panel-count:not(:empty)::before {
-    content: "(";
-  }
-
-  .panel-count:not(:empty)::after {
-    content: ")";
   }
 
   /* Expand indicator */

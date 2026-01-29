@@ -53,6 +53,12 @@
   --health-worn: var(--accent-muted);
   --health-damaged: var(--warning);
   --health-critical: var(--danger);
+
+  /* Health state utility - set by health-* classes */
+  --health-color: var(--health-full);
+
+  /* Popover width constraint */
+  --popover-max-width: calc(100vw - 72px);
 }
 
 .box {

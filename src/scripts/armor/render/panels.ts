@@ -61,16 +61,10 @@ export function renderArmorSummary() {
 }
 
 export function updateOwnedSummary() {
-  const countEl = document.getElementById("owned-count");
   const summaryEl = document.getElementById("owned-summary");
 
   const owned = getAllOwnedArmor();
-  const worn = owned.filter((a) => a.worn).length;
   const total = owned.length;
-
-  if (countEl) {
-    countEl.textContent = total > 0 ? `${worn}/${total}` : "";
-  }
 
   if (summaryEl) {
     summaryEl.innerHTML = "";

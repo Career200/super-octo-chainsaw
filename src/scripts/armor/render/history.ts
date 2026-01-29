@@ -189,19 +189,9 @@ export function setupHistoryClear(): void {
 // Subscribe to history changes
 $damageHistory.subscribe(() => {
   renderHistory();
-  updateHistoryCount();
 });
-
-function updateHistoryCount(): void {
-  const countEl = document.getElementById("history-count");
-  if (!countEl) return;
-
-  const count = $damageHistory.get().length;
-  countEl.textContent = count > 0 ? `(${count})` : "";
-}
 
 export function initHistory(): void {
   renderHistory();
   setupHistoryClear();
-  updateHistoryCount();
 }
