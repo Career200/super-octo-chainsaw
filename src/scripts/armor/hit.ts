@@ -11,6 +11,7 @@ import {
   damageArmor,
   getArmorPiece,
   getBodyPartLayers,
+  getImplantsForPart,
 } from "../../stores/armor";
 import {
   recordDamage,
@@ -100,8 +101,12 @@ export interface DamageOptions {
    *  - true: soft loses 1 + floor(over/5), hard loses 1 + floor(over/6)
    *  - false: all layers lose exactly 1 SP (vanilla staged penetration) */
   scaledDegradation?: boolean;
+  /** Body plating SP values (under worn armor, above skinweave) */
+  platingSP?: number[];
   /** SkinWeave SP for this body part (0 if not installed) */
   skinWeaveSP?: number;
+  /** Subdermal armor SP (below skinweave) */
+  subdermalSP?: number;
 }
 
 /**
@@ -130,14 +135,29 @@ export function calculateDamage(
   damage: number,
   options: DamageOptions = {},
 ): DamageResult {
-  const { scaledDegradation = true, skinWeaveSP = 0 } = options;
+  const {
+    scaledDegradation = true,
+    platingSP = [],
+    skinWeaveSP = 0,
+    subdermalSP = 0,
+  } = options;
   const degradation = new Map<string, number>();
 
-  if (activeLayers.length === 0 && skinWeaveSP <= 0) {
+  const hasAnyProtection =
+    activeLayers.length > 0 ||
+    platingSP.some((sp) => sp > 0) ||
+    skinWeaveSP > 0 ||
+    subdermalSP > 0;
+
+  if (!hasAnyProtection) {
     return { penetrating: damage, degradation };
   }
 
-  const effectiveSP = getEffectiveSP(activeLayers, skinWeaveSP);
+  const effectiveSP = getEffectiveSP(activeLayers, {
+    platingSP,
+    skinWeaveSP,
+    subdermalSP,
+  });
   if (damage <= effectiveSP) {
     return { penetrating: 0, degradation };
   }
@@ -181,18 +201,49 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   const activeBefore = sortByLayerOrder(
     layers.filter((l) => l.worn && l.spCurrent > 0),
   );
-  const skinWeaveSP = getSkinWeaveSP(bodyPart);
+  const implants = getImplantsForPart(bodyPart);
+  const plating = implants.filter((i) => i.layer === "plating");
+  const subdermal = implants.filter((i) => i.layer === "subdermal");
 
-  const result = calculateDamage(activeBefore, damage, { skinWeaveSP });
+  const platingSP = plating.map((i) => i.spByPart[bodyPart] ?? 0);
+  const skinWeaveSP = getSkinWeaveSP(bodyPart);
+  const subdermalSP = subdermal.reduce(
+    (sum, i) => sum + (i.spByPart[bodyPart] ?? 0),
+    0,
+  );
+
+  const result = calculateDamage(activeBefore, damage, {
+    platingSP,
+    skinWeaveSP,
+    subdermalSP,
+  });
 
   // Apply degradation to each armor piece at this specific body part
   for (const [armorId, amount] of result.degradation) {
     damageArmor(armorId, bodyPart, amount);
   }
 
-  // SkinWeave takes 1 damage when armor is penetrated (always bottom layer)
-  if (result.penetrating > 0 && skinWeaveSP > 0) {
-    damageSkinWeave(bodyPart, 1);
+  // When penetrated, damage layers in order: worn armor, plating, skinweave, subdermal
+  // Each layer takes 1 damage when penetrated
+  if (result.penetrating > 0) {
+    // Plating takes damage
+    for (const impl of plating) {
+      if ((impl.spByPart[bodyPart] ?? 0) > 0) {
+        damageArmor(impl.id, bodyPart, 1);
+      }
+    }
+
+    // SkinWeave takes damage
+    if (skinWeaveSP > 0) {
+      damageSkinWeave(bodyPart, 1);
+    }
+
+    // Subdermal takes damage
+    for (const impl of subdermal) {
+      if ((impl.spByPart[bodyPart] ?? 0) > 0) {
+        damageArmor(impl.id, bodyPart, 1);
+      }
+    }
   }
 
   // Check for layer flip (top layer changed)
@@ -379,8 +430,22 @@ export function setupHitButton() {
           }
 
           const layers = getBodyPartLayers(part);
+          const implants = getImplantsForPart(part);
+          const plating = implants.filter((i) => i.layer === "plating");
+          const subdermal = implants.filter((i) => i.layer === "subdermal");
+
+          const platingSP = plating.map((i) => i.spByPart[part] ?? 0);
           const skinWeaveSP = getSkinWeaveSP(part);
-          const effectiveSP = getEffectiveSP(layers, skinWeaveSP);
+          const subdermalSP = subdermal.reduce(
+            (sum, i) => sum + (i.spByPart[part] ?? 0),
+            0,
+          );
+
+          const effectiveSP = getEffectiveSP(layers, {
+            platingSP,
+            skinWeaveSP,
+            subdermalSP,
+          });
           const result = applyHit(part, damage);
 
           // Build armor damage entries for history
@@ -395,13 +460,38 @@ export function setupHitButton() {
             };
           });
 
-          // Add SkinWeave damage to history if it was damaged
-          if (result.penetrating > 0 && skinWeaveSP > 0) {
-            armorDamageEntries.push({
-              armorId: "skinweave",
-              armorName: "SkinWeave",
-              spLost: 1,
-            });
+          // Add implant/skinweave damage to history if penetrated
+          if (result.penetrating > 0) {
+            // Plating damage
+            for (const impl of plating) {
+              if ((impl.spByPart[part] ?? 0) > 0) {
+                armorDamageEntries.push({
+                  armorId: impl.id,
+                  armorName: impl.name,
+                  spLost: 1,
+                });
+              }
+            }
+
+            // SkinWeave damage
+            if (skinWeaveSP > 0) {
+              armorDamageEntries.push({
+                armorId: "skinweave",
+                armorName: "SkinWeave",
+                spLost: 1,
+              });
+            }
+
+            // Subdermal damage
+            for (const impl of subdermal) {
+              if ((impl.spByPart[part] ?? 0) > 0) {
+                armorDamageEntries.push({
+                  armorId: impl.id,
+                  armorName: impl.name,
+                  spLost: 1,
+                });
+              }
+            }
           }
 
           if (armorDamageEntries.length > 0) {

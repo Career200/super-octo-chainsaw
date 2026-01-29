@@ -3,6 +3,7 @@ import {
   generateId,
   type ArmorInstance,
   type ArmorPiece,
+  type ArmorLayer,
   type BodyPartName,
 } from "../scripts/armor/core";
 import { armorTemplates, getTemplate } from "../scripts/armor/equipment";
@@ -79,7 +80,10 @@ export function getBodyPartLayers(part: BodyPartName): ArmorPiece[] {
     .map((id) => getArmorPiece(id, part))
     .filter(
       (piece): piece is ArmorPiece =>
-        piece !== null && piece.worn && piece.bodyParts.includes(part),
+        piece !== null &&
+        piece.worn &&
+        piece.bodyParts.includes(part) &&
+        !piece.layer, // implants rendered separately
     );
 }
 
@@ -118,28 +122,44 @@ export function discardArmor(instanceId: string): void {
 
 export type WearResult = { success: true } | { success: false; error: string };
 
+function checkLayerConstraints(
+  part: BodyPartName,
+  newArmorType: "soft" | "hard",
+): WearResult {
+  const wornLayers = getBodyPartLayers(part);
+  const implantLayers = getImplantsForPart(part);
+  const totalLayers = wornLayers.length + implantLayers.length;
+  const partLabel = part.replace("_", " ");
+
+  if (totalLayers >= 3) {
+    return {
+      success: false,
+      error: `Cannot add more than 3 layers to ${partLabel}`,
+    };
+  }
+
+  if (newArmorType === "hard") {
+    const hasHardWorn = wornLayers.some((l) => l.type === "hard");
+    const hasHardImplant = implantLayers.some((l) => l.type === "hard");
+    if (hasHardWorn || hasHardImplant) {
+      return {
+        success: false,
+        error: `Only 1 hard armor allowed per ${partLabel}`,
+      };
+    }
+  }
+
+  return { success: true };
+}
+
 export function wearArmor(instanceId: string): WearResult {
   const armor = getArmorPiece(instanceId);
   if (!armor || armor.worn) return { success: false, error: "Armor not found" };
 
   // Check constraints for each body part
   for (const part of armor.bodyParts) {
-    const layers = getBodyPartLayers(part);
-    const partLabel = part.replace("_", " ");
-
-    if (layers.length >= 3) {
-      return {
-        success: false,
-        error: `Cannot add more than 3 layers to ${partLabel}`,
-      };
-    }
-
-    if (armor.type === "hard" && layers.some((l) => l.type === "hard")) {
-      return {
-        success: false,
-        error: `Only 1 hard armor allowed per ${partLabel}`,
-      };
-    }
+    const result = checkLayerConstraints(part, armor.type);
+    if (!result.success) return result;
   }
 
   updateInstance(instanceId, { worn: true });
@@ -219,6 +239,106 @@ function updateInstance(
     ...state,
     [instanceId]: { ...current, ...updates },
   });
+}
+
+// --- Implant Helpers ---
+
+export function isImplant(templateIdOrPiece: string | ArmorPiece): boolean {
+  const template =
+    typeof templateIdOrPiece === "string"
+      ? getTemplate(templateIdOrPiece)
+      : getTemplate(templateIdOrPiece.templateId);
+  return template?.layer === "plating" || template?.layer === "subdermal";
+}
+
+export function getImplantLayer(templateId: string): ArmorLayer | null {
+  const template = getTemplate(templateId);
+  return template?.layer ?? null;
+}
+
+export function getImplantTemplates(): typeof armorTemplates {
+  return Object.fromEntries(
+    Object.entries(armorTemplates).filter(
+      ([_, t]) => t.layer === "plating" || t.layer === "subdermal",
+    ),
+  );
+}
+
+export function getImplantedArmor(): ArmorPiece[] {
+  return getAllOwnedArmor().filter((p) => isImplant(p));
+}
+
+export function getInstalledImplants(): ArmorPiece[] {
+  return getImplantedArmor().filter((p) => p.worn);
+}
+
+export function isImplantInstalled(templateId: string): boolean {
+  const state = $ownedArmor.get();
+  return Object.values(state).some(
+    (inst) => inst.templateId === templateId && inst.worn,
+  );
+}
+
+export function getImplantsForPart(part: BodyPartName): ArmorPiece[] {
+  return getInstalledImplants().filter((p) => p.bodyParts.includes(part));
+}
+
+export function installImplant(templateId: string): WearResult {
+  const template = getTemplate(templateId);
+  if (!template || !isImplant(templateId)) {
+    return { success: false, error: "Invalid implant" };
+  }
+
+  if (isImplantInstalled(templateId)) {
+    return { success: false, error: "Already installed" };
+  }
+
+  for (const part of template.bodyParts) {
+    const result = checkLayerConstraints(part, template.type);
+    if (!result.success) return result;
+  }
+
+  // Check if already owned but not installed
+  const existing = Object.values($ownedArmor.get()).find(
+    (inst) => inst.templateId === templateId,
+  );
+
+  if (existing) {
+    updateInstance(existing.id, { worn: true });
+  } else {
+    const instance = acquireArmor(templateId);
+    if (instance) {
+      updateInstance(instance.id, { worn: true });
+    }
+  }
+
+  return { success: true };
+}
+
+export function uninstallImplant(templateId: string): void {
+  const state = $ownedArmor.get();
+  const instance = Object.values(state).find(
+    (inst) => inst.templateId === templateId && inst.worn,
+  );
+
+  if (instance) {
+    updateInstance(instance.id, { worn: false });
+  }
+}
+
+export function repairImplant(instanceId: string): void {
+  const instance = $ownedArmor.get()[instanceId];
+  if (!instance || !isImplant(instance.templateId)) return;
+
+  const template = getTemplate(instance.templateId);
+  if (!template) return;
+
+  const newSpByPart: Partial<Record<BodyPartName, number>> = {};
+  for (const part of template.bodyParts) {
+    newSpByPart[part] = template.spMax;
+  }
+
+  updateInstance(instanceId, { spByPart: newSpByPart });
 }
 
 // --- Re-export templates for store UI ---

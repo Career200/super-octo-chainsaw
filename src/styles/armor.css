@@ -258,6 +258,7 @@
   text-align: center;
 }
 
+
 /* Armor Layers */
 .layer-list {
   margin-top: 16px;
@@ -916,6 +917,44 @@
     border-color: var(--danger);
     color: var(--danger);
   }
+}
+
+/* Implants Popover */
+.popover-implants {
+  width: min(400px, calc(100vw - 72px));
+}
+
+.popover-implants .armor-item {
+  margin-bottom: 8px;
+}
+
+.popover-implants .armor-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Implant Group in Owned Inventory */
+.implant-group {
+  margin-bottom: 12px;
+  padding: 8px;
+  border: 1px dashed var(--accent-muted);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.implant-group-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-muted);
+  margin-bottom: 8px;
+}
+
+.implant-group .armor-item {
+  background: var(--bg-alt);
+}
+
+.implant-group .armor-item:last-child {
+  margin-bottom: 0;
 }
 
 /* Damage history panel - limit width on desktop */

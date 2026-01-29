@@ -44,6 +44,8 @@ export const PART_ABBREV: Record<BodyPartName, string> = {
   right_leg: "RL",
 };
 
+export type ArmorLayer = "worn" | "plating" | "subdermal";
+
 // Static template - defines what an armor type IS
 export interface ArmorTemplate {
   templateId: string;
@@ -54,6 +56,7 @@ export interface ArmorTemplate {
   ev?: number;
   cost?: number;
   description?: string;
+  layer?: ArmorLayer;
 }
 
 // Instance - an actual owned piece of armor (persistent state)
@@ -78,30 +81,58 @@ export function sortByLayerOrder<T extends { spCurrent: number }>(
   return [...layers].sort((a, b) => b.spCurrent - a.spCurrent);
 }
 
+export interface EffectiveSPOptions {
+  platingSP?: number[];
+  skinWeaveSP?: number;
+  subdermalSP?: number;
+}
+
 // Calculate effective SP using proportional armor rule
+// Layer order: worn armor -> body plating -> skinweave -> subdermal
 export function getEffectiveSP(
   layers: ArmorPiece[],
-  skinWeaveSP: number = 0,
+  options: EffectiveSPOptions = {},
 ): number {
+  const { platingSP = [], skinWeaveSP = 0, subdermalSP = 0 } = options;
+
   const activeLayers = layers.filter((l) => l.worn && l.spCurrent > 0);
+  const activePlating = platingSP.filter((sp) => sp > 0);
 
-  if (!activeLayers.length && skinWeaveSP <= 0) return 0;
+  const hasAnyProtection =
+    activeLayers.length > 0 ||
+    activePlating.length > 0 ||
+    skinWeaveSP > 0 ||
+    subdermalSP > 0;
 
-  const sorted = [...activeLayers].sort((a, b) => b.spCurrent - a.spCurrent);
+  if (!hasAnyProtection) return 0;
 
-  let effectiveSP = sorted.length > 0 ? sorted[0].spCurrent : skinWeaveSP;
+  // Collect all SP values in layer order
+  const allSP: number[] = [
+    ...activeLayers.map((l) => l.spCurrent).sort((a, b) => b - a), // worn armor sorted by SP
+    ...activePlating.sort((a, b) => b - a), // plating sorted by SP
+  ];
 
-  for (let i = 1; i < sorted.length; i++) {
-    const layer = sorted[i];
-    const diff = effectiveSP - layer.spCurrent;
-    const bonus = Math.min(layer.spCurrent, proportionalArmorBonus(diff));
-    effectiveSP += bonus;
+  // Add skinweave if present
+  if (skinWeaveSP > 0) {
+    allSP.push(skinWeaveSP);
   }
 
-  // SkinWeave is always bottom layer - add its proportional bonus last
-  if (skinWeaveSP > 0 && sorted.length > 0) {
-    const diff = effectiveSP - skinWeaveSP;
-    const bonus = Math.min(skinWeaveSP, proportionalArmorBonus(diff));
+  // Add subdermal last (below skinweave)
+  if (subdermalSP > 0) {
+    allSP.push(subdermalSP);
+  }
+
+  if (allSP.length === 0) return 0;
+
+  // Sort all by SP for proportional calculation
+  allSP.sort((a, b) => b - a);
+
+  let effectiveSP = allSP[0];
+
+  for (let i = 1; i < allSP.length; i++) {
+    const layerSP = allSP[i];
+    const diff = effectiveSP - layerSP;
+    const bonus = Math.min(layerSP, proportionalArmorBonus(diff));
     effectiveSP += bonus;
   }
 
@@ -121,25 +152,39 @@ export interface EVResult {
 }
 
 // Calculate EV penalty:
-// - Every worn armor piece contributes its base EV
+// - Every worn armor piece and implant contributes its base EV
 // - Layer penalty comes from the body part with the most layers
 export function getTotalEV(
-  getLayersForPart: (part: BodyPartName) => ArmorPiece[],
   allWornArmor: ArmorPiece[],
+  allInstalledImplants: ArmorPiece[],
 ): EVResult {
-  const baseEV = allWornArmor.reduce((sum, armor) => sum + (armor.ev ?? 0), 0);
+  // Base EV from worn armor
+  let baseEV = allWornArmor.reduce((sum, armor) => sum + (armor.ev ?? 0), 0);
+
+  // Add implant EV
+  baseEV += allInstalledImplants.reduce((sum, impl) => sum + (impl.ev ?? 0), 0);
 
   let maxLayers = 0;
   let maxLocation: BodyPartName | null = null;
+
   for (const part of BODY_PARTS) {
-    const layers = getLayersForPart(part).filter((l) => l.worn);
-    if (layers.length > maxLayers) {
-      maxLayers = layers.length;
+    const wornAtPart = allWornArmor.filter((a) => a.bodyParts.includes(part));
+    const implantsAtPart = allInstalledImplants.filter((a) =>
+      a.bodyParts.includes(part),
+    );
+    const totalLayers = wornAtPart.length + implantsAtPart.length;
+
+    if (totalLayers > maxLayers) {
+      maxLayers = totalLayers;
       maxLocation = part;
     }
   }
 
   const layerPenalty = maxLayers >= 3 ? 3 : maxLayers >= 2 ? 1 : 0;
 
-  return { ev: baseEV + layerPenalty, maxLayers, maxLocation };
+  return {
+    ev: baseEV + layerPenalty,
+    maxLayers,
+    maxLocation,
+  };
 }

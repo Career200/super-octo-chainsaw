@@ -4,6 +4,7 @@ import {
   discardArmor,
   setArmorSP,
   getArmorPiece,
+  isImplant,
 } from "../../../stores/armor";
 import { recordManipulation } from "../../../stores/damage-history";
 import { confirm, notify, createPopover } from "../../ui/popover";
@@ -12,80 +13,72 @@ import {
   getHealthClassFromSP,
   findMostDamagedPart,
 } from "./common";
-import { PART_ABBREV, type BodyPartName } from "../core";
+import { PART_ABBREV, type ArmorPiece, type BodyPartName } from "../core";
 
-export function renderOwnedInventory() {
-  const container = document.getElementById("armor-list");
-  if (!container) return;
+function renderArmorItem(
+  armor: ArmorPiece,
+  container: HTMLElement,
+  showActions: boolean,
+): void {
+  const item = document.createElement("div");
+  item.className = armor.worn ? "armor-item armor-worn" : "armor-item";
 
-  container.innerHTML = "";
+  const header = document.createElement("div");
+  header.className = "armor-header";
 
-  const owned = getAllOwnedArmor();
+  const title = document.createElement("h4");
+  const typeIcon = document.createElement("span");
+  typeIcon.className = "armor-type-icon";
+  typeIcon.textContent = armor.type === "hard" ? "⬡" : "≈";
+  title.appendChild(typeIcon);
+  title.appendChild(document.createTextNode(armor.name));
 
-  if (owned.length === 0) {
-    const empty = document.createElement("p");
-    empty.className = "empty-message";
-    empty.textContent = "No armor owned. Visit the store to acquire some.";
-    container.appendChild(empty);
-    return;
+  const stats = document.createElement("span");
+  stats.className = "armor-sp";
+
+  const currentSp = document.createElement("span");
+  currentSp.className = getHealthClassFromSP(armor.spCurrent, armor.spMax);
+  currentSp.textContent = armor.spCurrent.toString();
+
+  stats.appendChild(currentSp);
+  stats.appendChild(document.createTextNode(`/${armor.spMax}`));
+  if (armor.ev) {
+    stats.appendChild(document.createTextNode(` | EV: ${armor.ev}`));
   }
 
-  for (const armor of owned) {
-    const item = document.createElement("div");
-    item.className = armor.worn ? "armor-item armor-worn" : "armor-item";
+  header.appendChild(title);
+  header.appendChild(stats);
 
-    const header = document.createElement("div");
-    header.className = "armor-header";
+  const coverageRow = document.createElement("div");
+  coverageRow.className = "armor-coverage-row";
 
-    const title = document.createElement("h4");
-    const typeIcon = document.createElement("span");
-    typeIcon.className = "armor-type-icon";
-    typeIcon.textContent = armor.type === "hard" ? "⬡" : "≈";
-    title.appendChild(typeIcon);
-    title.appendChild(document.createTextNode(armor.name));
-
-    const stats = document.createElement("span");
-    stats.className = "armor-sp";
-
-    const currentSp = document.createElement("span");
-    currentSp.className = getHealthClassFromSP(armor.spCurrent, armor.spMax);
-    currentSp.textContent = armor.spCurrent.toString();
-
-    stats.appendChild(currentSp);
-    stats.appendChild(document.createTextNode(`/${armor.spMax}`));
-    if (armor.ev) {
-      stats.appendChild(document.createTextNode(` | EV: ${armor.ev}`));
-    }
-
-    header.appendChild(title);
-    header.appendChild(stats);
-
-    const coverageRow = document.createElement("div");
-    coverageRow.className = "armor-coverage-row";
-
-    const repairBtn = document.createElement("button");
-    repairBtn.className = "button-repair";
-    repairBtn.textContent = "Repair/Break";
-    repairBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openRepairPopover(
-        repairBtn,
-        armor.id,
-        armor.spMax,
-        armor.bodyParts,
-        armor.spByPart,
-      );
-    });
-
-    const coverage = renderBodyPartsCoverage(
+  const repairBtn = document.createElement("button");
+  repairBtn.className = "button-repair";
+  repairBtn.textContent = "Repair/Break";
+  repairBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openRepairPopover(
+      repairBtn,
+      armor.id,
+      armor.spMax,
       armor.bodyParts,
       armor.spByPart,
-      armor.spMax,
     );
+  });
 
-    coverageRow.appendChild(repairBtn);
-    coverageRow.appendChild(coverage);
+  const coverage = renderBodyPartsCoverage(
+    armor.bodyParts,
+    armor.spByPart,
+    armor.spMax,
+  );
 
+  coverageRow.appendChild(repairBtn);
+  coverageRow.appendChild(coverage);
+
+  item.appendChild(header);
+  item.appendChild(coverageRow);
+
+  if (showActions) {
     const actions = document.createElement("div");
     actions.className = "armor-actions";
 
@@ -116,11 +109,48 @@ export function renderOwnedInventory() {
 
     actions.appendChild(toggleBtn);
     actions.appendChild(discardBtn);
-
-    item.appendChild(header);
-    item.appendChild(coverageRow);
     item.appendChild(actions);
-    container.appendChild(item);
+  }
+
+  container.appendChild(item);
+}
+
+export function renderOwnedInventory() {
+  const container = document.getElementById("armor-list");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const owned = getAllOwnedArmor();
+  const implants = owned.filter((a) => isImplant(a) && a.worn);
+  const regularArmor = owned.filter((a) => !isImplant(a));
+
+  if (owned.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty-message";
+    empty.textContent = "No armor owned. Visit the store to acquire some.";
+    container.appendChild(empty);
+    return;
+  }
+
+  if (implants.length > 0) {
+    const implantGroup = document.createElement("div");
+    implantGroup.className = "implant-group";
+
+    const groupLabel = document.createElement("div");
+    groupLabel.className = "implant-group-label";
+    groupLabel.textContent = "Installed Implants";
+    implantGroup.appendChild(groupLabel);
+
+    for (const implant of implants) {
+      renderArmorItem(implant, implantGroup, false);
+    }
+
+    container.appendChild(implantGroup);
+  }
+
+  for (const armor of regularArmor) {
+    renderArmorItem(armor, container, true);
   }
 }
 

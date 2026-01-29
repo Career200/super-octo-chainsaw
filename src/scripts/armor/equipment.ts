@@ -1,4 +1,4 @@
-import { BODY_PARTS, type ArmorTemplate, type BodyPartName } from "./core";
+import { BODY_PARTS, type ArmorTemplate, type ArmorLayer, type BodyPartName } from "./core";
 
 const head: BodyPartName[] = ["head"];
 const torso: BodyPartName[] = ["torso"];
@@ -14,7 +14,7 @@ const template = (
   type: "soft" | "hard",
   spMax: number,
   bodyParts: BodyPartName[],
-  opts?: { ev?: number; cost?: number; description?: string },
+  opts?: { ev?: number; cost?: number; description?: string; layer?: ArmorLayer },
 ): ArmorTemplate => ({
   templateId,
   name,
@@ -24,6 +24,7 @@ const template = (
   ev: opts?.ev,
   cost: opts?.cost,
   description: opts?.description,
+  layer: opts?.layer,
 });
 
 export const armorTemplates: Record<string, ArmorTemplate> = {
@@ -292,6 +293,39 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
       cost: 500,
       ev: 1,
       description: "Lightweight ballistic mesh providing full body coverage.",
+    },
+  ),
+
+  // ===================
+  // IMPLANTS (Cyberware)
+  // ===================
+
+  subdermal: template("subdermal", "Subdermal Armor", "soft", 18, torso, {
+    layer: "subdermal",
+    description:
+      "Armored plastic laminates inserted under the skin for protection.",
+  }),
+  cowl: template("cowl", "Body Plating: Cowl", "hard", 25, head, {
+    layer: "plating",
+    description:
+      "Body plate covering the skull, anchored by minibolts to the scalp.",
+  }),
+  faceplate: template("faceplate", "Body Plating: Faceplate", "hard", 25, head, {
+    layer: "plating",
+    description:
+      "Covers the entire face with ports for breathing, eating and seeing. Woven with myomar muscle fibers for limited expression.",
+  }),
+  torso_plate: template(
+    "torso_plate",
+    "Body Plating: Torso",
+    "hard",
+    25,
+    torso,
+    {
+      layer: "plating",
+      ev: 3,
+      description:
+        "Covers entire upper and lower torso with expansion joints for movement.",
     },
   ),
 };

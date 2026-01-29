@@ -82,6 +82,10 @@ export function createPopover(
 
   document.addEventListener("keydown", onKeydown);
 
+  setTimeout(() => {
+    reposition(); // hack to skip manual initial positioning
+  }, 10);
+
   return { popover, cleanup, reposition };
 }
 
