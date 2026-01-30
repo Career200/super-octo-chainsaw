@@ -118,7 +118,13 @@
 }
 
 /* === Responsive: Mobile === */
-@media (max-width: 1023px) {
+@media (max-width: 1053px) {
+  /*
+  we want 1023 as the breakpoint, but for now the panel sizes on armor page don't allow it
+  we'll refactor the page later - we want to basically combine all separate pages into one charsheet page with panels and/or tabs
+  but for now just bumping the breakpoint to 1053px to accommodate the armor page
+  another breakpoint is in armor.css
+  */
   .container {
     grid-template-columns: 1fr;
     gap: var(--space-12);

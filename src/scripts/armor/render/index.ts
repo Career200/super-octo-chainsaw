@@ -1,5 +1,5 @@
 import { $ownedArmor } from "../../../stores/character";
-import { renderEffectiveSP, renderLayers, renderEV } from "./body";
+import { renderEffectiveSP, renderLayers, renderEV, renderFaceSP, setupFaceHelp } from "./body";
 import { renderOwnedInventory } from "./inventory";
 import { renderShop } from "./shop";
 import { initHistory } from "./history";
@@ -12,6 +12,7 @@ function renderAll() {
   renderOwnedInventory();
   renderShop();
   renderEffectiveSP();
+  renderFaceSP();
   renderLayers();
   renderEV();
   renderSkinweave();
@@ -28,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCollapsiblePanels();
   setupHitButton();
   setupArmorHelp();
+  setupFaceHelp();
   setupSkinweave();
   setupImplants();
   initHistory();

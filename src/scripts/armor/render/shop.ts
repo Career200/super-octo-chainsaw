@@ -41,6 +41,10 @@ export function renderShop() {
 
     const coverage = renderBodyPartsCoverage(template.bodyParts);
 
+    const description = document.createElement("p");
+    description.className = "store-description";
+    description.textContent = template.description ?? "";
+
     const actions = document.createElement("div");
     actions.className = "store-actions";
 
@@ -61,6 +65,9 @@ export function renderShop() {
 
     item.appendChild(header);
     item.appendChild(coverage);
+    if (template.description) {
+      item.appendChild(description);
+    }
     item.appendChild(actions);
     container.appendChild(item);
   }

@@ -2,6 +2,7 @@ import { atom, computed } from "nanostores";
 import {
   generateId,
   getTotalEV,
+  countsAsLayer,
   type ArmorInstance,
   type ArmorPiece,
   type ArmorLayer,
@@ -138,14 +139,17 @@ export type WearResult = { success: true } | { success: false; error: string };
 function checkLayerConstraints(
   part: BodyPartName,
   newArmorType: "soft" | "hard",
+  newArmorLayer?: ArmorLayer,
 ): WearResult {
+  // Only certain layer types count toward limits
+  if (!countsAsLayer(newArmorLayer)) {
+    return { success: true };
+  }
+
   const wornLayers = getBodyPartLayers(part);
   const implantLayers = getImplantsForPart(part);
-  // Skinweave doesn't count toward the 3-layer limit
-  const nonSkinweaveLayers = implantLayers.filter(
-    (l) => l.layer !== "skinweave",
-  );
-  const totalLayers = wornLayers.length + nonSkinweaveLayers.length;
+  const countedImplants = implantLayers.filter((l) => countsAsLayer(l.layer));
+  const totalLayers = wornLayers.length + countedImplants.length;
   const partLabel = part.replace("_", " ");
 
   if (totalLayers >= 3) {
@@ -157,7 +161,7 @@ function checkLayerConstraints(
 
   if (newArmorType === "hard") {
     const hasHardWorn = wornLayers.some((l) => l.type === "hard");
-    const hasHardImplant = implantLayers.some((l) => l.type === "hard");
+    const hasHardImplant = countedImplants.some((l) => l.type === "hard");
     if (hasHardWorn || hasHardImplant) {
       return {
         success: false,
@@ -175,7 +179,7 @@ export function wearArmor(instanceId: string): WearResult {
 
   // Check constraints for each body part
   for (const part of armor.bodyParts) {
-    const result = checkLayerConstraints(part, armor.type);
+    const result = checkLayerConstraints(part, armor.type, "worn");
     if (!result.success) return result;
   }
 
@@ -268,7 +272,8 @@ export function isImplant(templateIdOrPiece: string | ArmorPiece): boolean {
   return (
     template?.layer === "plating" ||
     template?.layer === "skinweave" ||
-    template?.layer === "subdermal"
+    template?.layer === "subdermal" ||
+    template?.layer === "faceplate"
   );
 }
 
@@ -291,7 +296,8 @@ export function getImplantTemplates(): typeof armorTemplates {
       ([_, t]) =>
         t.layer === "plating" ||
         t.layer === "skinweave" ||
-        t.layer === "subdermal",
+        t.layer === "subdermal" ||
+        t.layer === "faceplate",
     ),
   );
 }
@@ -326,7 +332,7 @@ export function installImplant(templateId: string): WearResult {
   }
 
   for (const part of template.bodyParts) {
-    const result = checkLayerConstraints(part, template.type);
+    const result = checkLayerConstraints(part, template.type, template.layer);
     if (!result.success) return result;
   }
 

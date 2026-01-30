@@ -22,10 +22,12 @@
 .body-grid {
   display: grid;
   grid-template-areas:
+    "sw face implants"
     "sw head implants"
     "larm torso rarm"
     "lleg ev rleg";
   grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto auto;
   gap: var(--space-12);
   margin-top: 10px;
 }
@@ -124,6 +126,28 @@
 
 #part-head {
   grid-area: head;
+  /* grow vertically */
+}
+#part-face {
+  grid-area: face;
+}
+#part-face {
+  height: 44px;
+}
+.face-layer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.face-layer-list li {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.face-layer-list li:last-child {
+  border-bottom: none;
+}
+.face-no-protection {
+  font-style: italic;
 }
 #part-torso {
   grid-area: torso;
@@ -181,6 +205,10 @@
 .layer-name {
   position: relative;
   z-index: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .layer-health {
@@ -258,6 +286,12 @@
 
 .store-item h4 {
   color: var(--link);
+}
+
+.store-description {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  margin: var(--space-6) 0 0;
 }
 
 .armor-header {
@@ -528,16 +562,19 @@
 }
 
 /* === Panel Overrides === */
+.panel {
+  min-width: 200px;
+}
 #damage-history-panel {
   max-width: 222px;
 }
 
 #character-armor-panel {
-  min-width: 300px;
+  min-width: 316px;
 }
 
 /* === Responsive === */
-@media (max-width: 1023px) {
+@media (max-width: 1053px) {
   .armor-page .container {
     grid-template-columns: 1fr;
   }
