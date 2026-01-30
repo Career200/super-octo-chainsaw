@@ -3,7 +3,7 @@ import {
   WOUND_LEVEL_NAMES,
   BOXES_PER_LEVEL,
   type WoundLevel,
-} from "../core";
+} from "@scripts/biomon/types";
 import { $health } from "@stores/character";
 import { setDamage, syncStunToPhysical } from "@stores/health";
 

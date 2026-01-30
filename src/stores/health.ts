@@ -1,11 +1,6 @@
 import { atom } from "nanostores";
-import {
-  type WoundState,
-  type DamageType,
-  applyDamage,
-  healDamage,
-  TOTAL_BOXES,
-} from "../scripts/biomon/core";
+import { TOTAL_BOXES, type WoundState, type DamageType } from "@scripts/biomon/types";
+import { applyDamage, healDamage } from "@scripts/biomon/wounds";
 
 const STORAGE_KEY = "health-state";
 

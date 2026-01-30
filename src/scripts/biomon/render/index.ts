@@ -1,5 +1,5 @@
 import { $health } from "@stores/character";
-import { $REF } from "@stores/stats";
+import { $stats } from "@stores/stats";
 import {
   renderWoundTracker,
   setupWoundTracker,
@@ -17,7 +17,7 @@ $health.subscribe(() => {
   renderAll();
 });
 
-$REF.subscribe(() => {
+$stats.subscribe(() => {
   renderStats();
 });
 

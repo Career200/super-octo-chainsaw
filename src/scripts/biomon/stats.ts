@@ -1,30 +1,23 @@
-import { getWoundLevel, type WoundLevel } from "./core";
-
-export type StatName = "ref";
-
-export interface StatValues {
-  inherent: number;
-  cyber: number;
-  total: number;
-  current: number;
-  penalties: string[];
-}
-
-export interface StatsState {
-  ref: { inherent: number; cyber: number };
-}
+import { getWoundLevel } from "./wounds";
+import type {
+  WoundLevel,
+  WoundPenaltyType,
+  CalculateStatOptions,
+  StatValues,
+} from "./types";
 
 export function getWoundPenalty(
   woundLevel: WoundLevel | null,
   baseValue: number,
+  type: WoundPenaltyType = "ref",
 ): number {
-  if (!woundLevel) return 0;
+  if (!woundLevel || type === "none") return 0;
 
   switch (woundLevel) {
     case "light":
       return 0;
     case "serious":
-      return 2; // flat -2
+      return type === "ref" ? 2 : 0;
     case "critical":
       return Math.max(Math.ceil(baseValue / 2), baseValue - 4);
     case "mortal0":
@@ -43,13 +36,17 @@ export function getWoundPenalty(
 export function calculateStat(
   inherent: number,
   cyber: number,
-  woundLevel: WoundLevel | null,
-  evPenalty: number,
+  physicalDamage: number,
+  options: CalculateStatOptions = {},
 ): StatValues {
+  const { woundPenaltyType = "none", evPenalty = 0 } = options;
+
   const total = Math.max(0, inherent + cyber);
   const penalties: string[] = [];
 
-  const woundPenalty = getWoundPenalty(woundLevel, total);
+  const woundLevel = physicalDamage > 0 ? getWoundLevel(physicalDamage) : null;
+  const woundPenalty = getWoundPenalty(woundLevel, total, woundPenaltyType);
+
   if (woundPenalty > 0) {
     penalties.push(`Wounds(-${woundPenalty})`);
   }
@@ -68,14 +65,4 @@ export function calculateStat(
     current,
     penalties,
   };
-}
-
-export function calculateREF(
-  inherent: number,
-  cyber: number,
-  physicalDamage: number,
-  evPenalty: number,
-): StatValues {
-  const woundLevel = getWoundLevel(physicalDamage);
-  return calculateStat(inherent, cyber, woundLevel, evPenalty);
 }
