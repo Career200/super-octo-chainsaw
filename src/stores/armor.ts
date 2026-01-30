@@ -142,7 +142,9 @@ function checkLayerConstraints(
   const wornLayers = getBodyPartLayers(part);
   const implantLayers = getImplantsForPart(part);
   // Skinweave doesn't count toward the 3-layer limit
-  const nonSkinweaveLayers = implantLayers.filter((l) => l.layer !== "skinweave");
+  const nonSkinweaveLayers = implantLayers.filter(
+    (l) => l.layer !== "skinweave",
+  );
   const totalLayers = wornLayers.length + nonSkinweaveLayers.length;
   const partLabel = part.replace("_", " ");
 
@@ -328,18 +330,9 @@ export function installImplant(templateId: string): WearResult {
     if (!result.success) return result;
   }
 
-  // Check if already owned but not installed
-  const existing = Object.values($ownedArmor.get()).find(
-    (inst) => inst.templateId === templateId,
-  );
-
-  if (existing) {
-    updateInstance(existing.id, { worn: true });
-  } else {
-    const instance = acquireArmor(templateId);
-    if (instance) {
-      updateInstance(instance.id, { worn: true });
-    }
+  const instance = acquireArmor(templateId);
+  if (instance) {
+    updateInstance(instance.id, { worn: true });
   }
 
   return { success: true };
@@ -352,7 +345,7 @@ export function uninstallImplant(templateId: string): void {
   );
 
   if (instance) {
-    updateInstance(instance.id, { worn: false });
+    discardArmor(instance.id);
   }
 }
 
@@ -389,24 +382,14 @@ export function installSkinweave(templateId: string): WearResult {
     return { success: false, error: "Invalid skinweave" };
   }
 
-  // Uninstall existing skinweave first (only one at a time)
   const existing = getInstalledSkinweave();
   if (existing) {
     uninstallImplant(existing.templateId);
   }
 
-  // Check if already owned but not installed
-  const ownedInstance = Object.values($ownedArmor.get()).find(
-    (inst) => inst.templateId === templateId,
-  );
-
-  if (ownedInstance) {
-    updateInstance(ownedInstance.id, { worn: true });
-  } else {
-    const instance = acquireArmor(templateId);
-    if (instance) {
-      updateInstance(instance.id, { worn: true });
-    }
+  const instance = acquireArmor(templateId);
+  if (instance) {
+    updateInstance(instance.id, { worn: true });
   }
 
   return { success: true };
