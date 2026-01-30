@@ -4,7 +4,8 @@ import {
   BOXES_PER_LEVEL,
   type WoundLevel,
 } from "../core";
-import { $health, setDamage, syncStunToPhysical } from "../../../stores/health";
+import { $health } from "@stores/character";
+import { setDamage, syncStunToPhysical } from "@stores/health";
 
 let showStun = false;
 

@@ -1,4 +1,4 @@
-import { $ownedArmor } from "../../../stores/armor";
+import { $ownedArmor } from "../../../stores/character";
 import { renderEffectiveSP, renderLayers, renderEV } from "./body";
 import { renderOwnedInventory } from "./inventory";
 import { renderShop } from "./shop";

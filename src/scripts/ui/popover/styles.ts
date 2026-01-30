@@ -32,6 +32,19 @@ export function injectStyles() {
       font-size: 14px;
     }
 
+    .popover-message-split {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .popover-hint {
+      font-size: 11px;
+      color: var(--fg-soft, #aaa);
+      font-style: italic;
+    }
+
     .popover-actions {
       display: flex;
       gap: 8px;

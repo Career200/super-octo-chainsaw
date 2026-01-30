@@ -3,17 +3,14 @@ import {
   PART_NAMES,
   getEffectiveSP,
   getImplantSP,
-  getTotalEV,
   sortByLayerOrder,
 } from "../core";
 import {
   getBodyPartLayers,
-  getAllOwnedArmor,
   getImplantsForPart,
-  getInstalledImplants,
-  isImplant,
   isSkinweave,
-} from "../../../stores/armor";
+} from "@stores/armor";
+import { $encumbrance } from "@stores/character";
 import { getHealthClassFromSP } from "./common";
 
 export function renderEffectiveSP() {
@@ -151,9 +148,7 @@ export function renderEV() {
   const valueEl = document.getElementById("ev-value");
   if (!display || !valueEl) return;
 
-  const wornArmor = getAllOwnedArmor().filter((a) => a.worn && !isImplant(a));
-  const installedImplants = getInstalledImplants();
-  const { ev, maxLayers, maxLocation } = getTotalEV(wornArmor, installedImplants);
+  const { ev, maxLayers, maxLocation } = $encumbrance.get();
 
   valueEl.textContent = ev > 0 ? `-${ev}` : "0";
   display.classList.toggle("has-penalty", ev > 0);

@@ -1,9 +1,10 @@
-import { $health } from "../../../stores/health";
+import { $health } from "@stores/character";
 import {
   renderWoundTracker,
   setupWoundTracker,
   setupStunToggle,
 } from "./wounds";
+import { setupWoundHelp } from "../help";
 
 function renderAll() {
   renderWoundTracker();
@@ -17,4 +18,5 @@ document.addEventListener("DOMContentLoaded", () => {
   renderAll();
   setupWoundTracker();
   setupStunToggle();
+  setupWoundHelp();
 });
