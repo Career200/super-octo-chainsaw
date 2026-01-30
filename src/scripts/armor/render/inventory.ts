@@ -64,7 +64,7 @@ function renderArmorItem(
   });
 
   const repairLabel = document.createElement("span");
-  repairLabel.className = "button-repair";
+  repairLabel.className = "btn-ghost btn-sm";
   repairLabel.textContent = "Repair/Break";
 
   const coverage = renderBodyPartsCoverage(
@@ -84,7 +84,7 @@ function renderArmorItem(
     actions.className = "armor-actions";
 
     const toggleBtn = document.createElement("button");
-    toggleBtn.className = armor.worn ? "button-remove" : "button-wear";
+    toggleBtn.className = armor.worn ? "btn-primary active" : "btn-primary";
     toggleBtn.textContent = armor.worn ? "Remove" : "Wear";
     toggleBtn.addEventListener("click", () => {
       const result = toggleArmor(armor.id);
@@ -94,7 +94,7 @@ function renderArmorItem(
     });
 
     const discardBtn = document.createElement("button");
-    discardBtn.className = "button-discard";
+    discardBtn.className = "btn-ghost-danger";
     discardBtn.textContent = "Discard";
     discardBtn.addEventListener("click", async () => {
       const confirmed = await confirm(discardBtn, {
@@ -227,7 +227,7 @@ function openRepairPopover(
 
   const minBtn = document.createElement("button");
   minBtn.type = "button";
-  minBtn.className = "repair-btn";
+  minBtn.className = "btn-ghost btn-icon";
   minBtn.textContent = "0";
   minBtn.addEventListener("click", () => {
     sp = 0;
@@ -236,7 +236,7 @@ function openRepairPopover(
 
   const minusBtn = document.createElement("button");
   minusBtn.type = "button";
-  minusBtn.className = "repair-btn";
+  minusBtn.className = "btn-ghost btn-icon";
   minusBtn.textContent = "−";
   minusBtn.addEventListener("click", () => {
     if (sp > 0) {
@@ -251,7 +251,7 @@ function openRepairPopover(
 
   const plusBtn = document.createElement("button");
   plusBtn.type = "button";
-  plusBtn.className = "repair-btn";
+  plusBtn.className = "btn-ghost btn-icon";
   plusBtn.textContent = "+";
   plusBtn.addEventListener("click", () => {
     if (sp < maxSP) {
@@ -262,7 +262,7 @@ function openRepairPopover(
 
   const maxBtn = document.createElement("button");
   maxBtn.type = "button";
-  maxBtn.className = "repair-btn repair-btn-edge";
+  maxBtn.className = "btn-ghost btn-icon";
   maxBtn.textContent = maxSP.toString();
   maxBtn.addEventListener("click", () => {
     sp = maxSP;

@@ -79,73 +79,14 @@
   font-family: inherit;
 }
 
-.button-wear {
-  background: var(--accent-muted);
-  color: var(--fg);
-  border: none;
-}
-
-.button-wear:hover {
-  background: var(--accent);
-  color: #000;
-}
-
-.button-remove {
-  background: var(--accent);
-  color: #000;
-  border: none;
-}
-
-.button-discard,
-.button-take,
-.button-clear,
-.button-repair {
-  background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--fg-soft);
-}
-
-.button-discard:hover,
-.button-clear:hover {
-  border-color: var(--danger);
-  color: var(--danger);
-}
-
-.button-take:hover,
-.button-repair:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.button-repair {
+/* Button size overrides */
+.btn-sm {
   padding: var(--padding-input);
   font-size: var(--font-ui);
 }
 
-.button-buy {
-  background: var(--link);
-  color: #000;
-  border: none;
-}
-
-.button-buy:hover {
-  background: var(--accent);
-}
-
-.button-hit,
-.button-clear {
+.btn-md {
   padding: var(--space-4) var(--space-12);
-}
-
-.button-hit {
-  background: transparent;
-  border: 1px solid var(--danger);
-  color: var(--danger);
-}
-
-.button-hit:hover {
-  background: var(--danger);
-  color: #fff;
 }
 
 /* === Health State Utilities === */

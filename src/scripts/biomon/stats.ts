@@ -51,11 +51,11 @@ export function calculateStat(
 
   const woundPenalty = getWoundPenalty(woundLevel, total);
   if (woundPenalty > 0) {
-    penalties.push(`Wounds (-${woundPenalty})`);
+    penalties.push(`Wounds(-${woundPenalty})`);
   }
 
   if (evPenalty > 0) {
-    penalties.push(`EV (-${evPenalty})`);
+    penalties.push(`EV(-${evPenalty})`);
   }
 
   const totalPenalty = woundPenalty + evPenalty;

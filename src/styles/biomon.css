@@ -35,25 +35,15 @@
   white-space: nowrap;
 }
 
-/* Stun Toggle Button */
-.button-stun-toggle {
+/* Stun Toggle Button - extends .btn-ghost */
+#stun-toggle {
   padding: var(--padding-button);
-  background: transparent;
-  border: 1px solid var(--border-light);
-  border-radius: 3px;
-  color: var(--fg-soft);
+  border-radius: var(--radius-sm);
   font-size: var(--font-ui-sm);
-  font-family: inherit;
-  cursor: pointer;
   white-space: nowrap;
 }
 
-.button-stun-toggle:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.button-stun-toggle.active {
+#stun-toggle.active {
   background: var(--accent-muted);
   border-color: var(--accent-muted);
   color: var(--fg);
@@ -182,10 +172,8 @@
   flex-direction: column;
   align-items: center;
   min-width: 80px;
-  background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: var(--space-4);
-  padding: var(--padding-panel);
+  margin-bottom: 0;
+  border-radius: var(--radius);
 }
 
 .stat-name {
@@ -247,7 +235,7 @@
   background: var(--bg);
   margin: var(--space-4) calc(-1 * var(--space-4)) calc(-1 * var(--space-4));
   padding: var(--space-6) var(--space-4);
-  border-radius: 0 0 3px 3px;
+  border-radius: var(--radius-sm);
 }
 
 .stat-row.stat-current .stat-value {

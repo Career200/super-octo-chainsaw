@@ -156,7 +156,7 @@ function renderImplantItem(
 
   if (installed) {
     const removeBtn = document.createElement("button");
-    removeBtn.className = "button-discard";
+    removeBtn.className = "btn-ghost-danger";
     removeBtn.textContent = "Remove";
     removeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -166,7 +166,7 @@ function renderImplantItem(
     actions.appendChild(removeBtn);
   } else {
     const installBtn = document.createElement("button");
-    installBtn.className = "button-take";
+    installBtn.className = "btn-ghost";
     installBtn.textContent = "Install";
     installBtn.addEventListener("click", (e) => {
       e.stopPropagation();

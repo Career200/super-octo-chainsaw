@@ -47,12 +47,12 @@ export function renderShop() {
     const handleAcquire = () => acquireArmor(template.templateId);
 
     const buyBtn = document.createElement("button");
-    buyBtn.className = "button-buy";
+    buyBtn.className = "btn-secondary";
     buyBtn.textContent = template.cost ? `Buy (${template.cost}eb)` : "Buy";
     buyBtn.addEventListener("click", handleAcquire);
 
     const takeBtn = document.createElement("button");
-    takeBtn.className = "button-take";
+    takeBtn.className = "btn-ghost";
     takeBtn.textContent = "Take (Free)";
     takeBtn.addEventListener("click", handleAcquire);
 

@@ -103,22 +103,6 @@
   cursor: pointer;
 }
 
-.skinweave-repair {
-  margin-top: var(--space-6);
-  padding: var(--padding-input);
-  font-size: var(--font-ui-sm);
-  background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--fg-soft);
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.skinweave-repair:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
 .implants-list {
   margin-top: var(--space-8);
   font-size: var(--font-ui);
@@ -329,7 +313,7 @@
   font-weight: bold;
   background: var(--bg);
   border: 1px solid var(--border-light);
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   color: var(--fg-soft);
   text-transform: uppercase;
 }
@@ -425,26 +409,6 @@
   justify-content: center;
   gap: var(--space-12);
   margin-bottom: var(--space-12);
-}
-
-.repair-btn {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 1px solid var(--border-light);
-  background: var(--bg);
-  color: var(--fg);
-  font-size: var(--font-ui-xl);
-}
-
-.repair-btn:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.repair-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
 }
 
 .repair-sp-value {
