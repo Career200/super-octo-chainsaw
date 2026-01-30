@@ -90,13 +90,15 @@ footer {
 #tacticalNav span {
   font-size: 0.8rem;
   color: var(--fg);
-  &.reconnect {
-    position: absolute;
-    left: 0;
-    margin-top: 0.2rem;
-    font-size: 0.7rem;
-    color: var(--status-mixed);
-    animation: blink 5s infinite;
+  &.status {
+    font-size: 0.75rem;
+    &.connected {
+      color: var(--status-online);
+    }
+    &.reconnect {
+      color: var(--status-mixed);
+      animation: blink 5s infinite;
+    }
   }
 }
 

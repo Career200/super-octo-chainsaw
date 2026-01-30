@@ -7,15 +7,15 @@
 .armor-legend {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font-size: 12px;
+  gap: var(--space-2);
+  font-size: var(--font-ui);
   color: var(--fg-soft);
   white-space: nowrap;
 }
 
 .armor-legend .armor-type-icon {
   transform: scale(1.5);
-  margin: 0 2px 0 6px;
+  margin: 0 var(--space-2) 0 var(--space-6);
 }
 
 /* === Body Grid === */
@@ -26,7 +26,7 @@
     "larm torso rarm"
     "lleg ev rleg";
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
+  gap: var(--space-12);
   margin-top: 10px;
 }
 
@@ -39,7 +39,7 @@
   justify-content: center;
   background: var(--bg);
   border: 1px dashed var(--border-light);
-  border-radius: 6px;
+  border-radius: var(--radius-lg);
   padding: 10px;
   min-height: 80px;
 }
@@ -71,11 +71,11 @@
 .skinweave-label,
 .implants-label,
 .ev-label {
-  font-size: 14px;
+  font-size: var(--font-ui-lg);
   color: var(--fg-soft);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-6);
 }
 
 .ev-label {
@@ -85,7 +85,7 @@
 
 .skinweave-desc,
 .implants-desc {
-  font-size: 11px;
+  font-size: var(--font-ui-sm);
   color: var(--fg-soft);
   opacity: 0.8;
   text-align: justify;
@@ -93,29 +93,20 @@
 }
 
 .skinweave-desc {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-12);
 }
 
 .skinweave-select {
   background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-  color: var(--fg);
-  font-size: 14px;
-  font-family: inherit;
-  padding: 4px 8px;
+  font-size: var(--font-ui-lg);
+  padding: var(--space-4) var(--space-8);
   cursor: pointer;
 }
 
-.skinweave-select:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
 .skinweave-repair {
-  margin-top: 6px;
-  padding: 2px 8px;
-  font-size: 11px;
+  margin-top: var(--space-6);
+  padding: var(--padding-input);
+  font-size: var(--font-ui-sm);
   background: transparent;
   border: 1px solid var(--border-light);
   color: var(--fg-soft);
@@ -129,23 +120,21 @@
 }
 
 .implants-list {
-  margin-top: 8px;
-  font-size: 12px;
+  margin-top: var(--space-8);
+  font-size: var(--font-ui);
   color: var(--fg-soft);
   text-align: center;
 }
 
 /* === Body Parts === */
 .body-part {
-  background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
   padding: 10px;
+  margin-bottom: 0;
 }
 
 .body-part h3 {
   margin: 0 0 5px 0;
-  font-size: 14px;
+  font-size: var(--font-ui-lg);
   color: var(--accent);
 }
 
@@ -170,7 +159,7 @@
 
 /* === EV Display === */
 .ev-value {
-  font-size: 24px;
+  font-size: var(--font-ui-2xl);
   font-weight: bold;
   color: var(--fg-soft);
 }
@@ -180,29 +169,29 @@
 }
 
 .ev-layer-penalty {
-  margin-top: 8px;
-  padding: 4px 8px;
+  margin-top: var(--space-8);
+  padding: var(--space-4) var(--space-8);
   background: var(--code-bg);
   border: 1px solid var(--border-light);
-  border-radius: 4px;
-  font-size: 10px;
+  border-radius: var(--radius);
+  font-size: var(--font-ui-xs);
   color: var(--fg-soft);
   text-align: center;
 }
 
 /* === Armor Layers === */
 .layer-list {
-  margin-top: 16px;
+  margin-top: var(--space-16);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-4);
 }
 
 .layer {
   position: relative;
   background: var(--bg);
-  padding: 4px 6px;
-  font-size: 12px;
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-ui);
 }
 
 .layer-name {
@@ -232,7 +221,7 @@
 
 /* === SP Values === */
 .sp-value {
-  font-size: 18px;
+  font-size: var(--font-ui-xl);
   font-weight: bold;
   color: var(--footer);
 }
@@ -242,7 +231,7 @@
 }
 
 .sp-breakdown {
-  font-size: 12px;
+  font-size: var(--font-ui);
   color: color-mix(in srgb, var(--fg-soft), white 33%);
 }
 
@@ -279,24 +268,8 @@
 }
 
 /* === Armor Items === */
-.armor-item,
-.store-item,
-.history-entry {
-  background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  padding: 8px;
-  margin-bottom: 8px;
-}
-
 .armor-item.armor-worn {
   border-color: var(--accent);
-}
-
-.armor-item h4,
-.store-item h4 {
-  margin: 0;
-  color: var(--accent);
 }
 
 .store-item h4 {
@@ -307,11 +280,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .armor-sp {
-  font-size: 14px;
+  font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--link);
   white-space: nowrap;
@@ -321,9 +294,9 @@
   position: relative;
   display: inline-block;
   margin-right: 10px;
-  margin-left: 4px;
+  margin-left: var(--space-4);
   bottom: 3px;
-  font-size: 10px;
+  font-size: var(--font-ui-xs);
   color: var(--terminal-green-bright);
   transform: scale(2.5);
   transform-origin: center;
@@ -339,19 +312,19 @@
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 6px;
+  gap: var(--space-8);
+  margin-top: var(--space-6);
 }
 
 .body-parts-coverage {
   display: flex;
   justify-content: flex-end;
-  gap: 4px;
+  gap: var(--space-4);
 }
 
 .coverage-badge {
   display: inline-block;
-  padding: 2px 5px;
+  padding: var(--space-2) 5px;
   font-size: var(--font-ui);
   font-weight: bold;
   background: var(--bg);
@@ -362,15 +335,15 @@
 }
 
 .coverage-badge.coverage-full {
-  padding: 2px 12px;
+  padding: var(--space-2) var(--space-12);
   letter-spacing: 1px;
 }
 
 .armor-actions,
 .store-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
 }
 
 .armor-actions button,
@@ -383,22 +356,22 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-6);
 }
 
 .history-time {
-  font-size: 11px;
+  font-size: var(--font-ui-sm);
   color: var(--fg-soft);
 }
 
 .history-damage {
-  font-size: 14px;
+  font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--danger);
 }
 
 .history-details {
-  font-size: 12px;
+  font-size: var(--font-ui);
   line-height: 1.5;
 }
 
@@ -430,13 +403,13 @@
 }
 
 .history-repair {
-  font-size: 14px;
+  font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--link);
 }
 
 .history-break {
-  font-size: 14px;
+  font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--accent-muted);
 }
@@ -450,8 +423,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: var(--space-12);
+  margin-bottom: var(--space-12);
 }
 
 .repair-btn {
@@ -461,7 +434,7 @@
   border: 1px solid var(--border-light);
   background: var(--bg);
   color: var(--fg);
-  font-size: 18px;
+  font-size: var(--font-ui-xl);
 }
 
 .repair-btn:hover:not(:disabled) {
@@ -475,7 +448,7 @@
 }
 
 .repair-sp-value {
-  font-size: 24px;
+  font-size: var(--font-ui-2xl);
   font-weight: bold;
   min-width: 48px;
   text-align: center;
@@ -484,8 +457,8 @@
 .repair-part-selector {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  margin-bottom: 12px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-12);
 }
 
 .repair-selectable {
@@ -506,19 +479,13 @@
 /* === Hit Popover === */
 .popover-danger .popover-input {
   width: 100%;
-  padding: 8px 10px;
-  margin-bottom: 12px;
-  background: var(--bg);
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-  color: var(--fg);
-  font-size: 14px;
-  font-family: inherit;
+  padding: var(--space-8) 10px;
+  margin-bottom: var(--space-12);
+  font-size: var(--font-ui-lg);
   box-sizing: border-box;
 }
 
 .popover-danger .popover-input:focus {
-  outline: none;
   border-color: var(--danger);
 }
 
@@ -534,7 +501,7 @@
 
 .hit-body-select .select-option {
   min-width: 32px;
-  padding: 4px 8px;
+  padding: var(--space-4) var(--space-8);
   text-align: center;
   text-transform: uppercase;
   font-size: var(--font-ui);
@@ -542,7 +509,7 @@
 
 .hit-body-select .select-option-ignoresp {
   font-size: var(--font-ui-xs);
-  padding: 4px 6px;
+  padding: var(--space-4) var(--space-6);
   letter-spacing: 0.3px;
 }
 
@@ -573,19 +540,19 @@
 }
 
 .implant-group {
-  margin-bottom: 12px;
-  padding: 8px;
+  margin-bottom: var(--space-12);
+  padding: var(--padding-panel);
   border: 1px dashed var(--accent-muted);
-  border-radius: 6px;
+  border-radius: var(--radius-lg);
   background: var(--bg);
 }
 
 .implant-group-label {
-  font-size: 11px;
+  font-size: var(--font-ui-sm);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--accent-muted);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-8);
 }
 
 .implant-group .armor-item {

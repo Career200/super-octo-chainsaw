@@ -47,6 +47,30 @@
   --font-ui: 13px;
   --font-ui-sm: 11px;
   --font-ui-xs: 10px;
+  --font-ui-lg: 14px;
+  --font-ui-xl: 18px;
+  --font-ui-2xl: 24px;
+
+  /* Spacing scale (4px base) */
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+
+  /* Common padding patterns */
+  --padding-input: 2px 4px;
+  --padding-button: 3px 10px;
+  --padding-panel: 8px;
+  --padding-bar: 6px 12px;
+
+  /* Border radius */
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-lg: 6px;
 
   /* Health state colors */
   --health-full: var(--link);
@@ -72,11 +96,66 @@
   --glow-green: 0 0 8px var(--border-green);
 }
 
+/* === Base Input === */
+.input,
+.skinweave-select,
+.stat-input,
+.popover-input {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font-family: inherit;
+}
+
+.input:focus,
+.skinweave-select:focus,
+.stat-input:focus,
+.popover-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* === Base Card === */
+.card,
+.armor-item,
+.store-item,
+.history-entry,
+.body-part {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--padding-panel);
+  margin-bottom: var(--space-8);
+}
+
+.card h4,
+.armor-item h4,
+.store-item h4 {
+  margin: 0;
+  color: var(--accent);
+}
+
+/* === Hide number input spinners === */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 .box {
   display: flex;
   justify-content: space-between;
   &.col {
     flex-direction: column;
+  }
+  &.baseline {
+    align-items: baseline;
   }
   gap: 5px;
 }

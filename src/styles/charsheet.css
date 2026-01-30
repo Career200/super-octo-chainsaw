@@ -2,8 +2,8 @@
 /* Hide footer content, keep nav toggle as floating button */
 .charsheet-page footer {
   position: fixed;
-  bottom: 12px;
-  right: 12px;
+  bottom: var(--space-12);
+  right: var(--space-12);
   background: transparent;
   border: none;
   padding: 0;
@@ -28,7 +28,7 @@
 /* === Container Base === */
 .container {
   display: grid;
-  gap: 12px;
+  gap: var(--space-12);
   padding: 18px;
   flex-grow: 1;
 }
@@ -48,8 +48,8 @@
   max-height: calc(100vh - 50px);
   background: var(--bg-alt);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
 }
 
 .panel-heading {
@@ -72,8 +72,8 @@
 
 /* === Buttons Base === */
 .container button {
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: var(--space-6) var(--space-12);
+  border-radius: var(--radius);
   cursor: pointer;
   font-size: var(--font-ui);
   font-family: inherit;
@@ -118,8 +118,8 @@
 }
 
 .button-repair {
-  padding: 2px 8px;
-  font-size: 12px;
+  padding: var(--padding-input);
+  font-size: var(--font-ui);
 }
 
 .button-buy {
@@ -134,7 +134,7 @@
 
 .button-hit,
 .button-clear {
-  padding: 4px 12px;
+  padding: var(--space-4) var(--space-12);
 }
 
 .button-hit {
@@ -165,20 +165,6 @@
   --health-color: var(--health-critical);
 }
 
-/* === Cards Base === */
-.card {
-  background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  padding: 8px;
-  margin-bottom: 8px;
-}
-
-.card h4 {
-  margin: 0;
-  color: var(--accent);
-}
-
 .empty-message {
   color: var(--fg-soft);
   font-style: italic;
@@ -186,38 +172,16 @@
 
 /* === Inputs === */
 .input {
-  padding: 4px 8px;
-  background: var(--bg);
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-  color: var(--fg);
-  font-size: 14px;
-  font-family: inherit;
-}
-
-.input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-/* Hide number input spinners */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-ui-lg);
 }
 
 /* === Responsive: Mobile === */
 @media (max-width: 1023px) {
   .container {
     grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 12px;
+    gap: var(--space-12);
+    padding: var(--space-12);
   }
 
   .panel {
@@ -251,8 +215,8 @@ input[type="number"] {
   .panel-collapsible .expand-indicator {
     display: block;
     position: absolute;
-    bottom: 8px;
-    right: 12px;
+    bottom: var(--space-8);
+    right: var(--space-12);
     width: 20px;
     height: 20px;
     opacity: 0.5;

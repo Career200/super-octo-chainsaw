@@ -12,22 +12,22 @@
   z-index: 100;
   background-color: var(--bg-alt);
   border-bottom: 1px solid var(--border);
-  padding: 6px 12px;
+  padding: var(--padding-bar);
   display: flex;
   align-items: start;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .wound-bar-header {
   display: flex;
-  margin-top: 4px;
+  margin-top: var(--space-4);
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   flex-shrink: 0;
 }
 
 .wound-bar-title {
-  font-size: 12px;
+  font-size: var(--font-ui);
   font-weight: bold;
   color: var(--footer);
   text-transform: uppercase;
@@ -37,12 +37,12 @@
 
 /* Stun Toggle Button */
 .button-stun-toggle {
-  padding: 3px 10px;
+  padding: var(--padding-button);
   background: transparent;
   border: 1px solid var(--border-light);
   border-radius: 3px;
   color: var(--fg-soft);
-  font-size: 11px;
+  font-size: var(--font-ui-sm);
   font-family: inherit;
   cursor: pointer;
   white-space: nowrap;
@@ -63,7 +63,7 @@
 #wound-tracker {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
-  gap: 1px;
+  gap: var(--space-1);
   flex: 1;
   min-width: 0;
 }
@@ -76,8 +76,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 0 4px;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
   border-right: 1px solid var(--accent);
 }
 
@@ -86,7 +86,7 @@
 }
 
 .wound-level-label {
-  font-size: 10px;
+  font-size: var(--font-ui-xs);
   color: var(--fg-soft);
   text-align: center;
   white-space: nowrap;
@@ -96,19 +96,19 @@
 .wound-boxes {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: var(--space-1);
 }
 
 .wound-track {
   display: flex;
-  gap: 1px;
+  gap: var(--space-1);
 }
 
 .wound-box {
   width: 14px;
   height: 14px;
   border: 1px solid var(--border-light);
-  border-radius: 2px;
+  border-radius: var(--space-2);
   background: var(--bg);
   cursor: pointer;
   transition:
@@ -174,7 +174,7 @@
 /* === Stats Panel === */
 .stats-grid {
   display: flex;
-  gap: 16px;
+  gap: var(--space-16);
 }
 
 .stat-column {
@@ -184,18 +184,18 @@
   min-width: 80px;
   background: var(--code-bg);
   border: 1px solid var(--border-light);
-  border-radius: 4px;
-  padding: 8px;
+  border-radius: var(--space-4);
+  padding: var(--padding-panel);
 }
 
 .stat-name {
-  font-size: 14px;
+  font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 8px;
-  padding-bottom: 4px;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--border-light);
   width: 100%;
   text-align: center;
@@ -206,18 +206,18 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 2px 0;
-  gap: 8px;
+  padding: var(--space-2) 0;
+  gap: var(--space-8);
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: var(--font-ui-xs);
   color: var(--fg-soft);
   text-transform: uppercase;
 }
 
 .stat-value {
-  font-size: 14px;
+  font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--fg);
   min-width: 24px;
@@ -226,43 +226,32 @@
 
 .stat-input {
   width: 40px;
-  padding: 2px 4px;
-  background: var(--bg);
-  border: 1px solid var(--border-light);
-  border-radius: 3px;
-  color: var(--fg);
-  font-size: 12px;
-  font-family: inherit;
+  padding: var(--padding-input);
+  font-size: var(--font-ui);
   text-align: right;
 }
 
-.stat-input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
 .stat-row.stat-total {
-  margin-top: 4px;
-  padding-top: 4px;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--border-light);
 }
 
 .stat-penalties {
-  padding-top: 4px;
-  /* decide on what to do with long text, use fixed widht on stat-column and wrap? */
-  font-size: 12px;
+  padding-top: var(--space-4);
+  font-size: var(--font-ui);
   color: var(--danger);
 }
 
 .stat-row.stat-current {
   background: var(--bg);
-  margin: 4px -4px -4px;
-  padding: 6px 4px;
+  margin: var(--space-4) calc(-1 * var(--space-4)) calc(-1 * var(--space-4));
+  padding: var(--space-6) var(--space-4);
   border-radius: 0 0 3px 3px;
 }
 
 .stat-row.stat-current .stat-value {
-  font-size: 18px;
+  font-size: var(--font-ui-xl);
 }
 
 .stat-row.stat-current.diminished .stat-value {
@@ -273,8 +262,8 @@
 @media (max-width: 850px) {
   .wound-bar {
     flex-wrap: wrap;
-    padding: 6px 10px;
-    gap: 6px;
+    padding: var(--space-6) 10px;
+    gap: var(--space-6);
   }
 
   .wound-bar-header {
@@ -289,11 +278,11 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: var(--accent-muted) transparent;
-    padding-bottom: 4px;
+    padding-bottom: var(--space-4);
   }
 
   #wound-tracker::-webkit-scrollbar {
-    height: 4px;
+    height: var(--space-4);
   }
 
   #wound-tracker::-webkit-scrollbar-track {
@@ -302,12 +291,12 @@
 
   #wound-tracker::-webkit-scrollbar-thumb {
     background: var(--accent-muted);
-    border-radius: 2px;
+    border-radius: var(--space-2);
   }
 
   .wound-level-group {
     flex-shrink: 0;
-    padding: 0 6px;
+    padding: 0 var(--space-6);
   }
 
   .wound-box {
@@ -316,7 +305,7 @@
   }
 
   .wound-level-label {
-    font-size: 11px;
+    font-size: var(--font-ui-sm);
   }
 
   .biomon-page .page-scroll {
