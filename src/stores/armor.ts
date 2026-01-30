@@ -1,10 +1,12 @@
-import { atom } from "nanostores";
+import { atom, computed } from "nanostores";
 import {
   generateId,
+  getTotalEV,
   type ArmorInstance,
   type ArmorPiece,
   type ArmorLayer,
   type BodyPartName,
+  type EVResult,
 } from "../scripts/armor/core";
 import { armorTemplates, getTemplate } from "../scripts/armor/equipment";
 
@@ -86,6 +88,17 @@ export function getBodyPartLayers(part: BodyPartName): ArmorPiece[] {
         !piece.layer, // implants rendered separately
     );
 }
+
+// --- Computed Stores ---
+
+/**
+ * Current encumbrance (EV) from worn armor and implants
+ */
+export const $encumbrance = computed($ownedArmor, (): EVResult => {
+  const wornArmor = getAllOwnedArmor().filter((a) => a.worn && !a.layer);
+  const implants = getInstalledImplants();
+  return getTotalEV(wornArmor, implants);
+});
 
 // --- Actions ---
 

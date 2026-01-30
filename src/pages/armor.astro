@@ -1,11 +1,13 @@
 ---
 import HTML from '../layouts/html.astro';
 import Layout from '../layouts/layout.astro';
+import Charsheet from '../layouts/charsheet.astro';
 import '../styles/armor.css';
 ---
 
-<HTML title="IMI GLOBAL — TAC HOME">
+<HTML title="IMI GLOBAL — TAC HOME" bodyClass="charsheet-page armor-page">
   <Layout>
+    <Charsheet>
     <div class="container">
       <div class="panel panel-collapsible" id="damage-history-panel">
         <div class="panel-heading">
@@ -104,6 +106,7 @@ import '../styles/armor.css';
       </div>
 
     </div>
+    </Charsheet>
   </Layout>
   <script src="../scripts/armor/render/index.ts"></script>
 </HTML>

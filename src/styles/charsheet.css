@@ -1,0 +1,292 @@
+/* === Charsheet Footer Override === */
+/* Hide footer content, keep nav toggle as floating button */
+.charsheet-page footer {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  z-index: 100;
+}
+
+.charsheet-page footer > .box {
+  display: contents;
+}
+
+.charsheet-page footer > .box > .box.col {
+  display: none;
+}
+
+.charsheet-page footer .nav-toggle {
+  width: 48px;
+  height: 48px;
+  font-size: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* === Container Base === */
+.container {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  flex-grow: 1;
+}
+
+.container * {
+  transition:
+    color var(--transition-speed),
+    background-color var(--transition-speed),
+    border-color var(--transition-speed),
+    opacity var(--transition-speed),
+    transform var(--transition-speed);
+}
+
+/* === Panels === */
+.panel {
+  overflow-y: auto;
+  max-height: calc(100vh - 50px);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.panel-heading h2 {
+  color: var(--accent);
+  flex: 1;
+}
+
+/* Hidden by default on desktop */
+.expand-indicator {
+  display: none;
+}
+
+/* === Buttons Base === */
+.container button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: var(--font-ui);
+  font-family: inherit;
+}
+
+.button-wear {
+  background: var(--accent-muted);
+  color: var(--fg);
+  border: none;
+}
+
+.button-wear:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+.button-remove {
+  background: var(--accent);
+  color: #000;
+  border: none;
+}
+
+.button-discard,
+.button-take,
+.button-clear,
+.button-repair {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
+}
+
+.button-discard:hover,
+.button-clear:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.button-take:hover,
+.button-repair:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.button-repair {
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.button-buy {
+  background: var(--link);
+  color: #000;
+  border: none;
+}
+
+.button-buy:hover {
+  background: var(--accent);
+}
+
+.button-hit,
+.button-clear {
+  padding: 4px 12px;
+}
+
+.button-hit {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.button-hit:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* === Health State Utilities === */
+.health-full {
+  --health-color: var(--health-full);
+}
+.health-good {
+  --health-color: var(--health-good);
+}
+.health-worn {
+  --health-color: var(--health-worn);
+}
+.health-damaged {
+  --health-color: var(--health-damaged);
+}
+.health-critical {
+  --health-color: var(--health-critical);
+}
+
+/* === Cards Base === */
+.card {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.card h4 {
+  margin: 0;
+  color: var(--accent);
+}
+
+.empty-message {
+  color: var(--fg-soft);
+  font-style: italic;
+}
+
+/* === Inputs === */
+.input {
+  padding: 4px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  color: var(--fg);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* === Responsive: Mobile === */
+@media (max-width: 1023px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .panel {
+    max-height: none;
+  }
+
+  /* Collapsible panels */
+  .panel-collapsible {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .panel-collapsible .body-grid,
+  .panel-collapsible .panel-content {
+    display: none;
+  }
+
+  .panel-collapsible.expanded .body-grid {
+    display: grid;
+  }
+
+  .panel-collapsible.expanded .panel-content {
+    display: block;
+  }
+
+  .panel-collapsible.expanded {
+    cursor: default;
+  }
+
+  /* Expand indicator */
+  .panel-collapsible .expand-indicator {
+    display: block;
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+  }
+
+  .panel-collapsible .expand-indicator::before,
+  .panel-collapsible .expand-indicator::after {
+    content: "";
+    position: absolute;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
+  .panel-collapsible .expand-indicator::before {
+    width: 10px;
+    height: 2px;
+    top: 9px;
+    left: 1px;
+    transform: rotate(45deg);
+  }
+
+  .panel-collapsible .expand-indicator::after {
+    width: 10px;
+    height: 2px;
+    top: 9px;
+    right: 1px;
+    transform: rotate(-45deg);
+  }
+
+  .panel-collapsible:hover .expand-indicator {
+    opacity: 1;
+  }
+
+  .panel-collapsible.expanded .expand-indicator {
+    transform: rotate(180deg);
+  }
+}

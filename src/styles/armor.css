@@ -1,45 +1,9 @@
 /* Armor Page Layout */
-.container {
-  display: grid;
+.armor-page .container {
   grid-template-columns: 240px repeat(3, 1fr);
-  gap: 12px;
-  padding: 18px;
-  flex-grow: 1;
 }
 
-/* Global transition for interactive feedback (avoids layout properties to prevent thrashing) */
-.container * {
-  transition:
-    color var(--transition-speed),
-    background-color var(--transition-speed),
-    border-color var(--transition-speed),
-    opacity var(--transition-speed),
-    transform var(--transition-speed);
-}
-
-/* Panels */
-.panel {
-  overflow-y: auto;
-  max-height: calc(100vh - 40px - 75px - 10px);
-  background: var(--bg-alt);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px;
-}
-
-.panel-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 10px;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.panel-heading h2 {
-  color: var(--accent);
-  flex: 1;
-}
-
+/* === Armor Legend === */
 .armor-legend {
   display: flex;
   align-items: center;
@@ -54,7 +18,7 @@
   margin: 0 2px 0 6px;
 }
 
-/* Body Grid */
+/* === Body Grid === */
 .body-grid {
   display: grid;
   grid-template-areas:
@@ -171,6 +135,7 @@
   text-align: center;
 }
 
+/* === Body Parts === */
 .body-part {
   background: var(--code-bg);
   border: 1px solid var(--border-light);
@@ -203,6 +168,7 @@
   grid-area: rleg;
 }
 
+/* === EV Display === */
 .ev-value {
   font-size: 24px;
   font-weight: bold;
@@ -224,7 +190,7 @@
   text-align: center;
 }
 
-/* Armor Layers */
+/* === Armor Layers === */
 .layer-list {
   margin-top: 16px;
   display: flex;
@@ -253,7 +219,6 @@
   transition: width var(--transition-speed);
 }
 
-/* SkinWeave layer - visually distinct */
 .layer.layer-skinweave {
   background: var(--bg-alt);
   border: 1px dashed var(--accent-muted);
@@ -265,6 +230,7 @@
   color: var(--accent-muted);
 }
 
+/* === SP Values === */
 .sp-value {
   font-size: 18px;
   font-weight: bold;
@@ -280,23 +246,7 @@
   color: color-mix(in srgb, var(--fg-soft), white 33%);
 }
 
-/* === Health State Utilities === */
-.health-full {
-  --health-color: var(--health-full);
-}
-.health-good {
-  --health-color: var(--health-good);
-}
-.health-worn {
-  --health-color: var(--health-worn);
-}
-.health-damaged {
-  --health-color: var(--health-damaged);
-}
-.health-critical {
-  --health-color: var(--health-critical);
-}
-
+/* === Health Color Applications === */
 .armor-sp [class*="health-"],
 .repair-sp-value[class*="health-"] {
   color: var(--health-color);
@@ -328,7 +278,7 @@
   border-color: var(--health-critical);
 }
 
-/* === Card Bases (shared) === */
+/* === Armor Items === */
 .armor-item,
 .store-item,
 .history-entry {
@@ -353,7 +303,6 @@
   color: var(--link);
 }
 
-/* Header row: title + SP */
 .armor-header {
   display: flex;
   justify-content: space-between;
@@ -417,73 +366,6 @@
   letter-spacing: 1px;
 }
 
-.empty-message {
-  color: var(--fg-soft);
-  font-style: italic;
-}
-
-/* === Buttons === */
-.container button {
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: var(--font-ui);
-  font-family: inherit;
-}
-
-.button-wear {
-  background: var(--accent-muted);
-  color: var(--fg);
-  border: none;
-}
-
-.button-wear:hover {
-  background: var(--accent);
-  color: #000;
-}
-
-.button-remove {
-  background: var(--accent);
-  color: #000;
-  border: none;
-}
-
-.button-discard,
-.button-take,
-.button-clear,
-.button-repair {
-  background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--fg-soft);
-}
-
-.button-discard:hover,
-.button-clear:hover {
-  border-color: var(--danger);
-  color: var(--danger);
-}
-
-.button-take:hover,
-.button-repair:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.button-repair {
-  padding: 2px 8px;
-  font-size: 12px;
-}
-
-.button-buy {
-  background: var(--link);
-  color: #000;
-  border: none;
-}
-
-.button-buy:hover {
-  background: var(--accent);
-}
-
 .armor-actions,
 .store-actions {
   display: flex;
@@ -494,22 +376,6 @@
 .armor-actions button,
 .store-actions button {
   flex: 1;
-}
-
-.button-hit,
-.button-clear {
-  padding: 4px 12px;
-}
-
-.button-hit {
-  background: transparent;
-  border: 1px solid var(--danger);
-  color: var(--danger);
-}
-
-.button-hit:hover {
-  background: var(--danger);
-  color: #fff;
 }
 
 /* === Damage History === */
@@ -575,7 +441,7 @@
   color: var(--accent-muted);
 }
 
-/* Repair Popover */
+/* === Repair Popover === */
 .popover-repair {
   min-width: 160px;
 }
@@ -615,7 +481,6 @@
   text-align: center;
 }
 
-/* Repair part selector */
 .repair-part-selector {
   display: flex;
   justify-content: center;
@@ -638,7 +503,7 @@
   color: #000;
 }
 
-/* Hit Popover Input */
+/* === Hit Popover === */
 .popover-danger .popover-input {
   width: 100%;
   padding: 8px 10px;
@@ -661,7 +526,6 @@
   color: var(--fg-soft);
 }
 
-/* Hit Popover Body Part Selector */
 .hit-body-select .select-options {
   justify-items: center;
   gap: 3px;
@@ -682,7 +546,6 @@
   letter-spacing: 0.3px;
 }
 
-/* Hit Popover */
 .popover-hit {
   width: min(360px, var(--popover-max-width));
 }
@@ -693,7 +556,6 @@
   color: #fff;
 }
 
-/* Hover styles only for pointer devices - prevents sticky hover on touch */
 @media (hover: hover) {
   .popover-hit .select-option:hover:not(.selected) {
     border-color: var(--danger);
@@ -701,7 +563,7 @@
   }
 }
 
-/* Implants Popover */
+/* === Implants Popover === */
 .popover-implants {
   width: min(400px, var(--popover-max-width));
 }
@@ -710,7 +572,6 @@
   margin-bottom: 0;
 }
 
-/* Implant Group in Owned Inventory */
 .implant-group {
   margin-bottom: 12px;
   padding: 8px;
@@ -735,45 +596,21 @@
   margin-bottom: 0;
 }
 
-/* Damage history panel - limit width on desktop */
+/* === Panel Overrides === */
 #damage-history-panel {
   max-width: 222px;
 }
 
-/* Character armor panel - minimum width on desktop */
 #character-armor-panel {
   min-width: 300px;
 }
 
-/* Hidden by default on desktop */
-.expand-indicator {
-  display: none;
-}
-
-/* === Responsive: Below 1024px === */
+/* === Responsive === */
 @media (max-width: 1023px) {
-  .container {
+  .armor-page .container {
     grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 12px;
   }
 
-  .panel {
-    max-height: none;
-  }
-
-  /* Collapsible panels */
-  .panel-collapsible {
-    position: relative;
-    cursor: pointer;
-  }
-
-  .panel-collapsible .body-grid,
-  .panel-collapsible .panel-content {
-    display: none;
-  }
-
-  /* Panel width resets for mobile */
   #damage-history-panel {
     max-width: none;
   }
@@ -785,61 +622,5 @@
   #damage-history-panel.expanded .panel-content {
     max-height: 50vh;
     overflow-y: auto;
-  }
-
-  .panel-collapsible.expanded .body-grid {
-    display: grid;
-  }
-
-  .panel-collapsible.expanded .panel-content {
-    display: block;
-  }
-
-  .panel-collapsible.expanded {
-    cursor: default;
-  }
-
-  /* Expand indicator */
-  .panel-collapsible .expand-indicator {
-    display: block;
-    position: absolute;
-    bottom: 8px;
-    right: 12px;
-    width: 20px;
-    height: 20px;
-    opacity: 0.5;
-  }
-
-  .panel-collapsible .expand-indicator::before,
-  .panel-collapsible .expand-indicator::after {
-    content: "";
-    position: absolute;
-    background: var(--accent);
-    border-radius: 1px;
-  }
-
-  /* Chevron down icon */
-  .panel-collapsible .expand-indicator::before {
-    width: 10px;
-    height: 2px;
-    top: 9px;
-    left: 1px;
-    transform: rotate(45deg);
-  }
-
-  .panel-collapsible .expand-indicator::after {
-    width: 10px;
-    height: 2px;
-    top: 9px;
-    right: 1px;
-    transform: rotate(-45deg);
-  }
-
-  .panel-collapsible:hover .expand-indicator {
-    opacity: 1;
-  }
-
-  .panel-collapsible.expanded .expand-indicator {
-    transform: rotate(180deg);
   }
 }

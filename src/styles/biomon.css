@@ -1,13 +1,9 @@
 /* Biomon Page Layout */
-.container {
-  display: grid;
+.biomon-page .container {
   grid-template-columns: 1fr;
-  gap: 12px;
-  padding: 18px;
-  flex-grow: 1;
 }
 
-/* Wound Tracker - Fixed Top Bar */
+/* === Wound Tracker - Fixed Top Bar === */
 .wound-bar {
   position: fixed;
   top: 0;
@@ -63,7 +59,7 @@
   color: var(--fg);
 }
 
-/* Wound Tracker Container */
+/* === Wound Tracker Container === */
 #wound-tracker {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -168,14 +164,105 @@
 
 /* Offset page content for fixed bar */
 .biomon-page .page-scroll {
-  padding-top: 56px;
+  padding-top: 48px;
 }
 
 .biomon-page.show-stun .page-scroll {
-  padding-top: 72px;
+  padding-top: 48px;
 }
 
-/* === Mobile: horizontal scroll with larger boxes === */
+/* === Stats Panel === */
+.stats-grid {
+  display: flex;
+  gap: 16px;
+}
+
+.stat-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.stat-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-light);
+  width: 100%;
+  text-align: center;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 2px 0;
+  gap: 8px;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--fg);
+  min-width: 24px;
+  text-align: right;
+}
+
+.stat-input {
+  width: 40px;
+  padding: 2px 4px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  color: var(--fg);
+  font-size: 12px;
+  font-family: inherit;
+  text-align: right;
+}
+
+.stat-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.stat-row.stat-total {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-light);
+}
+
+.stat-row.stat-current {
+  background: var(--bg);
+  margin: 4px -4px -4px;
+  padding: 6px 4px;
+  border-radius: 0 0 3px 3px;
+}
+
+.stat-row.stat-current .stat-value {
+  font-size: 18px;
+}
+
+.stat-row.stat-current.diminished .stat-value {
+  color: var(--danger);
+}
+
+/* === Responsive: Mobile === */
 @media (max-width: 850px) {
   .wound-bar {
     flex-wrap: wrap;

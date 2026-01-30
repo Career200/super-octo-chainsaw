@@ -1,19 +1,24 @@
 ---
 import HTML from '../layouts/html.astro';
 import Layout from '../layouts/layout.astro';
+import Charsheet from '../layouts/charsheet.astro';
 import '../styles/biomon.css';
 ---
 
-<HTML title="IMI GLOBAL — Biomonitor" bodyClass="biomon-page">
+<HTML title="IMI GLOBAL — Biomonitor" bodyClass="charsheet-page biomon-page">
   <Layout>
-    <div class="wound-bar">
-      <div class="wound-bar-header">
-        <span class="wound-bar-title">Wounds <button class="help-trigger" id="wound-help" type="button" aria-label="Wound tracker help">?</button></span>
-        <button class="button-stun-toggle" id="stun-toggle">Stun</button>
+    <Charsheet>
+      <div class="wound-bar">
+        <div class="wound-bar-header">
+          <span class="wound-bar-title">Wounds <button class="help-trigger" id="wound-help" type="button" aria-label="Wound tracker help">?</button></span>
+          <button class="button-stun-toggle" id="stun-toggle">Stun</button>
+        </div>
+        <div id="wound-tracker"></div>
       </div>
-      <div id="wound-tracker"></div>
-    </div>
-    <div class="container"></div>
+      <div class="container">
+        <div class="panel" id="stats-panel"></div>
+      </div>
+    </Charsheet>
   </Layout>
   <script src="../scripts/biomon/render/index.ts"></script>
 </HTML>

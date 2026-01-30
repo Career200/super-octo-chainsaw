@@ -152,13 +152,14 @@ export function setupWoundHelp() {
         </p>
         <p>
           <strong>Critical</strong> — severe injuries, major impairment.
-          REF, INT and CL are halved (round up). Immobile for at least half the day.
+          REF, INT and CL are halved (round up). Immobile for at least half the day, REF at -2 during
+          recovery.
         </p>
         <p>
           <strong>Mortal</strong> — high chance of death without immediate medical
           attention. Make <strong>DEATH SAVES</strong> each turn until stabilized.
           REF, INT and CL reduced to 1/3 (round up). Bedridden, likely comatose,
-          or on life support. Requires constant care.
+          or on life support. Requires constant care, REF at -4 during recovery.
         </p>
       </section>
       <section>
