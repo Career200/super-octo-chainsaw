@@ -1,0 +1,113 @@
+/* === Layout Elements === */
+header {
+  background-color: var(--bg-alt);
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 2rem;
+}
+
+.content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* === Typography === */
+h1 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--accent);
+  &.center {
+    margin: 8px auto;
+  }
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 8px;
+  &.with-symbol {
+    &::first-letter {
+      font-size: 1.8rem;
+    }
+  }
+}
+
+h4 {
+  margin: 0;
+  color: var(--fg);
+}
+
+.tag {
+  font-size: 0.9rem;
+  color: var(--fg-soft);
+}
+
+::selection {
+  background: var(--selection-bg);
+}
+
+code {
+  background: var(--code-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  color: var(--fg-white);
+}
+
+blockquote {
+  background: var(--code-bg);
+  padding: 4px 12px;
+  border-left: 4px solid var(--accent);
+  margin: 8px 0;
+  color: var(--fg-soft);
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ol {
+  padding: 4px 0px 4px 24px;
+}
+
+ul {
+  padding: 12px 48px;
+}
+
+.redacted {
+  user-select: none;
+  background-color: var(--bg-black);
+  color: var(--bg-black);
+  border-radius: 2px;
+  padding: 0 0.2em;
+}
+
+/* === Scrollbars === */
+
+/* Firefox */
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-muted) transparent;
+  }
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}

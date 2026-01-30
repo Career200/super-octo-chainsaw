@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
+
+:root {
+  /* Background colors */
+  --bg: #0e0f11;
+  --bg-alt: #1a1c1f;
+  --bg-black: #000;
+  --bg-card: rgba(0, 0, 0, 0.6);
+  --bg-card-hover: rgba(0, 0, 0, 0.8);
+
+  /* Foreground colors */
+  --fg: #c4f2e6;
+  --fg-soft: #aaa;
+  --fg-white: #fff;
+
+  /* Accent colors */
+  --accent: #00ffcc;
+  --accent-muted: #0ff2c2a0;
+  --accent-subtle: rgba(0, 255, 204, 0.1);
+
+  /* Terminal green palette */
+  --terminal-green: #00ff99;
+  --terminal-green-bright: #0f0;
+  --terminal-green-glow: rgba(0, 255, 0, 0.02);
+  --terminal-green-scanline: rgba(0, 255, 100, 0.05);
+  --terminal-green-scanline-bright: rgba(0, 255, 100, 0.3);
+
+  /* UI colors */
+  --footer: #90ffb7;
+  --border: #2f3237;
+  --border-light: #2a2d32;
+  --border-green: #0f0;
+  --border-green-dark: rgb(33, 88, 33);
+  --code-bg: #1c1e22;
+  --link: #00f0ff;
+
+  /* Status colors */
+  --warning: #ca4;
+  --danger: #c44;
+  --danger-hover: #e55;
+
+  --status-busy: #ff0000;
+  --status-mixed: #ffff00;
+  --status-online: #00ff00;
+
+  /* Misc */
+  --selection-bg: #00ffcc44;
+
+  --message-border: #00ff99;
+  --message-border-muted: #00ffcc2e;
+  --message-border-hover: #009a7b2e;
+
+  /* UI font sizes */
+  --font-ui: 13px;
+  --font-ui-sm: 11px;
+  --font-ui-xs: 10px;
+  --font-ui-lg: 14px;
+  --font-ui-xl: 18px;
+  --font-ui-2xl: 24px;
+
+  /* Spacing scale (4px base) */
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+
+  /* Common padding patterns */
+  --padding-input: 2px 4px;
+  --padding-button: 3px 10px;
+  --padding-panel: 8px;
+  --padding-bar: 6px 12px;
+
+  /* Border radius */
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-lg: 6px;
+
+  /* Health state colors */
+  --health-full: var(--link);
+  --health-good: var(--accent);
+  --health-worn: var(--accent-muted);
+  --health-damaged: var(--warning);
+  --health-critical: var(--danger);
+
+  /* Health state utility - set by health-* classes */
+  --health-color: var(--health-full);
+
+  /* Popover width constraint */
+  --popover-max-width: calc(100vw - 72px);
+
+  /* Typography */
+  --font-mono: "Courier New", monospace;
+
+  /* Transitions */
+  --transition-speed: 0.2s;
+
+  /* Glow effects */
+  --glow-accent: 0 0 8px var(--accent);
+  --glow-green: 0 0 8px var(--border-green);
+}

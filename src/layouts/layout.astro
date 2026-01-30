@@ -20,14 +20,14 @@ const links = {
     <slot />
   </div>
   <footer>
-    <div class="box">
-      <div class="box col">
+    <div class="flex-between gap-4">
+      <div class="flex-col gap-4">
         <span>IMI GLOBAL</span>
         <span>USER-0469</span>
       </div>
       <Sidebar id="tacticalNav" buttonClass="nav-toggle" buttonText="≡">
         <ul>
-          <div class="box col">
+          <div class="flex-col gap-4">
 
           <li><a href={links.home}>Home</a></li>
 
@@ -55,8 +55,8 @@ const links = {
           <li>
             <span>Operational</span>
             <ul>
-              <li><a href={links.biomon}><div class="box baseline"><span class="status connected">Online</span>Biomon</div></a></li>
-              <li><a href={links.armor}><div class="box baseline"><span class="status reconnect">Reconnection</span>Equipment</div></a></li>
+              <li><a href={links.biomon}><div class="flex-between-baseline gap-4"><span class="status connected">Online</span>Biomon</div></a></li>
+              <li><a href={links.armor}><div class="flex-between-baseline gap-4"><span class="status reconnect">Reconnection</span>Equipment</div></a></li>
             </ul>
           </li>
           </div>
