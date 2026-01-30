@@ -1,0 +1,19 @@
+---
+import HTML from '../layouts/html.astro';
+import Layout from '../layouts/layout.astro';
+import '../styles/biomon.css';
+---
+
+<HTML title="IMI GLOBAL — Biomonitor" bodyClass="biomon-page">
+  <Layout>
+    <div class="wound-bar">
+      <div class="wound-bar-header">
+        <span class="wound-bar-title">Wounds</span>
+        <button class="button-stun-toggle" id="stun-toggle">Stun</button>
+      </div>
+      <div id="wound-tracker"></div>
+    </div>
+    <div class="container"></div>
+  </Layout>
+  <script src="../scripts/biomon/render/index.ts"></script>
+</HTML>

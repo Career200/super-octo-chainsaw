@@ -1,0 +1,230 @@
+/* Biomon Page Layout */
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 18px;
+  flex-grow: 1;
+}
+
+/* Wound Tracker - Fixed Top Bar */
+.wound-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wound-bar-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.wound-bar-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--footer);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+/* Stun Toggle Button */
+.button-stun-toggle {
+  padding: 3px 10px;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  color: var(--fg-soft);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.button-stun-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.button-stun-toggle.active {
+  background: var(--accent-muted);
+  border-color: var(--accent-muted);
+  color: var(--fg);
+}
+
+/* Wound Tracker Container */
+#wound-tracker {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+#wound-tracker.show-stun .wound-track-stun {
+  display: flex;
+}
+
+.wound-level-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+  border-right: 1px solid var(--accent);
+}
+
+.wound-level-group:last-child {
+  border-right: none;
+}
+
+.wound-level-label {
+  font-size: 10px;
+  color: var(--fg-soft);
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.wound-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.wound-track {
+  display: flex;
+  gap: 1px;
+}
+
+.wound-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: background-color 0.1s, border-color 0.1s;
+}
+
+.wound-box:hover {
+  border-color: var(--accent);
+}
+
+.wound-box.filled {
+  background: var(--fg-soft);
+  border-color: var(--fg-soft);
+}
+
+/* Physical track styling */
+.wound-track-physical .wound-box.filled {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.wound-track-physical .wound-box:hover {
+  border-color: var(--danger);
+}
+
+/* Stun track - hidden by default */
+.wound-track-stun {
+  display: none;
+}
+
+.wound-track-stun .wound-box.filled {
+  background: var(--accent-muted);
+  border-color: var(--accent-muted);
+}
+
+.wound-track-stun .wound-box:hover {
+  border-color: var(--accent);
+}
+
+/* Highlight current wound level */
+.wound-level-group:has(.wound-track-physical .wound-box.filled) .wound-level-label {
+  color: var(--fg);
+  font-weight: bold;
+}
+
+/* Mortal levels (4th+ group) get danger color */
+.wound-level-group:nth-child(n+4):has(.wound-track-physical .wound-box.filled) .wound-level-label {
+  color: var(--danger);
+}
+
+/* Offset page content for fixed bar */
+.biomon-page .page-scroll {
+  padding-top: 56px;
+}
+
+.biomon-page.show-stun .page-scroll {
+  padding-top: 72px;
+}
+
+/* === Mobile: horizontal scroll with larger boxes === */
+@media (max-width: 850px) {
+  .wound-bar {
+    flex-wrap: wrap;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .wound-bar-header {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  #wound-tracker {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-muted) transparent;
+    padding-bottom: 4px;
+  }
+
+  #wound-tracker::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  #wound-tracker::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  #wound-tracker::-webkit-scrollbar-thumb {
+    background: var(--accent-muted);
+    border-radius: 2px;
+  }
+
+  .wound-level-group {
+    flex-shrink: 0;
+    padding: 0 6px;
+  }
+
+  .wound-box {
+    width: 18px;
+    height: 18px;
+  }
+
+  .wound-level-label {
+    font-size: 11px;
+  }
+
+  .biomon-page .page-scroll {
+    padding-top: 76px;
+  }
+
+  .biomon-page.show-stun .page-scroll {
+    padding-top: 100px;
+  }
+}
