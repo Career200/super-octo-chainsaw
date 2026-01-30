@@ -14,15 +14,6 @@
   --link: #00f0ff;
 }
 
-.box {
-  display: flex;
-  justify-content: space-between;
-  &.col {
-    flex-direction: column;
-  }
-  gap: 5px;
-}
-
 header {
   background-color: var(--bg-alt);
   border-bottom: 1px solid var(--border-light);

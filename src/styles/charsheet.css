@@ -10,11 +10,7 @@
   z-index: 100;
 }
 
-.charsheet-page footer > .box {
-  display: contents;
-}
-
-.charsheet-page footer > .box > .box.col {
+.charsheet-page footer > .flex-between > .flex-col {
   display: none;
 }
 
