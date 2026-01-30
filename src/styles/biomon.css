@@ -247,6 +247,13 @@
   border-top: 1px solid var(--border-light);
 }
 
+.stat-penalties {
+  padding-top: 4px;
+  /* decide on what to do with long text, use fixed widht on stat-column and wrap? */
+  font-size: 12px;
+  color: var(--danger);
+}
+
 .stat-row.stat-current {
   background: var(--bg);
   margin: 4px -4px -4px;

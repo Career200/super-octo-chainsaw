@@ -26,6 +26,7 @@ function createStatColumn(
       <span class="stat-label">Total</span>
       <span class="stat-value">${values.total}</span>
     </div>
+    <div class="stat-penalties">${values.penalties.join("")}</div>
     <div class="stat-row stat-current ${isDiminished ? "diminished" : ""}">
       <span class="stat-label">Current</span>
       <span class="stat-value">${values.current}</span>

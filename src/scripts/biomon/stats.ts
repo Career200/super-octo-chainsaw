@@ -6,7 +6,8 @@ export interface StatValues {
   inherent: number;
   cyber: number;
   total: number;
-  current: number; // with penalties (wounds, EV, ...chems?)
+  current: number;
+  penalties: string[];
 }
 
 export interface StatsState {
@@ -25,7 +26,7 @@ export function getWoundPenalty(
     case "serious":
       return 2; // flat -2
     case "critical":
-      return baseValue - Math.ceil(baseValue / 2);
+      return Math.max(Math.ceil(baseValue / 2), baseValue - 4);
     case "mortal0":
     case "mortal1":
     case "mortal2":
@@ -33,7 +34,7 @@ export function getWoundPenalty(
     case "mortal4":
     case "mortal5":
     case "mortal6":
-      return baseValue - Math.ceil(baseValue / 3);
+      return Math.max(Math.ceil(baseValue / 3), baseValue - 4);
     default:
       return 0;
   }
@@ -46,14 +47,26 @@ export function calculateStat(
   evPenalty: number,
 ): StatValues {
   const total = Math.max(0, inherent + cyber);
+  const penalties: string[] = [];
+
   const woundPenalty = getWoundPenalty(woundLevel, total);
-  const current = Math.max(0, total - woundPenalty - evPenalty);
+  if (woundPenalty > 0) {
+    penalties.push(`Wounds (-${woundPenalty})`);
+  }
+
+  if (evPenalty > 0) {
+    penalties.push(`EV (-${evPenalty})`);
+  }
+
+  const totalPenalty = woundPenalty + evPenalty;
+  const current = Math.max(0, total - totalPenalty);
 
   return {
     inherent,
     cyber,
     total,
     current,
+    penalties,
   };
 }
 
