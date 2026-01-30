@@ -21,7 +21,7 @@ export function renderShop() {
     item.className = "store-item";
 
     const header = document.createElement("div");
-    header.className = "armor-header";
+    header.className = "flex-between gap-12 armor-header";
 
     const title = document.createElement("h4");
     const typeIcon = document.createElement("span");
@@ -42,11 +42,11 @@ export function renderShop() {
     const coverage = renderBodyPartsCoverage(template.bodyParts);
 
     const description = document.createElement("p");
-    description.className = "store-description";
+    description.className = "text-desc store-description";
     description.textContent = template.description ?? "";
 
     const actions = document.createElement("div");
-    actions.className = "store-actions";
+    actions.className = "flex-between gap-8 store-actions";
 
     const handleAcquire = () => acquireArmor(template.templateId);
 

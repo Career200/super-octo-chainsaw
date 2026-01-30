@@ -1,0 +1,114 @@
+/* === Repair Popover === */
+.popover-repair {
+  min-width: 160px;
+}
+
+.popover.popover-repair-health-full {
+  border-color: var(--health-full);
+}
+.popover.popover-repair-health-good {
+  border-color: var(--health-good);
+}
+.popover.popover-repair-health-worn {
+  border-color: var(--health-worn);
+}
+.popover.popover-repair-health-damaged {
+  border-color: var(--health-damaged);
+}
+.popover.popover-repair-health-critical {
+  border-color: var(--health-critical);
+}
+
+/* repair-sp-row uses .flex-center .gap-12 utilities */
+.repair-sp-row {
+  margin-bottom: var(--space-12);
+}
+
+/* repair-sp-value uses .text-value-2xl utility */
+.repair-sp-value {
+  min-width: 48px;
+  text-align: center;
+}
+
+/* repair-part-selector uses .flex-center .gap-4 utilities */
+.repair-part-selector {
+  margin-bottom: var(--space-12);
+}
+
+.repair-selectable {
+  cursor: pointer;
+}
+
+.repair-selectable:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.repair-selectable.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+/* === Hit Popover === */
+.popover-danger .popover-input {
+  width: 100%;
+  padding: var(--space-8) 10px;
+  margin-bottom: var(--space-12);
+  font-size: var(--font-ui-lg);
+  box-sizing: border-box;
+}
+
+.popover-danger .popover-input:focus {
+  border-color: var(--danger);
+}
+
+.popover-danger .popover-input::placeholder {
+  color: var(--fg-soft);
+}
+
+.hit-body-select .select-options {
+  justify-items: center;
+  gap: 3px;
+  grid-template-columns: auto auto auto;
+}
+
+.hit-body-select .select-option {
+  min-width: 32px;
+  padding: var(--space-4) var(--space-8);
+  text-align: center;
+  text-transform: uppercase;
+  font-size: var(--font-ui);
+}
+
+.hit-body-select .select-option-ignoresp {
+  font-size: var(--font-ui-xs);
+  padding: var(--space-4) var(--space-6);
+  letter-spacing: 0.3px;
+}
+
+.popover-hit {
+  width: min(360px, var(--popover-max-width));
+}
+
+.popover-hit .select-option.selected {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+@media (hover: hover) {
+  .popover-hit .select-option:hover:not(.selected) {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}
+
+/* === Implants Popover === */
+.popover-implants {
+  width: min(400px, var(--popover-max-width));
+}
+
+.popover-implants .armor-item:last-child {
+  margin-bottom: 0;
+}

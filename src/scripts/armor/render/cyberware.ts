@@ -104,7 +104,7 @@ function renderImplantItem(
   item.className = "armor-item" + (installed ? " armor-worn" : "");
 
   const header = document.createElement("div");
-  header.className = "armor-header";
+  header.className = "flex-between gap-12 armor-header";
 
   const title = document.createElement("h4");
   title.textContent = template.name;
@@ -144,7 +144,7 @@ function renderImplantItem(
 
   if (template.description) {
     const desc = document.createElement("div");
-    desc.className = "armor-stats";
+    desc.className = "text-desc";
     desc.style.marginTop = "4px";
     desc.style.fontStyle = "italic";
     desc.textContent = template.description;
@@ -152,7 +152,7 @@ function renderImplantItem(
   }
 
   const actions = document.createElement("div");
-  actions.className = "armor-actions";
+  actions.className = "flex-between gap-8 armor-actions";
 
   if (installed) {
     const removeBtn = document.createElement("button");
@@ -199,8 +199,7 @@ export function setupImplants(): void {
     title.textContent = "Armor Implants";
 
     const description = document.createElement("p");
-    description.style.fontSize = "12px";
-    description.style.color = "var(--fg-soft)";
+    description.className = "text-desc";
     description.style.marginBottom = "12px";
     description.textContent =
       "Subdermal armor and body plating. These count as armor layers.";

@@ -24,7 +24,7 @@ function renderArmorItem(
   item.className = armor.worn ? "armor-item armor-worn" : "armor-item";
 
   const header = document.createElement("div");
-  header.className = "armor-header";
+  header.className = "flex-between gap-12 armor-header";
 
   const title = document.createElement("h4");
   const typeIcon = document.createElement("span");
@@ -81,7 +81,7 @@ function renderArmorItem(
 
   if (showActions) {
     const actions = document.createElement("div");
-    actions.className = "armor-actions";
+    actions.className = "flex-between gap-8 armor-actions";
 
     const toggleBtn = document.createElement("button");
     toggleBtn.className = armor.worn ? "btn-primary active" : "btn-primary";
@@ -139,7 +139,7 @@ export function renderOwnedInventory() {
     implantGroup.className = "implant-group";
 
     const groupLabel = document.createElement("div");
-    groupLabel.className = "implant-group-label";
+    groupLabel.className = "text-label implant-group-label";
     groupLabel.textContent = "Installed Implants";
     implantGroup.appendChild(groupLabel);
 
@@ -173,7 +173,7 @@ function openRepairPopover(
     const healthClass = getHealthClassFromSP(sp, maxSP);
 
     spValue.textContent = sp.toString();
-    spValue.className = `repair-sp-value ${healthClass}`;
+    spValue.className = `text-value-2xl repair-sp-value ${healthClass}`;
 
     popover.className = `popover popover-repair popover-repair-${healthClass}`;
 
@@ -201,7 +201,7 @@ function openRepairPopover(
   });
 
   const partSelector = document.createElement("div");
-  partSelector.className = "repair-part-selector";
+  partSelector.className = "flex-center gap-4 repair-part-selector";
 
   for (const part of bodyParts) {
     const badge = document.createElement("button");
@@ -223,7 +223,7 @@ function openRepairPopover(
   partSelector.appendChild(allBadge);
 
   const spRow = document.createElement("div");
-  spRow.className = "repair-sp-row";
+  spRow.className = "flex-center gap-12 repair-sp-row";
 
   const minBtn = document.createElement("button");
   minBtn.type = "button";
@@ -246,7 +246,7 @@ function openRepairPopover(
   });
 
   const spValue = document.createElement("span");
-  spValue.className = "repair-sp-value";
+  spValue.className = "text-value-2xl repair-sp-value";
   spValue.textContent = sp.toString();
 
   const plusBtn = document.createElement("button");

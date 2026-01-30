@@ -37,7 +37,7 @@ export function renderBodyPartsCoverage(
   spMax?: number,
 ): HTMLElement {
   const container = document.createElement("div");
-  container.className = "body-parts-coverage";
+  container.className = "flex-end gap-4 body-parts-coverage";
 
   const isFullBody = bodyParts.length >= BODY_PARTS.length;
   const useFullShorthand = isFullBody && !spByPart;

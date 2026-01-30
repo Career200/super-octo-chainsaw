@@ -26,6 +26,7 @@
   flex-shrink: 0;
 }
 
+/* Uses .text-label pattern with footer color */
 .wound-bar-title {
   font-size: var(--font-ui);
   font-weight: bold;
@@ -176,6 +177,7 @@
   border-radius: var(--radius);
 }
 
+/* Uses .text-label-lg pattern with accent color + bold */
 .stat-name {
   font-size: var(--font-ui-lg);
   font-weight: bold;
@@ -198,12 +200,14 @@
   gap: var(--space-8);
 }
 
+/* Uses .text-label-xs pattern */
 .stat-label {
   font-size: var(--font-ui-xs);
   color: var(--fg-soft);
   text-transform: uppercase;
 }
 
+/* Uses .text-value-lg pattern */
 .stat-value {
   font-size: var(--font-ui-lg);
   font-weight: bold;

@@ -26,10 +26,10 @@ function renderDamageEntry(entry: DamageHistoryEntry): HTMLElement {
   item.className = "history-entry history-entry-damage";
 
   const header = document.createElement("div");
-  header.className = "history-header";
+  header.className = "flex-between-baseline history-header";
 
   const time = document.createElement("span");
-  time.className = "history-time";
+  time.className = "text-desc history-time";
   time.textContent = formatTime(entry.timestamp);
 
   const damage = document.createElement("span");
@@ -46,14 +46,14 @@ function renderDamageEntry(entry: DamageHistoryEntry): HTMLElement {
 
   // Location
   const location = document.createElement("div");
-  location.className = "history-line";
+  location.className = "text-soft history-line";
   location.innerHTML = `<span class="history-label">Location:</span> ${formatBodyParts(entry.bodyParts)}`;
   details.appendChild(location);
 
   // SP blocked (if any)
   if (entry.effectiveSP > 0 && !entry.ignoredArmor) {
     const spBlocked = document.createElement("div");
-    spBlocked.className = "history-line";
+    spBlocked.className = "text-soft history-line";
     spBlocked.innerHTML = `<span class="history-label">SP:</span> ${entry.effectiveSP} blocked`;
     details.appendChild(spBlocked);
   } else if (entry.ignoredArmor) {
@@ -66,7 +66,7 @@ function renderDamageEntry(entry: DamageHistoryEntry): HTMLElement {
   // Top protector (which armor saved you)
   if (entry.topProtector && entry.effectiveSP > 0) {
     const protectorLine = document.createElement("div");
-    protectorLine.className = "history-line";
+    protectorLine.className = "text-soft history-line";
     protectorLine.innerHTML = `<span class="history-label">Protected by:</span> ${entry.topProtector}`;
     details.appendChild(protectorLine);
   }
@@ -74,7 +74,7 @@ function renderDamageEntry(entry: DamageHistoryEntry): HTMLElement {
   // Armor degradation
   if (entry.armorDamage.length > 0) {
     const armorLine = document.createElement("div");
-    armorLine.className = "history-line";
+    armorLine.className = "text-soft history-line";
     const armorStr = entry.armorDamage
       .map((a) => `${a.armorName} -${a.spLost}`)
       .join(", ");
@@ -103,10 +103,10 @@ function renderManipulationEntry(entry: ManipulationHistoryEntry): HTMLElement {
   item.className = `history-entry history-entry-manipulation ${healthClass}`;
 
   const header = document.createElement("div");
-  header.className = "history-header";
+  header.className = "flex-between-baseline history-header";
 
   const time = document.createElement("span");
-  time.className = "history-time";
+  time.className = "text-desc history-time";
   time.textContent = formatTime(entry.timestamp);
 
   const delta = entry.newSP - entry.oldSP;
@@ -121,17 +121,17 @@ function renderManipulationEntry(entry: ManipulationHistoryEntry): HTMLElement {
   details.className = "history-details";
 
   const armorLine = document.createElement("div");
-  armorLine.className = "history-line";
+  armorLine.className = "text-soft history-line";
   armorLine.innerHTML = `<span class="history-label">Armor:</span> ${entry.armorName}`;
   details.appendChild(armorLine);
 
   const partsLine = document.createElement("div");
-  partsLine.className = "history-line";
+  partsLine.className = "text-soft history-line";
   partsLine.innerHTML = `<span class="history-label">Parts:</span> ${formatBodyParts(entry.bodyParts)}`;
   details.appendChild(partsLine);
 
   const spLine = document.createElement("div");
-  spLine.className = "history-line";
+  spLine.className = "text-soft history-line";
   spLine.innerHTML = `<span class="history-label">SP:</span> ${entry.oldSP} → ${entry.newSP}`;
   details.appendChild(spLine);
 

@@ -1,0 +1,123 @@
+/* Armor Legend */
+.armor-legend {
+  font-size: var(--font-ui);
+  white-space: nowrap;
+}
+
+.armor-legend .armor-type-icon {
+  transform: scale(1.5);
+  margin: 0 var(--space-2) 0 var(--space-6);
+}
+
+/* === Armor Items === */
+.armor-item.armor-worn {
+  border-color: var(--accent);
+}
+
+.store-item h4 {
+  color: var(--link);
+}
+
+.store-description {
+  margin: var(--space-6) 0 0;
+}
+
+/* armor-header uses .flex-between .gap-12 utilities */
+
+.armor-sp {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--link);
+  white-space: nowrap;
+}
+
+.armor-type-icon {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+  margin-left: var(--space-4);
+  bottom: 3px;
+  font-size: var(--font-ui-xs);
+  color: var(--terminal-green-bright);
+  transform: scale(2.5);
+  transform-origin: center;
+}
+
+.armor-stats {
+  font-size: var(--font-ui);
+  color: var(--fg-soft);
+}
+
+.armor-coverage-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+  margin-top: var(--space-6);
+}
+
+/* body-parts-coverage uses .flex-end .gap-4 utilities */
+
+.coverage-badge {
+  display: inline-block;
+  padding: var(--space-2) 5px;
+  font-size: var(--font-ui);
+  font-weight: bold;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+}
+
+.coverage-badge.coverage-full {
+  padding: var(--space-2) var(--space-12);
+  letter-spacing: 1px;
+}
+
+/* armor-actions, store-actions use .flex-between .gap-8 utilities */
+.armor-actions,
+.store-actions {
+  margin-top: var(--space-8);
+}
+
+.armor-actions button,
+.store-actions button {
+  flex: 1;
+}
+
+/* === Implant Groups (in inventory) === */
+.implant-group {
+  margin-bottom: var(--space-12);
+  padding: var(--padding-panel);
+  border: 1px dashed var(--accent-muted);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+}
+
+/* implant-group-label uses .text-label utility + custom color */
+.implant-group-label {
+  color: var(--accent-muted);
+  margin-bottom: var(--space-8);
+}
+
+.implant-group .armor-item {
+  background: var(--bg-alt);
+}
+
+.implant-group .armor-item:last-child {
+  margin-bottom: 0;
+}
+
+/* === Health Color Applications === */
+.armor-sp [class*="health-"],
+.repair-sp-value[class*="health-"] {
+  color: var(--health-color);
+}
+
+.coverage-badge.health-damaged,
+.coverage-badge.health-critical {
+  border-color: var(--health-color);
+  color: var(--health-color);
+}
