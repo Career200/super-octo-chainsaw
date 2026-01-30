@@ -385,7 +385,6 @@
   color: var(--fg-soft);
 }
 
-/* Coverage Row (button + badges) */
 .armor-coverage-row {
   display: flex;
   justify-content: space-between;
@@ -395,7 +394,6 @@
   margin-top: 6px;
 }
 
-/* Body Parts Coverage */
 .body-parts-coverage {
   display: flex;
   justify-content: flex-end;
@@ -638,86 +636,6 @@
   background: var(--accent);
   border-color: var(--accent);
   color: #000;
-}
-
-/* Help Trigger */
-.help-trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  margin-left: 8px;
-  padding: 0;
-  border: 1px solid var(--fg-soft);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--fg-soft);
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  vertical-align: middle;
-}
-
-.help-trigger:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-/* === Popovers === */
-.popover.popover-help {
-  width: min(660px, var(--popover-max-width));
-  max-width: none;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
-}
-
-.popover-help h3 {
-  margin: 0 0 12px 0;
-  color: var(--accent);
-  font-size: 15px;
-}
-
-.popover-help section {
-  margin-bottom: 12px;
-}
-
-.popover-help section:last-child {
-  margin-bottom: 0;
-}
-
-.popover-help h4 {
-  margin: 0 0 4px 0;
-  color: var(--fg);
-  font-size: var(--font-ui);
-}
-
-.popover-help p {
-  margin: 0;
-  color: var(--fg-soft);
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.popover-help strong {
-  color: var(--fg);
-}
-
-.popover-help blockquote {
-  margin: 16px 0 0 0;
-  padding: 8px 12px;
-  border-left: 2px solid var(--border-light);
-  font-size: 11px;
-  font-style: italic;
-  color: var(--fg-soft);
-  line-height: 1.5;
-}
-
-.popover-help blockquote cite {
-  display: block;
-  margin-top: 4px;
-  font-style: normal;
-  opacity: 0.7;
 }
 
 /* Hit Popover Input */
