@@ -2,6 +2,13 @@ import { atom, computed } from "nanostores";
 import { $health } from "./health";
 import { $encumbrance } from "./armor";
 import { calculateStat } from "@scripts/biomon/stats";
+import { getWoundLevel } from "@scripts/biomon/wounds";
+import {
+  getBodyTypeInfo,
+  getStunSavePenalty,
+  getCurrentSave,
+  type BodyTypeInfo,
+} from "@scripts/biomon/body";
 import type { StatsState, StatValues } from "@scripts/biomon/types";
 
 const STORAGE_KEY = "character-stats";
@@ -116,6 +123,22 @@ export const $BT = computed(
   (stats): StatValues =>
     // major logic later
     calculateStat(stats.bt.inherent, stats.bt.cyber, 0),
+);
+
+export interface BodyTypeState extends BodyTypeInfo {
+  savePenalty: number;
+  currentSave: number;
+}
+
+export const $bodyType = computed(
+  [$BT, $health],
+  (bt, health): BodyTypeState => {
+    const info = getBodyTypeInfo(bt.total);
+    const woundLevel = health.stun > 0 ? getWoundLevel(health.stun) : null;
+    const savePenalty = getStunSavePenalty(woundLevel);
+    const currentSave = getCurrentSave(info.baseSave, woundLevel);
+    return { ...info, savePenalty, currentSave };
+  },
 );
 
 // --- Actions ---

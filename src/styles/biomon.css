@@ -4,8 +4,8 @@
   grid-template-columns: 1fr;
 }
 
-/* === Wound Tracker - Fixed Top Bar === */
-.wound-bar {
+/* === Fixed Top Bar Container === */
+.fixed-bar {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,6 +13,10 @@
   z-index: 100;
   background-color: var(--bg-alt);
   border-bottom: 1px solid var(--border);
+}
+
+/* === Wound Tracker === */
+.wound-bar {
   padding: var(--padding-bar);
   display: flex;
   align-items: start;
@@ -203,7 +207,82 @@
 
 /* Offset page content for fixed bar */
 .biomon-page .page-scroll {
-  padding-top: 64px;
+  padding-top: 102px;
+}
+
+/* === Secondary Bar (below wounds) === */
+.secondary-bar {
+  padding: var(--space-6) var(--padding-bar);
+  border-top: 1px solid var(--border);
+  align-items: stretch;
+}
+
+.secondary-placeholder {
+  /* Placeholder for future content */
+}
+
+/* === Body Info === */
+.body-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.body-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--space-4);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-6);
+}
+
+.body-label {
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.body-stat-value,
+.btm-value {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--fg);
+}
+
+.carry-value {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.body-type {
+  border-color: var(--accent-muted);
+}
+
+.body-type-name {
+  font-size: var(--font-ui);
+  color: var(--accent);
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.save-value {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--fg);
+}
+
+.save-penalty {
+  font-size: var(--font-ui-xs);
+  color: var(--fg-soft);
+}
+
+.save-penalty.has-penalty {
+  color: var(--danger);
 }
 
 /* === Stats Panel === */
@@ -295,7 +374,7 @@
 }
 
 /* === Responsive: Mobile === */
-@media (max-width: 850px) {
+@media (max-width: 1053px) {
   .wound-bar {
     flex-wrap: wrap;
     padding: var(--space-6) 10px;
@@ -345,7 +424,8 @@
   }
 
   .biomon-page .page-scroll {
-    padding-top: 100px;
+    /* update after adding more info to secondary bar that will increase its height */
+    padding-top: 142px;
   }
 
   .wound-bar-header {
@@ -358,5 +438,33 @@
   .wound-bar-controls {
     flex-direction: row;
     gap: var(--space-12);
+  }
+
+  /* Secondary bar responsive */
+  .secondary-bar {
+    flex-wrap: wrap;
+    padding: var(--space-4) 10px;
+    gap: var(--space-8);
+  }
+
+  .body-info {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .body-label {
+    font-size: var(--font-ui-xs);
+  }
+
+  .body-type {
+    display: none;
+    /* doesn't fit on real small screens */
+    @media (min-width: 451px) {
+      display: flex;
+    }
+  }
+
+  .secondary-placeholder {
+    width: 100%;
   }
 }
