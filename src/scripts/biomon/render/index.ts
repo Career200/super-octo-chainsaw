@@ -8,7 +8,7 @@ import {
 } from "./wounds";
 import { renderStats, setupStats } from "./stats";
 import { renderBodyInfo } from "./body";
-import { setupWoundHelp } from "../help";
+import { setupWoundHelp, setupBodyHelp } from "../help";
 
 function renderAll() {
   renderWoundTracker();
@@ -36,4 +36,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setupStabilizedToggle();
   setupStats();
   setupWoundHelp();
+  setupBodyHelp();
 });
