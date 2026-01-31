@@ -207,7 +207,7 @@
 
 /* Offset page content for fixed bar */
 .biomon-page .page-scroll {
-  padding-top: 102px;
+  padding-top: 106px;
 }
 
 /* === Secondary Bar (below wounds) === */
@@ -217,8 +217,22 @@
   align-items: stretch;
 }
 
-.secondary-placeholder {
-  /* Placeholder for future content */
+/* === Hit Location Table === */
+.hit-location-table {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.hit-location {
+  font-size: var(--font-ui);
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+.hit-roll {
+  font-weight: bold;
+  color: var(--fg);
 }
 
 /* === Body Info === */
@@ -425,7 +439,7 @@
 
   .biomon-page .page-scroll {
     /* update after adding more info to secondary bar that will increase its height */
-    padding-top: 142px;
+    padding-top: 156px;
   }
 
   .wound-bar-header {
@@ -464,7 +478,10 @@
     }
   }
 
-  .secondary-placeholder {
+  .hit-location-table {
     width: 100%;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: var(--space-4);
   }
 }
