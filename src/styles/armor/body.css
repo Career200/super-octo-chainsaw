@@ -1,0 +1,196 @@
+/* Body Grid Layout */
+.body-grid {
+  display: grid;
+  grid-template-areas:
+    "sw face implants"
+    "sw head implants"
+    "larm torso rarm"
+    "lleg ev rleg";
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto auto;
+  gap: var(--space-12);
+  margin-top: 10px;
+}
+
+/* === Display Boxes (use .display-box utility) === */
+.skinweave-display {
+  grid-area: sw;
+}
+.implants-display {
+  grid-area: implants;
+  cursor: pointer;
+}
+.ev-display {
+  grid-area: ev;
+}
+
+.skinweave-display.installed,
+.implants-display.has-implants {
+  border-style: solid;
+  border-color: var(--accent-muted);
+}
+
+.implants-display:hover {
+  border-color: var(--accent-muted);
+}
+
+/* Labels - base from .text-label-lg utility */
+.skinweave-label,
+.implants-label,
+.ev-label {
+  margin-bottom: var(--space-6);
+}
+
+.ev-label {
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+/* Descriptions - base from .text-desc-justified utility */
+.skinweave-desc {
+  margin-bottom: var(--space-12);
+}
+
+.skinweave-select {
+  background: var(--code-bg);
+  font-size: var(--font-ui-lg);
+  padding: var(--space-4) var(--space-8);
+  cursor: pointer;
+}
+
+.implants-list {
+  margin-top: var(--space-8);
+  font-size: var(--font-ui);
+  text-align: center;
+}
+
+/* === Body Parts === */
+.body-part {
+  padding: 10px;
+  margin-bottom: 0;
+}
+
+.body-part h3 {
+  margin: 0 0 5px 0;
+  font-size: var(--font-ui-lg);
+  color: var(--accent);
+}
+
+#part-head {
+  grid-area: head;
+}
+#part-face {
+  grid-area: face;
+  height: 44px;
+}
+#part-torso {
+  grid-area: torso;
+}
+#part-left_arm {
+  grid-area: larm;
+}
+#part-right_arm {
+  grid-area: rarm;
+}
+#part-left_leg {
+  grid-area: lleg;
+}
+#part-right_leg {
+  grid-area: rleg;
+}
+
+.face-layer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.face-layer-list li {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.face-layer-list li:last-child {
+  border-bottom: none;
+}
+.face-no-protection {
+  font-style: italic;
+}
+
+/* === EV Display === */
+.ev-value {
+  color: var(--fg-soft);
+}
+
+.ev-display.has-penalty .ev-value {
+  color: var(--danger);
+}
+
+.ev-layer-penalty {
+  margin-top: var(--space-8);
+  padding: var(--space-4) var(--space-8);
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  font-size: var(--font-ui-xs);
+  color: var(--fg-soft);
+  text-align: center;
+}
+
+/* === Armor Layers === */
+.layer-list {
+  margin-top: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.layer {
+  position: relative;
+  background: var(--bg);
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-ui);
+}
+
+.layer-name {
+  position: relative;
+  z-index: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.layer-health {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--health-color);
+  transition: width var(--transition-speed);
+}
+
+.layer.layer-skinweave {
+  background: var(--bg-alt);
+  border: 1px dashed var(--accent-muted);
+  opacity: 0.8;
+}
+
+.layer.layer-skinweave .layer-name {
+  font-style: italic;
+  color: var(--accent-muted);
+}
+
+/* === SP Values === */
+.sp-value {
+  font-size: var(--font-ui-xl);
+  font-weight: bold;
+  color: var(--footer);
+}
+
+.sp-total {
+  color: var(--footer);
+}
+
+.sp-breakdown {
+  font-size: var(--font-ui);
+  color: color-mix(in srgb, var(--fg-soft), white 33%);
+}

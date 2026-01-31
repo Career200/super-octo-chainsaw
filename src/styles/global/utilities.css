@@ -1,0 +1,159 @@
+/* === Typography Utilities === */
+
+/* Description text - for explanatory/help text */
+.text-desc {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  line-height: 1.3;
+}
+
+.text-desc-justified {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  line-height: 1.3;
+  text-align: justify;
+  opacity: 0.8;
+}
+
+/* Label text - uppercase section labels */
+.text-label {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.text-label-xs {
+  font-size: var(--font-ui-xs);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+}
+
+.text-label-lg {
+  font-size: var(--font-ui-lg);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Soft/muted text */
+.text-soft {
+  color: var(--fg-soft);
+}
+
+.text-muted {
+  color: var(--fg-soft);
+  opacity: 0.7;
+}
+
+/* Value text - for numbers and stats */
+.text-value {
+  font-weight: bold;
+  color: var(--fg);
+}
+
+.text-value-lg {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+}
+
+.text-value-xl {
+  font-size: var(--font-ui-xl);
+  font-weight: bold;
+}
+
+.text-value-2xl {
+  font-size: var(--font-ui-2xl);
+  font-weight: bold;
+}
+
+/* === Color Utilities === */
+.text-accent {
+  color: var(--accent);
+}
+.text-link {
+  color: var(--link);
+}
+.text-danger {
+  color: var(--danger);
+}
+.text-footer {
+  color: var(--footer);
+}
+
+/* === Layout Utilities === */
+
+/* Flex row - space between */
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-between-baseline {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+/* Flex row - centered */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flex row - end aligned */
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Flex column - centered */
+.flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Flex column */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Gap utilities */
+.gap-2 {
+  gap: var(--space-2);
+}
+.gap-4 {
+  gap: var(--space-4);
+}
+.gap-8 {
+  gap: var(--space-8);
+}
+.gap-12 {
+  gap: var(--space-12);
+}
+.gap-16 {
+  gap: var(--space-16);
+}
+
+/* === Display Box Pattern === */
+.display-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 10px;
+  min-height: 80px;
+}
+
+.display-box.active {
+  border-style: solid;
+  border-color: var(--accent-muted);
+}

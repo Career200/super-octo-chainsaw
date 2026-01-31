@@ -24,7 +24,7 @@ function renderArmorItem(
   item.className = armor.worn ? "armor-item armor-worn" : "armor-item";
 
   const header = document.createElement("div");
-  header.className = "armor-header";
+  header.className = "flex-between gap-12 armor-header";
 
   const title = document.createElement("h4");
   const typeIcon = document.createElement("span");
@@ -64,7 +64,7 @@ function renderArmorItem(
   });
 
   const repairLabel = document.createElement("span");
-  repairLabel.className = "button-repair";
+  repairLabel.className = "btn-ghost btn-sm";
   repairLabel.textContent = "Repair/Break";
 
   const coverage = renderBodyPartsCoverage(
@@ -81,10 +81,10 @@ function renderArmorItem(
 
   if (showActions) {
     const actions = document.createElement("div");
-    actions.className = "armor-actions";
+    actions.className = "flex-between gap-8 armor-actions";
 
     const toggleBtn = document.createElement("button");
-    toggleBtn.className = armor.worn ? "button-remove" : "button-wear";
+    toggleBtn.className = armor.worn ? "btn-primary active" : "btn-primary";
     toggleBtn.textContent = armor.worn ? "Remove" : "Wear";
     toggleBtn.addEventListener("click", () => {
       const result = toggleArmor(armor.id);
@@ -94,7 +94,7 @@ function renderArmorItem(
     });
 
     const discardBtn = document.createElement("button");
-    discardBtn.className = "button-discard";
+    discardBtn.className = "btn-ghost-danger";
     discardBtn.textContent = "Discard";
     discardBtn.addEventListener("click", async () => {
       const confirmed = await confirm(discardBtn, {
@@ -139,7 +139,7 @@ export function renderOwnedInventory() {
     implantGroup.className = "implant-group";
 
     const groupLabel = document.createElement("div");
-    groupLabel.className = "implant-group-label";
+    groupLabel.className = "text-label implant-group-label";
     groupLabel.textContent = "Installed Implants";
     implantGroup.appendChild(groupLabel);
 
@@ -173,7 +173,7 @@ function openRepairPopover(
     const healthClass = getHealthClassFromSP(sp, maxSP);
 
     spValue.textContent = sp.toString();
-    spValue.className = `repair-sp-value ${healthClass}`;
+    spValue.className = `text-value-2xl repair-sp-value ${healthClass}`;
 
     popover.className = `popover popover-repair popover-repair-${healthClass}`;
 
@@ -201,7 +201,7 @@ function openRepairPopover(
   });
 
   const partSelector = document.createElement("div");
-  partSelector.className = "repair-part-selector";
+  partSelector.className = "flex-center gap-4 repair-part-selector";
 
   for (const part of bodyParts) {
     const badge = document.createElement("button");
@@ -223,11 +223,11 @@ function openRepairPopover(
   partSelector.appendChild(allBadge);
 
   const spRow = document.createElement("div");
-  spRow.className = "repair-sp-row";
+  spRow.className = "flex-center gap-12 repair-sp-row";
 
   const minBtn = document.createElement("button");
   minBtn.type = "button";
-  minBtn.className = "repair-btn";
+  minBtn.className = "btn-ghost btn-icon";
   minBtn.textContent = "0";
   minBtn.addEventListener("click", () => {
     sp = 0;
@@ -236,7 +236,7 @@ function openRepairPopover(
 
   const minusBtn = document.createElement("button");
   minusBtn.type = "button";
-  minusBtn.className = "repair-btn";
+  minusBtn.className = "btn-ghost btn-icon";
   minusBtn.textContent = "−";
   minusBtn.addEventListener("click", () => {
     if (sp > 0) {
@@ -246,12 +246,12 @@ function openRepairPopover(
   });
 
   const spValue = document.createElement("span");
-  spValue.className = "repair-sp-value";
+  spValue.className = "text-value-2xl repair-sp-value";
   spValue.textContent = sp.toString();
 
   const plusBtn = document.createElement("button");
   plusBtn.type = "button";
-  plusBtn.className = "repair-btn";
+  plusBtn.className = "btn-ghost btn-icon";
   plusBtn.textContent = "+";
   plusBtn.addEventListener("click", () => {
     if (sp < maxSP) {
@@ -262,7 +262,7 @@ function openRepairPopover(
 
   const maxBtn = document.createElement("button");
   maxBtn.type = "button";
-  maxBtn.className = "repair-btn repair-btn-edge";
+  maxBtn.className = "btn-ghost btn-icon";
   maxBtn.textContent = maxSP.toString();
   maxBtn.addEventListener("click", () => {
     sp = maxSP;

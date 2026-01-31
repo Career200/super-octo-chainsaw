@@ -1,4 +1,4 @@
-const proportionalArmorBonus = (diff: number): number => {
+export const proportionalArmorBonus = (diff: number): number => {
   if (diff <= 4) return 5;
   if (diff <= 8) return 4;
   if (diff <= 14) return 3;
@@ -44,7 +44,18 @@ export const PART_ABBREV: Record<BodyPartName, string> = {
   right_leg: "RL",
 };
 
-export type ArmorLayer = "worn" | "plating" | "skinweave" | "subdermal";
+export type ArmorLayer =
+  | "worn"
+  | "plating"
+  | "subdermal"
+  | "skinweave"
+  | "faceplate";
+
+const COUNTED_LAYERS: ArmorLayer[] = ["worn", "plating", "subdermal"];
+
+export function countsAsLayer(layer: ArmorLayer | undefined): boolean {
+  return layer !== undefined && COUNTED_LAYERS.includes(layer);
+}
 
 // Static template - defines what an armor type IS
 export interface ArmorTemplate {
@@ -137,7 +148,7 @@ export interface EVResult {
 // Calculate EV penalty:
 // - Every worn armor piece and implant contributes its base EV
 // - Layer penalty comes from the body part with the most layers
-// - HOMERULE: Skinweave doesn't count toward the layer limit
+// - HOMERULE: Skinweave doesn't count toward the limit (see countsAsLayer - faceplate as convenience)
 export function getTotalEV(
   allWornArmor: ArmorPiece[],
   allInstalledImplants: ArmorPiece[],
@@ -145,9 +156,8 @@ export function getTotalEV(
   let baseEV = allWornArmor.reduce((sum, armor) => sum + (armor.ev ?? 0), 0);
   baseEV += allInstalledImplants.reduce((sum, impl) => sum + (impl.ev ?? 0), 0);
 
-  // HOMERULE: skinweave does not count toward layer limit
-  const nonSkinweaveImplants = allInstalledImplants.filter(
-    (a) => a.layer !== "skinweave",
+  const countedImplants = allInstalledImplants.filter((a) =>
+    countsAsLayer(a.layer),
   );
 
   let maxLayers = 0;
@@ -155,7 +165,7 @@ export function getTotalEV(
 
   for (const part of BODY_PARTS) {
     const wornAtPart = allWornArmor.filter((a) => a.bodyParts.includes(part));
-    const implantsAtPart = nonSkinweaveImplants.filter((a) =>
+    const implantsAtPart = countedImplants.filter((a) =>
       a.bodyParts.includes(part),
     );
     const totalLayers = wornAtPart.length + implantsAtPart.length;

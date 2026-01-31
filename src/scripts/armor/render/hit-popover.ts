@@ -111,8 +111,8 @@ export function setupHitButton() {
     });
 
     const selectorLabel = document.createElement("p");
-    selectorLabel.className = "popover-message";
-    selectorLabel.textContent = "Where?";
+    selectorLabel.className = "popover-message popover-message-split";
+    selectorLabel.innerHTML = `<span>Where?</span><span class="popover-hint">deselect for non-locational</span>`;
 
     const {
       element: selector,

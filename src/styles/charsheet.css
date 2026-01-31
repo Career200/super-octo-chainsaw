@@ -1,0 +1,199 @@
+/* === Charsheet Footer Override === */
+/* Hide footer content, keep nav toggle as floating button */
+.charsheet-page footer {
+  position: fixed;
+  bottom: var(--space-12);
+  right: var(--space-12);
+  background: transparent;
+  border: none;
+  padding: 0;
+  z-index: 100;
+}
+
+.charsheet-page footer > .flex-between > .flex-col {
+  display: none;
+}
+
+.charsheet-page footer .nav-toggle {
+  width: 48px;
+  height: 48px;
+  font-size: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* === Container Base === */
+.container {
+  display: grid;
+  gap: var(--space-12);
+  padding: 18px;
+  flex-grow: 1;
+}
+
+.container * {
+  transition:
+    color var(--transition-speed),
+    background-color var(--transition-speed),
+    border-color var(--transition-speed),
+    opacity var(--transition-speed),
+    transform var(--transition-speed);
+}
+
+/* === Panels === */
+.panel {
+  overflow-y: auto;
+  max-height: calc(100vh - 50px);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.panel-heading h2 {
+  color: var(--accent);
+  flex: 1;
+}
+
+/* Hidden by default on desktop */
+.expand-indicator {
+  display: none;
+}
+
+/* === Buttons Base === */
+.container button {
+  padding: var(--space-6) var(--space-12);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: var(--font-ui);
+  font-family: inherit;
+}
+
+/* Button size overrides */
+.btn-sm {
+  padding: var(--padding-input);
+  font-size: var(--font-ui);
+}
+
+.btn-md {
+  padding: var(--space-4) var(--space-12);
+}
+
+/* === Health State Utilities === */
+.health-full {
+  --health-color: var(--health-full);
+}
+.health-good {
+  --health-color: var(--health-good);
+}
+.health-worn {
+  --health-color: var(--health-worn);
+}
+.health-damaged {
+  --health-color: var(--health-damaged);
+}
+.health-critical {
+  --health-color: var(--health-critical);
+}
+
+.empty-message {
+  color: var(--fg-soft);
+  font-style: italic;
+}
+
+/* === Inputs === */
+.input {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-ui-lg);
+}
+
+/* === Responsive: Mobile === */
+@media (max-width: 1053px) {
+  /*
+  we want 1023 as the breakpoint, but for now the panel sizes on armor page don't allow it
+  we'll refactor the page later - we want to basically combine all separate pages into one charsheet page with panels and/or tabs
+  but for now just bumping the breakpoint to 1053px to accommodate the armor page
+  another breakpoint is in armor.css
+  */
+  .container {
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+    padding: var(--space-12);
+  }
+
+  .panel {
+    max-height: none;
+  }
+
+  /* Collapsible panels */
+  .panel-collapsible {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .panel-collapsible .body-grid,
+  .panel-collapsible .panel-content {
+    display: none;
+  }
+
+  .panel-collapsible.expanded .body-grid {
+    display: grid;
+  }
+
+  .panel-collapsible.expanded .panel-content {
+    display: block;
+  }
+
+  .panel-collapsible.expanded {
+    cursor: default;
+  }
+
+  /* Expand indicator */
+  .panel-collapsible .expand-indicator {
+    display: block;
+    position: absolute;
+    bottom: var(--space-8);
+    right: var(--space-12);
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+  }
+
+  .panel-collapsible .expand-indicator::before,
+  .panel-collapsible .expand-indicator::after {
+    content: "";
+    position: absolute;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
+  .panel-collapsible .expand-indicator::before {
+    width: 10px;
+    height: 2px;
+    top: 9px;
+    left: 1px;
+    transform: rotate(45deg);
+  }
+
+  .panel-collapsible .expand-indicator::after {
+    width: 10px;
+    height: 2px;
+    top: 9px;
+    right: 1px;
+    transform: rotate(-45deg);
+  }
+
+  .panel-collapsible:hover .expand-indicator {
+    opacity: 1;
+  }
+
+  .panel-collapsible.expanded .expand-indicator {
+    transform: rotate(180deg);
+  }
+}

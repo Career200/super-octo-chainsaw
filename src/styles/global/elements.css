@@ -1,0 +1,129 @@
+/* === Base Form Elements === */
+input,
+select,
+textarea {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font-family: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* === Base Card === */
+.card,
+.armor-item,
+.store-item,
+.history-entry,
+.body-part,
+.stat-column {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--padding-panel);
+  margin-bottom: var(--space-8);
+}
+
+.card h4,
+.armor-item h4,
+.store-item h4 {
+  margin: 0;
+  color: var(--accent);
+}
+
+/* === Button Variants === */
+
+/* Ghost button - transparent with border */
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-ghost:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Icon button */
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: var(--font-ui-xl);
+}
+
+/* Ghost button with danger hover */
+.btn-ghost-danger {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--fg-soft);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn-ghost-danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Primary button - accent filled */
+.btn-primary {
+  background: var(--accent-muted);
+  color: var(--fg);
+  border: none;
+}
+
+.btn-primary:hover,
+.btn-primary.active {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Secondary button - link/cyan filled */
+.btn-secondary {
+  background: var(--link);
+  color: #000;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background: var(--accent);
+}
+
+/* Outline danger button */
+.btn-outline-danger {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.btn-outline-danger:hover {
+  background: var(--danger);
+  color: #fff;
+}

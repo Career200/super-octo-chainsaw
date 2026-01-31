@@ -1,16 +1,18 @@
 ---
 import HTML from '../layouts/html.astro';
 import Layout from '../layouts/layout.astro';
-import '../styles/armor.css';
+import Charsheet from '../layouts/charsheet.astro';
+import '../styles/armor/index.css';
 ---
 
-<HTML title="IMI GLOBAL — TAC HOME">
+<HTML title="IMI GLOBAL — TAC HOME" bodyClass="charsheet-page armor-page">
   <Layout>
+    <Charsheet>
     <div class="container">
       <div class="panel panel-collapsible" id="damage-history-panel">
         <div class="panel-heading">
           <h2>Damage History</h2>
-          <button class="button-clear" id="btn-clear-history">Clear</button>
+          <button class="btn-ghost-danger btn-md" id="btn-clear-history">Clear</button>
         </div>
         <div class="panel-content" id="damage-history-list"></div>
         <div class="expand-indicator"></div>
@@ -20,13 +22,13 @@ import '../styles/armor.css';
       <div class="panel panel-collapsible expanded" id="character-armor-panel">
         <div class="panel-heading">
           <h2>Character Armor <button class="help-trigger" id="armor-help" type="button" aria-label="Armor mechanics help">?</button></h2>
-          <button class="button-hit" id="btn-im-hit">I'm hit</button>
+          <button class="btn-outline-danger btn-md" id="btn-im-hit">I'm hit</button>
         </div>
         <!-- Full body grid -->
         <div class="body-grid">
-          <div class="skinweave-display" id="skinweave-display">
-            <span class="skinweave-label">SkinWeave</span>
-            <span class="skinweave-desc">covers all body parts, always calculated as bottom layer, <i>does not count toward 3-layer limit</i></span>
+          <div class="display-box skinweave-display" id="skinweave-display">
+            <span class="text-label-lg skinweave-label">SkinWeave</span>
+            <span class="text-desc-justified skinweave-desc">covers all body parts, always calculated as bottom layer, <i>does not count toward 3-layer limit</i></span>
             <select class="skinweave-select" id="skinweave-select">
               <option value="0">None</option>
               <option value="8">SP 8</option>
@@ -42,10 +44,15 @@ import '../styles/armor.css';
             <div class="layer-list" id="layers-head"></div>
           </div>
 
-          <div class="implants-display" id="implants-display">
-            <span class="implants-label">Armor Implants</span>
-            <span class="implants-desc">Subdermal armor and body plating options; <br/> <br/> click to manage</span>
-            <div class="implants-list" id="implants-list"></div>
+          <div class="body-part" id="part-face">
+            <h3>Face <span class="help-trigger">?</span></h3>
+            SP: <span class="sp-value" id="sp-face"></span>
+          </div>
+
+          <div class="display-box implants-display" id="implants-display">
+            <span class="text-label-lg implants-label">Armor Implants</span>
+            <span class="text-desc-justified implants-desc">Subdermal armor and body plating options; <br/> <br/> click to manage</span>
+            <div class="text-soft implants-list" id="implants-list"></div>
           </div>
 
           <div class="body-part" id="part-torso">
@@ -72,9 +79,9 @@ import '../styles/armor.css';
             <div class="layer-list" id="layers-left_leg"></div>
           </div>
 
-          <div class="ev-display" id="ev-display">
-            <span class="ev-label">EV</span>
-            <span class="ev-value" id="ev-value">0</span>
+          <div class="display-box ev-display" id="ev-display">
+            <span class="text-label-lg ev-label">EV</span>
+            <span class="text-value-2xl ev-value" id="ev-value">0</span>
           </div>
 
           <div class="body-part" id="part-right_leg">
@@ -89,7 +96,7 @@ import '../styles/armor.css';
       <div class="panel panel-collapsible" id="armor-inventory-panel">
         <div class="panel-heading">
           <h2>Owned Armor</h2>
-          <span class="armor-legend"><span class="armor-type-icon">⬡</span>Hard <span class="armor-type-icon">≈</span>Soft</span>
+          <span class="flex-center gap-2 text-soft armor-legend"><span class="armor-type-icon">⬡</span>Hard <span class="armor-type-icon">≈</span>Soft</span>
         </div>
         <div class="panel-content" id="armor-list"></div>
         <div class="expand-indicator"></div>
@@ -104,6 +111,7 @@ import '../styles/armor.css';
       </div>
 
     </div>
+    </Charsheet>
   </Layout>
   <script src="../scripts/armor/render/index.ts"></script>
 </HTML>

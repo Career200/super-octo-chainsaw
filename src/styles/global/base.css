@@ -1,19 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
-
-:root {
-  --bg: #0e0f11; /*  */
-  --bg-alt: #1a1c1f; /*  */
-  --fg: #c4f2e6; /*  */
-  --fg-soft: #aaa;
-  --accent: #00ffcc; /*  */
-  --accent-muted: #0ff2c2a0; /*  */
-  --footer: #90ffb7; /*  */
-  --border: #2f3237; /*  */
-  --border-light: #2a2d32; /*  */
-  --code-bg: #1c1e22;
-  --link: #00f0ff;
-}
-
+/* === Layout Elements === */
 header {
   background-color: var(--bg-alt);
   border-bottom: 1px solid var(--border-light);
@@ -27,6 +12,7 @@ header {
   gap: 0.5rem;
 }
 
+/* === Typography === */
 h1 {
   font-size: 1.25rem;
   margin: 0;
@@ -48,7 +34,6 @@ h2 {
 
 h4 {
   margin: 0;
-  padding: 1rem 0;
   color: var(--fg);
 }
 
@@ -58,14 +43,14 @@ h4 {
 }
 
 ::selection {
-  background: #00ffcc44;
+  background: var(--selection-bg);
 }
 
 code {
   background: var(--code-bg);
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  color: #fff;
+  color: var(--fg-white);
 }
 
 blockquote {
@@ -88,13 +73,41 @@ a:hover {
 ol {
   padding: 4px 0px 4px 24px;
 }
+
 ul {
   padding: 12px 48px;
 }
 
 .redacted {
-  background-color: black;
-  color: black;
+  user-select: none;
+  background-color: var(--bg-black);
+  color: var(--bg-black);
   border-radius: 2px;
   padding: 0 0.2em;
+}
+
+/* === Scrollbars === */
+
+/* Firefox */
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-muted) transparent;
+  }
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }

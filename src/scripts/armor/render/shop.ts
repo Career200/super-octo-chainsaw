@@ -21,7 +21,7 @@ export function renderShop() {
     item.className = "store-item";
 
     const header = document.createElement("div");
-    header.className = "armor-header";
+    header.className = "flex-between gap-12 armor-header";
 
     const title = document.createElement("h4");
     const typeIcon = document.createElement("span");
@@ -41,18 +41,22 @@ export function renderShop() {
 
     const coverage = renderBodyPartsCoverage(template.bodyParts);
 
+    const description = document.createElement("p");
+    description.className = "text-desc store-description";
+    description.textContent = template.description ?? "";
+
     const actions = document.createElement("div");
-    actions.className = "store-actions";
+    actions.className = "flex-between gap-8 store-actions";
 
     const handleAcquire = () => acquireArmor(template.templateId);
 
     const buyBtn = document.createElement("button");
-    buyBtn.className = "button-buy";
+    buyBtn.className = "btn-secondary";
     buyBtn.textContent = template.cost ? `Buy (${template.cost}eb)` : "Buy";
     buyBtn.addEventListener("click", handleAcquire);
 
     const takeBtn = document.createElement("button");
-    takeBtn.className = "button-take";
+    takeBtn.className = "btn-ghost";
     takeBtn.textContent = "Take (Free)";
     takeBtn.addEventListener("click", handleAcquire);
 
@@ -61,6 +65,9 @@ export function renderShop() {
 
     item.appendChild(header);
     item.appendChild(coverage);
+    if (template.description) {
+      item.appendChild(description);
+    }
     item.appendChild(actions);
     container.appendChild(item);
   }

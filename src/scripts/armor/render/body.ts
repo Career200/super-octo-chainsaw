@@ -3,18 +3,17 @@ import {
   PART_NAMES,
   getEffectiveSP,
   getImplantSP,
-  getTotalEV,
   sortByLayerOrder,
+  proportionalArmorBonus,
 } from "../core";
 import {
   getBodyPartLayers,
-  getAllOwnedArmor,
   getImplantsForPart,
-  getInstalledImplants,
-  isImplant,
   isSkinweave,
-} from "../../../stores/armor";
+} from "@stores/armor";
+import { $encumbrance } from "@stores/character";
 import { getHealthClassFromSP } from "./common";
+import { createPopover } from "../../ui/popover";
 
 export function renderEffectiveSP() {
   for (const part of BODY_PARTS) {
@@ -23,8 +22,10 @@ export function renderEffectiveSP() {
 
     const layers = getBodyPartLayers(part);
     const implants = getImplantsForPart(part);
+    // Faceplate only protects face, not head
+    const implantsSP = implants.filter((i) => i.layer !== "faceplate");
 
-    const total = getEffectiveSP(layers, { implants, part });
+    const total = getEffectiveSP(layers, { implants: implantsSP, part });
 
     container.innerHTML = "";
 
@@ -151,9 +152,7 @@ export function renderEV() {
   const valueEl = document.getElementById("ev-value");
   if (!display || !valueEl) return;
 
-  const wornArmor = getAllOwnedArmor().filter((a) => a.worn && !isImplant(a));
-  const installedImplants = getInstalledImplants();
-  const { ev, maxLayers, maxLocation } = getTotalEV(wornArmor, installedImplants);
+  const { ev, maxLayers, maxLocation } = $encumbrance.get();
 
   valueEl.textContent = ev > 0 ? `-${ev}` : "0";
   display.classList.toggle("has-penalty", ev > 0);
@@ -167,4 +166,127 @@ export function renderEV() {
     penaltyBox.textContent = `layering penalty — ${PART_NAMES[maxLocation]}`;
     display.appendChild(penaltyBox);
   }
+}
+
+interface FaceLayer {
+  name: string;
+  sp: number;
+}
+
+function getFaceLayers(): FaceLayer[] {
+  const headLayers = getBodyPartLayers("head");
+  const implants = getImplantsForPart("head");
+  const layers: FaceLayer[] = [];
+
+  // Hard helmets protect face at half SP
+  for (const layer of headLayers) {
+    if (layer.type === "hard") {
+      const sp = Math.floor(layer.spCurrent / 2);
+      if (sp > 0) {
+        layers.push({ name: `${layer.name} (½)`, sp });
+      }
+    }
+  }
+
+  // Faceplate provides full protection
+  const faceplate = implants.find((i) => i.layer === "faceplate");
+  if (faceplate) {
+    const sp = faceplate.spByPart["head"] ?? 0;
+    if (sp > 0) {
+      layers.push({ name: faceplate.name, sp });
+    }
+  }
+
+  // Skinweave provides full protection
+  const skinweave = implants.find((i) => isSkinweave(i));
+  if (skinweave) {
+    const sp = getImplantSP(skinweave, "head");
+    if (sp > 0) {
+      layers.push({ name: "SkinWeave", sp });
+    }
+  }
+
+  return layers;
+}
+
+function calculateFaceSP(layers: FaceLayer[]): number {
+  if (layers.length === 0) return 0;
+
+  const sorted = [...layers].sort((a, b) => b.sp - a.sp);
+  let effectiveSP = sorted[0].sp;
+
+  for (let i = 1; i < sorted.length; i++) {
+    const layerSP = sorted[i].sp;
+    const diff = effectiveSP - layerSP;
+    const bonus = Math.min(layerSP, proportionalArmorBonus(diff));
+    effectiveSP += bonus;
+  }
+
+  return effectiveSP;
+}
+
+export function renderFaceSP() {
+  const container = document.getElementById("sp-face");
+  if (!container) return;
+
+  const layers = getFaceLayers();
+  const total = calculateFaceSP(layers);
+
+  container.textContent = total.toString();
+}
+
+export function setupFaceHelp() {
+  const helpIcon = document.querySelector("#part-face .help-trigger");
+  if (!helpIcon) return;
+
+  helpIcon.removeAttribute("title");
+
+  helpIcon.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    const { popover, reposition } = createPopover(helpIcon as HTMLElement, {
+      className: "popover-help popover-face-help",
+    });
+
+    const layers = getFaceLayers();
+
+    let layerListHtml = "";
+    if (layers.length > 0) {
+      const sorted = [...layers].sort((a, b) => b.sp - a.sp);
+      layerListHtml = `
+        <section>
+          <h4>Active Protection</h4>
+          <ul class="face-layer-list">
+            ${sorted.map((l) => `<li>${l.name}: SP ${l.sp}</li>`).join("")}
+          </ul>
+        </section>
+      `;
+    } else {
+      layerListHtml = `
+        <section>
+          <p class="face-no-protection">No face protection equipped.</p>
+        </section>
+      `;
+    }
+
+    popover.innerHTML = `
+      <h3>Face Protection</h3>
+      <section>
+        <h4>Targeting</h4>
+        <p>On head hits, roll <strong>1d10</strong>: results <strong>1-4</strong> hit the face,
+        <strong>5-10</strong> hit the head. Face damage degrades head armor.</p>
+      </section>
+      <section>
+        <h4>Coverage</h4>
+        <ul>
+          <li><strong>Heavy helmets</strong> protect face at half SP</li>
+          <li><strong>Faceplate</strong> provides full protection</li>
+          <li><strong>SkinWeave</strong> provides full protection</li>
+        </ul>
+      </section>
+      ${layerListHtml}
+    `;
+
+    reposition();
+  });
 }

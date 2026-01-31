@@ -1,4 +1,9 @@
-import { BODY_PARTS, type ArmorTemplate, type ArmorLayer, type BodyPartName } from "./core";
+import {
+  BODY_PARTS,
+  type ArmorTemplate,
+  type ArmorLayer,
+  type BodyPartName,
+} from "./core";
 
 const head: BodyPartName[] = ["head"];
 const torso: BodyPartName[] = ["torso"];
@@ -14,7 +19,12 @@ const template = (
   type: "soft" | "hard",
   spMax: number,
   bodyParts: BodyPartName[],
-  opts?: { ev?: number; cost?: number; description?: string; layer?: ArmorLayer },
+  opts?: {
+    ev?: number;
+    cost?: number;
+    description?: string;
+    layer?: ArmorLayer;
+  },
 ): ArmorTemplate => ({
   templateId,
   name,
@@ -301,26 +311,54 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
   // ===================
 
   // --- SKINWEAVE ---
-  skinweave_8: template("skinweave_8", "SkinWeave SP 8", "soft", 8, fullWithHead, {
-    layer: "skinweave",
-    description:
-      "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
-  }),
-  skinweave_10: template("skinweave_10", "SkinWeave SP 10", "soft", 10, fullWithHead, {
-    layer: "skinweave",
-    description:
-      "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
-  }),
-  skinweave_12: template("skinweave_12", "SkinWeave SP 12", "soft", 12, fullWithHead, {
-    layer: "skinweave",
-    description:
-      "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
-  }),
-  skinweave_14: template("skinweave_14", "SkinWeave SP 14", "soft", 14, fullWithHead, {
-    layer: "skinweave",
-    description:
-      "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
-  }),
+  skinweave_8: template(
+    "skinweave_8",
+    "SkinWeave SP 8",
+    "soft",
+    8,
+    fullWithHead,
+    {
+      layer: "skinweave",
+      description:
+        "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+    },
+  ),
+  skinweave_10: template(
+    "skinweave_10",
+    "SkinWeave SP 10",
+    "soft",
+    10,
+    fullWithHead,
+    {
+      layer: "skinweave",
+      description:
+        "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+    },
+  ),
+  skinweave_12: template(
+    "skinweave_12",
+    "SkinWeave SP 12",
+    "soft",
+    12,
+    fullWithHead,
+    {
+      layer: "skinweave",
+      description:
+        "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+    },
+  ),
+  skinweave_14: template(
+    "skinweave_14",
+    "SkinWeave SP 14",
+    "soft",
+    14,
+    fullWithHead,
+    {
+      layer: "skinweave",
+      description:
+        "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+    },
+  ),
 
   // --- OTHER IMPLANTS ---
   subdermal: template("subdermal", "Subdermal Armor", "soft", 18, torso, {
@@ -328,29 +366,22 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
     description:
       "Armored plastic laminates inserted under the skin for protection.",
   }),
-  cowl: template("cowl", "Body Plating: Cowl", "hard", 25, head, {
+  cowl: template("cowl", "Cowl (Plating)", "hard", 25, head, {
     layer: "plating",
     description:
       "Body plate covering the skull, anchored by minibolts to the scalp.",
   }),
-  faceplate: template("faceplate", "Body Plating: Faceplate", "hard", 25, head, {
-    layer: "plating",
+  faceplate: template("faceplate", "Faceplate (Plating)", "hard", 25, head, {
+    layer: "faceplate",
     description:
       "Covers the entire face with ports for breathing, eating and seeing. Woven with myomar muscle fibers for limited expression.",
   }),
-  torso_plate: template(
-    "torso_plate",
-    "Body Plating: Torso",
-    "hard",
-    25,
-    torso,
-    {
-      layer: "plating",
-      ev: 3,
-      description:
-        "Covers entire upper and lower torso with expansion joints for movement.",
-    },
-  ),
+  torso_plate: template("torso_plate", "Torso (Plating)", "hard", 25, torso, {
+    layer: "plating",
+    ev: 3,
+    description:
+      "Covers entire upper and lower torso with expansion joints for movement.",
+  }),
 };
 
 export function getTemplate(templateId: string): ArmorTemplate | null {
