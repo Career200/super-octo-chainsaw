@@ -174,7 +174,24 @@ export function setupWoundHelp() {
           Whenever you take damage, you need to make a stun save. It represents your
           ability to stay conscious and focused despite pain, shock, fear and blood loss.
         </p>
-        <p>Stun damage is used to calculate Wound State penalty.</p>
+        <p>Stun damage is used to calculate wound penalties.</p>
+      </section>
+      <section>
+        <h4>Stable vs Unstable</h4>
+        <p>
+          <strong>Unstable</strong> — active combat or uncontrolled injury. Harsh penalties:
+          REF at -2 (Serious), REF/INT/CL halved (Critical), or reduced to 1/3 (Mortal).
+          Must make <strong>DEATH SAVES</strong> each turn at Mortal wounds.
+        </p>
+        <p>
+          <strong>Stable</strong> — bleeding stopped, wounds dressed, or recovering.
+          Only REF penalties apply (-2 Serious, -4 Critical, scaling at Mortal).
+          No death saves required.
+        </p>
+        <p>
+          Crossing into <strong>Mortal</strong> automatically destabilizes.
+          Stabilization requires medical attention or successful stabilization roll.
+        </p>
       </section>
     `;
   });

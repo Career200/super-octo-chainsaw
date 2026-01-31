@@ -1,5 +1,6 @@
 /* Biomon Page Layout */
 .biomon-page .container {
+  padding-top: 0;
   grid-template-columns: 1fr;
 }
 
