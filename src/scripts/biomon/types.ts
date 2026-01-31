@@ -36,6 +36,7 @@ export type DamageType = "physical" | "stun";
 export interface WoundState {
   physical: number;
   stun: number;
+  stabilized: boolean;
 }
 
 // --- Stat types and constants ---
@@ -86,13 +87,10 @@ export interface StatsState {
   bt: { inherent: number; cyber: number };
 }
 
-// Wound penalty types:
-// - "ref": -2 at SERIOUS, halved at CRITICAL, 1/3 at MORTAL
-// - "intcl": no penalty at SERIOUS, halved at CRITICAL, 1/3 at MORTAL
-// - "none": no wound penalties
 export type WoundPenaltyType = "ref" | "intcl" | "none";
 
 export interface CalculateStatOptions {
   woundPenaltyType?: WoundPenaltyType;
   evPenalty?: number;
+  stabilized?: boolean;
 }

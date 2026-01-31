@@ -51,48 +51,71 @@ $stats.subscribe((state) => {
 export const $REF = computed(
   [$stats, $health, $encumbrance],
   (stats, health, encumbrance): StatValues =>
-    calculateStat(stats.ref.inherent, stats.ref.cyber, health.physical, {
+    calculateStat(stats.ref.inherent, stats.ref.cyber, health.stun, {
       woundPenaltyType: "ref",
       evPenalty: encumbrance.ev,
+      stabilized: health.stabilized,
     }),
 );
 
-export const $INT = computed([$stats, $health], (stats, health): StatValues =>
-  calculateStat(stats.int.inherent, stats.int.cyber, health.physical, {
-    woundPenaltyType: "intcl",
-  }),
+export const $INT = computed(
+  [$stats, $health],
+  (stats, health): StatValues =>
+    calculateStat(stats.int.inherent, stats.int.cyber, health.stun, {
+      woundPenaltyType: "intcl",
+      stabilized: health.stabilized,
+    }),
 );
 
-export const $CL = computed([$stats, $health], (stats, health): StatValues =>
-  calculateStat(stats.cl.inherent, stats.cl.cyber, health.physical, {
-    woundPenaltyType: "intcl",
-  }),
+export const $CL = computed(
+  [$stats, $health],
+  (stats, health): StatValues =>
+    calculateStat(stats.cl.inherent, stats.cl.cyber, health.stun, {
+      woundPenaltyType: "intcl",
+      stabilized: health.stabilized,
+    }),
 );
 
-export const $TECH = computed([$stats], (stats): StatValues =>
-  calculateStat(stats.tech.inherent, stats.tech.cyber, 0),
+export const $TECH = computed(
+  [$stats, $health],
+  (stats, health): StatValues =>
+    calculateStat(stats.tech.inherent, stats.tech.cyber, health.stun, {
+      woundPenaltyType: "intcl",
+      stabilized: health.stabilized,
+    }),
 );
 
-export const $LK = computed([$stats], (stats): StatValues =>
-  // special logic later
-  calculateStat(stats.lk.inherent, stats.lk.cyber, 0),
+export const $LK = computed(
+  [$stats],
+  (stats): StatValues =>
+    // special logic later
+    calculateStat(stats.lk.inherent, stats.lk.cyber, 0),
 );
 
-export const $ATT = computed([$stats], (stats): StatValues =>
-  calculateStat(stats.att.inherent, stats.att.cyber, 0),
+export const $ATT = computed(
+  [$stats],
+  (stats): StatValues => calculateStat(stats.att.inherent, stats.att.cyber, 0),
 );
 
-export const $MA = computed([$stats], (stats): StatValues =>
-  calculateStat(stats.ma.inherent, stats.ma.cyber, 0),
+export const $MA = computed(
+  [$stats, $health],
+  (stats, health): StatValues =>
+    calculateStat(stats.ma.inherent, stats.ma.cyber, health.stun, {
+      woundPenaltyType: "ref",
+      stabilized: health.stabilized,
+    }),
 );
 
-export const $EMP = computed([$stats], (stats): StatValues =>
-  calculateStat(stats.emp.inherent, stats.emp.cyber, 0),
+export const $EMP = computed(
+  [$stats],
+  (stats): StatValues => calculateStat(stats.emp.inherent, stats.emp.cyber, 0),
 );
 
-export const $BT = computed([$stats], (stats): StatValues =>
-  // major logic later
-  calculateStat(stats.bt.inherent, stats.bt.cyber, 0),
+export const $BT = computed(
+  [$stats],
+  (stats): StatValues =>
+    // major logic later
+    calculateStat(stats.bt.inherent, stats.bt.cyber, 0),
 );
 
 // --- Actions ---

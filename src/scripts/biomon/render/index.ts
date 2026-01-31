@@ -4,6 +4,7 @@ import {
   renderWoundTracker,
   setupWoundTracker,
   setupStunToggle,
+  setupStabilizedToggle,
 } from "./wounds";
 import { renderStats, setupStats } from "./stats";
 import { setupWoundHelp } from "../help";
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderAll();
   setupWoundTracker();
   setupStunToggle();
+  setupStabilizedToggle();
   setupStats();
   setupWoundHelp();
 });

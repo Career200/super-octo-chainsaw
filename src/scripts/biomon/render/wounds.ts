@@ -5,7 +5,7 @@ import {
   type WoundLevel,
 } from "@scripts/biomon/types";
 import { $health } from "@stores/character";
-import { setDamage, syncStunToPhysical } from "@stores/health";
+import { setDamage, syncStunToPhysical, setStabilized } from "@stores/health";
 
 let showStun = false;
 
@@ -64,14 +64,41 @@ function createLevelGroup(
   return group;
 }
 
+function updateStabilizedControl(stabilized: boolean): void {
+  const control = document.querySelector(".stabilized-control");
+  const toggle = document.getElementById("stabilized-toggle");
+  const label = document.getElementById("stabilized-label");
+
+  if (!control || !toggle || !label) return;
+
+  control.classList.toggle("stabilized", stabilized);
+  control.classList.toggle("unstable", !stabilized);
+  toggle.classList.toggle("filled", stabilized);
+  label.textContent = stabilized ? "Stable" : "Unstable";
+}
+
+function updateStunToggle(active: boolean): void {
+  const toggle = document.getElementById("stun-toggle");
+  if (!toggle) return;
+  toggle.classList.toggle("active", active);
+}
+
 export function renderWoundTracker(): void {
   const container = document.getElementById("wound-tracker");
   if (!container) return;
 
   const state = $health.get();
 
+  if (state.stun !== state.physical) {
+    showStun = true;
+  }
+
   container.innerHTML = "";
   container.classList.toggle("show-stun", showStun);
+  document.body.classList.toggle("show-stun", showStun);
+  updateStunToggle(showStun);
+
+  updateStabilizedControl(state.stabilized);
 
   WOUND_LEVELS.forEach((level, index) => {
     container.appendChild(
@@ -112,13 +139,21 @@ export function setupStunToggle(): void {
 
   toggle.addEventListener("click", () => {
     showStun = !showStun;
-    toggle.classList.toggle("active", showStun);
-    document.body.classList.toggle("show-stun", showStun);
 
     if (!showStun) {
       syncStunToPhysical();
     }
 
     renderWoundTracker();
+  });
+}
+
+export function setupStabilizedToggle(): void {
+  const control = document.querySelector(".stabilized-control");
+  if (!control) return;
+
+  control.addEventListener("click", () => {
+    const state = $health.get();
+    setStabilized(!state.stabilized);
   });
 }

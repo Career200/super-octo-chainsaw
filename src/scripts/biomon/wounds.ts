@@ -1,7 +1,7 @@
 import {
-  WOUND_LEVELS,
   BOXES_PER_LEVEL,
   TOTAL_BOXES,
+  WOUND_LEVELS,
   type WoundLevel,
   type WoundState,
   type DamageType,
@@ -25,11 +25,13 @@ export function applyDamage(
     return {
       physical: Math.min(TOTAL_BOXES, state.physical + amount),
       stun: Math.min(TOTAL_BOXES, state.stun + amount),
+      stabilized: state.stabilized,
     };
   }
   return {
     physical: state.physical,
     stun: Math.min(TOTAL_BOXES, state.stun + amount),
+    stabilized: state.stabilized,
   };
 }
 
@@ -42,10 +44,12 @@ export function healDamage(
     return {
       physical: Math.max(0, state.physical - amount),
       stun: state.stun,
+      stabilized: state.stabilized,
     };
   }
   return {
     physical: state.physical,
     stun: Math.max(state.physical, state.stun - amount),
+    stabilized: state.stabilized,
   };
 }

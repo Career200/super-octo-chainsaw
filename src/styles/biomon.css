@@ -20,9 +20,8 @@
 
 .wound-bar-header {
   display: flex;
-  margin-top: var(--space-4);
-  align-items: center;
-  gap: var(--space-8);
+  align-items: flex-start;
+  gap: var(--space-4);
   flex-shrink: 0;
 }
 
@@ -60,7 +59,8 @@
 }
 
 #wound-tracker.show-stun .wound-track-stun {
-  display: flex;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .wound-level-group {
@@ -126,9 +126,10 @@
   border-color: var(--danger);
 }
 
-/* Stun track - hidden by default */
+/* Stun track - hidden but reserves space */
 .wound-track-stun {
-  display: none;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .wound-track-stun .wound-box.filled {
@@ -153,13 +154,55 @@
   color: var(--danger);
 }
 
-/* Offset page content for fixed bar */
-.biomon-page .page-scroll {
-  padding-top: 48px;
+/* === Wound Bar Controls === */
+.wound-bar-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex-shrink: 0;
 }
 
-.biomon-page.show-stun .page-scroll {
-  padding-top: 48px;
+.stabilized-control {
+  width: 72px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  cursor: pointer;
+}
+
+.stabilized-control .wound-box {
+  flex-shrink: 0;
+}
+
+.stabilized-control .stabilized-label {
+  font-size: var(--font-ui-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-soft);
+  transition: color 0.15s;
+}
+
+.stabilized-control.stabilized .wound-box {
+  background: var(--terminal);
+  border-color: var(--terminal);
+}
+
+.stabilized-control.stabilized .stabilized-label {
+  color: var(--terminal);
+}
+
+.stabilized-control.unstable .wound-box {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.stabilized-control.unstable .stabilized-label {
+  color: var(--danger);
+}
+
+/* Offset page content for fixed bar */
+.biomon-page .page-scroll {
+  padding-top: 64px;
 }
 
 /* === Stats Panel === */
@@ -301,10 +344,18 @@
   }
 
   .biomon-page .page-scroll {
-    padding-top: 76px;
+    padding-top: 100px;
   }
 
-  .biomon-page.show-stun .page-scroll {
-    padding-top: 100px;
+  .wound-bar-header {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .wound-bar-controls {
+    flex-direction: row;
+    gap: var(--space-12);
   }
 }

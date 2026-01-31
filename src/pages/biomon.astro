@@ -11,7 +11,13 @@ import '../styles/biomon.css';
       <div class="wound-bar">
         <div class="wound-bar-header">
           <span class="wound-bar-title">Wounds <button class="help-trigger" id="wound-help" type="button" aria-label="Wound tracker help">?</button></span>
-          <button class="btn-ghost" id="stun-toggle">Stun</button>
+          <div class="wound-bar-controls">
+            <button class="btn-ghost" id="stun-toggle">Stun</button>
+            <div class="stabilized-control">
+              <div class="wound-box" id="stabilized-toggle"></div>
+              <span class="stabilized-label" id="stabilized-label">Stable</span>
+            </div>
+          </div>
         </div>
         <div id="wound-tracker"></div>
       </div>
