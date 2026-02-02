@@ -9,14 +9,16 @@ export function renderBodyInfo(): void {
   const btValue = container.querySelector(".body-stat-value");
   const btName = container.querySelector(".body-type-name");
   const btmValue = container.querySelector(".btm-value");
-  const carryValue = container.querySelector(".carry-value");
+  const carryValue = container.querySelector("#carry-value");
+  const liftValue = container.querySelector("#lift-value");
   const saveValue = container.querySelector(".save-value");
   const savePenalty = container.querySelector(".save-penalty");
 
   if (btValue) btValue.textContent = String(state.value);
   if (btName) btName.textContent = state.name;
   if (btmValue) btmValue.textContent = String(state.btm);
-  if (carryValue) carryValue.textContent = `${state.carry}/${state.deadlift}kg`;
+  if (carryValue) carryValue.textContent = `${state.carry}kg`;
+  if (liftValue) liftValue.textContent = `${state.deadlift}kg`;
   if (saveValue) saveValue.textContent = String(state.currentSave);
 
   if (savePenalty) {
