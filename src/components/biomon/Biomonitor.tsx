@@ -1,12 +1,6 @@
 import { WoundTracker } from "./WoundTracker";
-
-const BodyInfo = () => {
-  return (
-    <div class="body-info" id="body-info">
-      [BodyInfo placeholder]
-    </div>
-  );
-};
+import { BodyInfo } from "./BodyInfo";
+import { StatsPanel } from "./StatsPanel";
 
 const HitLocationTable = () => {
   return (
@@ -29,14 +23,6 @@ const HitLocationTable = () => {
       <span class="hit-location">
         LL <span class="hit-roll">9-10</span>
       </span>
-    </div>
-  );
-};
-
-const StatsPanel = () => {
-  return (
-    <div class="panel" id="stats-panel">
-      [StatsPanel placeholder]
     </div>
   );
 };
