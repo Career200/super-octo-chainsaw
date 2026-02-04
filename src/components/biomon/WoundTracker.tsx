@@ -4,13 +4,8 @@ import { $health, syncStunToPhysical } from "@stores/health";
 import { WOUND_LEVELS } from "@scripts/biomon/types";
 import { WoundLevelGroup } from "./WoundLevelGroup";
 import { StabilizedControl } from "./StabilizedControl";
-
-// Placeholder until HelpPopover is implemented
-const HelpButton = ({ id }: { id: string }) => (
-  <button class="help-trigger" id={id} type="button" aria-label="Help">
-    ?
-  </button>
-);
+import { HelpPopover } from "./HelpPopover";
+import { WoundHelpContent } from "./help/WoundHelpContent";
 
 export const WoundTracker = () => {
   const health = useStore($health);
@@ -34,7 +29,7 @@ export const WoundTracker = () => {
     <div class="wound-bar">
       <div class="wound-bar-header">
         <span class="wound-bar-title">
-          Wounds <HelpButton id="wound-help" />
+          Wounds <HelpPopover id="wound-help" content={<WoundHelpContent />} />
         </span>
         <div class="wound-bar-controls">
           <button

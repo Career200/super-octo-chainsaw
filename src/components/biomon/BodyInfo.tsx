@@ -1,19 +1,14 @@
 import { useStore } from "@nanostores/preact";
 import { $bodyType } from "@stores/stats";
-
-// Placeholder until HelpPopover is implemented
-const HelpButton = ({ id }: { id: string }) => (
-  <button class="help-trigger" id={id} type="button" aria-label="Help">
-    ?
-  </button>
-);
+import { HelpPopover } from "./HelpPopover";
+import { BodyHelpContent } from "./help/BodyHelpContent";
 
 export const BodyInfo = () => {
   const body = useStore($bodyType);
 
   return (
     <div class="body-info" id="body-info">
-      <HelpButton id="body-help" />
+      <HelpPopover id="body-help" content={<BodyHelpContent />} />
       <div class="body-stat">
         <span class="body-label">BT</span>
         <span class="body-stat-value">{body.value}</span>
