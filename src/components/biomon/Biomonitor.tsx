@@ -1,6 +1,4 @@
-const WoundTracker = () => {
-  return <div class="wound-bar">[WoundTracker placeholder]</div>;
-};
+import { WoundTracker } from "./WoundTracker";
 
 const BodyInfo = () => {
   return (
