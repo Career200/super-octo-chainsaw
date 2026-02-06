@@ -7,7 +7,7 @@ import {
 } from "@stores/armor";
 import { getImplantSP, proportionalArmorBonus } from "@scripts/armor/core";
 import { HelpPopover } from "@components/shared/HelpPopover";
-import { FaceHelpContent } from "./help/FaceHelpContent";
+import { FaceHelpContent } from "../help/FaceHelpContent";
 
 interface FaceLayer {
   name: string;

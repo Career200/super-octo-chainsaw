@@ -1,4 +1,4 @@
-import { getConditionClassFromSP } from "./utils";
+import { getConditionClassFromSP } from "../utils";
 
 interface Props {
   name: string;

@@ -10,7 +10,7 @@ import {
   isSkinweave,
 } from "@stores/armor";
 import { Popover } from "@components/shared/Popover";
-import { getConditionClassFromSP } from "./utils";
+import { getConditionClassFromSP } from "../utils";
 
 export const ImplantsDisplay = () => {
   useStore($ownedArmor);
