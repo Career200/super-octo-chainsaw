@@ -4,8 +4,8 @@ import { $health, syncStunToPhysical } from "@stores/health";
 import { WOUND_LEVELS } from "@scripts/biomon/types";
 import { WoundLevelGroup } from "./WoundLevelGroup";
 import { StabilizedControl } from "./StabilizedControl";
-import { HelpPopover } from "./HelpPopover";
-import { WoundHelpContent } from "./help/WoundHelpContent";
+import { HelpPopover } from "@components/shared/HelpPopover";
+import { WoundHelpContent } from "@components/shared/help/biomon/WoundHelpContent";
 
 export const WoundTracker = () => {
   const health = useStore($health);

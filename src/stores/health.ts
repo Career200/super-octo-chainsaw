@@ -1,4 +1,4 @@
-import { atom } from "nanostores";
+import { persistentAtom } from "@nanostores/persistent";
 import {
   TOTAL_BOXES,
   BOXES_PER_LEVEL,
@@ -7,8 +7,6 @@ import {
 } from "@scripts/biomon/types";
 import { applyDamage, healDamage } from "@scripts/biomon/wounds";
 
-const STORAGE_KEY = "health-state";
-
 // Mortal starts at box 13 (after 3 levels of 4 boxes each)
 const MORTAL_THRESHOLD = 3 * BOXES_PER_LEVEL;
 
@@ -16,31 +14,9 @@ function defaultState(): WoundState {
   return { physical: 0, stun: 0, stabilized: false };
 }
 
-function loadState(): WoundState {
-  const defaults = defaultState();
-
-  if (typeof localStorage === "undefined") {
-    return defaults;
-  }
-
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) return defaults;
-
-  try {
-    const parsed = JSON.parse(stored) as Partial<WoundState>;
-    return { ...defaults, ...parsed };
-  } catch {
-    return defaults;
-  }
-}
-
-export const $health = atom<WoundState>(loadState());
-
-// Persist on change
-$health.subscribe((state) => {
-  if (typeof localStorage !== "undefined") {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
+export const $health = persistentAtom<WoundState>("health-state", defaultState(), {
+  encode: JSON.stringify,
+  decode: JSON.parse,
 });
 
 // --- Helpers ---

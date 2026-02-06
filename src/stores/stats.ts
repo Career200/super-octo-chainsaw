@@ -1,4 +1,5 @@
-import { atom, computed } from "nanostores";
+import { persistentAtom } from "@nanostores/persistent";
+import { computed } from "nanostores";
 import { $health } from "./health";
 import { $encumbrance } from "./armor";
 import { calculateStat } from "@scripts/biomon/stats";
@@ -10,8 +11,6 @@ import {
   type BodyTypeInfo,
 } from "@scripts/biomon/body";
 import type { StatsState, StatValues } from "@scripts/biomon/types";
-
-const STORAGE_KEY = "character-stats";
 
 function defaultState(): StatsState {
   return {
@@ -27,30 +26,9 @@ function defaultState(): StatsState {
   };
 }
 
-function loadState(): StatsState {
-  const defaults = defaultState();
-
-  if (typeof localStorage === "undefined") {
-    return defaults;
-  }
-
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) return defaults;
-
-  try {
-    const parsed = JSON.parse(stored) as Partial<StatsState>;
-    return { ...defaults, ...parsed };
-  } catch {
-    return defaults;
-  }
-}
-
-export const $stats = atom<StatsState>(loadState());
-
-$stats.subscribe((state) => {
-  if (typeof localStorage !== "undefined") {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
+export const $stats = persistentAtom<StatsState>("character-stats", defaultState(), {
+  encode: JSON.stringify,
+  decode: JSON.parse,
 });
 
 // --- Computed stats ---

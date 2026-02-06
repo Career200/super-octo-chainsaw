@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/preact";
 import { $bodyType } from "@stores/stats";
-import { HelpPopover } from "./HelpPopover";
-import { BodyHelpContent } from "./help/BodyHelpContent";
+import { HelpPopover } from "@components/shared/HelpPopover";
+import { BodyHelpContent } from "@components/shared/help/biomon/BodyHelpContent";
 
 export const BodyInfo = () => {
   const body = useStore($bodyType);
@@ -29,9 +29,9 @@ export const BodyInfo = () => {
       <div class="body-stat body-save">
         <span class="body-label">Save</span>
         <span class="save-value">{body.currentSave}</span>
-        {body.savePenalty < 0 && (
-          <span class="save-penalty has-penalty">({body.savePenalty})</span>
-        )}
+        <span class={`save-penalty${body.savePenalty < 0 ? " has-penalty" : ""}`}>
+          {body.savePenalty < 0 && `(${body.savePenalty})`}
+        </span>
       </div>
     </div>
   );
