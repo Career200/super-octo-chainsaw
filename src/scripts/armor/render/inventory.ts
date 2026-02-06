@@ -10,7 +10,7 @@ import { recordManipulation } from "../../../stores/damage-history";
 import { confirm, notify, createPopover } from "../../ui/popover";
 import {
   renderBodyPartsCoverage,
-  getHealthClassFromSP,
+  getConditionClassFromSP,
   getLowestSP,
 } from "./common";
 import { PART_ABBREV, type ArmorPiece, type BodyPartName } from "../core";
@@ -37,7 +37,7 @@ function renderArmorItem(
   stats.className = "armor-sp";
 
   const currentSp = document.createElement("span");
-  currentSp.className = getHealthClassFromSP(armor.spCurrent, armor.spMax);
+  currentSp.className = getConditionClassFromSP(armor.spCurrent, armor.spMax);
   currentSp.textContent = armor.spCurrent.toString();
 
   stats.appendChild(currentSp);
@@ -170,7 +170,7 @@ function openRepairPopover(
   const getSelectedParts = () => (selected === "all" ? bodyParts : [selected]);
 
   const updateDisplay = () => {
-    const healthClass = getHealthClassFromSP(sp, maxSP);
+    const healthClass = getConditionClassFromSP(sp, maxSP);
 
     spValue.textContent = sp.toString();
     spValue.className = `text-value-2xl repair-sp-value ${healthClass}`;

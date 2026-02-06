@@ -12,7 +12,7 @@ import {
   isImplantInstalled,
   isSkinweave,
 } from "../../../stores/armor";
-import { getHealthClassFromSP } from "./common";
+import { getConditionClassFromSP } from "./common";
 
 // ===================
 // SKINWEAVE
@@ -116,7 +116,7 @@ function renderImplantItem(
     const currentSP = instance.spCurrent;
     const isDamaged = currentSP < template.spMax;
     if (isDamaged) {
-      const healthClass = getHealthClassFromSP(currentSP, template.spMax);
+      const healthClass = getConditionClassFromSP(currentSP, template.spMax);
       sp.innerHTML = `<span class="${healthClass}">${currentSP}</span>/${template.spMax}`;
     } else {
       sp.textContent = `SP ${template.spMax}`;

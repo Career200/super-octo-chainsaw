@@ -3,20 +3,20 @@
   min-width: 160px;
 }
 
-.popover.popover-repair-health-full {
-  border-color: var(--health-full);
+.popover.popover-repair-condition-full {
+  border-color: var(--condition-full);
 }
-.popover.popover-repair-health-good {
-  border-color: var(--health-good);
+.popover.popover-repair-condition-good {
+  border-color: var(--condition-good);
 }
-.popover.popover-repair-health-worn {
-  border-color: var(--health-worn);
+.popover.popover-repair-condition-worn {
+  border-color: var(--condition-worn);
 }
-.popover.popover-repair-health-damaged {
-  border-color: var(--health-damaged);
+.popover.popover-repair-condition-damaged {
+  border-color: var(--condition-damaged);
 }
-.popover.popover-repair-health-critical {
-  border-color: var(--health-critical);
+.popover.popover-repair-condition-critical {
+  border-color: var(--condition-critical);
 }
 
 /* repair-sp-row uses .flex-center .gap-12 utilities */

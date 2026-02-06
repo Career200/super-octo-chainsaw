@@ -12,7 +12,7 @@ import {
   isSkinweave,
 } from "@stores/armor";
 import { $encumbrance } from "@stores/character";
-import { getHealthClassFromSP } from "./common";
+import { getConditionClassFromSP } from "./common";
 import { createPopover } from "../../ui/popover";
 
 export function renderEffectiveSP() {
@@ -76,7 +76,7 @@ function renderLayerDiv(
 
   const healthBar = document.createElement("span");
   const healthPercent = (currentSP / maxSP) * 100;
-  healthBar.className = `layer-health ${getHealthClassFromSP(currentSP, maxSP)}`;
+  healthBar.className = `layer-condition ${getConditionClassFromSP(currentSP, maxSP)}`;
   healthBar.style.width = `${healthPercent}%`;
 
   div.appendChild(nameSpan);

@@ -1,15 +1,15 @@
 import { BODY_PARTS, PART_ABBREV, type BodyPartName } from "../core";
 
-export function getHealthClass(percent: number): string {
-  if (percent >= 100) return "health-full";
-  if (percent >= 75) return "health-good";
-  if (percent >= 50) return "health-worn";
-  if (percent >= 25) return "health-damaged";
-  return "health-critical";
+export function getConditionClass(percent: number): string {
+  if (percent >= 100) return "condition-full";
+  if (percent >= 75) return "condition-good";
+  if (percent >= 50) return "condition-worn";
+  if (percent >= 25) return "condition-damaged";
+  return "condition-critical";
 }
 
-export function getHealthClassFromSP(current: number, max: number): string {
-  return getHealthClass((current / max) * 100);
+export function getConditionClassFromSP(current: number, max: number): string {
+  return getConditionClass((current / max) * 100);
 }
 
 export function getLowestSP(
@@ -25,8 +25,8 @@ function applyDamageIndicator(
   current: number,
   max: number,
 ) {
-  const healthClass = getHealthClassFromSP(current, max);
-  if (healthClass === "health-damaged" || healthClass === "health-critical") {
+  const healthClass = getConditionClassFromSP(current, max);
+  if (healthClass === "condition-damaged" || healthClass === "condition-critical") {
     element.classList.add(healthClass);
   }
 }

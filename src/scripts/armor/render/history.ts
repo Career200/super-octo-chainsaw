@@ -8,7 +8,7 @@ import {
 } from "../../../stores/damage-history";
 import { getArmorPiece } from "../../../stores/armor";
 import { confirm } from "../../ui/popover";
-import { getHealthClassFromSP } from "./common";
+import { getConditionClassFromSP } from "./common";
 
 function formatTime(timestamp: number): string {
   const date = new Date(timestamp);
@@ -97,7 +97,7 @@ function renderDamageEntry(entry: DamageHistoryEntry): HTMLElement {
 function renderManipulationEntry(entry: ManipulationHistoryEntry): HTMLElement {
   const armor = getArmorPiece(entry.armorId);
   const maxSP = armor?.spMax ?? entry.newSP;
-  const healthClass = getHealthClassFromSP(entry.newSP, maxSP);
+  const healthClass = getConditionClassFromSP(entry.newSP, maxSP);
 
   const item = document.createElement("div");
   item.className = `history-entry history-entry-manipulation ${healthClass}`;

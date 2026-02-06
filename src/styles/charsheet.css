@@ -86,20 +86,20 @@
 }
 
 /* === Health State Utilities === */
-.health-full {
-  --health-color: var(--health-full);
+.condition-full {
+  --condition-color: var(--condition-full);
 }
-.health-good {
-  --health-color: var(--health-good);
+.condition-good {
+  --condition-color: var(--condition-good);
 }
-.health-worn {
-  --health-color: var(--health-worn);
+.condition-worn {
+  --condition-color: var(--condition-worn);
 }
-.health-damaged {
-  --health-color: var(--health-damaged);
+.condition-damaged {
+  --condition-color: var(--condition-damaged);
 }
-.health-critical {
-  --health-color: var(--health-critical);
+.condition-critical {
+  --condition-color: var(--condition-critical);
 }
 
 .empty-message {
