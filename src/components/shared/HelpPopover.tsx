@@ -1,6 +1,6 @@
 import { useState, useRef } from "preact/hooks";
 import type { ComponentChildren } from "preact";
-import { Popover } from "@components/ui/Popover";
+import { Popover } from "./Popover";
 
 interface Props {
   id: string;
