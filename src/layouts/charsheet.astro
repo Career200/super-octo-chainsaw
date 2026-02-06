@@ -2,4 +2,9 @@
 import '../styles/charsheet.css';
 ---
 
+<script>
+  if (import.meta.env.DEV) {
+    import("preact/devtools");
+  }
+</script>
 <slot />
