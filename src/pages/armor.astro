@@ -2,6 +2,7 @@
 import HTML from '../layouts/html.astro';
 import Layout from '../layouts/layout.astro';
 import Charsheet from '../layouts/charsheet.astro';
+import { BodyPartGrid } from '../components/armor/BodyPartGrid';
 import '../styles/armor/index.css';
 ---
 
@@ -24,72 +25,7 @@ import '../styles/armor/index.css';
           <h2>Character Armor <button class="help-trigger" id="armor-help" type="button" aria-label="Armor mechanics help">?</button></h2>
           <button class="btn-outline-danger btn-md" id="btn-im-hit">I'm hit</button>
         </div>
-        <!-- Full body grid -->
-        <div class="body-grid">
-          <div class="display-box skinweave-display" id="skinweave-display">
-            <span class="text-label-lg skinweave-label">SkinWeave</span>
-            <span class="text-desc-justified skinweave-desc">covers all body parts, always calculated as bottom layer, <i>does not count toward 3-layer limit</i></span>
-            <select class="skinweave-select" id="skinweave-select">
-              <option value="0">None</option>
-              <option value="8">SP 8</option>
-              <option value="10">SP 10</option>
-              <option value="12">SP 12</option>
-              <option value="14">SP 14</option>
-            </select>
-          </div>
-
-          <div class="body-part" id="part-head">
-            <h3>Head</h3>
-            SP: <span class="sp-value" id="sp-head"></span>
-            <div class="layer-list" id="layers-head"></div>
-          </div>
-
-          <div class="body-part" id="part-face">
-            <h3>Face <span class="help-trigger">?</span></h3>
-            SP: <span class="sp-value" id="sp-face"></span>
-          </div>
-
-          <div class="display-box implants-display" id="implants-display">
-            <span class="text-label-lg implants-label">Armor Implants</span>
-            <span class="text-desc-justified implants-desc">Subdermal armor and body plating options; <br/> <br/> click to manage</span>
-            <div class="text-soft implants-list" id="implants-list"></div>
-          </div>
-
-          <div class="body-part" id="part-torso">
-            <h3>Torso</h3>
-            SP: <span class="sp-value" id="sp-torso"></span>
-            <div class="layer-list" id="layers-torso"></div>
-          </div>
-
-          <div class="body-part" id="part-left_arm">
-            <h3>Left Arm</h3>
-            SP: <span class="sp-value" id="sp-left_arm"></span>
-            <div class="layer-list" id="layers-left_arm"></div>
-          </div>
-
-          <div class="body-part" id="part-right_arm">
-            <h3>Right Arm</h3>
-            SP: <span class="sp-value" id="sp-right_arm"></span>
-            <div class="layer-list" id="layers-right_arm"></div>
-          </div>
-
-          <div class="body-part" id="part-left_leg">
-            <h3>Left Leg</h3>
-            SP: <span class="sp-value" id="sp-left_leg"></span>
-            <div class="layer-list" id="layers-left_leg"></div>
-          </div>
-
-          <div class="display-box ev-display" id="ev-display">
-            <span class="text-label-lg ev-label">EV</span>
-            <span class="text-value-2xl ev-value" id="ev-value">0</span>
-          </div>
-
-          <div class="body-part" id="part-right_leg">
-            <h3>Right Leg</h3>
-            SP: <span class="sp-value" id="sp-right_leg"></span>
-            <div class="layer-list" id="layers-right_leg"></div>
-          </div>
-        </div>
+        <BodyPartGrid client:only="preact" />
         <div class="expand-indicator"></div>
       </div>
 

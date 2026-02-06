@@ -13,9 +13,9 @@ export const FaceHelpContent = ({ layers }: Props) => {
       <section>
         <h4>Targeting</h4>
         <p>
-          On head hits, roll <strong>1d10</strong>: results{" "}
-          <strong>1-4</strong> hit the face, <strong>5-10</strong> hit the head.
-          Face damage degrades head armor.
+          On head hits, roll <strong>1d10</strong>: results <strong>1-4</strong>{" "}
+          hit the face, <strong>5-10</strong> hit the head. Face damage degrades
+          head armor.
         </p>
       </section>
       <section>
