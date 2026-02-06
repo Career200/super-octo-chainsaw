@@ -2,8 +2,8 @@
 import HTML from '../layouts/html.astro';
 import Layout from '../layouts/layout.astro';
 import Charsheet from '../layouts/charsheet.astro';
-import { BodyPartGrid } from '../components/armor/body/BodyPartGrid';
 import { DamageHistoryPanel } from '../components/armor/DamageHistoryPanel';
+import { CharacterArmorPanel } from '../components/armor/CharacterArmorPanel';
 import { InventoryPanel } from '../components/armor/InventoryPanel';
 import { ShopPanel } from '../components/armor/ShopPanel';
 import '../styles/armor/index.css';
@@ -14,23 +14,10 @@ import '../styles/armor/index.css';
     <Charsheet>
     <div class="container">
       <DamageHistoryPanel client:only="preact" />
-
-      <!-- BODY ARMOR STATUS -->
-      <div class="panel panel-collapsible expanded" id="character-armor-panel">
-        <div class="panel-heading">
-          <h2>Character Armor <button class="help-trigger" id="armor-help" type="button" aria-label="Armor mechanics help">?</button></h2>
-          <button class="btn-outline-danger btn-md" id="btn-im-hit">I'm hit</button>
-        </div>
-        <BodyPartGrid client:only="preact" />
-        <div class="expand-indicator"></div>
-      </div>
-
+      <CharacterArmorPanel client:only="preact" />
       <InventoryPanel client:only="preact" />
-
       <ShopPanel client:only="preact" />
-
     </div>
     </Charsheet>
   </Layout>
-  <script src="../scripts/armor/render/index.ts"></script>
 </HTML>

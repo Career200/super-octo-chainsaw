@@ -91,6 +91,19 @@
   width: min(360px, var(--popover-max-width));
 }
 
+.popover-hit .select-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.popover-hit .select-description {
+  color: var(--fg-soft);
+  font-size: var(--font-ui-sm);
+  margin: 0 0 var(--space-12);
+}
+
 .popover-hit .select-option.selected {
   background: var(--danger);
   border-color: var(--danger);

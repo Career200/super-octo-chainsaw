@@ -10,10 +10,7 @@ import {
   getBodyPartLayers,
   getImplantsForPart,
 } from "../../stores/armor";
-import { notify } from "../ui/popover";
-
 export type { DamageType } from "./damage-types";
-export { setupHitButton } from "./render/hit-popover";
 
 export interface DamageResult {
   penetrating: number;
@@ -149,22 +146,12 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   const topWornBefore = wornBefore[0];
   const topWornAfter = wornAfter[0];
 
-  const notifyLayerFlip = (message: string) => {
-    setTimeout(() => {
-      const anchor = document.getElementById(`part-${bodyPart}`);
-      if (anchor) {
-        notify(anchor, { message, type: "warning", duration: 6000 });
-      }
-    }, 50);
-  };
-
-  // Notify when top armor changes
+  // Log layer flip for awareness
   if (topWornBefore && topWornAfter && topWornBefore.id !== topWornAfter.id) {
-    notifyLayerFlip(
-      `${topWornBefore.name} shredded — ${topWornAfter.name} taking point`,
+    console.warn(
+      `⚠️ ${topWornBefore.name} shredded — ${topWornAfter.name} taking point`,
     );
   } else if (topWornBefore && !topWornAfter) {
-    // All worn armor destroyed, implant now exposed
     const implantAfter = implants
       .map((i) => ({
         id: i.id,
@@ -175,8 +162,8 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
       .sort((a, b) => b.sp - a.sp)[0];
 
     if (implantAfter) {
-      notifyLayerFlip(
-        `${topWornBefore.name} shredded — ${implantAfter.name} taking point`,
+      console.warn(
+        `⚠️ ${topWornBefore.name} shredded — ${implantAfter.name} taking point`,
       );
     }
   }

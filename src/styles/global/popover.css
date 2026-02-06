@@ -9,3 +9,62 @@
   max-width: 400px;
   z-index: 1000;
 }
+
+/* Reset for buttons inside portaled popovers (outside .container) */
+.popover button {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  color: var(--fg);
+  padding: var(--space-6) var(--space-12);
+  font-family: inherit;
+  font-size: var(--font-ui);
+  cursor: pointer;
+}
+
+/* === Popover Actions (confirm/cancel row) === */
+.popover-actions {
+  display: flex;
+  gap: var(--space-8);
+  justify-content: flex-end;
+  margin-top: var(--space-12);
+}
+
+.popover-message {
+  margin: 0 0 var(--space-8);
+}
+
+.popover-btn {
+  padding: var(--space-6) var(--space-16);
+}
+
+.popover-btn-cancel {
+  background: transparent;
+  border-color: var(--border-light);
+  color: var(--fg-soft);
+}
+
+.popover-btn-cancel:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.popover-btn-confirm {
+  background: var(--accent-muted);
+  border-color: transparent;
+  color: var(--fg);
+}
+
+.popover-btn-confirm:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+.popover-danger .popover-btn-confirm {
+  background: var(--danger);
+  color: #fff;
+}
+
+.popover-danger .popover-btn-confirm:hover {
+  background: var(--danger-hover);
+}

@@ -3,7 +3,7 @@ import type { ComponentChildren } from "preact";
 
 interface Props {
   id: string;
-  title: string;
+  title: ComponentChildren;
   defaultExpanded?: boolean;
   headerActions?: ComponentChildren;
   /** When true, children are rendered directly without a .panel-content wrapper */
