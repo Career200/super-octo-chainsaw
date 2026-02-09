@@ -4,12 +4,17 @@ import { ArmorView } from "./ArmorView";
 
 type Tab = "biomon" | "armor";
 
-function getTab(): Tab {
-  return location.hash === "#armor" ? "armor" : "biomon";
+function getTab() {
+  /* page should be /charsheet/#biomon or /charsheet/#armor */
+  const hash = window.location.hash.slice(1);
+  if (hash === "biomon" || hash === "armor") {
+    return hash;
+  }
+  return "";
 }
 
 export const Charsheet = () => {
-  const [tab, setTab] = useState<Tab>(getTab);
+  const [tab, setTab] = useState(getTab());
 
   useEffect(() => {
     const onHash = () => setTab(getTab());
