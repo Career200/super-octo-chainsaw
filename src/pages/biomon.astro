@@ -1,21 +1,9 @@
 ---
-import HTML from '../layouts/html.astro';
-import Layout from '../layouts/layout.astro';
-import Charsheet from '../layouts/charsheet.astro';
-import { Biomonitor } from '../components/biomon';
-import '../styles/biomon.css';
+import { baseString } from '../../astro.config.mjs';
 ---
 
-<HTML title="IMI GLOBAL — Biomonitor" bodyClass="charsheet-page biomon-page">
-  <Layout>
-    <Charsheet>
-      <Biomonitor client:only="preact">
-        <div slot="fallback" class="loading-fallback">
-          <svg class="loading-spinner" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="31.4 31.4" stroke-linecap="round" />
-          </svg>
-        </div>
-      </Biomonitor>
-    </Charsheet>
-  </Layout>
-</HTML>
+<html>
+  <head>
+    <meta http-equiv="refresh" content={`0;url=${baseString}charsheet#biomon`} />
+  </head>
+</html>

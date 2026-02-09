@@ -1,23 +1,9 @@
 ---
-import HTML from '../layouts/html.astro';
-import Layout from '../layouts/layout.astro';
-import Charsheet from '../layouts/charsheet.astro';
-import { DamageHistoryPanel } from '../components/armor/DamageHistoryPanel';
-import { CharacterArmorPanel } from '../components/armor/CharacterArmorPanel';
-import { InventoryPanel } from '../components/armor/InventoryPanel';
-import { ShopPanel } from '../components/armor/ShopPanel';
-import '../styles/armor/index.css';
+import { baseString } from '../../astro.config.mjs';
 ---
 
-<HTML title="IMI GLOBAL — TAC HOME" bodyClass="charsheet-page armor-page">
-  <Layout>
-    <Charsheet>
-    <div class="container">
-      <DamageHistoryPanel client:only="preact" />
-      <CharacterArmorPanel client:only="preact" />
-      <InventoryPanel client:only="preact" />
-      <ShopPanel client:only="preact" />
-    </div>
-    </Charsheet>
-  </Layout>
-</HTML>
+<html>
+  <head>
+    <meta http-equiv="refresh" content={`0;url=${baseString}charsheet#armor`} />
+  </head>
+</html>

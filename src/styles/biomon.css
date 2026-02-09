@@ -1,5 +1,5 @@
 /* Biomon Page Layout */
-.biomon-page .container {
+.biomon-section .container {
   padding-top: 0;
   grid-template-columns: 1fr;
 }
@@ -206,7 +206,7 @@
 }
 
 /* Offset page content for fixed bar */
-.biomon-page .page-scroll {
+.biomon-section {
   padding-top: 106px;
 }
 
@@ -437,7 +437,7 @@
     font-size: var(--font-ui-sm);
   }
 
-  .biomon-page .page-scroll {
+  .biomon-section {
     /* update after adding more info to secondary bar that will increase its height */
     padding-top: 156px;
   }
