@@ -111,13 +111,13 @@
 }
 
 /* === Health Color Applications === */
-.armor-sp [class*="health-"],
-.repair-sp-value[class*="health-"] {
-  color: var(--health-color);
+.armor-sp [class*="condition-"],
+.repair-sp-value[class*="condition-"] {
+  color: var(--condition-color);
 }
 
-.coverage-badge.health-damaged,
-.coverage-badge.health-critical {
-  border-color: var(--health-color);
-  color: var(--health-color);
+.coverage-badge.condition-damaged,
+.coverage-badge.condition-critical {
+  border-color: var(--condition-color);
+  color: var(--condition-color);
 }

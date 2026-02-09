@@ -159,12 +159,12 @@
   overflow: hidden;
 }
 
-.layer-health {
+.layer-condition {
   position: absolute;
   left: 0;
   bottom: 0;
   height: 3px;
-  background: var(--health-color);
+  background: var(--condition-color);
   transition: width var(--transition-speed);
 }
 

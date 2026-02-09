@@ -1,68 +1,9 @@
 ---
-import HTML from '../layouts/html.astro';
-import Layout from '../layouts/layout.astro';
-import Charsheet from '../layouts/charsheet.astro';
-import '../styles/biomon.css';
+import { baseString } from '../../astro.config.mjs';
 ---
 
-<HTML title="IMI GLOBAL — Biomonitor" bodyClass="charsheet-page biomon-page">
-  <Layout>
-    <Charsheet>
-      <div class="fixed-bar">
-        <div class="wound-bar">
-          <div class="wound-bar-header">
-            <span class="wound-bar-title">Wounds <button class="help-trigger" id="wound-help" type="button" aria-label="Wound tracker help">?</button></span>
-            <div class="wound-bar-controls">
-              <button class="btn-ghost" id="stun-toggle">Stun</button>
-              <div class="stabilized-control">
-                <div class="wound-box" id="stabilized-toggle"></div>
-                <span class="stabilized-label" id="stabilized-label">Stable</span>
-              </div>
-            </div>
-          </div>
-          <div id="wound-tracker"></div>
-        </div>
-        <div class="secondary-bar flex-between">
-          <div class="body-info" id="body-info">
-            <button class="help-trigger" id="body-help" type="button" aria-label="Body type help">?</button>
-            <div class="body-stat">
-              <span class="body-label">BT</span>
-              <span class="body-stat-value">8</span>
-            </div>
-            <div class="body-stat body-type">
-              <span class="body-type-name">Average</span>
-            </div>
-            <div class="body-stat">
-              <span class="body-label">Carry</span>
-              <span class="carry-value" id="carry-value">80kg</span>
-              <span class="body-label"> Lift</span>
-              <span class="carry-value" id="lift-value">320kg</span>
-            </div>
-            <div class="body-stat">
-              <span class="body-label">BTM</span>
-              <span class="btm-value">2</span>
-            </div>
-            <div class="body-stat body-save">
-              <span class="body-label">Save</span>
-              <span class="save-value">8</span>
-              <span class="save-penalty"></span>
-            </div>
-          </div>
-          <!-- TODO: move to #body-scheme when ready; add a note on face hit rules for headshots (headshot? roll 1d10, <=4 means face) -->
-          <div class="hit-location-table">
-            <span class="hit-location">Head <span class="hit-roll">1</span></span>
-            <span class="hit-location">Torso <span class="hit-roll">2-4</span></span>
-            <span class="hit-location">RA <span class="hit-roll">5</span></span>
-            <span class="hit-location">LA <span class="hit-roll">6</span></span>
-            <span class="hit-location">RL <span class="hit-roll">7-8</span></span>
-            <span class="hit-location">LL <span class="hit-roll">9-10</span></span>
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="panel" id="stats-panel"></div>
-      </div>
-    </Charsheet>
-  </Layout>
-  <script src="../scripts/biomon/render/index.ts"></script>
-</HTML>
+<html>
+  <head>
+    <meta http-equiv="refresh" content={`0;url=${baseString}charsheet#biomon`} />
+  </head>
+</html>

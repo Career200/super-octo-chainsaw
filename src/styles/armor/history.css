@@ -41,8 +41,8 @@
   border-left: 3px solid var(--border-light);
 }
 
-.history-entry-manipulation[class*="health-"] {
-  border-left-color: var(--health-color);
+.history-entry-manipulation[class*="condition-"] {
+  border-left-color: var(--condition-color);
 }
 
 /* History action labels - use .text-value-lg pattern */

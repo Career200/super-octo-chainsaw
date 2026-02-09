@@ -80,14 +80,14 @@
   --radius-lg: 6px;
 
   /* Health state colors */
-  --health-full: var(--link);
-  --health-good: var(--accent);
-  --health-worn: var(--accent-muted);
-  --health-damaged: var(--warning);
-  --health-critical: var(--danger);
+  --condition-full: var(--link);
+  --condition-good: var(--accent);
+  --condition-worn: var(--accent-muted);
+  --condition-damaged: var(--warning);
+  --condition-critical: var(--danger);
 
   /* Health state utility - set by health-* classes */
-  --health-color: var(--health-full);
+  --condition-color: var(--condition-full);
 
   /* Popover width constraint */
   --popover-max-width: calc(100vw - 72px);

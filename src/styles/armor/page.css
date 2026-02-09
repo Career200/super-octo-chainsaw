@@ -1,10 +1,10 @@
 /* Armor Page Layout */
-.armor-page .container {
+.armor-section .container {
   grid-template-columns: 240px repeat(3, 1fr);
 }
 
 /* === Panel Overrides === */
-.panel {
+.armor-section .panel {
   min-width: 200px;
 }
 
@@ -18,7 +18,7 @@
 
 /* === Responsive === */
 @media (max-width: 1053px) {
-  .armor-page .container {
+  .armor-section .container {
     grid-template-columns: 1fr;
   }
 
