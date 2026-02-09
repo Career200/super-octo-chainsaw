@@ -1,7 +1,7 @@
 ---
 import HTML from '../layouts/html.astro';
 import Layout from '../layouts/layout.astro';
-import { Charsheet } from '../components/charsheet';
+import { Charsheet as CharsheetComponent } from '../components/charsheet';
 import '../styles/charsheet.css';
 import '../styles/armor/index.css';
 import '../styles/biomon.css';
@@ -9,12 +9,12 @@ import '../styles/biomon.css';
 
 <HTML title="IMI GLOBAL — TAC HOME" bodyClass="charsheet-page">
   <Layout>
-    <Charsheet client:only="preact">
+    <CharsheetComponent client:only="preact">
       <div slot="fallback" class="loading-fallback">
         <svg class="loading-spinner" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="31.4 31.4" stroke-linecap="round" />
         </svg>
       </div>
-    </Charsheet>
+    </CharsheetComponent>
   </Layout>
 </HTML>
