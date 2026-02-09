@@ -10,8 +10,7 @@ const links = {
   messages: baseString + 'messages',
   logistics: baseString + 'logistics',
   sa558: baseString + 'contracts/sa558',
-  armor: baseString + 'charsheet#armor',
-  biomon: baseString + 'charsheet#biomon'
+  charsheet: baseString + 'charsheet',
 };
 ---
 
@@ -25,7 +24,7 @@ const links = {
         <span>IMI GLOBAL</span>
         <span>USER-0469</span>
       </div>
-      <Sidebar id="tacticalNav" buttonClass="nav-toggle" buttonText="≡">
+      <Sidebar id="tacticalNav" buttonClass="nav-toggle" buttonText="≡" innerClass="nav-content">
         <ul>
           <div class="flex-col gap-4">
 
@@ -52,15 +51,13 @@ const links = {
               </li>
             </ul>
           </li>
-          <li>
-            <span>Operational</span>
-            <ul>
-              <li><a href={links.biomon}><div class="flex-between-baseline gap-4"><span class="status connected">Online</span>Biomon</div></a></li>
-              <li><a href={links.armor}><div class="flex-between-baseline gap-4"><span class="status reconnect">Reconnection</span>Equipment</div></a></li>
-            </ul>
-          </li>
           </div>
         </ul>
+        <div class="nav-operational">
+          <div class="flex-between-baseline gap-4"><span class="status connected">Online</span><span>Biomonitor</span></div>
+          <div class="flex-between-baseline gap-4"><span class="status reconnect">Reconnection</span><span>Equipment</span></div>
+          <a href={links.charsheet} onclick="if(location.pathname.includes('charsheet')){event.preventDefault()}">Operational</a>
+        </div>
       </Sidebar>
     </div>
   </footer>

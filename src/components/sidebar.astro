@@ -1,5 +1,5 @@
 ---
-const { id, buttonText, buttonClass } = Astro.props;
+const { id, buttonText, buttonClass, innerClass } = Astro.props;
 ---
 
 <style>
@@ -13,6 +13,8 @@ const { id, buttonText, buttonClass } = Astro.props;
     right: 0;
     width: 220px;
     height: 100vh;
+    max-height: 100vh; /* override UA dialog:modal cap */
+    box-sizing: border-box;
 
     background-color: var(--bg-alt);
     transition: transform 0.3s ease;
@@ -70,7 +72,7 @@ const { id, buttonText, buttonClass } = Astro.props;
 >
 
 <dialog id={id} onclick={`window.${id}.close()`}>
-  <div>
+  <div class={innerClass}>
     <slot />
   </div>
 </dialog>

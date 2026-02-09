@@ -1,30 +1,26 @@
-import { useEffect, useState } from "preact/hooks";
+import { useStore } from "@nanostores/preact";
 import { Biomonitor } from "../biomon";
 import { ArmorView } from "./ArmorView";
+import { TabStrip } from "../shared/TabStrip";
+import { $spaTab } from "@stores/ui";
 
-type Tab = "biomon" | "armor";
+const SPA_TABS = [
+  { id: "biomon", label: "BIOMON" },
+  { id: "armor", label: "ARMOR" },
+];
 
-function getTab() {
-  /* page should be /charsheet/#biomon or /charsheet/#armor */
-  const hash = window.location.hash.slice(1);
-  if (hash === "biomon" || hash === "armor") {
-    return hash;
-  }
-  return "";
-}
+const SPA_COMPONENTS = {
+  biomon: Biomonitor,
+  armor: ArmorView,
+};
 
 export const Charsheet = () => {
-  const [tab, setTab] = useState(getTab());
-
-  useEffect(() => {
-    const onHash = () => setTab(getTab());
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
-  }, []);
+  const tab = useStore($spaTab);
 
   return (
     <div class={`charsheet-spa ${tab}-section`}>
-      {tab === "biomon" ? <Biomonitor /> : <ArmorView />}
+      <TabStrip tabs={SPA_TABS} $store={$spaTab} />
+      {SPA_COMPONENTS[tab] && SPA_COMPONENTS[tab]()}
     </div>
   );
 };
