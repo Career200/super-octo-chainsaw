@@ -1,6 +1,5 @@
 /* Biomon Page Layout */
 .biomon-section .container {
-  padding-top: 0;
   grid-template-columns: 1fr;
 }
 
@@ -206,8 +205,8 @@
 }
 
 /* Offset page content for fixed bar */
-.biomon-section {
-  padding-top: 106px;
+.charsheet-spa {
+  padding-top: 136px;
 }
 
 /* === Secondary Bar (below wounds) === */
@@ -437,9 +436,9 @@
     font-size: var(--font-ui-sm);
   }
 
-  .biomon-section {
+  .charsheet-spa {
     /* update after adding more info to secondary bar that will increase its height */
-    padding-top: 156px;
+    padding-top: 186px;
   }
 
   .wound-bar-header {

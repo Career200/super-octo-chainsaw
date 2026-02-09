@@ -28,3 +28,7 @@
   border-bottom-color: var(--accent);
   background: var(--bg-alt);
 }
+
+.spa-tabs {
+  padding-left: var(--padding-bar);
+}
