@@ -9,5 +9,5 @@ export const baseString = "/super-octo-chainsaw/";
 export default defineConfig({
   site: "https://career200.github.io",
   base: baseString,
-  integrations: [preact()],
+  integrations: [preact({ devtools: true })],
 });
