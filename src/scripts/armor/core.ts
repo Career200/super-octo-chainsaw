@@ -7,7 +7,7 @@ export const proportionalArmorBonus = (diff: number): number => {
   return 0;
 };
 
-export type ArmorType = "soft" | "hard";
+type ArmorType = "soft" | "hard";
 
 export type BodyPartName =
   | "head"
@@ -92,7 +92,7 @@ export function sortByLayerOrder<T extends { spCurrent: number }>(
   return [...layers].sort((a, b) => b.spCurrent - a.spCurrent);
 }
 
-export interface EffectiveSPOptions {
+interface EffectiveSPOptions {
   implants?: ArmorPiece[];
   part?: BodyPartName;
 }

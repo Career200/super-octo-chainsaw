@@ -149,7 +149,7 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   // Log layer flip for awareness
   if (topWornBefore && topWornAfter && topWornBefore.id !== topWornAfter.id) {
     console.warn(
-      `⚠️ ${topWornBefore.name} shredded — ${topWornAfter.name} taking point`,
+      `⚠️ ${topWornBefore.name} shredded — ${topWornAfter.name} taking point`, // TODO: restore info popup, console is irrelevant for an actual user
     );
   } else if (topWornBefore && !topWornAfter) {
     const implantAfter = implants
@@ -163,7 +163,7 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
 
     if (implantAfter) {
       console.warn(
-        `⚠️ ${topWornBefore.name} shredded — ${implantAfter.name} taking point`,
+        `⚠️ ${topWornBefore.name} shredded — ${implantAfter.name} taking point`, // TODO: restore info popup, console is irrelevant for an actual user
       );
     }
   }

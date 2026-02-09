@@ -1,4 +1,8 @@
-import type { SelectOption } from "../ui/select";
+type SelectOption<T> = {
+  value: T;
+  label: string;
+  description?: string;
+};
 
 export type DamageType =
   | "normal"
