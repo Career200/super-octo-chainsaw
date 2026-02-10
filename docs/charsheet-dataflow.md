@@ -38,11 +38,16 @@
                │    $character      │  Aggregator: re-exports $health + $encumbrance
                │    (computed)      │  Not directly subscribed by components
                └────────────────────┘
+
+               ┌────────────────────┐
+               │     $spaTab       │─────────────────────▸ Charsheet ◂──▸ TabStrip
+               │     (persist)      │                       (SPA-level tab switching)
+               └────────────────────┘
 ```
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`) own the data, persist to localStorage
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$spaTab`) own the data, persist to localStorage
 - **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly

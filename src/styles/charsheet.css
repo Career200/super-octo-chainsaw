@@ -25,7 +25,7 @@
 .container {
   display: grid;
   gap: var(--space-12);
-  padding: 18px;
+  padding: 0;
   flex-grow: 1;
 }
 
@@ -41,10 +41,10 @@
 /* === Panels === */
 .panel {
   overflow-y: auto;
-  max-height: calc(100vh - 50px);
+  max-height: calc(100vh - 160px);
   background: var(--bg-alt);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   padding: var(--space-6);
 }
 
@@ -124,7 +124,7 @@
   .container {
     grid-template-columns: 1fr;
     gap: var(--space-12);
-    padding: var(--space-12);
+    padding: 0;
   }
 
   .panel {

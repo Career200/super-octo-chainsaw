@@ -70,12 +70,20 @@ a:hover {
   text-decoration: underline;
 }
 
-ol {
-  padding: 4px 0px 4px 24px;
+ol, ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-ul {
+.document ul {
+  list-style: disc;
   padding: 12px 48px;
+}
+
+.document ol {
+  list-style: decimal;
+  padding: 4px 0 4px 24px;
 }
 
 .redacted {

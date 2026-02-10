@@ -28,6 +28,12 @@ Array<DamageHistoryEntry | ManipulationHistoryEntry>
 ```
 Actions: `recordDamage`, `recordManipulation`, `clearHistory`
 
+### `$spaTab` (ui.ts)
+```
+'biomon' | 'armor' (default: 'biomon')
+```
+SPA-level tab selection. Subscribed by `Charsheet`.
+
 ## Computed Stores
 
 ### Per-stat: `$REF`, `$INT`, `$CL`, `$TECH`, `$LK`, `$ATT`, `$MA`, `$EMP`, `$BT` (stats.ts)
@@ -75,4 +81,6 @@ $stats ────▸ all 9 computed stat stores ──▸ $bodyType
 $ownedArmor ──▸ $encumbrance ──▸ $REF, $character
 
 $damageHistory (standalone, no dependents)
+
+$spaTab ────▸ Charsheet (tab selection)
 ```
