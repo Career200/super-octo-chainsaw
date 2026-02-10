@@ -71,9 +71,11 @@ Depends on: `$health`
 
 ### `$skills` (skills.ts)
 ```
-{ awarenessNotice: { stat, level, combat? }, combatSense: { stat, level, combat? } }
+Record<string, { stat: SkillStat, level: 0-10, combat: bool }>
 ```
-Actions: `setSkillLevel`
+SkillStat = StatName | "special"
+Key = skill name (display name IS the ID). Default: all catalog skills at level 0.
+Actions: `setSkillLevel`, `addSkill`, `removeSkill`, `updateSkill`
 
 ## Computed Stores (continued)
 
@@ -81,9 +83,23 @@ Actions: `setSkillLevel`
 ```
 { int, awarenessNotice, combatSense, total, totalCombat }
 ```
-- `total` = INT.current + awarenessNotice.level
-- `totalCombat` = total + combatSense.level
+- `total` = INT.current + skills["Awareness/Notice"].level
+- `totalCombat` = total + skills["Combat Sense"].level
 - Depends on: `$INT`, `$skills`
+
+### `$skillsByStat` (skills.ts)
+```
+Record<SkillStat, [name, SkillEntry][]>
+```
+Skills grouped by stat, sorted alphabetically within each group.
+Depends on: `$skills`
+
+### `$combatSkills` (skills.ts)
+```
+[name, SkillEntry][]
+```
+Skills with `combat: true`, ordered by `COMBAT_SKILLS_ORDER` then alphabetically.
+Depends on: `$skills`
 
 ## Dependency Graph (compact)
 ```
@@ -102,4 +118,6 @@ $spaTab ────▸ Charsheet (tab selection)
 
 $skills ──┬──▸ $awareness
 $INT ─────┘
+$skills ──┬──▸ $skillsByStat
+          └──▸ $combatSkills
 ```
