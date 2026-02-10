@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { Biomonitor } from "../biomon";
 import { ArmorView } from "./ArmorView";
+import { SkillsPanel } from "./SkillsPanel";
 import { TabStrip } from "../shared/TabStrip";
 import { WoundTracker } from "../biomon/WoundTracker";
 import { BodyInfo } from "../biomon/BodyInfo";
@@ -13,6 +14,7 @@ import { $spaTab } from "@stores/ui";
 
 const SPA_TABS = [
   { id: "biomon", label: "BIOMON" },
+  { id: "rp", label: "RP" },
   { id: "armor", label: "ARMOR" },
 ];
 
@@ -25,7 +27,10 @@ export const Charsheet = () => {
       <div class="fixed-bar">
         <WoundTracker />
         <div class="secondary-bar flex-between">
-          <StatsStrip expanded={statsExpanded} onToggle={() => setStatsExpanded(!statsExpanded)} />
+          <StatsStrip
+            expanded={statsExpanded}
+            onToggle={() => setStatsExpanded(!statsExpanded)}
+          />
           <BodyInfo />
         </div>
         {statsExpanded && (
@@ -38,7 +43,13 @@ export const Charsheet = () => {
           <AwarenessLine />
         </div>
       </div>
-      {tab === "biomon" ? <Biomonitor /> : <ArmorView />}
+      {tab === "biomon" && <Biomonitor />}
+      {tab === "rp" && (
+        <div class="container">
+          <SkillsPanel />
+        </div>
+      )}
+      {tab === "armor" && <ArmorView />}
     </div>
   );
 };

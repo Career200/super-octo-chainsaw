@@ -17,7 +17,7 @@ export interface SkillEntry {
 
 export type SkillsState = Record<string, SkillEntry>;
 
-function defaultSkills(): SkillsState {
+function buildDefaults(): SkillsState {
   const skills: SkillsState = {};
   for (const [name, def] of Object.entries(SKILL_CATALOG)) {
     skills[name] = { stat: def.stat, level: 0, combat: def.combat };
@@ -25,12 +25,23 @@ function defaultSkills(): SkillsState {
   return skills;
 }
 
+const DEFAULTS = buildDefaults();
+
+function decodeSkills(raw: string): SkillsState {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    // if anything is off - reset to defaults
+    return DEFAULTS;
+  }
+}
+
 export const $skills = persistentAtom<SkillsState>(
   "character-skills",
-  defaultSkills(),
+  DEFAULTS,
   {
     encode: JSON.stringify,
-    decode: JSON.parse,
+    decode: decodeSkills,
   },
 );
 
