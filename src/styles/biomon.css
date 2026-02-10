@@ -3,6 +3,11 @@
   grid-template-columns: 1fr;
 }
 
+.biomon-section #character-armor-panel {
+  max-width: 650px;
+  height: calc(100vh - 160px); /*  header height + padding */
+}
+
 /* === Fixed Top Bar Container === */
 .fixed-bar {
   position: fixed;
