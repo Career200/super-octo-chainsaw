@@ -17,6 +17,7 @@ const { id, buttonText, buttonClass, innerClass } = Astro.props;
     box-sizing: border-box;
 
     background-color: var(--bg-alt);
+    color: var(--fg);
     transition: transform 0.3s ease;
     padding-top: 4rem;
     z-index: 999;
@@ -49,10 +50,6 @@ const { id, buttonText, buttonClass, innerClass } = Astro.props;
 
     &::backdrop {
       background: var(--bg-card);
-    }
-    > div {
-      position: relative;
-      z-index: 999;
     }
   }
 

@@ -99,11 +99,6 @@
   grid-area: rleg;
 }
 
-.face-layer-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
 .face-layer-list li {
   padding: var(--space-2) 0;
   border-bottom: 1px solid var(--border-light);

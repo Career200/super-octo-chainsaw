@@ -41,7 +41,7 @@
 /* === Panels === */
 .panel {
   overflow-y: auto;
-  max-height: calc(100vh - 50px);
+  max-height: calc(100vh - 160px);
   background: var(--bg-alt);
   border: 1px solid var(--border);
   border-radius: 0;

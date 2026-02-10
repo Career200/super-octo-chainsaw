@@ -28,35 +28,35 @@ const links = {
         <ul>
           <div class="flex-col gap-4">
 
-          <li><a href={links.home}>Home</a></li>
+          <li><a class="nav-link" href={links.home}>Home</a></li>
 
           <li>
             <span>Available documents</span>
             <ul>
               <li>
-                <a href={links.onyx}>ONYX initiative</a>
+                <a class="nav-link" href={links.onyx}>ONYX initiative</a>
               </li>
             </ul>
           </li>
           <li>
             <span>My data</span>
             <ul>
-              <li><a href={links.team}>Team</a></li>
+              <li><a class="nav-link" href={links.team}>Team</a></li>
               <li>
-                <a href={links.messages}>Messages<span class="tag"> 1</span></a>
+                <a class="nav-link" href={links.messages}>Messages<span class="tag"> 1</span></a>
               </li>
-              <li><a href={links.logistics}>Logistics</a></li>
+              <li><a class="nav-link" href={links.logistics}>Logistics</a></li>
               <li>
-                <a href={links.sa558}>Contracts<span class="tag"> 1</span></a>
+                <a class="nav-link" href={links.sa558}>Contracts<span class="tag"> 1</span></a>
               </li>
             </ul>
           </li>
           </div>
         </ul>
         <div class="nav-operational">
-          <div class="flex-between-baseline gap-4"><span class="status connected">Online</span><span>Biomonitor</span></div>
-          <div class="flex-between-baseline gap-4"><span class="status reconnect">Reconnection</span><span>Equipment</span></div>
-          <a href={links.charsheet} onclick="if(location.pathname.includes('charsheet')){event.preventDefault()}">Operational</a>
+          <div class="flex-between-baseline gap-4"><span class="status connected">Online</span><span class="text-desc">Biomonitor</span></div>
+          <div class="flex-between-baseline gap-4"><span class="status reconnect">Reconnection</span><span class="text-desc">Equipment</span></div>
+          <a class="nav-link" href={links.charsheet} onclick="if(location.pathname.includes('charsheet')){event.preventDefault()}">Operational</a>
         </div>
       </Sidebar>
     </div>
