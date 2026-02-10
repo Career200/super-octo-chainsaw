@@ -69,6 +69,22 @@ string | null (e.g. "Light", "Serious", "Mortal 2")
 ```
 Depends on: `$health`
 
+### `$skills` (skills.ts)
+```
+{ awarenessNotice: { stat, level, combat? }, combatSense: { stat, level, combat? } }
+```
+Actions: `setSkillLevel`
+
+## Computed Stores (continued)
+
+### `$awareness` (skills.ts)
+```
+{ int, awarenessNotice, combatSense, total, totalCombat }
+```
+- `total` = INT.current + awarenessNotice.level
+- `totalCombat` = total + combatSense.level
+- Depends on: `$INT`, `$skills`
+
 ## Dependency Graph (compact)
 ```
 $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
@@ -83,4 +99,7 @@ $ownedArmor ──▸ $encumbrance ──▸ $REF, $character
 $damageHistory (standalone, no dependents)
 
 $spaTab ────▸ Charsheet (tab selection)
+
+$skills ──┬──▸ $awareness
+$INT ─────┘
 ```

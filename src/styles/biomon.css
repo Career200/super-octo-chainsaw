@@ -11,7 +11,7 @@
   right: 0;
   z-index: 100;
   background-color: var(--bg-alt);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--accent-muted);
 }
 
 /* === Wound Tracker === */
@@ -234,14 +234,8 @@
   color: var(--fg);
 }
 
-/* === Body Info === */
-.body-info {
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
-}
-
-.body-stat {
+/* === Label Chip (generic stat/info chip) === */
+.label-chip {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -252,17 +246,29 @@
   padding: var(--space-2) var(--space-6);
 }
 
-.body-label {
+.label-chip-label {
   color: var(--fg-soft);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-size: var(--font-ui-xs);
 }
 
-.body-stat-value,
-.btm-value {
+.label-chip-value {
   font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--fg);
+}
+
+.label-chip-value.diminished {
+  color: var(--danger);
+}
+
+/* === Chip Row (shared by stats strip + body info) === */
+.stats-strip-row,
+.body-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
 }
 
 .carry-value {
@@ -283,12 +289,6 @@
   white-space: nowrap;
 }
 
-.save-value {
-  font-size: var(--font-ui-lg);
-  font-weight: bold;
-  color: var(--fg);
-}
-
 .save-penalty {
   font-size: var(--font-ui-xs);
   color: var(--fg-soft);
@@ -296,6 +296,99 @@
 
 .save-penalty.has-penalty {
   color: var(--danger);
+}
+
+/* === Stats Strip (collapsible) === */
+.stats-strip {
+  flex: 1;
+  min-width: 0;
+}
+
+.stats-strip-row {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.stats-strip-chevron {
+  color: var(--fg-soft);
+  text-shadow: var(--glow-green);
+  font-size: var(--font-ui-2xl);
+  flex-shrink: 0;
+  line-height: 1;
+  text-align: center;
+  transition:
+    transform var(--transition-speed),
+    color var(--transition-speed);
+}
+
+.stats-strip-chevron.expanded {
+  color: var(--accent);
+  text-shadow: var(--glow-accent);
+  transform: scale(1.2);
+}
+
+.stats-strip-expanded {
+  padding: var(--space-8) var(--padding-bar) var(--space-4);
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-muted) transparent;
+}
+
+/* === Tab Row (tabs + awareness) === */
+.tab-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+}
+
+/* === Awareness Line === */
+.awareness-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-4);
+  font-size: var(--font-ui);
+  white-space: nowrap;
+}
+
+.awareness-label {
+  color: var(--accent);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.awareness-totals {
+  font-weight: bold;
+  font-size: var(--font-ui-lg);
+}
+
+.awareness-total {
+  color: var(--fg);
+}
+
+.awareness-separator {
+  color: var(--fg-soft);
+  margin: 0 1px;
+}
+
+.awareness-total-combat {
+  color: var(--accent-muted);
+}
+
+.awareness-breakdown {
+  color: var(--fg-soft);
+  font-size: var(--font-ui-sm);
+}
+
+.awareness-part.awareness-int {
+  color: var(--fg);
+}
+
+.awareness-part.awareness-combat {
+  color: var(--accent-muted);
 }
 
 /* === Stats Panel === */
@@ -437,7 +530,6 @@
   }
 
   .charsheet-spa {
-    /* update after adding more info to secondary bar that will increase its height */
     padding-top: 186px;
   }
 
@@ -460,27 +552,58 @@
     gap: var(--space-8);
   }
 
+  /* Shared chip row mobile styles */
+  .stats-strip-row,
   .body-info {
     width: 100%;
-    justify-content: space-around;
+    gap: var(--space-2);
   }
 
-  .body-label {
-    font-size: var(--font-ui-xs);
+  .stats-strip-row .label-chip,
+  .body-info .label-chip {
+    padding: var(--space-2) var(--space-4);
+    gap: var(--space-2);
+  }
+
+  .stats-strip-row .label-chip-value,
+  .body-info .label-chip-value {
+    font-size: var(--font-ui);
+  }
+
+  .stats-strip {
+    width: 100%;
+    order: 1;
+  }
+
+  .body-info {
+    order: 2;
+  }
+
+  /* Toggle elements (chevron, help) to the right on mobile */
+  .stats-strip-chevron {
+    order: 999;
+    margin-left: auto;
+  }
+
+  .body-info .help-trigger {
+    order: 999;
+    margin-left: auto;
   }
 
   .body-type {
     display: none;
-    /* doesn't fit on real small screens */
     @media (min-width: 451px) {
       display: flex;
     }
   }
 
-  .hit-location-table {
-    width: 100%;
-    justify-content: space-around;
+  /* Tab row stacks on narrow screens */
+  .tab-row {
     flex-wrap: wrap;
-    gap: var(--space-4);
+  }
+
+  .awareness-line {
+    padding: var(--space-2) 10px;
+    font-size: var(--font-ui-sm);
   }
 }
