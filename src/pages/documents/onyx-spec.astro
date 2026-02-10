@@ -6,8 +6,8 @@ import Document from '../../components/document.astro';
 
 <HTML title="IMI GLOBAL — ONYX initiative">
   <Layout>
-    <Document>
-      <div class="header-content" slot="header">
+    <header class="header">
+      <div class="header-content">
         <h1>*IMI GLOBAL*</h1>
         <div class="tag">Status: Confidential</div>
         <div class="tag">From: OpCom // TBD</div>
@@ -19,8 +19,10 @@ import Document from '../../components/document.astro';
 
         <div>CSec === APPROVED === 08.02.2020</div>
       </div>
+    </header>
 
-      <div slot="doc">
+    <Document>
+      <div>
         <h1>Формирование ударной группы "ONYX"</h1>
         <p>
           С учётом нарастающей контрактной нагрузки и ухудшения оперативной
