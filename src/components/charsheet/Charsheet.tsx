@@ -1,10 +1,14 @@
+import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { Biomonitor } from "../biomon";
 import { ArmorView } from "./ArmorView";
 import { TabStrip } from "../shared/TabStrip";
 import { WoundTracker } from "../biomon/WoundTracker";
 import { BodyInfo } from "../biomon/BodyInfo";
-import { HitLocationTable } from "../biomon/HitLocationTable";
+// import { HitLocationTable } from "../biomon/HitLocationTable";
+import { StatsStrip } from "../biomon/StatsStrip";
+import { StatsPanel } from "../biomon/StatsPanel";
+import { AwarenessLine } from "../biomon/AwarenessLine";
 import { $spaTab } from "@stores/ui";
 
 const SPA_TABS = [
@@ -14,16 +18,25 @@ const SPA_TABS = [
 
 export const Charsheet = () => {
   const tab = useStore($spaTab);
+  const [statsExpanded, setStatsExpanded] = useState(false);
 
   return (
     <div class={`charsheet-spa ${tab}-section`}>
       <div class="fixed-bar">
         <WoundTracker />
         <div class="secondary-bar flex-between">
+          <StatsStrip expanded={statsExpanded} onToggle={() => setStatsExpanded(!statsExpanded)} />
           <BodyInfo />
-          <HitLocationTable />
         </div>
-        <TabStrip tabs={SPA_TABS} $store={$spaTab} class="spa-tabs" />
+        {statsExpanded && (
+          <div class="stats-strip-expanded">
+            <StatsPanel />
+          </div>
+        )}
+        <div class="tab-row">
+          <TabStrip tabs={SPA_TABS} $store={$spaTab} class="spa-tabs" />
+          <AwarenessLine />
+        </div>
       </div>
       {tab === "biomon" ? <Biomonitor /> : <ArmorView />}
     </div>
