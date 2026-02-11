@@ -1,0 +1,45 @@
+/* Notes panel */
+
+#notes-panel.expanded .panel-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.notes-textarea {
+  width: 100%;
+  flex: 1;
+  resize: none;
+  padding: var(--space-8);
+  font-size: var(--text-sm);
+}
+
+.contact-card {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--padding-panel);
+  margin-bottom: var(--space-8);
+}
+
+.contact-header {
+  display: flex;
+  gap: var(--space-8);
+  align-items: stretch;
+}
+
+.contact-header input {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-note {
+  width: 100%;
+  min-height: calc(3em + 20px);
+  resize: none;
+  margin-top: var(--space-8);
+  font-size: var(--text-sm);
+}
+
+.notes-add-btn {
+  width: 100%;
+}
