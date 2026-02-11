@@ -1,5 +1,6 @@
 /* === Wound Tracker === */
 .wound-bar {
+  position: relative;
   padding: var(--padding-bar);
   display: flex;
   align-items: start;
@@ -178,19 +179,33 @@
   color: var(--danger);
 }
 
-/* === Wound Collapse Chevron (visible on mobile only) === */
-.wound-collapse-chevron {
+/* === Collapse behavior === */
+.wound-bar {
+  cursor: pointer;
+}
+
+.wound-collapsed #wound-tracker {
   display: none;
+}
+
+.wound-collapsed .wound-bar-controls {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.wound-collapse-chevron {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-8);
   color: var(--fg-soft);
   text-shadow: var(--glow-green);
   font-size: var(--font-ui-2xl);
   line-height: 1;
-  margin-left: var(--space-8);
-  flex-shrink: 0;
 }
 
 /* === Responsive: Mobile === */
-@media (max-width: 1024px) {
+@media (max-width: 968px) {
   .wound-bar {
     flex-wrap: wrap;
     padding: var(--space-6) 10px;
@@ -245,18 +260,6 @@
   .wound-bar-controls {
     flex-direction: row;
     gap: var(--space-12);
-  }
-
-  /* Wound tracker collapse (mobile only) */
-  .wound-bar {
-    cursor: pointer;
-  }
-
-  .wound-collapsed #wound-tracker {
-    display: none;
-  }
-
-  .wound-collapse-chevron {
-    display: block;
+    margin-right: 24px;
   }
 }

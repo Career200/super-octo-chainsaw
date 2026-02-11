@@ -9,18 +9,24 @@ export const AwarenessLine = () => {
       <span class="awareness-label">Aw</span>
       <span class="awareness-totals">
         <span class="awareness-total">{aw.total}</span>
-        <span class="awareness-separator">/</span>
-        <span class="awareness-total-combat">{aw.totalCombat}</span>
+        {aw.combatSense > 0 && (
+          <>
+            <span class="awareness-separator">/</span>
+            <span class="awareness-total-combat">{aw.totalCombat}</span>
+          </>
+        )}
       </span>
       <span class="awareness-breakdown">
         <span class="awareness-part awareness-int">INT {aw.int}</span>
         {" + "}
         <span class="awareness-part">Aw/N {aw.awarenessNotice}</span>
-        <span class="awareness-part awareness-combat">
-          {" (+ CS "}
-          {aw.combatSense}
-          {")"}
-        </span>
+        {aw.combatSense > 0 && (
+          <span class="awareness-part awareness-combat">
+            {" (+ CS "}
+            {aw.combatSense}
+            {")"}
+          </span>
+        )}
       </span>
     </div>
   );

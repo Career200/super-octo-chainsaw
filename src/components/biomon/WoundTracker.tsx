@@ -27,11 +27,10 @@ export const WoundTracker = () => {
   };
 
   const handleBarClick = (e: MouseEvent) => {
-    if (window.innerWidth > 1024) return; // not collapsible on desktop
     const target = e.target as HTMLElement;
     if (
       target.closest(
-        "button, a, input, [popover], .help-trigger, [role=checkbox]",
+        "button, a, input, [popover], .help-trigger, [role=checkbox], .stabilized-label",
       )
     )
       return;

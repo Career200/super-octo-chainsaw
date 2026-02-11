@@ -1,5 +1,5 @@
-@import './wounds.css';
-@import './stats.css';
+@import "./wounds.css";
+@import "./stats.css";
 
 /* === Top Bar === */
 .fixed-bar {
@@ -41,9 +41,9 @@
 }
 
 /* === Responsive === */
-@media (max-width: 1024px) {
+@media (max-width: 968px) {
   .tab-row {
-    flex-wrap: wrap;
+    flex-wrap: wrap-reverse;
   }
 }
 
