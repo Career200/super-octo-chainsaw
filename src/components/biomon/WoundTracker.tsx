@@ -44,7 +44,7 @@ export const WoundTracker = () => {
       onClick={handleBarClick}
     >
       <div class="wound-bar-header">
-        <span class="wound-bar-title">
+        <span class="title text-sm">
           Wounds <HelpPopover id="wound-help" content={<WoundHelpContent />} />
         </span>
         <div class="wound-bar-controls">

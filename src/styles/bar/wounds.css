@@ -13,16 +13,6 @@
   flex-shrink: 0;
 }
 
-/* Uses .text-label pattern with footer color */
-.wound-bar-title {
-  font-size: var(--font-ui);
-  font-weight: bold;
-  color: var(--footer);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
 /* Stun Toggle Button - extends .btn-ghost */
 #stun-toggle {
   padding: var(--padding-button);
@@ -216,6 +206,7 @@
 
   #wound-tracker {
     display: flex;
+    justify-content: safe center;
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;

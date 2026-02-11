@@ -35,7 +35,7 @@ export const Panel = ({
       onClick={handleClick}
     >
       <div class="panel-heading">
-        <h2>{title}</h2>
+        <h2 class="title text-sm">{title}</h2>
         {headerActions}
       </div>
       {bare ? children : <div class="panel-content">{children}</div>}

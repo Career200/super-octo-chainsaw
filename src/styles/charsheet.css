@@ -81,16 +81,29 @@
   min-height: 0;
 }
 
+/* Title sizing */
+.text-sm {
+  font-size: var(--font-ui);
+}
+
+/* Title style — combine with a size class */
+.title {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  color: var(--footer);
+}
+
 .panel-heading {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-6);
   border-bottom: 1px solid var(--border-light);
 }
 
 .panel-heading h2 {
-  color: var(--accent);
   flex: 1;
 }
 
