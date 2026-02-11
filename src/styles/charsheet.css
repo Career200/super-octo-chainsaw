@@ -108,8 +108,17 @@
   flex: 1;
 }
 
-/* Hidden by default on desktop */
-.expand-indicator {
+/* === Shared collapse chevron (▾/▴) === */
+.collapse-chevron {
+  color: var(--fg-soft);
+  text-shadow: var(--glow-green);
+  font-size: var(--font-ui-2xl);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Panel chevron: hidden on desktop, shown on mobile */
+.panel-chevron {
   display: none;
 }
 
@@ -185,46 +194,8 @@
     cursor: default;
   }
 
-  /* Expand indicator */
-  .panel-collapsible .expand-indicator {
-    display: block;
-    position: absolute;
-    bottom: var(--space-8);
-    right: var(--space-12);
-    width: 20px;
-    height: 20px;
-    opacity: 0.5;
-  }
-
-  .panel-collapsible .expand-indicator::before,
-  .panel-collapsible .expand-indicator::after {
-    content: "";
-    position: absolute;
-    background: var(--accent);
-    border-radius: 1px;
-  }
-
-  .panel-collapsible .expand-indicator::before {
-    width: 10px;
-    height: 2px;
-    top: 9px;
-    left: 1px;
-    transform: rotate(45deg);
-  }
-
-  .panel-collapsible .expand-indicator::after {
-    width: 10px;
-    height: 2px;
-    top: 9px;
-    right: 1px;
-    transform: rotate(-45deg);
-  }
-
-  .panel-collapsible:hover .expand-indicator {
-    opacity: 1;
-  }
-
-  .panel-collapsible.expanded .expand-indicator {
-    transform: rotate(180deg);
+  /* Panel chevron in heading */
+  .panel-chevron {
+    display: inline;
   }
 }

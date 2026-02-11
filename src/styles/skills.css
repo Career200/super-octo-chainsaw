@@ -22,6 +22,9 @@
 }
 
 .skill-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: var(--font-ui-sm);
   font-weight: bold;
   color: var(--accent);
@@ -30,6 +33,20 @@
   padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--border-light);
   margin-bottom: var(--space-4);
+  cursor: pointer;
+  user-select: none;
+}
+
+
+.skill-group-more {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+}
+
+.skill-group-more:hover {
+  color: var(--accent);
 }
 
 .skill-row {
