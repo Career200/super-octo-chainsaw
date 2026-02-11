@@ -1,0 +1,266 @@
+/* === Label Chip (generic stat/info chip) === */
+.label-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--space-4);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-6);
+}
+
+.label-chip-label {
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: var(--font-ui-xs);
+}
+
+.label-chip-value {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--fg);
+}
+
+.label-chip-value.diminished {
+  color: var(--danger);
+}
+
+/* === Chip Row (shared by stats strip + body info) === */
+.stats-strip-row,
+.body-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.carry-value {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.body-type {
+  border-color: var(--accent-muted);
+}
+
+.body-type-name {
+  font-size: var(--font-ui);
+  color: var(--accent);
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.save-penalty {
+  font-size: var(--font-ui-xs);
+  color: var(--fg-soft);
+}
+
+.save-penalty.has-penalty {
+  color: var(--danger);
+}
+
+/* === Stats Strip (collapsible) === */
+.stats-strip {
+  flex: 1;
+  min-width: 0;
+}
+
+.stats-strip-row {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.stats-strip-chevron {
+  color: var(--fg-soft);
+  text-shadow: var(--glow-green);
+  font-size: var(--font-ui-2xl);
+  flex-shrink: 0;
+  line-height: 1;
+  text-align: center;
+  transition:
+    transform var(--transition-speed),
+    color var(--transition-speed);
+}
+
+.stats-strip-chevron.expanded {
+  color: var(--accent);
+  text-shadow: var(--glow-accent);
+  transform: scale(1.2);
+}
+
+.stats-strip-expanded {
+  padding: var(--space-8) var(--padding-bar) var(--space-4);
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-muted) transparent;
+}
+
+/* === Awareness Line === */
+.awareness-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-4);
+  font-size: var(--font-ui);
+  white-space: nowrap;
+}
+
+.awareness-label {
+  color: var(--accent);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.awareness-totals {
+  font-weight: bold;
+  font-size: var(--font-ui-lg);
+}
+
+.awareness-total {
+  color: var(--fg);
+}
+
+.awareness-separator {
+  color: var(--fg-soft);
+  margin: 0 1px;
+}
+
+.awareness-total-combat {
+  color: var(--accent-muted);
+}
+
+.awareness-breakdown {
+  color: var(--fg-soft);
+  font-size: var(--font-ui-sm);
+}
+
+.awareness-part.awareness-int {
+  color: var(--fg);
+}
+
+.awareness-part.awareness-combat {
+  color: var(--accent-muted);
+}
+
+/* === Stats Panel === */
+.stats-grid {
+  display: flex;
+  gap: var(--space-16);
+}
+
+.stat-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  margin-bottom: 0;
+  border-radius: var(--radius);
+}
+
+/* Uses .text-label-lg pattern with accent color + bold */
+.stat-name {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+  width: 100%;
+  text-align: center;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-2) 0;
+  gap: var(--space-8);
+}
+
+/* Uses .text-label-xs pattern */
+.stat-label {
+  font-size: var(--font-ui-xs);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+}
+
+/* Uses .text-value-lg pattern */
+.stat-value {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--fg);
+  min-width: 24px;
+  text-align: right;
+}
+
+.stat-input {
+  width: 40px;
+  padding: var(--padding-input);
+  font-size: var(--font-ui);
+  text-align: right;
+}
+
+.stat-row.stat-total {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-light);
+}
+
+.stat-penalties {
+  padding-top: var(--space-4);
+  font-size: var(--font-ui);
+  color: var(--danger);
+}
+
+.stat-row.stat-current {
+  background: var(--bg);
+  margin: var(--space-4) calc(-1 * var(--space-4)) calc(-1 * var(--space-4));
+  padding: var(--space-6) var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
+.stat-row.stat-current .stat-value {
+  font-size: var(--font-ui-xl);
+}
+
+.stat-row.stat-current.diminished .stat-value {
+  color: var(--danger);
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .stats-strip-row,
+  .body-info {
+    width: 100%;
+    gap: var(--space-2);
+  }
+
+  .stats-strip-row .label-chip,
+  .body-info .label-chip {
+    padding: var(--space-2) var(--space-4);
+    gap: var(--space-2);
+  }
+
+  .stats-strip {
+    width: 100%;
+  }
+
+  .stats-strip-chevron {
+    order: 999;
+    margin-left: auto;
+  }
+
+  .body-info .help-trigger {
+    order: 999;
+    margin-left: auto;
+  }
+}

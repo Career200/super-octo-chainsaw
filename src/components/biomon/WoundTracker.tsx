@@ -10,6 +10,7 @@ import { WoundHelpContent } from "@components/shared/help/biomon/WoundHelpConten
 export const WoundTracker = () => {
   const health = useStore($health);
   const [showStun, setShowStun] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     if (health.stun !== health.physical) {
@@ -25,8 +26,23 @@ export const WoundTracker = () => {
     }
   };
 
+  const handleBarClick = (e: MouseEvent) => {
+    if (window.innerWidth > 1024) return; // not collapsible on desktop
+    const target = e.target as HTMLElement;
+    if (
+      target.closest(
+        "button, a, input, [popover], .help-trigger, [role=checkbox]",
+      )
+    )
+      return;
+    setCollapsed(!collapsed);
+  };
+
   return (
-    <div class="wound-bar">
+    <div
+      class={`wound-bar${collapsed ? " wound-collapsed" : ""}`}
+      onClick={handleBarClick}
+    >
       <div class="wound-bar-header">
         <span class="wound-bar-title">
           Wounds <HelpPopover id="wound-help" content={<WoundHelpContent />} />
@@ -39,6 +55,9 @@ export const WoundTracker = () => {
             Stun
           </button>
           <StabilizedControl />
+          <span class="wound-collapse-chevron">
+            {collapsed ? "\u25BE" : "\u25B4"}
+          </span>
         </div>
       </div>
       <div id="wound-tracker" class={showStun ? "show-stun" : ""}>

@@ -1,7 +1,5 @@
 /* Skills Panel — RP tab */
 .skills-panel {
-  overflow-y: auto;
-  max-height: calc(100vh - 160px);
   padding: var(--space-8);
   display: flex;
   flex-direction: column;
@@ -44,14 +42,3 @@
   flex-shrink: 0;
 }
 
-/* RP section layout */
-.rp-section .container {
-  grid-template-columns: 1fr;
-  max-width: 400px;
-}
-
-@media (max-width: 1053px) {
-  .skills-panel {
-    max-height: none;
-  }
-}

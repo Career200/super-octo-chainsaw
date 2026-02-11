@@ -22,8 +22,10 @@ export const Charsheet = () => {
   const tab = useStore($spaTab);
   const [statsExpanded, setStatsExpanded] = useState(false);
 
+  const spaClass = `charsheet-spa ${tab}-section}`;
+
   return (
-    <div class={`charsheet-spa ${tab}-section`}>
+    <div class={spaClass}>
       <div class="fixed-bar">
         <WoundTracker />
         <div class="secondary-bar flex-between">

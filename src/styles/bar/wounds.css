@@ -1,0 +1,271 @@
+/* === Wound Tracker === */
+.wound-bar {
+  padding: var(--padding-bar);
+  display: flex;
+  align-items: start;
+  gap: var(--space-12);
+}
+
+.wound-bar-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+/* Uses .text-label pattern with footer color */
+.wound-bar-title {
+  font-size: var(--font-ui);
+  font-weight: bold;
+  color: var(--footer);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+/* Stun Toggle Button - extends .btn-ghost */
+#stun-toggle {
+  padding: var(--padding-button);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-ui-sm);
+  white-space: nowrap;
+}
+
+#stun-toggle.active {
+  background: var(--accent-muted);
+  border-color: var(--accent-muted);
+  color: var(--fg);
+}
+
+/* === Wound Tracker Container === */
+#wound-tracker {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+#wound-tracker.show-stun .wound-track-stun {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.wound-level-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
+  border-right: 1px solid var(--accent);
+}
+
+.wound-level-group:last-child {
+  border-right: none;
+}
+
+.wound-level-label {
+  font-size: var(--font-ui-xs);
+  color: var(--fg-soft);
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.wound-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.wound-track {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.wound-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--space-2);
+  background: var(--bg);
+  cursor: pointer;
+  transition:
+    background-color 0.1s,
+    border-color 0.1s;
+}
+
+.wound-box:hover {
+  border-color: var(--accent);
+}
+
+.wound-box.filled {
+  background: var(--fg-soft);
+  border-color: var(--fg-soft);
+}
+
+/* Physical track styling */
+.wound-track-physical .wound-box.filled {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.wound-track-physical .wound-box:hover {
+  border-color: var(--danger);
+}
+
+/* Stun track - hidden but reserves space */
+.wound-track-stun {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.wound-track-stun .wound-box.filled {
+  background: var(--accent-muted);
+  border-color: var(--accent-muted);
+}
+
+.wound-track-stun .wound-box:hover {
+  border-color: var(--accent);
+}
+
+/* Highlight current wound level */
+.wound-level-group:has(.wound-track-physical .wound-box.filled)
+  .wound-level-label {
+  color: var(--fg);
+  font-weight: bold;
+}
+
+/* Mortal levels (4th+ group) get danger color */
+.wound-level-group:nth-child(n + 4):has(.wound-track-physical .wound-box.filled)
+  .wound-level-label {
+  color: var(--danger);
+}
+
+/* === Wound Bar Controls === */
+.wound-bar-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.stabilized-control {
+  width: 72px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  cursor: pointer;
+}
+
+.stabilized-control .wound-box {
+  flex-shrink: 0;
+}
+
+.stabilized-control .stabilized-label {
+  font-size: var(--font-ui-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-soft);
+  transition: color 0.15s;
+}
+
+.stabilized-control.stabilized .wound-box {
+  background: var(--terminal);
+  border-color: var(--terminal);
+}
+
+.stabilized-control.stabilized .stabilized-label {
+  color: var(--terminal);
+}
+
+.stabilized-control.unstable .wound-box {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.stabilized-control.unstable .stabilized-label {
+  color: var(--danger);
+}
+
+/* === Wound Collapse Chevron (visible on mobile only) === */
+.wound-collapse-chevron {
+  display: none;
+  color: var(--fg-soft);
+  text-shadow: var(--glow-green);
+  font-size: var(--font-ui-2xl);
+  line-height: 1;
+  margin-left: var(--space-8);
+  flex-shrink: 0;
+}
+
+/* === Responsive: Mobile === */
+@media (max-width: 1024px) {
+  .wound-bar {
+    flex-wrap: wrap;
+    padding: var(--space-6) 10px;
+    gap: var(--space-6);
+  }
+
+  .wound-bar-header {
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  #wound-tracker {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-muted) transparent;
+    padding-bottom: var(--space-4);
+  }
+
+  #wound-tracker::-webkit-scrollbar {
+    height: var(--space-4);
+  }
+
+  #wound-tracker::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  #wound-tracker::-webkit-scrollbar-thumb {
+    background: var(--accent-muted);
+    border-radius: var(--space-2);
+  }
+
+  .wound-level-group {
+    flex-shrink: 0;
+    padding: 0 var(--space-6);
+  }
+
+  .wound-box {
+    width: 18px;
+    height: 18px;
+  }
+
+  .wound-level-label {
+    font-size: var(--font-ui-sm);
+  }
+
+  .wound-bar-controls {
+    flex-direction: row;
+    gap: var(--space-12);
+  }
+
+  /* Wound tracker collapse (mobile only) */
+  .wound-bar {
+    cursor: pointer;
+  }
+
+  .wound-collapsed #wound-tracker {
+    display: none;
+  }
+
+  .wound-collapse-chevron {
+    display: block;
+  }
+}
