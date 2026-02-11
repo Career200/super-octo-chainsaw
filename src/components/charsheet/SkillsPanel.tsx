@@ -2,9 +2,8 @@ import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { STAT_LABELS } from "@scripts/biomon/types";
 import type { SkillStat } from "@scripts/skills/catalog";
-import { $skillsByStat, $skillTotal, setSkillLevel } from "@stores/skills";
+import { $skillsByStat, setSkillLevel } from "@stores/skills";
 import type { SkillEntry } from "@stores/skills";
-import { Panel } from "@components/shared/Panel";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
   "special",
@@ -12,9 +11,9 @@ const STAT_GROUP_ORDER: SkillStat[] = [
   "cl",
   "emp",
   "tech",
+  "bt",
   "int",
   "ref",
-  "bt",
 ];
 
 const GROUP_LABELS: Record<SkillStat, string> = {
@@ -65,9 +64,8 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
   );
 }
 
-export const SkillsPanel = () => {
+export const SkillsList = () => {
   const grouped = useStore($skillsByStat);
-  const total = useStore($skillTotal);
   const [collapsed, setCollapsed] = useState<Set<SkillStat>>(new Set());
   const stablePicks = useRef(new Map<string, string>());
 
@@ -81,45 +79,43 @@ export const SkillsPanel = () => {
   };
 
   return (
-    <Panel id="skills-panel" title={<>Skills <span class="skill-total">{total}</span></>} defaultExpanded>
-      <div class="skills-list">
-        {STAT_GROUP_ORDER.map((stat) => {
-          const entries = grouped[stat];
-          if (!entries || entries.length === 0) return null;
-          const isCollapsed = collapsed.has(stat);
-          const topSkill = isCollapsed
-            ? pickTopSkill(entries, stablePicks.current, stat)
-            : null;
+    <div class="skills-list">
+      {STAT_GROUP_ORDER.map((stat) => {
+        const entries = grouped[stat];
+        if (!entries || entries.length === 0) return null;
+        const isCollapsed = collapsed.has(stat);
+        const topSkill = isCollapsed
+          ? pickTopSkill(entries, stablePicks.current, stat)
+          : null;
 
-          return (
-            <div class="skill-group" key={stat}>
-              <div
-                class={`skill-group-header${isCollapsed ? " collapsed" : ""}`}
-                onClick={() => toggle(stat)}
-              >
-                <span>{GROUP_LABELS[stat]}</span>
-                <span class="collapse-chevron">
-                  {isCollapsed ? "\u25BE" : "\u25B4"}
-                </span>
-              </div>
-              {isCollapsed ? (
-                <>
-                  <SkillRow name={topSkill![0]} entry={topSkill![1]} />
-                  {entries.length > 1 && (
-                    <div class="skill-group-more" onClick={() => toggle(stat)}>
-                      +{entries.length - 1} more
-                    </div>
-                  )}
-                </>
-              ) : (
-                entries.map(([name, entry]) => (
-                  <SkillRow key={name} name={name} entry={entry} />
-                ))
-              )}
+        return (
+          <div class="skill-group" key={stat}>
+            <div
+              class={`skill-group-header${isCollapsed ? " collapsed" : ""}`}
+              onClick={() => toggle(stat)}
+            >
+              <span>{GROUP_LABELS[stat]}</span>
+              <span class="collapse-chevron">
+                {isCollapsed ? "\u25BE" : "\u25B4"}
+              </span>
             </div>
-          );
-        })}
-      </div>
-    </Panel>
+            {isCollapsed ? (
+              <>
+                <SkillRow name={topSkill![0]} entry={topSkill![1]} />
+                {entries.length > 1 && (
+                  <div class="skill-group-more" onClick={() => toggle(stat)}>
+                    +{entries.length - 1} more
+                  </div>
+                )}
+              </>
+            ) : (
+              entries.map(([name, entry]) => (
+                <SkillRow key={name} name={name} entry={entry} />
+              ))
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 };

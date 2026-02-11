@@ -66,7 +66,10 @@
                 Depends on: $INT, $skills
 
                                     StatsStrip ──▸ reads all 9 computed stat stores
-                                    (compact strip in header, expands to StatsPanel)
+                                    (compact strip in header, chips only)
+
+                                    StatsSkillsPanel ──▸ combined panel in RP tab
+                                    (StatsPanel + SkillsList side by side)
 ```
 
 ## Key patterns

@@ -62,42 +62,54 @@
   color: var(--danger);
 }
 
-/* === Stats Strip (collapsible) === */
+/* === Stats Strip === */
 .stats-strip {
   flex: 1;
   min-width: 0;
 }
 
 .stats-strip-row {
-  cursor: pointer;
+  cursor: default;
   white-space: nowrap;
 }
 
-.stats-strip-chevron {
-  color: var(--fg-soft);
-  text-shadow: var(--glow-green);
-  font-size: var(--font-ui-2xl);
-  flex-shrink: 0;
-  line-height: 1;
-  text-align: center;
-  transition:
-    transform var(--transition-speed),
-    color var(--transition-speed);
+/* === Stats+Skills combined panel === */
+#stats-skills-panel .panel-content {
+  overflow: hidden;
 }
 
-.stats-strip-chevron.expanded {
-  color: var(--accent);
-  text-shadow: var(--glow-accent);
-  transform: scale(1.2);
+#stats-skills-panel.expanded .panel-content {
+  display: flex;
 }
 
-.stats-strip-expanded {
-  padding: var(--space-8) var(--padding-bar) var(--space-4);
-  border-top: 1px solid var(--border);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent-muted) transparent;
+.stats-skills-stats {
+  flex: 0 0 auto;
+  overflow-y: auto;
+  padding-right: var(--space-8);
+  border-right: 1px solid var(--accent);
+}
+
+.stats-skills-skills {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding-left: var(--space-8);
+}
+
+.stats-skills-heading {
+  display: flex;
+  width: 100%;
+}
+
+.stats-skills-heading > :first-child {
+  padding-right: 45px;
+  margin-right: var(--space-8);
+}
+
+.stats-skills-heading > :last-child {
+  border-left: 1px solid var(--accent);
+  padding-left: var(--space-8);
+  flex: 1;
 }
 
 /* === Awareness Line === */
@@ -152,8 +164,8 @@
 /* === Stats Panel === */
 .stats-container {
   display: flex;
-  gap: var(--space-16);
-  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-8);
 }
 
 .stat-column {
@@ -253,11 +265,6 @@
 
   .stats-strip {
     width: 100%;
-  }
-
-  .stats-strip-chevron {
-    order: 999;
-    margin-left: auto;
   }
 
   .body-info .help-trigger {

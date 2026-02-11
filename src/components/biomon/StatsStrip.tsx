@@ -36,18 +36,10 @@ const StatChip = ({ $store, label }: { $store: (typeof STRIP_STATS)[number]["$st
   );
 };
 
-interface StatsStripProps {
-  expanded: boolean;
-  onToggle: () => void;
-}
-
-export const StatsStrip = ({ expanded, onToggle }: StatsStripProps) => {
+export const StatsStrip = () => {
   return (
     <div class="stats-strip">
-      <div class="stats-strip-row" onClick={onToggle}>
-        <span class={`stats-strip-chevron${expanded ? " expanded" : ""}`}>
-          {expanded ? "\u25B4" : "\u25BE"}
-        </span>
+      <div class="stats-strip-row">
         {STRIP_STATS.map((s) => (
           <StatChip key={s.key} $store={s.$store} label={s.label} />
         ))}

@@ -1,12 +1,14 @@
-/* Skills wants 375px; notes eats nearly all extra space (flex-grow: 999 vs 1).
-   Side-by-side: skills ≈ 375px, notes fills the rest.
-   Stacked: both fill their row (any positive grow fills a solo row). */
-#skills-panel {
-  flex: 1 0 375px;
-}
+/* Row direction (desktop): stats+skills grows to fit two skill columns, notes stays near 375px.
+   columns: 280px on .skills-list auto-flows into two columns when the panel is wide enough.
+   Column direction (mobile, ≤968px): ID rules don't apply, .container > * { flex: 1 } takes over. */
+@media (min-width: 969px) {
+  #stats-skills-panel {
+    flex: 999 0 375px;
+  }
 
-#notes-panel {
-  flex: 999 0 375px;
+  #notes-panel {
+    flex: 1 0 375px;
+  }
 }
 
 .skill-total {
