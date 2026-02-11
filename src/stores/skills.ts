@@ -108,6 +108,14 @@ export const $awareness = computed([$INT, $skills], (int, skills) => {
   };
 });
 
+export const $skillTotal = computed($skills, (skills) => {
+  let total = 0;
+  for (const entry of Object.values(skills)) {
+    total += entry.level;
+  }
+  return total;
+});
+
 export const $skillsByStat = computed($skills, (skills) => {
   const grouped: Record<SkillStat, [string, SkillEntry][]> = {
     special: [],

@@ -79,6 +79,12 @@ Actions: `setSkillLevel`, `addSkill`, `removeSkill`, `updateSkill`
 
 ## Computed Stores (continued)
 
+### `$skillTotal` (skills.ts)
+```
+number
+```
+Sum of all skill levels. Depends on: `$skills`
+
 ### `$awareness` (skills.ts)
 ```
 { int, awarenessNotice, combatSense, total, totalCombat }
@@ -119,5 +125,6 @@ $spaTab ────▸ Charsheet (tab selection)
 $skills ──┬──▸ $awareness
 $INT ─────┘
 $skills ──┬──▸ $skillsByStat
+          ├──▸ $skillTotal
           └──▸ $combatSkills
 ```

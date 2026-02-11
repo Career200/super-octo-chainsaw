@@ -2,7 +2,7 @@ import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { STAT_LABELS } from "@scripts/biomon/types";
 import type { SkillStat } from "@scripts/skills/catalog";
-import { $skillsByStat, setSkillLevel } from "@stores/skills";
+import { $skillsByStat, $skillTotal, setSkillLevel } from "@stores/skills";
 import type { SkillEntry } from "@stores/skills";
 import { Panel } from "@components/shared/Panel";
 
@@ -67,6 +67,7 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
 
 export const SkillsPanel = () => {
   const grouped = useStore($skillsByStat);
+  const total = useStore($skillTotal);
   const [collapsed, setCollapsed] = useState<Set<SkillStat>>(new Set());
   const stablePicks = useRef(new Map<string, string>());
 
@@ -80,7 +81,7 @@ export const SkillsPanel = () => {
   };
 
   return (
-    <Panel id="skills-panel" title="Skills" defaultExpanded>
+    <Panel id="skills-panel" title={<>Skills <span class="skill-total">{total}</span></>} defaultExpanded>
       <div class="skills-list">
         {STAT_GROUP_ORDER.map((stat) => {
           const entries = grouped[stat];

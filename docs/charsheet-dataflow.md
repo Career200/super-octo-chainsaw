@@ -54,7 +54,10 @@
                │$skil-│ │  │$combatSkills │  (combat: true, ordered)
                │lsBy- │ │  │  (computed)  │
                │Stat  │ │  └──────────────┘
-               │(comp)│ │
+               │(comp)│ │  ┌──────────────┐
+               └──────┘ │  │ $skillTotal  │─────────────────────▸ SkillsPanel (header)
+                        │  │  (computed)  │
+                        │  └──────────────┘
                └──────┘ ▾
                ┌────────────────────┐
                │    $awareness     │─────────────────────▸ AwarenessLine
