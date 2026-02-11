@@ -3,6 +3,7 @@ import { STAT_LABELS } from "@scripts/biomon/types";
 import type { SkillStat } from "@scripts/skills/catalog";
 import { $skillsByStat, setSkillLevel } from "@stores/skills";
 import type { SkillEntry } from "@stores/skills";
+import { Panel } from "@components/shared/Panel";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
   "special",
@@ -45,19 +46,21 @@ export const SkillsPanel = () => {
   const grouped = useStore($skillsByStat);
 
   return (
-    <div class="skills-panel">
-      {STAT_GROUP_ORDER.map((stat) => {
-        const entries = grouped[stat];
-        if (!entries || entries.length === 0) return null;
-        return (
-          <div class="skill-group" key={stat}>
-            <div class="skill-group-header">{GROUP_LABELS[stat]}</div>
-            {entries.map(([name, entry]) => (
-              <SkillRow key={name} name={name} entry={entry} />
-            ))}
-          </div>
-        );
-      })}
-    </div>
+    <Panel id="skills-panel" title="Skills" defaultExpanded>
+      <div class="skills-list">
+        {STAT_GROUP_ORDER.map((stat) => {
+          const entries = grouped[stat];
+          if (!entries || entries.length === 0) return null;
+          return (
+            <div class="skill-group" key={stat}>
+              <div class="skill-group-header">{GROUP_LABELS[stat]}</div>
+              {entries.map(([name, entry]) => (
+                <SkillRow key={name} name={name} entry={entry} />
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </Panel>
   );
 };

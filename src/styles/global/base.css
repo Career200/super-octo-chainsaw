@@ -1,3 +1,11 @@
+/* === Reset === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
 /* === Layout Elements === */
 header {
   background-color: var(--bg-alt);

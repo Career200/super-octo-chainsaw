@@ -1,6 +1,9 @@
-/* Skills Panel — RP tab */
-.skills-panel {
-  padding: var(--space-8);
+/* single column */
+#skills-panel {
+  flex: 0 0 375px;
+}
+
+.skills-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
@@ -41,4 +44,3 @@
   text-align: right;
   flex-shrink: 0;
 }
-

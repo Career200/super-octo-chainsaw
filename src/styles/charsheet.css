@@ -31,24 +31,27 @@
 
 /* === Container Base === */
 /* Flex-wrap layout: panels fill width, wrap when they can't fit side-by-side.
-   Panels get default 50/50 sizing; override per-panel for uneven layouts. */
+   Panels get default sizing via flex:1; override per-panel for uneven layouts. */
 .container {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-12);
+  gap: var(--space-8);
   padding: 0;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  align-items: flex-start;
-  align-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
 }
 
-/* Default panel sizing: 50/50 split, 375px min (= min viewport), 720px max (= half of 1440 target) */
+/* Panel sizing: flex:1 fills available width (50/50 default, 100% when stacked).
+   min-width: 375px (= min viewport) triggers wrapping below 758px (375+375+8 gap).
+   max-height: 100% keeps each panel within the container so it scrolls internally.
+   Over-stretching on ultra-wide screens is the container's job (max-width TBD), not individual panels'. */
 .container > * {
   flex: 1;
   min-width: 375px;
-  max-width: 720px;
+  max-height: 100%;
 }
 
 .container * {
@@ -62,11 +65,20 @@
 
 /* === Panels === */
 .panel {
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--bg-alt);
   border: 1px solid var(--border);
   border-radius: 0;
   padding: var(--space-6);
+  min-height: 300px;
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .panel-heading {
