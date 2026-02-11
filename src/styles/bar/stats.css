@@ -150,9 +150,10 @@
 }
 
 /* === Stats Panel === */
-.stats-grid {
+.stats-container {
   display: flex;
   gap: var(--space-16);
+  justify-content: space-between;
 }
 
 .stat-column {
@@ -199,7 +200,6 @@
   font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--fg);
-  min-width: 24px;
   text-align: right;
 }
 
