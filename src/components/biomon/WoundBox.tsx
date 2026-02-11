@@ -27,6 +27,7 @@ export const WoundBox = ({ index, type, filled, showStun }: Props) => {
     <div
       class={`wound-box ${filled ? "filled" : ""}`}
       onClick={handleClick}
+      role="checkbox"
       data-index={index}
       data-type={type}
     />

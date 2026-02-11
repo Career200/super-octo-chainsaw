@@ -47,9 +47,18 @@
                ┌────────────────────┐
                │     $skills       │─────────────────────▸ AwarenessLine ◂──▸ (mutates $skills)
                │     (persist)      │
-               └────────┬───────────┘
-                        │
-                        ▾
+               └──┬─────┬──────┬───┘
+                  │     │      │
+                  ▾     │      ▾
+               ┌──────┐ │  ┌──────────────┐
+               │$skil-│ │  │$combatSkills │  (combat: true, ordered)
+               │lsBy- │ │  │  (computed)  │
+               │Stat  │ │  └──────────────┘
+               │(comp)│ │  ┌──────────────┐
+               └──────┘ │  │ $skillTotal  │─────────────────────▸ SkillsPanel (header)
+                        │  │  (computed)  │
+                        │  └──────────────┘
+               └──────┘ ▾
                ┌────────────────────┐
                │    $awareness     │─────────────────────▸ AwarenessLine
                │    (computed)      │
@@ -57,13 +66,16 @@
                 Depends on: $INT, $skills
 
                                     StatsStrip ──▸ reads all 9 computed stat stores
-                                    (compact strip in header, expands to StatsPanel)
+                                    (compact strip in header, chips only)
+
+                                    StatsSkillsPanel ──▸ combined panel in RP tab
+                                    (StatsPanel + SkillsList side by side)
 ```
 
 ## Key patterns
 
 - **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$spaTab`, `$skills`) own the data, persist to localStorage
-- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$awareness`) derive from persistent stores
+- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$awareness`, `$skillsByStat`, `$combatSkills`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$skills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
 - `◂──▸` = component both reads and mutates that store

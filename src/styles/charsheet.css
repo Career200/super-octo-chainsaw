@@ -1,3 +1,11 @@
+/* === App Shell === */
+.charsheet-spa {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
 /* === Charsheet Footer Override === */
 /* Hide footer content, keep nav toggle as floating button */
 .charsheet-page footer {
@@ -22,11 +30,29 @@
 }
 
 /* === Container Base === */
+/* Flex-wrap layout: panels fill width, wrap when they can't fit side-by-side.
+   Panels get default sizing via flex:1; override per-panel for uneven layouts. */
 .container {
-  display: grid;
-  gap: var(--space-12);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
   padding: 0;
-  flex-grow: 1;
+  padding-inline: var(--content-inset);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+/* Panel sizing: flex:1 fills available width (50/50 default, 100% when stacked).
+   min-width: 375px (= min viewport) triggers wrapping below 758px (375+375+8 gap).
+   max-height: 100% keeps each panel within the container so it scrolls internally.
+   Over-stretching on ultra-wide screens is the container's job (max-width TBD), not individual panels'. */
+.container > * {
+  flex: 1;
+  min-width: 375px;
+  max-height: 100%;
 }
 
 .container * {
@@ -40,29 +66,59 @@
 
 /* === Panels === */
 .panel {
-  overflow-y: auto;
-  max-height: calc(100vh - 160px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--bg-alt);
   border: 1px solid var(--border);
   border-radius: 0;
   padding: var(--space-6);
+  min-height: 300px;
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Title sizing */
+.text-sm {
+  font-size: var(--font-ui);
+}
+
+/* Title style — combine with a size class */
+.title {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  color: var(--footer);
 }
 
 .panel-heading {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-6);
   border-bottom: 1px solid var(--border-light);
 }
 
 .panel-heading h2 {
-  color: var(--accent);
   flex: 1;
 }
 
-/* Hidden by default on desktop */
-.expand-indicator {
+/* === Shared collapse chevron (▾/▴) === */
+.collapse-chevron {
+  color: var(--fg-soft);
+  text-shadow: var(--glow-green);
+  font-size: var(--font-ui-2xl);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Panel chevron: hidden on desktop, shown on mobile */
+.panel-chevron {
   display: none;
 }
 
@@ -113,28 +169,26 @@
   font-size: var(--font-ui-lg);
 }
 
-/* === Responsive: Mobile === */
-@media (max-width: 1053px) {
-  /*
-  we want 1023 as the breakpoint, but for now the panel sizes on armor page don't allow it
-  we'll refactor the page later - we want to basically combine all separate pages into one charsheet page with panels and/or tabs
-  but for now just bumping the breakpoint to 1053px to accommodate the armor page
-  another breakpoint is in armor.css
-  */
+/* === Mobile: stacked column layout + panel collapse === */
+@media (max-width: 968px) {
   .container {
-    grid-template-columns: 1fr;
-    gap: var(--space-12);
-    padding: 0;
+    flex-direction: column;
+    flex-wrap: nowrap;
   }
 
-  .panel {
-    max-height: none;
+  .container > * {
+    min-width: unset;
+    min-height: 0;
   }
 
   /* Collapsible panels */
   .panel-collapsible {
     position: relative;
     cursor: pointer;
+  }
+
+  .panel-collapsible:not(.expanded) {
+    flex: 0 0 auto;
   }
 
   .panel-collapsible .body-grid,
@@ -154,46 +208,8 @@
     cursor: default;
   }
 
-  /* Expand indicator */
-  .panel-collapsible .expand-indicator {
-    display: block;
-    position: absolute;
-    bottom: var(--space-8);
-    right: var(--space-12);
-    width: 20px;
-    height: 20px;
-    opacity: 0.5;
-  }
-
-  .panel-collapsible .expand-indicator::before,
-  .panel-collapsible .expand-indicator::after {
-    content: "";
-    position: absolute;
-    background: var(--accent);
-    border-radius: 1px;
-  }
-
-  .panel-collapsible .expand-indicator::before {
-    width: 10px;
-    height: 2px;
-    top: 9px;
-    left: 1px;
-    transform: rotate(45deg);
-  }
-
-  .panel-collapsible .expand-indicator::after {
-    width: 10px;
-    height: 2px;
-    top: 9px;
-    right: 1px;
-    transform: rotate(-45deg);
-  }
-
-  .panel-collapsible:hover .expand-indicator {
-    opacity: 1;
-  }
-
-  .panel-collapsible.expanded .expand-indicator {
-    transform: rotate(180deg);
+  /* Panel chevron in heading */
+  .panel-chevron {
+    display: inline;
   }
 }

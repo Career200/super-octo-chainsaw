@@ -1,0 +1,76 @@
+/* Row direction (desktop): stats+skills grows to fit two skill columns, notes stays near 375px.
+   columns: 280px on .skills-list auto-flows into two columns when the panel is wide enough.
+   Column direction (mobile, ≤968px): ID rules don't apply, .container > * { flex: 1 } takes over. */
+@media (min-width: 969px) {
+  #stats-skills-panel {
+    flex: 999 0 375px;
+  }
+
+  #notes-panel {
+    flex: 1 0 375px;
+  }
+}
+
+/* Auto columns: one column at 375px, two when panel is wide enough (min 280px per column).
+   break-inside keeps skill groups from splitting across columns. */
+.skills-list {
+  columns: 280px;
+  column-gap: var(--space-8);
+}
+
+.skill-group {
+  break-inside: avoid;
+  margin-bottom: var(--space-12);
+}
+
+.skill-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: var(--space-4);
+  cursor: pointer;
+  user-select: none;
+}
+
+.skill-group-more {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+}
+
+.skill-group-more:hover {
+  color: var(--accent);
+}
+
+.skill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) 0;
+  gap: var(--space-8);
+}
+
+.skill-name {
+  font-size: var(--font-ui);
+  color: var(--fg);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.skill-input {
+  width: 40px;
+  padding: var(--padding-input);
+  font-size: var(--font-ui);
+  text-align: right;
+  flex-shrink: 0;
+}

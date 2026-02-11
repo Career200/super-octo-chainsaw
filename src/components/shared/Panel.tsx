@@ -35,11 +35,13 @@ export const Panel = ({
       onClick={handleClick}
     >
       <div class="panel-heading">
-        <h2>{title}</h2>
+        <h2 class="title text-sm">{title}</h2>
         {headerActions}
+        <span class="collapse-chevron panel-chevron">
+          {expanded ? "\u25B4" : "\u25BE"}
+        </span>
       </div>
       {bare ? children : <div class="panel-content">{children}</div>}
-      <div class="expand-indicator" />
     </div>
   );
 };

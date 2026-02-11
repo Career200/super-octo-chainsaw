@@ -1,0 +1,57 @@
+@import "./wounds.css";
+@import "./stats.css";
+
+/* === Top Bar === */
+.fixed-bar {
+  flex-shrink: 0;
+  background-color: var(--bg-alt);
+  border-bottom: 1px solid var(--accent-muted);
+  padding-inline: var(--content-inset);
+}
+
+/* === Secondary Bar (below wounds) === */
+.secondary-bar {
+  padding: var(--space-6) var(--padding-bar);
+  border-top: 1px solid var(--border);
+  align-items: stretch;
+}
+
+/* === Tab Row (tabs + awareness) === */
+.tab-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+}
+
+/* === Hit Location Table === */
+.hit-location-table {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.hit-location {
+  font-size: var(--font-ui);
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+.hit-roll {
+  font-weight: bold;
+  color: var(--fg);
+}
+
+/* === Responsive === */
+@media (max-width: 968px) {
+  .tab-row {
+    flex-wrap: wrap-reverse;
+  }
+}
+
+@media (max-width: 768px) {
+  .secondary-bar {
+    flex-wrap: wrap;
+    padding: var(--space-4) 10px;
+    gap: var(--space-8);
+  }
+}

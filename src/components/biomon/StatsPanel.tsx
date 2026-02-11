@@ -33,7 +33,7 @@ const StatColumnWrapper = ({ name }: { name: StatName }) => {
 
 export const StatsPanel = () => {
   return (
-    <div class="stats-grid">
+    <div class="stats-container">
       {STAT_NAMES.map((name) => (
         <StatColumnWrapper key={name} name={name} />
       ))}
