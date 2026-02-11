@@ -1,12 +1,24 @@
-/* single column */
+/* Skills wants 375px; notes eats nearly all extra space (flex-grow: 999 vs 1).
+   Side-by-side: skills ≈ 375px, notes fills the rest.
+   Stacked: both fill their row (any positive grow fills a solo row). */
 #skills-panel {
-  flex: 0 0 375px;
+  flex: 1 0 375px;
 }
 
+#notes-panel {
+  flex: 999 0 375px;
+}
+
+/* Auto columns: one column at 375px, two when panel is wide enough (min 280px per column).
+   break-inside keeps skill groups from splitting across columns. */
 .skills-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-12);
+  columns: 280px;
+  column-gap: var(--space-8);
+}
+
+.skill-group {
+  break-inside: avoid;
+  margin-bottom: var(--space-12);
 }
 
 .skill-group-header {
