@@ -89,6 +89,9 @@
   /* Health state utility - set by health-* classes */
   --condition-color: var(--condition-full);
 
+  /* Content centering: 0 below 1440px, grows symmetrically above */
+  --content-inset: calc(max(0px, 100% - 1440px) / 2);
+
   /* Popover width constraint */
   --popover-max-width: calc(100vw - 72px);
 

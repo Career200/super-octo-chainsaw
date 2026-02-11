@@ -6,6 +6,7 @@
   flex-shrink: 0;
   background-color: var(--bg-alt);
   border-bottom: 1px solid var(--accent-muted);
+  padding-inline: var(--content-inset);
 }
 
 /* === Secondary Bar (below wounds) === */
