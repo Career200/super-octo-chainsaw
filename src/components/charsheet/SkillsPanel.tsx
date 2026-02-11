@@ -64,7 +64,11 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
   );
 }
 
-export const SkillsList = () => {
+interface SkillsListProps {
+  filter?: "all" | "my";
+}
+
+export const SkillsList = ({ filter = "all" }: SkillsListProps) => {
   const grouped = useStore($skillsByStat);
   const [collapsed, setCollapsed] = useState<Set<SkillStat>>(new Set());
   const stablePicks = useRef(new Map<string, string>());
@@ -81,8 +85,10 @@ export const SkillsList = () => {
   return (
     <div class="skills-list">
       {STAT_GROUP_ORDER.map((stat) => {
-        const entries = grouped[stat];
-        if (!entries || entries.length === 0) return null;
+        const raw = grouped[stat];
+        if (!raw || raw.length === 0) return null;
+        const entries = filter === "my" ? raw.filter(([, e]) => e.level > 0) : raw;
+        if (entries.length === 0) return null;
         const isCollapsed = collapsed.has(stat);
         const topSkill = isCollapsed
           ? pickTopSkill(entries, stablePicks.current, stat)

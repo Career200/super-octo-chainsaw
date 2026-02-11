@@ -11,12 +11,6 @@
   }
 }
 
-.skill-total {
-  font-size: var(--font-ui);
-  font-weight: normal;
-  color: var(--fg-soft);
-}
-
 /* Auto columns: one column at 375px, two when panel is wide enough (min 280px per column).
    break-inside keeps skill groups from splitting across columns. */
 .skills-list {
@@ -44,7 +38,6 @@
   cursor: pointer;
   user-select: none;
 }
-
 
 .skill-group-more {
   font-size: var(--font-ui-sm);

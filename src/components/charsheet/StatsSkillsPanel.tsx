@@ -1,25 +1,39 @@
+import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { $skillTotal } from "@stores/skills";
 import { Panel } from "@components/shared/Panel";
 import { StatsPanel } from "../biomon/StatsPanel";
 import { SkillsList } from "./SkillsPanel";
 
+type SkillFilter = "all" | "my";
+
 export const StatsSkillsPanel = () => {
   const total = useStore($skillTotal);
+  const [filter, setFilter] = useState<SkillFilter>("all");
 
   return (
     <Panel
       id="stats-skills-panel"
-      /*
-      idea for title style - do the padding-right: 45px; on the first child as is, but drop padding to space-8 if collapsed
-      looks better but kinda bulky to implement
-      */
       title={
         <span class="stats-skills-heading">
           <span>Stats</span>
-          <span>
-            Skills <span class="skill-total">{total}</span>
-          </span>
+          <span class="stats-skills-heading-skills">Skills</span>
+        </span>
+      }
+      headerActions={
+        <span class="tab-strip" onClick={(e) => e.stopPropagation()}>
+          <button
+            class={filter === "all" ? "active" : ""}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </button>
+          <button
+            class={filter === "my" ? "active" : ""}
+            onClick={() => setFilter("my")}
+          >
+            My {total}
+          </button>
         </span>
       }
       defaultExpanded
@@ -28,7 +42,7 @@ export const StatsSkillsPanel = () => {
         <StatsPanel />
       </div>
       <div class="stats-skills-skills">
-        <SkillsList />
+        <SkillsList filter={filter} />
       </div>
     </Panel>
   );

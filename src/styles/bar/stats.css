@@ -78,8 +78,16 @@
   overflow: hidden;
 }
 
+/* Mobile: flex only when expanded (generic collapse rule hides when not) */
 #stats-skills-panel.expanded .panel-content {
   display: flex;
+}
+
+/* Desktop: always flex — no collapse behavior above mobile breakpoint */
+@media (min-width: 969px) {
+  #stats-skills-panel .panel-content {
+    display: flex;
+  }
 }
 
 .stats-skills-stats {
@@ -106,7 +114,7 @@
   margin-right: var(--space-8);
 }
 
-.stats-skills-heading > :last-child {
+.stats-skills-heading-skills {
   border-left: 1px solid var(--accent);
   padding-left: var(--space-8);
   flex: 1;
