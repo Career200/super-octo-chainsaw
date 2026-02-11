@@ -28,6 +28,12 @@ Array<DamageHistoryEntry | ManipulationHistoryEntry>
 ```
 Actions: `recordDamage`, `recordManipulation`, `clearHistory`
 
+### `$notes` (notes.ts)
+```
+{ freeform: string, contacts: [{ id, name, note }] }
+```
+Actions: `setFreeformNote`, `addContact`, `updateContact`, `removeContact`
+
 ### `$spaTab` (ui.ts)
 ```
 'biomon' | 'armor' (default: 'biomon')
@@ -119,6 +125,8 @@ $stats ────▸ all 9 computed stat stores ──▸ $bodyType
 $ownedArmor ──▸ $encumbrance ──▸ $REF, $character
 
 $damageHistory (standalone, no dependents)
+
+$notes (standalone, no dependents)
 
 $spaTab ────▸ Charsheet (tab selection)
 

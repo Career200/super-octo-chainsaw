@@ -40,6 +40,11 @@
                └────────────────────┘
 
                ┌────────────────────┐
+               │      $notes       │─────────────────────▸ NotesPanel ◂──▸ (mutates $notes)
+               │     (persist)      │                       (freeform notes + contacts)
+               └────────────────────┘
+
+               ┌────────────────────┐
                │     $spaTab       │─────────────────────▸ Charsheet ◂──▸ TabStrip
                │     (persist)      │                       (SPA-level tab switching)
                └────────────────────┘
@@ -74,7 +79,7 @@
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$spaTab`, `$skills`) own the data, persist to localStorage
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$spaTab`, `$skills`) own the data, persist to localStorage
 - **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$awareness`, `$skillsByStat`, `$combatSkills`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$skills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
