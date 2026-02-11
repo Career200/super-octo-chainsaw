@@ -3,6 +3,7 @@ import { useStore } from "@nanostores/preact";
 import { Biomonitor } from "../biomon";
 import { ArmorView } from "./ArmorView";
 import { SkillsPanel } from "./SkillsPanel";
+import { NotesPanel } from "./NotesPanel";
 import { TabStrip } from "../shared/TabStrip";
 import { WoundTracker } from "../biomon/WoundTracker";
 import { BodyInfo } from "../biomon/BodyInfo";
@@ -49,6 +50,7 @@ export const Charsheet = () => {
       {tab === "rp" && (
         <div class="container">
           <SkillsPanel />
+          <NotesPanel />
         </div>
       )}
       {tab === "armor" && <ArmorView />}
