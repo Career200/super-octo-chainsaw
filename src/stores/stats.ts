@@ -10,7 +10,8 @@ import {
   getCurrentSave,
   type BodyTypeInfo,
 } from "@scripts/biomon/body";
-import type { StatsState, StatValues } from "@scripts/biomon/types";
+import type { ReadableAtom } from "nanostores";
+import type { StatsState, StatName, StatValues } from "@scripts/biomon/types";
 
 function defaultState(): StatsState {
   return {
@@ -102,6 +103,11 @@ export const $BT = computed(
     // major logic later
     calculateStat(stats.bt.inherent, stats.bt.cyber, 0),
 );
+
+export const STAT_STORES: Record<StatName, ReadableAtom<StatValues>> = {
+  ref: $REF, int: $INT, cl: $CL, tech: $TECH,
+  lk: $LK, att: $ATT, ma: $MA, emp: $EMP, bt: $BT,
+};
 
 export interface BodyTypeState extends BodyTypeInfo {
   savePenalty: number;

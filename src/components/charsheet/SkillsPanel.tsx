@@ -1,9 +1,11 @@
 import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { STAT_LABELS } from "@scripts/biomon/types";
+import type { StatName } from "@scripts/biomon/types";
 import type { SkillStat } from "@scripts/skills/catalog";
 import { $skillsByStat, setSkillLevel } from "@stores/skills";
 import type { SkillEntry } from "@stores/skills";
+import { STAT_STORES } from "@stores/stats";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
   "special",
@@ -45,6 +47,13 @@ function pickTopSkill(
   return pick;
 }
 
+/** Subscribes to a single stat store — only re-renders when that stat changes. */
+function StatLabel({ stat }: { stat: StatName }) {
+  const sv = useStore(STAT_STORES[stat]);
+  const label = sv.total === sv.current ? `${sv.total}` : `${sv.total}/${sv.current}`;
+  return <span class="skill-group-stat-value">{label}</span>;
+}
+
 function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
   return (
     <div class="skill-row">
@@ -60,6 +69,53 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
           if (v !== "") setSkillLevel(name, Number(v));
         }}
       />
+    </div>
+  );
+}
+
+function SkillGroup({
+  stat,
+  entries,
+  collapsed,
+  onToggle,
+  stablePicks,
+}: {
+  stat: SkillStat;
+  entries: [string, SkillEntry][];
+  collapsed: boolean;
+  onToggle: () => void;
+  stablePicks: Map<string, string>;
+}) {
+  const topSkill = collapsed ? pickTopSkill(entries, stablePicks, stat) : null;
+
+  return (
+    <div class="skill-group">
+      <div
+        class={`skill-group-header${collapsed ? " collapsed" : ""}`}
+        onClick={onToggle}
+      >
+        <span>
+          {GROUP_LABELS[stat]}
+          {stat !== "special" && <StatLabel stat={stat} />}
+        </span>
+        <span class="collapse-chevron">
+          {collapsed ? "\u25BE" : "\u25B4"}
+        </span>
+      </div>
+      {collapsed ? (
+        <>
+          <SkillRow name={topSkill![0]} entry={topSkill![1]} />
+          {entries.length > 1 && (
+            <div class="skill-group-more" onClick={onToggle}>
+              +{entries.length - 1} more
+            </div>
+          )}
+        </>
+      ) : (
+        entries.map(([name, entry]) => (
+          <SkillRow key={name} name={name} entry={entry} />
+        ))
+      )}
     </div>
   );
 }
@@ -89,37 +145,16 @@ export const SkillsList = ({ filter = "all" }: SkillsListProps) => {
         if (!raw || raw.length === 0) return null;
         const entries = filter === "my" ? raw.filter(([, e]) => e.level > 0) : raw;
         if (entries.length === 0) return null;
-        const isCollapsed = collapsed.has(stat);
-        const topSkill = isCollapsed
-          ? pickTopSkill(entries, stablePicks.current, stat)
-          : null;
 
         return (
-          <div class="skill-group" key={stat}>
-            <div
-              class={`skill-group-header${isCollapsed ? " collapsed" : ""}`}
-              onClick={() => toggle(stat)}
-            >
-              <span>{GROUP_LABELS[stat]}</span>
-              <span class="collapse-chevron">
-                {isCollapsed ? "\u25BE" : "\u25B4"}
-              </span>
-            </div>
-            {isCollapsed ? (
-              <>
-                <SkillRow name={topSkill![0]} entry={topSkill![1]} />
-                {entries.length > 1 && (
-                  <div class="skill-group-more" onClick={() => toggle(stat)}>
-                    +{entries.length - 1} more
-                  </div>
-                )}
-              </>
-            ) : (
-              entries.map(([name, entry]) => (
-                <SkillRow key={name} name={name} entry={entry} />
-              ))
-            )}
-          </div>
+          <SkillGroup
+            key={stat}
+            stat={stat}
+            entries={entries}
+            collapsed={collapsed.has(stat)}
+            onToggle={() => toggle(stat)}
+            stablePicks={stablePicks.current}
+          />
         );
       })}
     </div>

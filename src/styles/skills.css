@@ -39,6 +39,12 @@
   user-select: none;
 }
 
+.skill-group-stat-value {
+  font-weight: normal;
+  margin-left: var(--space-4);
+  color: var(--fg-soft);
+}
+
 .skill-group-more {
   font-size: var(--font-ui-sm);
   color: var(--fg-soft);
