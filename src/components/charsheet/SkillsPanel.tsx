@@ -50,14 +50,14 @@ function pickTopSkill(
 /** Subscribes to a single stat store — only re-renders when that stat changes. */
 function StatLabel({ stat }: { stat: StatName }) {
   const sv = useStore(STAT_STORES[stat]);
-  const label = sv.total === sv.current ? `${sv.total}` : `${sv.total}/${sv.current}`;
+  const label =
+    sv.total === sv.current ? `${sv.total}` : `${sv.total}/${sv.current}`;
   return <span class="skill-group-stat-value">{label}</span>;
 }
 
 function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
   return (
     <div class="skill-row">
-      <span class="skill-name">{name}</span>
       <input
         type="number"
         class="skill-input"
@@ -69,6 +69,7 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
           if (v !== "") setSkillLevel(name, Number(v));
         }}
       />
+      <span class="skill-name">{name}</span>
     </div>
   );
 }
@@ -98,9 +99,7 @@ function SkillGroup({
           {GROUP_LABELS[stat]}
           {stat !== "special" && <StatLabel stat={stat} />}
         </span>
-        <span class="collapse-chevron">
-          {collapsed ? "\u25BE" : "\u25B4"}
-        </span>
+        <span class="collapse-chevron">{collapsed ? "\u25BE" : "\u25B4"}</span>
       </div>
       {collapsed ? (
         <>
@@ -143,7 +142,8 @@ export const SkillsList = ({ filter = "all" }: SkillsListProps) => {
       {STAT_GROUP_ORDER.map((stat) => {
         const raw = grouped[stat];
         if (!raw || raw.length === 0) return null;
-        const entries = filter === "my" ? raw.filter(([, e]) => e.level > 0) : raw;
+        const entries =
+          filter === "my" ? raw.filter(([, e]) => e.level > 0) : raw;
         if (entries.length === 0) return null;
 
         return (

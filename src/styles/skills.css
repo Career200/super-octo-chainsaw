@@ -59,9 +59,8 @@
 .skill-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: var(--space-2) 0;
-  gap: var(--space-8);
+  gap: var(--space-4);
 }
 
 .skill-name {
@@ -77,6 +76,6 @@
   width: 40px;
   padding: var(--padding-input);
   font-size: var(--font-ui);
-  text-align: right;
+  text-align: center;
   flex-shrink: 0;
 }
