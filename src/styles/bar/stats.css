@@ -110,8 +110,7 @@
 }
 
 .stats-skills-heading > :first-child {
-  padding-right: 45px;
-  margin-right: var(--space-8);
+  margin-right: 63px; /* aligns the border to stat/ref border in the panel */
 }
 
 .stats-skills-heading-skills {

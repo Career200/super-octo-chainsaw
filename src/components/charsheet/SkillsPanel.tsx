@@ -6,15 +6,16 @@ import type { SkillStat } from "@scripts/skills/catalog";
 import { $skillsByStat, setSkillLevel } from "@stores/skills";
 import type { SkillEntry } from "@stores/skills";
 import { STAT_STORES } from "@stores/stats";
+import { Chevron } from "@components/shared/Chevron";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
   "special",
+  "int",
   "att",
   "cl",
-  "emp",
   "tech",
   "bt",
-  "int",
+  "emp",
   "ref",
 ];
 
@@ -99,7 +100,7 @@ function SkillGroup({
           {GROUP_LABELS[stat]}
           {stat !== "special" && <StatLabel stat={stat} />}
         </span>
-        <span class="collapse-chevron">{collapsed ? "\u25BE" : "\u25B4"}</span>
+        <Chevron expanded={!collapsed} />
       </div>
       {collapsed ? (
         <>
@@ -125,7 +126,9 @@ interface SkillsListProps {
 
 export const SkillsList = ({ filter = "all" }: SkillsListProps) => {
   const grouped = useStore($skillsByStat);
-  const [collapsed, setCollapsed] = useState<Set<SkillStat>>(new Set());
+  const [collapsed, setCollapsed] = useState<Set<SkillStat>>(
+    new Set(["special"]),
+  );
   const stablePicks = useRef(new Map<string, string>());
 
   const toggle = (stat: SkillStat) => {

@@ -115,6 +115,11 @@
   font-size: var(--font-ui-2xl);
   line-height: 1;
   flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.collapse-chevron:hover {
+  color: var(--accent);
 }
 
 /* Panel chevron: hidden on desktop, shown on mobile */

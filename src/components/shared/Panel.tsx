@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import type { ComponentChildren } from "preact";
+import { Chevron } from "./Chevron";
 
 interface Props {
   id: string;
@@ -37,9 +38,7 @@ export const Panel = ({
       <div class="panel-heading">
         <h2 class="title text-sm">{title}</h2>
         {headerActions}
-        <span class="collapse-chevron panel-chevron">
-          {expanded ? "\u25B4" : "\u25BE"}
-        </span>
+        <Chevron expanded={expanded} class="panel-chevron" />
       </div>
       {bare ? children : <div class="panel-content">{children}</div>}
     </div>
