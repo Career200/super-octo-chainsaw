@@ -10,6 +10,7 @@ import { BodyInfo } from "../biomon/BodyInfo";
 import { StatsStrip } from "../biomon/StatsStrip";
 import { AwarenessLine } from "../biomon/AwarenessLine";
 import { $spaTab } from "@stores/ui";
+import { BottomBar } from "./BottomBar";
 
 const SPA_TABS = [
   { id: "biomon", label: "BIOMON" },
@@ -43,6 +44,7 @@ export const Charsheet = () => {
         </div>
       )}
       {tab === "armor" && <ArmorView />}
+      <BottomBar />
     </div>
   );
 };

@@ -61,6 +61,19 @@
   align-items: center;
   padding: var(--space-2) 0;
   gap: var(--space-4);
+  cursor: pointer;
+}
+
+.skill-row:hover {
+  background: var(--accent-subtle);
+}
+
+.skill-row.selected {
+  background: var(--accent-subtle);
+}
+
+.skill-row.selected .skill-name {
+  color: var(--accent);
 }
 
 .skill-name {

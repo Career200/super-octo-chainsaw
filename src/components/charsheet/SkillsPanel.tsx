@@ -7,6 +7,7 @@ import { $skillsByStat, setSkillLevel } from "@stores/skills";
 import type { SkillEntry } from "@stores/skills";
 import { STAT_STORES } from "@stores/stats";
 import { Chevron } from "@components/shared/Chevron";
+import { $selectedSkill } from "@stores/ui";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
   "special",
@@ -57,8 +58,16 @@ function StatLabel({ stat }: { stat: StatName }) {
 }
 
 function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
+  const selected = useStore($selectedSkill);
+  const isSelected = selected === name;
+
   return (
-    <div class="skill-row">
+    <div
+      class={`skill-row${isSelected ? " selected" : ""}`}
+      onClick={(e) => {
+        $selectedSkill.set(isSelected ? null : name);
+      }}
+    >
       <input
         type="number"
         class="skill-input"
