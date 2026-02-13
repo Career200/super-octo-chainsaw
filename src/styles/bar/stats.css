@@ -110,8 +110,7 @@
 }
 
 .stats-skills-heading > :first-child {
-  padding-right: 45px;
-  margin-right: var(--space-8);
+  margin-right: 63px; /* aligns the border to stat/ref border in the panel */
 }
 
 .stats-skills-heading-skills {
@@ -180,7 +179,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 80px;
+  width: 93px;
+  flex-shrink: 0;
   margin-bottom: 0;
   border-radius: var(--radius);
 }
@@ -240,6 +240,11 @@
   padding-top: var(--space-4);
   font-size: var(--font-ui);
   color: var(--danger);
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .stat-row.stat-current {

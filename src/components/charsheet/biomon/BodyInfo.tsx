@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/preact";
 import { $bodyType } from "@stores/stats";
-import { HelpPopover } from "@components/shared/HelpPopover";
-import { BodyHelpContent } from "@components/shared/help/biomon/BodyHelpContent";
+import { HelpPopover } from "../shared/HelpPopover";
+import { BodyHelpContent } from "./help/BodyHelpContent";
 
 export const BodyInfo = () => {
   const body = useStore($bodyType);

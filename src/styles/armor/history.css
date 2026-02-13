@@ -1,11 +1,25 @@
 /* Damage History */
 
-/* history-header uses .flex-between-baseline utility */
-.history-header {
-  margin-bottom: var(--space-6);
+.history-entry {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border-light);
 }
 
-/* history-time uses .text-desc utility */
+.history-entry:last-child {
+  border-bottom: none;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-4);
+}
+
+.history-time {
+  color: var(--fg-soft);
+  font-size: var(--font-ui-sm);
+}
 
 .history-damage {
   font-size: var(--font-ui-lg);
@@ -14,12 +28,35 @@
 }
 
 .history-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-12);
   font-size: var(--font-ui);
-  line-height: 1.5;
+  color: var(--fg-soft);
+  container-type: inline-size;
+}
+
+.history-detail {
+  flex: 1 0 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@container (min-width: 380px) {
+  .history-detail {
+    flex-basis: calc(50% - var(--space-12) / 2);
+  }
+}
+
+@container (min-width: 760px) {
+  .history-detail {
+    flex-basis: calc(25% - var(--space-12) * 3 / 4);
+  }
 }
 
 .history-label {
-  color: var(--fg-soft);
   opacity: 0.7;
 }
 
@@ -39,13 +76,14 @@
 
 .history-entry-manipulation {
   border-left: 3px solid var(--border-light);
+  padding-left: var(--space-8);
 }
 
 .history-entry-manipulation[class*="condition-"] {
   border-left-color: var(--condition-color);
 }
 
-/* History action labels - use .text-value-lg pattern */
+/* History action labels */
 .history-repair,
 .history-break {
   font-size: var(--font-ui-lg);

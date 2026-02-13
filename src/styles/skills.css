@@ -39,6 +39,12 @@
   user-select: none;
 }
 
+.skill-group-stat-value {
+  font-weight: normal;
+  margin-left: var(--space-4);
+  color: var(--fg-soft);
+}
+
 .skill-group-more {
   font-size: var(--font-ui-sm);
   color: var(--fg-soft);
@@ -53,9 +59,21 @@
 .skill-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: var(--space-2) 0;
-  gap: var(--space-8);
+  gap: var(--space-4);
+  cursor: pointer;
+}
+
+.skill-row:hover {
+  background: var(--accent-subtle);
+}
+
+.skill-row.selected {
+  background: var(--accent-subtle);
+}
+
+.skill-row.selected .skill-name {
+  color: var(--accent);
 }
 
 .skill-name {
@@ -71,6 +89,6 @@
   width: 40px;
   padding: var(--padding-input);
   font-size: var(--font-ui);
-  text-align: right;
+  text-align: center;
   flex-shrink: 0;
 }

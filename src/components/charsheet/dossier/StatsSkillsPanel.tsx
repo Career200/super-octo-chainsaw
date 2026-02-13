@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { $skillTotal } from "@stores/skills";
-import { Panel } from "@components/shared/Panel";
+import { Panel } from "../shared/Panel";
 import { StatsPanel } from "../biomon/StatsPanel";
 import { SkillsList } from "./SkillsPanel";
 

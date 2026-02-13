@@ -1,7 +1,7 @@
 import { useState, useRef } from "preact/hooks";
 import { toggleArmor, discardArmor } from "@stores/armor";
 import type { ArmorPiece } from "@scripts/armor/core";
-import { ConfirmPopover } from "@components/shared/ConfirmPopover";
+import { ConfirmPopover } from "../shared/ConfirmPopover";
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { RepairPopover } from "./RepairPopover";
 import { getConditionClassFromSP } from "./utils";

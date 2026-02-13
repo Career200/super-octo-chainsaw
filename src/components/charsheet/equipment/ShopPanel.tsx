@@ -1,5 +1,5 @@
 import { acquireArmor, armorTemplates } from "@stores/armor";
-import { Panel } from "@components/shared/Panel";
+import { Panel } from "../shared/Panel";
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 
 const sortedTemplates = Object.values(armorTemplates)

@@ -30,7 +30,7 @@
                └────────────────────┘                  │    HitPopover, RepairPopover
                                                        │
                ┌────────────────────┐                  │
-               │  $damageHistory    │─────────────────┴──▸ DamageHistoryPanel
+               │  $damageHistory    │─────────────────┴──▸ BottomBarHistory (biomon bottom bar)
                │     (persist)      │                       HitPopover, RepairPopover
                └────────────────────┘                       (record entries)
 
@@ -73,7 +73,12 @@
                                     StatsStrip ──▸ reads all 9 computed stat stores
                                     (compact strip in header, chips only)
 
-                                    StatsSkillsPanel ──▸ combined panel in RP tab
+               ┌────────────────────┐
+               │   $selectedSkill  │─────────────────────▸ BottomBarSkills (dossier bottom bar)
+               │      (atom)       │                       SkillRow (highlight)
+               └────────────────────┘
+
+                                    StatsSkillsPanel ──▸ combined panel in Dossier tab
                                     (StatsPanel + SkillsList side by side)
 ```
 
