@@ -10,8 +10,8 @@
 /* Hide footer content, keep nav toggle as floating button */
 .charsheet-page footer {
   position: fixed;
-  bottom: var(--space-12);
-  right: var(--space-12);
+  bottom: 44px;
+  right: var(--space-8);
   background: transparent;
   border: none;
   padding: 0;
@@ -23,10 +23,11 @@
 }
 
 .charsheet-page footer .nav-toggle {
-  width: 48px;
-  height: 48px;
-  font-size: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  font-size: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* === Container Base === */
@@ -174,17 +175,37 @@
   font-size: var(--font-ui-lg);
 }
 
-/* === Bottom Bar === */
+/* === Bottom Bar (collapsible shell) === */
 .bottom-bar {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-block: var(--space-8);
+  flex-direction: column;
   padding-inline: max(var(--space-12), var(--content-inset));
   background: var(--bg-alt);
   border-top: 1px solid var(--border);
+}
+
+.bottom-bar.expanded {
+  border-top: 1px solid var(--accent);
+}
+
+.bottom-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   min-height: 36px;
+  gap: var(--space-8);
+}
+
+.bottom-bar-row.expandable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.bottom-bar-body {
+  overflow-y: auto;
+  max-height: max(50vh, 540px);
+  padding-bottom: var(--space-8);
 }
 
 .bottom-bar-content {

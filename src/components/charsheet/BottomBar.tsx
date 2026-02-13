@@ -1,42 +1,28 @@
+import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $selectedSkill } from "@stores/ui";
-import { $skills } from "@stores/skills";
-import { STAT_LABELS } from "@scripts/biomon/types";
-
-const STAT_DISPLAY: Record<string, string> = {
-  ...STAT_LABELS,
-  special: "SPECIAL",
-};
+import { $spaTab } from "@stores/ui";
+import { BottomBarSkills } from "./BottomBarSkills";
+import { BottomBarHistory } from "../biomon/BottomBarHistory";
 
 export const BottomBar = () => {
-  const skillName = useStore($selectedSkill);
-  const skills = useStore($skills);
+  const tab = useStore($spaTab);
+  const [expanded, setExpanded] = useState(false);
 
-  const entry = skillName ? skills[skillName] : null;
+  // Collapse when switching tabs
+  const tabRef = useRef(tab);
+  if (tabRef.current !== tab) {
+    tabRef.current = tab;
+    if (expanded) setExpanded(false);
+  }
 
   return (
-    <div class="bottom-bar">
-      {entry ? (
-        <>
-          <div class="bottom-bar-content">
-            <span class="bottom-bar-name">{skillName}</span>
-            <span class="bottom-bar-stat">
-              {STAT_DISPLAY[entry.stat] ?? entry.stat}
-              {entry.combat && " / COMBAT"}
-            </span>
-          </div>
-          <button
-            class="bottom-bar-close"
-            onClick={() => $selectedSkill.set(null)}
-            aria-label="Close"
-          >
-            &times;
-          </button>
-        </>
-      ) : (
-        <div class="bottom-bar-content">
-          <span class="bottom-bar-hint">Select a skill</span>
-        </div>
+    <div class={`bottom-bar${expanded ? " expanded" : ""}`}>
+      {tab === "rp" && <BottomBarSkills />}
+      {tab === "biomon" && (
+        <BottomBarHistory
+          expanded={expanded}
+          onToggle={() => setExpanded((e) => !e)}
+        />
       )}
     </div>
   );
