@@ -6,7 +6,7 @@ import type { SkillStat } from "@scripts/skills/catalog";
 import { $skillsByStat, setSkillLevel } from "@stores/skills";
 import type { SkillEntry } from "@stores/skills";
 import { STAT_STORES } from "@stores/stats";
-import { Chevron } from "@components/shared/Chevron";
+import { Chevron } from "../shared/Chevron";
 import { $selectedSkill } from "@stores/ui";
 
 const STAT_GROUP_ORDER: SkillStat[] = [

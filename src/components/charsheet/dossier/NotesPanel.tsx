@@ -8,8 +8,8 @@ import {
   removeContact,
   type Contact,
 } from "@stores/notes";
-import { Panel } from "@components/shared/Panel";
-import { ConfirmPopover } from "@components/shared/ConfirmPopover";
+import { Panel } from "../shared/Panel";
+import { ConfirmPopover } from "../shared/ConfirmPopover";
 
 type NotesTab = "notes" | "contacts";
 

@@ -36,9 +36,15 @@ Actions: `setFreeformNote`, `addContact`, `updateContact`, `removeContact`
 
 ### `$spaTab` (ui.ts)
 ```
-'biomon' | 'armor' (default: 'biomon')
+'biomon' | 'dossier' | 'equipment' (default: 'biomon')
 ```
-SPA-level tab selection. Subscribed by `Charsheet`.
+SPA-level tab selection. Subscribed by `Charsheet`. Migrates old values (`rp` → `dossier`, `armor` → `equipment`).
+
+### `$selectedSkill` (ui.ts)
+```
+string | null (default: null)
+```
+Currently selected skill name for the bottom bar. Non-persistent (resets on reload).
 
 ## Computed Stores
 
@@ -129,6 +135,8 @@ $damageHistory (standalone, no dependents)
 $notes (standalone, no dependents)
 
 $spaTab ────▸ Charsheet (tab selection)
+
+$selectedSkill (standalone, no dependents)
 
 $skills ──┬──▸ $awareness
 $INT ─────┘

@@ -1,21 +1,20 @@
 import { useStore } from "@nanostores/preact";
-import { Biomonitor } from "../biomon";
-import { ArmorView } from "./ArmorView";
-import { StatsSkillsPanel } from "./StatsSkillsPanel";
-import { NotesPanel } from "./NotesPanel";
-import { TabStrip } from "../shared/TabStrip";
-import { WoundTracker } from "../biomon/WoundTracker";
-import { BodyInfo } from "../biomon/BodyInfo";
-// import { HitLocationTable } from "../biomon/HitLocationTable";
-import { StatsStrip } from "../biomon/StatsStrip";
-import { AwarenessLine } from "../biomon/AwarenessLine";
+import { Biomonitor } from "./biomon";
+import { EquipmentView } from "./equipment/EquipmentView";
+import { StatsSkillsPanel } from "./dossier/StatsSkillsPanel";
+import { NotesPanel } from "./dossier/NotesPanel";
+import { TabStrip } from "./shared/TabStrip";
+import { WoundTracker } from "./biomon/WoundTracker";
+import { BodyInfo } from "./biomon/BodyInfo";
+import { StatsStrip } from "./biomon/StatsStrip";
+import { AwarenessLine } from "./biomon/AwarenessLine";
 import { $spaTab } from "@stores/ui";
-import { BottomBar } from "./BottomBar";
+import { BottomBar } from "./common/bottombar/BottomBar";
 
 const SPA_TABS = [
   { id: "biomon", label: "BIOMON" },
-  { id: "rp", label: "RP" },
-  { id: "armor", label: "ARMOR" },
+  { id: "dossier", label: "DOSSIER" },
+  { id: "equipment", label: "EQUIP" },
 ];
 
 export const Charsheet = () => {
@@ -37,13 +36,13 @@ export const Charsheet = () => {
         </div>
       </div>
       {tab === "biomon" && <Biomonitor />}
-      {tab === "rp" && (
+      {tab === "dossier" && (
         <div class="container">
           <StatsSkillsPanel />
           <NotesPanel />
         </div>
       )}
-      {tab === "armor" && <ArmorView />}
+      {tab === "equipment" && <EquipmentView />}
       <BottomBar />
     </div>
   );

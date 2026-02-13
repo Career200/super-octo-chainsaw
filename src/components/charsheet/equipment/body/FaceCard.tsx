@@ -6,7 +6,7 @@ import {
   isSkinweave,
 } from "@stores/armor";
 import { getImplantSP, proportionalArmorBonus } from "@scripts/armor/core";
-import { HelpPopover } from "@components/shared/HelpPopover";
+import { HelpPopover } from "../../shared/HelpPopover";
 import { FaceHelpContent } from "../help/FaceHelpContent";
 
 interface FaceLayer {

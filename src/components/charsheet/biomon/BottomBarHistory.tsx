@@ -10,7 +10,7 @@ import {
   formatTime,
   formatBodyParts,
 } from "./history-entries";
-import { Chevron } from "@components/shared/Chevron";
+import { Chevron } from "../shared/Chevron";
 
 function DamageSummary({ entry }: { entry: DamageHistoryEntry }) {
   const typeStr =

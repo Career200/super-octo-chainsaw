@@ -18,7 +18,7 @@ import {
   getImplantsForPart,
 } from "@stores/armor";
 import { recordDamage, type ArmorDamageEntry } from "@stores/damage-history";
-import { Popover } from "@components/shared/Popover";
+import { Popover } from "../shared/Popover";
 
 const BODY_PART_GRID = `
   ". head ignoresp"

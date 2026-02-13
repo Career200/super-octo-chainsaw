@@ -3,7 +3,7 @@ import type { RefObject } from "preact";
 import { setArmorSP, getArmorPiece } from "@stores/armor";
 import { recordManipulation } from "@stores/damage-history";
 import { PART_ABBREV, type BodyPartName } from "@scripts/armor/core";
-import { Popover } from "@components/shared/Popover";
+import { Popover } from "../shared/Popover";
 import { getConditionClassFromSP, getLowestSP } from "./utils";
 
 interface Props {

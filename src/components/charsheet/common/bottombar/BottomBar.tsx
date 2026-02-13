@@ -1,8 +1,8 @@
 import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { $spaTab } from "@stores/ui";
-import { BottomBarSkills } from "./BottomBarSkills";
-import { BottomBarHistory } from "../biomon/BottomBarHistory";
+import { BottomBarSkills } from "../../dossier/BottomBarSkills";
+import { BottomBarHistory } from "../../biomon/BottomBarHistory";
 
 export const BottomBar = () => {
   const tab = useStore($spaTab);
@@ -17,7 +17,7 @@ export const BottomBar = () => {
 
   return (
     <div class={`bottom-bar${expanded ? " expanded" : ""}`}>
-      {tab === "rp" && <BottomBarSkills />}
+      {tab === "dossier" && <BottomBarSkills />}
       {tab === "biomon" && (
         <BottomBarHistory
           expanded={expanded}

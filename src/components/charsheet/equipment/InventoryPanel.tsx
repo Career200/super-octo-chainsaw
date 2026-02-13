@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import { $ownedArmor, getAllOwnedArmor, isImplant } from "@stores/armor";
-import { Panel } from "@components/shared/Panel";
+import { Panel } from "../shared/Panel";
 import { ArmorItem } from "./ArmorItem";
 
 export const InventoryPanel = () => {

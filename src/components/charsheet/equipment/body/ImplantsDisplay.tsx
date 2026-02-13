@@ -9,7 +9,7 @@ import {
   isImplantInstalled,
   isSkinweave,
 } from "@stores/armor";
-import { Popover } from "@components/shared/Popover";
+import { Popover } from "../../shared/Popover";
 import { getConditionClassFromSP } from "../utils";
 
 export const ImplantsDisplay = () => {
