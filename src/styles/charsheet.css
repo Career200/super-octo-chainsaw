@@ -109,16 +109,6 @@
   flex: 1;
 }
 
-.panel-hint {
-  display: block;
-  font-size: var(--font-ui-sm);
-  font-weight: normal;
-  text-transform: none;
-  letter-spacing: 0;
-  color: var(--fg-soft);
-  font-style: italic;
-}
-
 /* === Shared collapse chevron (▾/▴) === */
 .collapse-chevron {
   color: var(--fg-soft);
@@ -186,16 +176,20 @@
 }
 
 /* === Bottom Bar (collapsible shell) === */
+/* Fixed heights: collapsed = just the header row, expanded = 280px.
+   Content fills via flex, overflows independently of tab. */
 .bottom-bar {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  height: 36px;
   padding-inline: max(var(--space-12), var(--content-inset));
   background: var(--bg-alt);
   border-top: 1px solid var(--border);
 }
 
 .bottom-bar.expanded {
+  height: 400px;
   border-top: 1px solid var(--accent);
 }
 
@@ -203,7 +197,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 36px;
+  height: 36px;
+  flex-shrink: 0;
   gap: var(--space-8);
 }
 
@@ -215,9 +210,9 @@
 .bottom-bar-body {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  min-height: 180px;
-  max-height: max(50vh, 540px);
   padding-bottom: var(--space-8);
 }
 
@@ -232,13 +227,6 @@
   font-weight: bold;
   color: var(--accent);
   white-space: nowrap;
-}
-
-.bottom-bar-stat {
-  font-size: var(--font-ui-sm);
-  color: var(--fg-soft);
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 .bottom-bar-hint {
@@ -299,7 +287,7 @@
 
 .skill-form-description {
   flex: 1;
-  min-height: 80px;
+  min-height: 0;
   resize: none;
   font-family: inherit;
   font-size: var(--font-ui-sm);
@@ -342,7 +330,7 @@
 }
 
 /* === Mobile: stacked column layout + panel collapse === */
-@media (max-width: 968px) {
+@media (max-width: 768px) {
   .container {
     flex-direction: column;
     flex-wrap: nowrap;

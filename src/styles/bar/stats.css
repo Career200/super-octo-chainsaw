@@ -84,7 +84,7 @@
 }
 
 /* Desktop: always flex — no collapse behavior above mobile breakpoint */
-@media (min-width: 969px) {
+@media (min-width: 769px) {
   #stats-skills-panel .panel-content {
     display: flex;
   }
@@ -104,34 +104,6 @@
   padding-left: var(--space-8);
 }
 
-.stats-skills-heading {
-  display: flex;
-  width: 100%;
-}
-
-.stats-skills-heading > :first-child {
-  margin-right: 63px; /* aligns the border to stat/ref border in the panel */
-}
-
-.stats-skills-heading-mobile {
-  display: none;
-}
-
-.stats-skills-heading-skills {
-  border-left: 1px solid var(--accent);
-  padding-left: var(--space-8);
-  flex: 1;
-}
-
-@media (max-width: 968px) {
-  .stats-skills-heading-desktop {
-    display: none;
-  }
-
-  .stats-skills-heading-mobile {
-    display: inline;
-  }
-}
 
 /* === Awareness Line === */
 .awareness-line {

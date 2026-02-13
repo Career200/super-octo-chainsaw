@@ -14,20 +14,7 @@ export const StatsSkillsPanel = () => {
   return (
     <Panel
       id="stats-skills-panel"
-      title={
-        <>
-          <span class="stats-skills-heading stats-skills-heading-desktop">
-            <span>Stats</span>
-            <span class="stats-skills-heading-skills">
-              Skills
-              <span class="panel-hint">tap skill for details</span>
-            </span>
-          </span>
-          <span class="stats-skills-heading stats-skills-heading-mobile">
-            Stats / Skills
-          </span>
-        </>
-      }
+      title="Stats / Skills"
       headerActions={
         <span class="tab-strip" onClick={(e) => e.stopPropagation()}>
           <button
