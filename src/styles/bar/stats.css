@@ -113,10 +113,24 @@
   margin-right: 63px; /* aligns the border to stat/ref border in the panel */
 }
 
+.stats-skills-heading-mobile {
+  display: none;
+}
+
 .stats-skills-heading-skills {
   border-left: 1px solid var(--accent);
   padding-left: var(--space-8);
   flex: 1;
+}
+
+@media (max-width: 968px) {
+  .stats-skills-heading-desktop {
+    display: none;
+  }
+
+  .stats-skills-heading-mobile {
+    display: inline;
+  }
 }
 
 /* === Awareness Line === */

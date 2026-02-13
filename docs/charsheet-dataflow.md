@@ -51,24 +51,50 @@
 
                ┌────────────────────┐
                │     $skills       │─────────────────────▸ AwarenessLine ◂──▸ (mutates $skills)
-               │     (persist)      │
-               └──┬─────┬──────┬───┘
-                  │     │      │
-                  ▾     │      ▾
-               ┌──────┐ │  ┌──────────────┐
-               │$skil-│ │  │$combatSkills │  (combat: true, ordered)
-               │lsBy- │ │  │  (computed)  │
-               │Stat  │ │  └──────────────┘
-               │(comp)│ │  ┌──────────────┐
-               └──────┘ │  │ $skillTotal  │─────────────────────▸ SkillsPanel (header)
-                        │  │  (computed)  │
-                        │  └──────────────┘
-               └──────┘ ▾
+               │     (persist)      │                       (sparse: only level>0 defaults
+               │                    │                        + all custom skills)
+               └──┬──┬──┬──┬───┬──┘
+                  │  │  │  │   │
+                  │  │  │  │   ▾
+                  │  │  │  │ ┌──────────────┐
+                  │  │  │  │ │ $customSkills│─────────────▸ SkillsPanel (Custom tab)
+                  │  │  │  │ │  (computed)  │
+                  │  │  │  │ └──────────────┘
+                  │  │  │  │
+                  ▾  │  │  │
+               ┌─────────────────┐
+               │   $allSkills    │  Hydrates catalog with stored overrides + custom
+               │   (computed)    │
+               └──┬──┬──┬──┬────┘
+                  │  │  │  │
+                  ▾  │  │  │
+               ┌──────┐ │  │
+               │$skil-│ │  │
+               │lsBy- │ │  ▾
+               │Stat  │ │ ┌──────────────┐
+               │(comp)│ │ │$combatSkills │  (combat: true, ordered)
+               └──────┘ │ │  (computed)  │
+                         │ └──────────────┘
+                         │ ┌──────────────┐
+                         │ │ $skillTotal  │─────────────────────▸ StatsSkillsPanel (header)
+                         │ │  (computed)  │
+                         │ └──────────────┘
+                         │ ┌──────────────┐
+                         ├▸│  $mySkills   │─────────────────────▸ SkillsPanel (My tab)
+                         │ │  (computed)  │
+                         │ └──────┬───────┘
+                         │        │
+                         │        ▾
+                         │ ┌──────────────┐
+                         │ │$mySkillsCount│─────────────────────▸ StatsSkillsPanel (tab badge)
+                         │ │  (computed)  │
+                         │ └──────────────┘
+                         ▾
                ┌────────────────────┐
                │    $awareness     │─────────────────────▸ AwarenessLine
                │    (computed)      │
                └────────────────────┘
-                Depends on: $INT, $skills
+                Depends on: $INT, $allSkills
 
                                     StatsStrip ──▸ reads all 9 computed stat stores
                                     (compact strip in header, chips only)
@@ -78,14 +104,23 @@
                │      (atom)       │                       SkillRow (highlight)
                └────────────────────┘
 
+               ┌────────────────────┐
+               │   $addingSkill   │─────────────────────▸ BottomBarSkills (add-skill form)
+               │      (atom)       │                       BottomBar (auto-expand)
+               └────────────────────┘
+                Mutually exclusive with $selectedSkill
+
                                     StatsSkillsPanel ──▸ combined panel in Dossier tab
                                     (StatsPanel + SkillsList side by side)
+                                    Three tabs: Default / Custom / My
 ```
 
 ## Key patterns
 
 - **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$spaTab`, `$skills`) own the data, persist to localStorage
-- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$awareness`, `$skillsByStat`, `$combatSkills`) derive from persistent stores
-- **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$skills` → `$awareness`
+- **`$skills` sparse persistence**: only stores catalog skills with level > 0 and all custom skills. Catalog skills at level 0 are not persisted — they come from `SKILL_CATALOG` via `$allSkills`
+- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`) derive from persistent stores
+- **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
+- **UI atoms**: `$selectedSkill` and `$addingSkill` are mutually exclusive — setting one clears the other via `selectSkill()` / `startAddingSkill()`
 - `◂──▸` = component both reads and mutates that store

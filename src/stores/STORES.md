@@ -45,6 +45,25 @@ SPA-level tab selection. Subscribed by `Charsheet`. Migrates old values (`rp` �
 string | null (default: null)
 ```
 Currently selected skill name for the bottom bar. Non-persistent (resets on reload).
+Mutually exclusive with `$addingSkill` — use `selectSkill()` to set.
+
+### `$addingSkill` (ui.ts)
+```
+boolean (default: false)
+```
+Whether the add-custom-skill form is open in the bottom bar. Non-persistent.
+Mutually exclusive with `$selectedSkill` — use `startAddingSkill()` to set.
+
+### `$skills` (skills.ts)
+```
+Record<string, { stat: SkillStat, level: 0-10, combat: bool }>
+```
+**Sparse persistence**: only stores catalog skills with level > 0 and all custom skills. Catalog skills at level 0 are NOT stored — they come from `SKILL_CATALOG` via `$allSkills`.
+
+Old format (all catalog skills at level 0) is dropped on load — no migration.
+
+Actions: `setSkillLevel`, `addSkill`, `removeSkill`, `updateSkill`
+Helper: `isCustomSkill(name)` — true if not in `SKILL_CATALOG`
 
 ## Computed Stores
 
@@ -81,21 +100,18 @@ string | null (e.g. "Light", "Serious", "Mortal 2")
 ```
 Depends on: `$health`
 
-### `$skills` (skills.ts)
+### `$allSkills` (skills.ts)
 ```
 Record<string, { stat: SkillStat, level: 0-10, combat: bool }>
 ```
-SkillStat = StatName | "special"
-Key = skill name (display name IS the ID). Default: all catalog skills at level 0.
-Actions: `setSkillLevel`, `addSkill`, `removeSkill`, `updateSkill`
-
-## Computed Stores (continued)
+Full view: all catalog skills (hydrated with stored levels) + all custom skills.
+Depends on: `$skills`
 
 ### `$skillTotal` (skills.ts)
 ```
 number
 ```
-Sum of all skill levels. Depends on: `$skills`
+Sum of all skill levels. Depends on: `$allSkills`
 
 ### `$awareness` (skills.ts)
 ```
@@ -103,20 +119,41 @@ Sum of all skill levels. Depends on: `$skills`
 ```
 - `total` = INT.current + skills["Awareness/Notice"].level
 - `totalCombat` = total + skills["Combat Sense"].level
-- Depends on: `$INT`, `$skills`
+- Depends on: `$INT`, `$allSkills`
 
 ### `$skillsByStat` (skills.ts)
 ```
 Record<SkillStat, [name, SkillEntry][]>
 ```
 Skills grouped by stat, sorted alphabetically within each group.
-Depends on: `$skills`
+Depends on: `$allSkills`
 
 ### `$combatSkills` (skills.ts)
 ```
 [name, SkillEntry][]
 ```
 Skills with `combat: true`, ordered by `COMBAT_SKILLS_ORDER` then alphabetically.
+Depends on: `$allSkills`
+
+### `$mySkills` (skills.ts)
+```
+[name, SkillEntry][]
+```
+All skills with level > 0 (both default and custom).
+Depends on: `$allSkills`
+
+### `$mySkillsCount` (skills.ts)
+```
+number
+```
+Count of skills with level > 0.
+Depends on: `$mySkills`
+
+### `$customSkills` (skills.ts)
+```
+[name, SkillEntry][]
+```
+Non-catalog entries from `$skills` store.
 Depends on: `$skills`
 
 ## Dependency Graph (compact)
@@ -136,11 +173,12 @@ $notes (standalone, no dependents)
 
 $spaTab ────▸ Charsheet (tab selection)
 
-$selectedSkill (standalone, no dependents)
+$selectedSkill ◂──▸ $addingSkill (mutually exclusive via selectSkill/startAddingSkill)
 
-$skills ──┬──▸ $awareness
-$INT ─────┘
-$skills ──┬──▸ $skillsByStat
-          ├──▸ $skillTotal
-          └──▸ $combatSkills
+$skills ──┬──▸ $allSkills ──┬──▸ $awareness (+ $INT)
+          │                 ├──▸ $skillsByStat
+          │                 ├──▸ $skillTotal
+          │                 ├──▸ $combatSkills
+          │                 └──▸ $mySkills ──▸ $mySkillsCount
+          └──▸ $customSkills
 ```

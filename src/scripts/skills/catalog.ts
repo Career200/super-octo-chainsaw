@@ -5,6 +5,7 @@ export type SkillStat = StatName | "special";
 export interface SkillDefinition {
   stat: SkillStat;
   combat: boolean;
+  description?: string;
 }
 
 export const SKILL_CATALOG: Record<string, SkillDefinition> = {
@@ -34,7 +35,7 @@ export const SKILL_CATALOG: Record<string, SkillDefinition> = {
   Intimidate: { stat: "cl", combat: false },
   Oratory: { stat: "cl", combat: false },
   "Resist Torture/Drugs": { stat: "cl", combat: false },
-  Streetwise: { stat: "cl", combat: false },
+  Streetwise: { stat: "cl", combat: false, description: "Knowledge of the street — who to talk to, where to score, how to survive.\n2 — you know your neighborhood.\n6 — you have contacts across the city.\n9 — fixers come to you." },
 
   // EMP
   "Human Perception": { stat: "emp", combat: false },
@@ -48,7 +49,7 @@ export const SKILL_CATALOG: Record<string, SkillDefinition> = {
   // INT
   Accounting: { stat: "int", combat: false },
   Anthropology: { stat: "int", combat: false },
-  "Awareness/Notice": { stat: "int", combat: false },
+  "Awareness/Notice": { stat: "int", combat: false, description: "General awareness and ability to notice things.\n2 — you spot the obvious.\n6 — you catch a tail in a crowd.\n9 — nothing escapes you, ever." },
   Biology: { stat: "int", combat: false },
   Botany: { stat: "int", combat: false },
   Chemistry: { stat: "int", combat: false },
@@ -75,12 +76,12 @@ export const SKILL_CATALOG: Record<string, SkillDefinition> = {
   // REF
   Archery: { stat: "ref", combat: true },
   Athletics: { stat: "ref", combat: true },
-  Brawling: { stat: "ref", combat: true },
+  Brawling: { stat: "ref", combat: true, description: "Unarmed fighting — punches, kicks, headbutts, dirty tricks.\n2 — bar fighter.\n6 — you win street fights reliably.\n9 — bare-knuckle legend." },
   Dance: { stat: "ref", combat: false },
   "Dodge & Escape": { stat: "ref", combat: true },
   Driving: { stat: "ref", combat: false },
   Fencing: { stat: "ref", combat: true },
-  Handgun: { stat: "ref", combat: true },
+  Handgun: { stat: "ref", combat: true, description: "Accuracy and handling of pistols and revolvers.\n2 — you hit the target at the range, usually.\n6 — quick-draw artist, reliable under pressure.\n9 — you shoot coins out of the air." },
   "Heavy Weapons": { stat: "ref", combat: true },
   "Martial Arts": { stat: "ref", combat: true },
   Melee: { stat: "ref", combat: true },
@@ -106,7 +107,7 @@ export const SKILL_CATALOG: Record<string, SkillDefinition> = {
   Disguise: { stat: "tech", combat: false },
   Electronics: { stat: "tech", combat: false },
   "Electronic Security": { stat: "tech", combat: false },
-  "First Aid": { stat: "tech", combat: false },
+  "First Aid": { stat: "tech", combat: false, description: "Emergency medical treatment in the field.\n2 — you can apply a bandage.\n6 — you stabilize gunshot wounds.\n9 — battlefield surgeon, no table needed." },
   Forgery: { stat: "tech", combat: false },
   "Gyro Tech": { stat: "tech", combat: false },
   "Paint or Draw": { stat: "tech", combat: false },

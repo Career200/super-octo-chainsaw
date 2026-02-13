@@ -92,3 +92,19 @@
   text-align: center;
   flex-shrink: 0;
 }
+
+.skills-list-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-6);
+}
+
+.add-skill-btn {
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: transparent;
+}
+
+.add-skill-btn:hover {
+  background: var(--accent-subtle);
+}

@@ -15,3 +15,16 @@ export const $spaTab = persistentAtom<SpaTab>("spa-tab", "biomon", {
 
 /** Currently selected skill name, or null if none selected. */
 export const $selectedSkill = atom<string | null>(null);
+
+/** Whether the add-custom-skill form is open. Mutually exclusive with $selectedSkill. */
+export const $addingSkill = atom<boolean>(false);
+
+export function selectSkill(name: string | null): void {
+  $addingSkill.set(false);
+  $selectedSkill.set(name);
+}
+
+export function startAddingSkill(): void {
+  $selectedSkill.set(null);
+  $addingSkill.set(true);
+}

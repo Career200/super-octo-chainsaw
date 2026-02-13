@@ -3,11 +3,18 @@ import { useStore } from "@nanostores/preact";
 import { STAT_LABELS } from "@scripts/biomon/types";
 import type { StatName } from "@scripts/biomon/types";
 import type { SkillStat } from "@scripts/skills/catalog";
-import { $skillsByStat, setSkillLevel } from "@stores/skills";
+import {
+  $skillsByStat,
+  $customSkills,
+  $mySkills,
+  setSkillLevel,
+  isCustomSkill,
+} from "@stores/skills";
 import type { SkillEntry } from "@stores/skills";
 import { STAT_STORES } from "@stores/stats";
 import { Chevron } from "../shared/Chevron";
-import { $selectedSkill } from "@stores/ui";
+import { selectSkill, startAddingSkill, $selectedSkill } from "@stores/ui";
+import type { SkillFilter } from "./StatsSkillsPanel";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
   "special",
@@ -64,8 +71,8 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
   return (
     <div
       class={`skill-row${isSelected ? " selected" : ""}`}
-      onClick={(e) => {
-        $selectedSkill.set(isSelected ? null : name);
+      onClick={() => {
+        selectSkill(isSelected ? null : name);
       }}
     >
       <input
@@ -74,6 +81,7 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
         value={entry.level}
         min={0}
         max={10}
+        onClick={(e) => e.stopPropagation()}
         onInput={(e) => {
           const v = (e.target as HTMLInputElement).value;
           if (v !== "") setSkillLevel(name, Number(v));
@@ -129,12 +137,28 @@ function SkillGroup({
   );
 }
 
-interface SkillsListProps {
-  filter?: "all" | "my";
+/** Flat list for custom/my tabs (no stat grouping needed) */
+function FlatSkillsList({ skills }: { skills: [string, SkillEntry][] }) {
+  if (skills.length === 0) {
+    return <div class="empty-message">No skills yet</div>;
+  }
+  return (
+    <div class="skills-list">
+      {skills.map(([name, entry]) => (
+        <SkillRow key={name} name={name} entry={entry} />
+      ))}
+    </div>
+  );
 }
 
-export const SkillsList = ({ filter = "all" }: SkillsListProps) => {
+interface SkillsListProps {
+  filter?: SkillFilter;
+}
+
+export const SkillsList = ({ filter = "default" }: SkillsListProps) => {
   const grouped = useStore($skillsByStat);
+  const customSkills = useStore($customSkills);
+  const mySkills = useStore($mySkills);
   const [collapsed, setCollapsed] = useState<Set<SkillStat>>(
     new Set(["special"]),
   );
@@ -149,14 +173,29 @@ export const SkillsList = ({ filter = "all" }: SkillsListProps) => {
     });
   };
 
+  if (filter === "custom") {
+    return (
+      <div>
+        <div class="skills-list-toolbar">
+          <button class="btn-sm add-skill-btn" onClick={() => startAddingSkill()}>
+            + Add Skill
+          </button>
+        </div>
+        <FlatSkillsList skills={customSkills} />
+      </div>
+    );
+  }
+
+  if (filter === "my") {
+    return <FlatSkillsList skills={mySkills} />;
+  }
+
+  // Default tab: grouped by stat, showing all catalog skills
   return (
     <div class="skills-list">
       {STAT_GROUP_ORDER.map((stat) => {
-        const raw = grouped[stat];
-        if (!raw || raw.length === 0) return null;
-        const entries =
-          filter === "my" ? raw.filter(([, e]) => e.level > 0) : raw;
-        if (entries.length === 0) return null;
+        const entries = grouped[stat];
+        if (!entries || entries.length === 0) return null;
 
         return (
           <SkillGroup
