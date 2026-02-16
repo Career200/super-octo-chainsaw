@@ -1,38 +1,39 @@
 import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $skillTotal } from "@stores/skills";
+import { $mySkillsCount } from "@stores/skills";
 import { Panel } from "../shared/Panel";
 import { StatsPanel } from "../biomon/StatsPanel";
 import { SkillsList } from "./SkillsPanel";
 
-type SkillFilter = "all" | "my";
+export type SkillFilter = "default" | "custom" | "my";
 
 export const StatsSkillsPanel = () => {
-  const total = useStore($skillTotal);
-  const [filter, setFilter] = useState<SkillFilter>("all");
+  const myCount = useStore($mySkillsCount);
+  const [filter, setFilter] = useState<SkillFilter>("default");
 
   return (
     <Panel
       id="stats-skills-panel"
-      title={
-        <span class="stats-skills-heading">
-          <span>Stats</span>
-          <span class="stats-skills-heading-skills">Skills</span>
-        </span>
-      }
+      title="Stats / Skills"
       headerActions={
         <span class="tab-strip" onClick={(e) => e.stopPropagation()}>
           <button
-            class={filter === "all" ? "active" : ""}
-            onClick={() => setFilter("all")}
+            class={filter === "default" ? "active" : ""}
+            onClick={() => setFilter("default")}
           >
-            All
+            Default
+          </button>
+          <button
+            class={filter === "custom" ? "active" : ""}
+            onClick={() => setFilter("custom")}
+          >
+            Custom
           </button>
           <button
             class={filter === "my" ? "active" : ""}
             onClick={() => setFilter("my")}
           >
-            My {total}
+            My {myCount > 0 && myCount}
           </button>
         </span>
       }

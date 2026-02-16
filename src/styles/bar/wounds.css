@@ -205,7 +205,7 @@
 }
 
 /* === Responsive: Mobile === */
-@media (max-width: 968px) {
+@media (max-width: 768px) {
   .wound-bar {
     flex-wrap: wrap;
     padding: var(--space-6) 10px;

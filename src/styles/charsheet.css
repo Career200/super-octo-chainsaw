@@ -176,16 +176,20 @@
 }
 
 /* === Bottom Bar (collapsible shell) === */
+/* Fixed heights: collapsed = just the header row, expanded = 280px.
+   Content fills via flex, overflows independently of tab. */
 .bottom-bar {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  height: 36px;
   padding-inline: max(var(--space-12), var(--content-inset));
   background: var(--bg-alt);
   border-top: 1px solid var(--border);
 }
 
 .bottom-bar.expanded {
+  height: 360px;
   border-top: 1px solid var(--accent);
 }
 
@@ -193,7 +197,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 36px;
+  height: 36px;
+  flex-shrink: 0;
   gap: var(--space-8);
 }
 
@@ -203,8 +208,11 @@
 }
 
 .bottom-bar-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  max-height: max(50vh, 540px);
   padding-bottom: var(--space-8);
 }
 
@@ -221,35 +229,20 @@
   white-space: nowrap;
 }
 
-.bottom-bar-stat {
-  font-size: var(--font-ui-sm);
-  color: var(--fg-soft);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.bottom-bar-close {
-  background: none;
-  border: none;
-  color: var(--fg-soft);
-  font-size: var(--font-ui-xl);
-  cursor: pointer;
-  padding: 0 var(--space-4);
-  line-height: 1;
-}
-
-.bottom-bar-close:hover {
-  color: var(--accent);
-}
-
 .bottom-bar-hint {
   color: var(--fg-soft);
   font-size: var(--font-ui-sm);
   font-style: italic;
 }
 
+.bottom-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
 /* === Mobile: stacked column layout + panel collapse === */
-@media (max-width: 968px) {
+@media (max-width: 768px) {
   .container {
     flex-direction: column;
     flex-wrap: nowrap;
