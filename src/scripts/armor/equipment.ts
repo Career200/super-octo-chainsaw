@@ -6,12 +6,14 @@ import {
 } from "./core";
 
 const head: BodyPartName[] = ["head"];
+const headFace: BodyPartName[] = ["head", "face"];
 const torso: BodyPartName[] = ["torso"];
 const arms: BodyPartName[] = ["left_arm", "right_arm"];
 const legs: BodyPartName[] = ["left_leg", "right_leg"];
 const torsoArms: BodyPartName[] = ["torso", ...arms];
-const fullBody: BodyPartName[] = BODY_PARTS.filter((p) => p !== "head");
-const fullWithHead: BodyPartName[] = [...BODY_PARTS];
+const fullBody: BodyPartName[] = BODY_PARTS.filter((p) => p !== "head" && p !== "face");
+const fullWithHead: BodyPartName[] = BODY_PARTS.filter((p) => p !== "face");
+const allParts: BodyPartName[] = [...BODY_PARTS];
 
 const template = (
   templateId: string,
@@ -180,7 +182,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
   // ===================
 
   // --- LIGHT HARD (SP 14) ---
-  steel_helmet: template("steel_helmet", "Steel Helmet", "hard", 14, head, {
+  steel_helmet: template("steel_helmet", "Steel Helmet", "hard", 14, headFace, {
     cost: 20,
     description:
       "Heavy duty protection for the head, standard for most military. 90% have face shields with half the SP.",
@@ -204,7 +206,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
     "Ballistic Nylon Helmet",
     "hard",
     20,
-    head,
+    headFace,
     {
       cost: 100,
       description:
@@ -226,7 +228,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
         "Heavy duty protection for stationary positions, like machinegun nests, helicopter doors, etc.",
     },
   ),
-  metalgear: template("metalgear", "MetalGear", "hard", 25, fullWithHead, {
+  metalgear: template("metalgear", "MetalGear", "hard", 25, allParts, {
     cost: 600,
     ev: 2,
     description:
@@ -238,7 +240,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
     "Russian Arms NKVBDA 55",
     "hard",
     26,
-    fullWithHead,
+    allParts,
     {
       cost: 800,
       ev: 3,
@@ -316,7 +318,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
     "SkinWeave SP 8",
     "soft",
     8,
-    fullWithHead,
+    allParts,
     {
       layer: "skinweave",
       description:
@@ -328,7 +330,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
     "SkinWeave SP 10",
     "soft",
     10,
-    fullWithHead,
+    allParts,
     {
       layer: "skinweave",
       description:
@@ -340,7 +342,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
     "SkinWeave SP 12",
     "soft",
     12,
-    fullWithHead,
+    allParts,
     {
       layer: "skinweave",
       description:
@@ -352,7 +354,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
     "SkinWeave SP 14",
     "soft",
     14,
-    fullWithHead,
+    allParts,
     {
       layer: "skinweave",
       description:
@@ -371,7 +373,7 @@ export const armorTemplates: Record<string, ArmorTemplate> = {
     description:
       "Body plate covering the skull, anchored by minibolts to the scalp.",
   }),
-  faceplate: template("faceplate", "Faceplate (Plating)", "hard", 25, head, {
+  faceplate: template("faceplate", "Faceplate (Plating)", "hard", 25, ["face"], {
     layer: "faceplate",
     description:
       "Covers the entire face with ports for breathing, eating and seeing. Woven with myomar muscle fibers for limited expression.",

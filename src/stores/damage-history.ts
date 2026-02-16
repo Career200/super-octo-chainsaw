@@ -20,6 +20,9 @@ export interface DamageHistoryEntry {
   armorDamage: ArmorDamageEntry[];
   penetrating: number;
   ignoredArmor: boolean;
+  headMultiplied?: boolean;
+  btm?: number;
+  woundDamage?: number;
 }
 
 export interface ManipulationHistoryEntry {

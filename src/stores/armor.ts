@@ -1,6 +1,7 @@
 import { atom, computed } from "nanostores";
 import {
   generateId,
+  getPartSpMax,
   getTotalEV,
   countsAsLayer,
   type ArmorInstance,
@@ -24,7 +25,19 @@ function loadState(): OwnedArmorState {
   if (!stored) return {};
 
   try {
-    return JSON.parse(stored) as OwnedArmorState;
+    const state = JSON.parse(stored) as OwnedArmorState;
+
+    // Drop stale instances whose spByPart doesn't match current template
+    for (const [id, instance] of Object.entries(state)) {
+      const template = getTemplate(instance.templateId);
+      if (!template) { delete state[id]; continue; }
+
+      const storedParts = Object.keys(instance.spByPart).sort().join(",");
+      const templateParts = [...template.bodyParts].sort().join(",");
+      if (storedParts !== templateParts) delete state[id];
+    }
+
+    return state;
   } catch {
     return {};
   }
@@ -110,7 +123,7 @@ export function acquireArmor(templateId: string): ArmorInstance | null {
 
   const spByPart: Partial<Record<BodyPartName, number>> = {};
   for (const part of template.bodyParts) {
-    spByPart[part] = template.spMax;
+    spByPart[part] = getPartSpMax(template, part);
   }
 
   const instance: ArmorInstance = {
@@ -233,13 +246,13 @@ export function setArmorSP(
   const template = getTemplate(instance.templateId);
   if (!template) return;
 
-  const clampedSP = Math.max(0, Math.min(template.spMax, sp));
   const newSpByPart = { ...instance.spByPart };
 
   const partsToUpdate = parts ?? template.bodyParts;
   for (const part of partsToUpdate) {
     if (template.bodyParts.includes(part)) {
-      newSpByPart[part] = clampedSP;
+      const max = getPartSpMax(template, part);
+      newSpByPart[part] = Math.max(0, Math.min(max, sp));
     }
   }
 
@@ -364,7 +377,7 @@ export function repairImplant(instanceId: string): void {
 
   const newSpByPart: Partial<Record<BodyPartName, number>> = {};
   for (const part of template.bodyParts) {
-    newSpByPart[part] = template.spMax;
+    newSpByPart[part] = getPartSpMax(template, part);
   }
 
   updateInstance(instanceId, { spByPart: newSpByPart });

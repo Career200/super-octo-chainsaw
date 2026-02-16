@@ -81,7 +81,7 @@
 }
 #part-face {
   grid-area: face;
-  height: 44px;
+  height: 60px;
 }
 #part-torso {
   grid-area: torso;
@@ -97,17 +97,6 @@
 }
 #part-right_leg {
   grid-area: rleg;
-}
-
-.face-layer-list li {
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--border-light);
-}
-.face-layer-list li:last-child {
-  border-bottom: none;
-}
-.face-no-protection {
-  font-style: italic;
 }
 
 /* === EV Display === */

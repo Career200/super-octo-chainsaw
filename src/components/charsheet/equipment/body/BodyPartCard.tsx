@@ -23,10 +23,8 @@ export const BodyPartCard = ({ part }: Props) => {
 
   const layers = getBodyPartLayers(part);
   const implants = getImplantsForPart(part);
-  // Faceplate only protects face, not head
-  const implantsSP = implants.filter((i) => i.layer !== "faceplate");
 
-  const total = getEffectiveSP(layers, { implants: implantsSP, part });
+  const total = getEffectiveSP(layers, { implants, part });
 
   const sorted = sortByLayerOrder(layers);
   const plating = implants.filter((i) => i.layer === "plating");

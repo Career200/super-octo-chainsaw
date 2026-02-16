@@ -12,7 +12,7 @@ export function formatTime(timestamp: number): string {
 
 export function formatBodyParts(parts: BodyPartName[] | "none"): string {
   if (parts === "none") return "Non-local";
-  if (parts.length === 6) return "Full Body";
+  if (parts.length === 7) return "Full Body";
   return parts.map((p) => PART_NAMES[p]).join(", ");
 }
 
@@ -54,8 +54,18 @@ export const DamageEntry = ({ entry }: { entry: DamageHistoryEntry }) => {
             {entry.armorDamage.map((a) => `${a.armorName} -${a.spLost}`).join(", ")}
           </span>
         )}
+        {entry.headMultiplied && (
+          <span class="history-detail">
+            <span class="history-label">{"\u00d72"}</span> (head/face)
+          </span>
+        )}
+        {entry.btm != null && entry.btm > 0 && entry.penetrating > 0 && (
+          <span class="history-detail">
+            <span class="history-label">BTM</span> {"\u2212"}{entry.btm}
+          </span>
+        )}
         <span class={`history-detail ${entry.penetrating > 0 ? "history-penetrating" : "history-blocked"}`}>
-          <span class="history-label">Taken:</span> {entry.penetrating}
+          <span class="history-label">Taken:</span> {entry.woundDamage ?? entry.penetrating}
         </span>
       </div>
     </div>

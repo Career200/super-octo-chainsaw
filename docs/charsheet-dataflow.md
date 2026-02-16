@@ -6,7 +6,7 @@
 
                    ┌─────────────┐
                    │   $health   │─────────────────────┬──▸ WoundTracker ◂──▸ WoundBox
-                   │  (persist)  │                     │    StabilizedControl
+                   │  (persist)  │                     │    StabilizedControl, HitPopover ◂──▸
                    └──────┬──────┘                     │
                           │ wound penalties            │
                           ▾                            │
@@ -14,7 +14,7 @@
 │  $stats  │───▸│  $REF $INT $CL  │                    │
 │ (persist)│    │  $TECH $MA      │───────────────────┼──▸ StatsPanel (via StatColumnWrapper)
 │          │───▸│  $LK $ATT $EMP  │                    │
-│          │───▸│  $BT ──▸ $body  │───────────────────┼──▸ BodyInfo
+│          │───▸│  $BT ──▸ $body  │───────────────────┼──▸ BodyInfo, HitPopover (reads BTM)
 └──────────┘    │         Type    │                    │    StatColumn ◂──▸ (mutates $stats)
                 └────────▲────────┘                    │
                          │ EV penalty (REF only)       │
@@ -25,9 +25,9 @@
                          │                             │
                ┌─────────┴──────────┐                  │
                │    $ownedArmor     │─────────────────┼──▸ InventoryPanel, ArmorItem
-               │     (persist)      │                  │    BodyPartCard, FaceCard
+               │     (persist)      │                  │    BodyPartCard
                │                    │                  │    SkinweaveDisplay, ImplantsDisplay
-               └────────────────────┘                  │    HitPopover, RepairPopover
+               └────────────────────┘                  │    HitPopover ◂──▸, RepairPopover
                                                        │
                ┌────────────────────┐                  │
                │  $damageHistory    │─────────────────┴──▸ BottomBarHistory (biomon bottom bar)

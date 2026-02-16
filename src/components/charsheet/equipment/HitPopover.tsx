@@ -17,11 +17,13 @@ import {
   getBodyPartLayers,
   getImplantsForPart,
 } from "@stores/armor";
+import { $bodyType } from "@stores/stats";
+import { takeDamage } from "@stores/health";
 import { recordDamage, type ArmorDamageEntry } from "@stores/damage-history";
 import { Popover } from "../shared/Popover";
 
 const BODY_PART_GRID = `
-  ". head ignoresp"
+  "face head ignoresp"
   "left_arm torso right_arm"
   "left_leg . right_leg"
 `;
@@ -63,7 +65,11 @@ export const HitPopover = () => {
 
     const parts: BodyPartName[] = isNone ? [] : [selectedPart];
 
+    const btm = $bodyType.get().btm;
+
     if (isNone) {
+      const woundDamage = Math.max(1, dmg - btm);
+      takeDamage(woundDamage, "physical");
       recordDamage({
         rawDamage: dmg,
         damageType,
@@ -72,6 +78,8 @@ export const HitPopover = () => {
         armorDamage: [],
         penetrating: dmg,
         ignoredArmor: false,
+        btm,
+        woundDamage,
       });
       close();
       return;
@@ -79,6 +87,10 @@ export const HitPopover = () => {
 
     for (const part of parts) {
       if (ignoreSP) {
+        const isHeadOrFace = part === "head" || part === "face";
+        const multiplied = isHeadOrFace ? dmg * 2 : dmg;
+        const woundDamage = Math.max(1, multiplied - btm);
+        takeDamage(woundDamage, "physical");
         recordDamage({
           rawDamage: dmg,
           damageType,
@@ -87,6 +99,9 @@ export const HitPopover = () => {
           armorDamage: [],
           penetrating: dmg,
           ignoredArmor: true,
+          headMultiplied: isHeadOrFace,
+          btm,
+          woundDamage,
         });
         continue;
       }
@@ -122,6 +137,17 @@ export const HitPopover = () => {
         .filter((p) => p.sp > 0)
         .sort((a, b) => b.sp - a.sp);
 
+      let woundDamage: number | undefined;
+      let headMultiplied = false;
+
+      if (result.penetrating > 0) {
+        const isHeadOrFace = part === "head" || part === "face";
+        headMultiplied = isHeadOrFace;
+        const multiplied = isHeadOrFace ? result.penetrating * 2 : result.penetrating;
+        woundDamage = Math.max(1, multiplied - btm);
+        takeDamage(woundDamage, "physical");
+      }
+
       recordDamage({
         rawDamage: dmg,
         damageType,
@@ -131,6 +157,9 @@ export const HitPopover = () => {
         armorDamage: armorDamageEntries,
         penetrating: result.penetrating,
         ignoredArmor: false,
+        headMultiplied: headMultiplied || undefined,
+        btm,
+        woundDamage,
       });
     }
 
