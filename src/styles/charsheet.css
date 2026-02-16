@@ -290,7 +290,7 @@
   min-height: 0;
   resize: none;
   font-family: inherit;
-  font-size: var(--font-ui-sm);
+  font-size: var(--text-sm);
   line-height: 1.6;
   padding: var(--space-6) var(--space-8);
   color: var(--fg);

@@ -5,12 +5,13 @@ import {
   $addingSkill,
   selectSkill,
 } from "@stores/ui";
-import { $allSkills, addSkill, removeSkill, isCustomSkill } from "@stores/skills";
+import { $allSkills, addSkill, removeSkill, isCustomSkill, updateSkill } from "@stores/skills";
 import type { SkillStat } from "@scripts/skills/catalog";
 import { SKILL_CATALOG } from "@scripts/skills/catalog";
 import { STAT_LABELS, STAT_NAMES } from "@scripts/biomon/types";
 import { Chevron } from "../shared/Chevron";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
+import { Popover } from "../shared/Popover";
 
 const SKILL_STAT_OPTIONS: { value: SkillStat; label: string }[] = [
   ...STAT_NAMES.map((s) => ({ value: s as SkillStat, label: STAT_LABELS[s] })),
@@ -31,6 +32,7 @@ interface SkillFormProps {
   combat: boolean;
   onCombatChange?: (v: boolean) => void;
   description: string;
+  onDescriptionChange?: (v: string) => void;
 }
 
 function SkillForm({
@@ -42,6 +44,7 @@ function SkillForm({
   combat,
   onCombatChange,
   description,
+  onDescriptionChange,
 }: SkillFormProps) {
   return (
     <div class="skill-form">
@@ -102,7 +105,12 @@ function SkillForm({
       <textarea
         class="input skill-form-description"
         value={description}
-        disabled
+        disabled={!onDescriptionChange}
+        onInput={
+          onDescriptionChange
+            ? (e) => onDescriptionChange((e.target as HTMLTextAreaElement).value)
+            : undefined
+        }
         placeholder="No description"
       />
     </div>
@@ -119,6 +127,11 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
   const [newName, setNewName] = useState("");
   const [newStat, setNewStat] = useState<SkillStat>("ref");
   const [newCombat, setNewCombat] = useState(false);
+  const [newDescription, setNewDescription] = useState("");
+
+  // Add button ref + error popover
+  const addBtnRef = useRef<HTMLButtonElement>(null);
+  const [addError, setAddError] = useState<string | null>(null);
 
   // Remove confirmation
   const removeBtnRef = useRef<HTMLButtonElement>(null);
@@ -126,7 +139,7 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
 
   const isCustom = skillName ? isCustomSkill(skillName) : false;
   const catalogDef = skillName && !isCustom ? SKILL_CATALOG[skillName] : null;
-  const description = catalogDef?.description ?? "";
+  const description = catalogDef?.description ?? entry?.description ?? "";
 
   const hasContent = !!(entry && skillName) || adding;
   const headerLabel = adding
@@ -144,11 +157,15 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
   const handleAdd = () => {
     const trimmed = newName.trim();
     if (!trimmed) return;
-    if (addSkill(trimmed, newStat, newCombat)) {
+    if (addSkill(trimmed, newStat, newCombat, newDescription.trim() || undefined)) {
       setNewName("");
       setNewStat("ref");
       setNewCombat(false);
+      setNewDescription("");
+      setAddError(null);
       selectSkill(trimmed);
+    } else {
+      setAddError(`"${trimmed}" already exists`);
     }
   };
 
@@ -165,15 +182,26 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
         </div>
         <div class="bottom-bar-actions">
           {adding && (
-            <button
-              class="skill-bar-action"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAdd();
-              }}
-            >
-              Add
-            </button>
+            <>
+              <button
+                ref={addBtnRef}
+                class="skill-bar-action"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAdd();
+                }}
+              >
+                Add
+              </button>
+              <Popover
+                anchorRef={addBtnRef}
+                open={addError !== null}
+                onClose={() => setAddError(null)}
+                className="popover-info"
+              >
+                <p class="popover-message">{addError}</p>
+              </Popover>
+            </>
           )}
           {isCustom && !adding && (
             <>
@@ -216,7 +244,8 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
               onStatChange={setNewStat}
               combat={newCombat}
               onCombatChange={setNewCombat}
-              description=""
+              description={newDescription}
+              onDescriptionChange={setNewDescription}
             />
           ) : entry ? (
             <SkillForm
@@ -225,6 +254,11 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
               stat={entry.stat}
               combat={entry.combat}
               description={description}
+              onDescriptionChange={
+                isCustom
+                  ? (v) => updateSkill(skillName!, { description: v || undefined })
+                  : undefined
+              }
             />
           ) : null}
         </div>

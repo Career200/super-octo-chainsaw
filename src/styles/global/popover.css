@@ -68,3 +68,8 @@
 .popover-danger .popover-btn-confirm:hover {
   background: var(--danger-hover);
 }
+
+/* Info-only popover (no action buttons) */
+.popover-info .popover-message {
+  margin: 0;
+}

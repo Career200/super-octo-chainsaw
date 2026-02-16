@@ -13,6 +13,7 @@ export interface SkillEntry {
   stat: SkillStat;
   level: number;
   combat: boolean;
+  description?: string;
 }
 
 export type SkillsState = Record<string, SkillEntry>;
@@ -109,6 +110,7 @@ export function addSkill(
   name: string,
   stat: SkillStat,
   combat: boolean,
+  description?: string,
 ): boolean {
   const current = $skills.get();
   const key = normalizeKey(name);
@@ -119,7 +121,9 @@ export function addSkill(
   for (const existing of Object.keys(SKILL_CATALOG)) {
     if (normalizeKey(existing) === key) return false;
   }
-  $skills.set({ ...current, [name]: { stat, level: 0, combat } });
+  const entry: SkillEntry = { stat, level: 0, combat };
+  if (description) entry.description = description;
+  $skills.set({ ...current, [name]: entry });
   return true;
 }
 
@@ -134,7 +138,7 @@ export function removeSkill(name: string): void {
 
 export function updateSkill(
   name: string,
-  updates: Partial<Pick<SkillEntry, "stat" | "combat">>,
+  updates: Partial<Pick<SkillEntry, "stat" | "combat" | "description">>,
 ): void {
   const current = $skills.get();
   if (!(name in current)) return;
