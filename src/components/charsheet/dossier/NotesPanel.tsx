@@ -91,8 +91,8 @@ export const NotesPanel = ({
   expanded,
   onToggle,
 }: {
-  expanded?: boolean;
-  onToggle?: () => void;
+  expanded: boolean;
+  onToggle: () => void;
 }) => {
   const notes = useStore($notes);
   const [tab, setTab] = useState<NotesTab>("notes");
@@ -121,7 +121,6 @@ export const NotesPanel = ({
           </button>
         </span>
       }
-      defaultExpanded
     >
       {tab === "notes" && (
         <textarea

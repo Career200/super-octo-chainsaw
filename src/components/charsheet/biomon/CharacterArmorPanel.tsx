@@ -4,7 +4,13 @@ import { BodyPartGrid } from "../equipment/body/BodyPartGrid";
 import { HitPopover } from "../equipment/HitPopover";
 import { ArmorHelpContent } from "../equipment/help/ArmorHelpContent";
 
-export const CharacterArmorPanel = () => {
+export const CharacterArmorPanel = ({
+  expanded,
+  onToggle,
+}: {
+  expanded: boolean;
+  onToggle: () => void;
+}) => {
   return (
     <Panel
       id="character-armor-panel"
@@ -14,7 +20,8 @@ export const CharacterArmorPanel = () => {
           <HelpPopover id="armor-help" content={<ArmorHelpContent />} />
         </>
       }
-      defaultExpanded
+      expanded={expanded}
+      onToggle={onToggle}
       headerActions={<HitPopover />}
     >
       <BodyPartGrid />

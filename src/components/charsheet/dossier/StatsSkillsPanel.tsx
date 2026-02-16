@@ -11,8 +11,8 @@ export const StatsSkillsPanel = ({
   expanded,
   onToggle,
 }: {
-  expanded?: boolean;
-  onToggle?: () => void;
+  expanded: boolean;
+  onToggle: () => void;
 }) => {
   const myCount = useStore($mySkillsCount);
   const [filter, setFilter] = useState<SkillFilter>("default");
@@ -45,7 +45,6 @@ export const StatsSkillsPanel = ({
           </button>
         </span>
       }
-      defaultExpanded
     >
       <div class="stats-skills-stats">
         <StatsPanel />
