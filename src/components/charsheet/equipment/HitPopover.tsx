@@ -88,8 +88,8 @@ export const HitPopover = () => {
     for (const part of parts) {
       if (ignoreSP) {
         const isHeadOrFace = part === "head" || part === "face";
-        const multiplied = isHeadOrFace ? dmg * 2 : dmg;
-        const woundDamage = Math.max(1, multiplied - btm);
+        const afterBTM = Math.max(1, dmg - btm);
+        const woundDamage = isHeadOrFace ? afterBTM * 2 : afterBTM;
         takeDamage(woundDamage, "physical");
         recordDamage({
           rawDamage: dmg,
@@ -143,8 +143,8 @@ export const HitPopover = () => {
       if (result.penetrating > 0) {
         const isHeadOrFace = part === "head" || part === "face";
         headMultiplied = isHeadOrFace;
-        const multiplied = isHeadOrFace ? result.penetrating * 2 : result.penetrating;
-        woundDamage = Math.max(1, multiplied - btm);
+        const afterBTM = Math.max(1, result.penetrating - btm);
+        woundDamage = isHeadOrFace ? afterBTM * 2 : afterBTM;
         takeDamage(woundDamage, "physical");
       }
 
