@@ -49,6 +49,9 @@ export const BodyHelpContent = () => {
           <strong>1d10 ≤ BT - mortal level</strong> each turn or die. Only
           stabilization stops the clock.
         </p>
+        <p>
+          Mortal 0: BT-0, Mortal 1: BT-1, Mortal 2: BT-2, … Mortal 6: BT-6.
+        </p>
       </section>
     </>
   );

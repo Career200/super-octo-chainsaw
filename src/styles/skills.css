@@ -1,7 +1,7 @@
 /* Row direction (desktop): stats+skills grows to fit two skill columns, notes stays near 375px.
    columns: 280px on .skills-list auto-flows into two columns when the panel is wide enough.
-   Column direction (mobile, ≤768px): ID rules don't apply, .container > * { flex: 1 } takes over. */
-@media (min-width: 769px) {
+   Column direction (mobile, <770px): ID rules don't apply, .container > * { flex: 1 } takes over. */
+@media (min-width: 770px) {
   #stats-skills-panel {
     flex: 999 0 375px;
   }

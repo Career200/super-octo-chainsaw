@@ -67,15 +67,20 @@ function StatLabel({ stat }: { stat: StatName }) {
 function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
   const selected = useStore($selectedSkill);
   const isSelected = selected === name;
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div
       class={`skill-row${isSelected ? " selected" : ""}`}
       onClick={() => {
         selectSkill(isSelected ? null : name);
+        if (!matchMedia("(pointer: coarse)").matches) {
+          inputRef.current?.focus();
+        }
       }}
     >
       <input
+        ref={inputRef}
         type="number"
         class="skill-input"
         value={entry.level}

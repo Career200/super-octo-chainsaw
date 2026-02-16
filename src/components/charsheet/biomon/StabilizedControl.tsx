@@ -1,24 +1,23 @@
 import { useStore } from "@nanostores/preact";
-import { $health, setStabilized } from "@stores/health";
+import { $health, setStabilized, isMortal } from "@stores/health";
 
 export const StabilizedControl = () => {
   const health = useStore($health);
-  const { stabilized } = health;
+  const { stabilized, physical } = health;
+  const mortal = isMortal(physical);
+  const isStable = !mortal || stabilized;
 
   const handleClick = () => {
-    setStabilized(!stabilized);
+    if (mortal) setStabilized(!stabilized);
   };
 
   return (
     <div
-      class={`stabilized-control ${stabilized ? "stabilized" : "unstable"}`}
+      class={`stabilized-control ${isStable ? "stabilized" : "unstable"}${!mortal ? " disabled" : ""}`}
       onClick={handleClick}
     >
-      <div
-        class={`wound-box ${stabilized ? "filled" : ""}`}
-        role={"checkbox"}
-      />
-      <span class="stabilized-label">{stabilized ? "Stable" : "Unstable"}</span>
+      <div class={`wound-box ${isStable ? "filled" : ""}`} role={"checkbox"} />
+      <span class="stabilized-label">{isStable ? "Stable" : "Unstable"}</span>
     </div>
   );
 };

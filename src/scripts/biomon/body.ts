@@ -30,6 +30,27 @@ const STUN_SAVE_PENALTIES: Record<WoundLevel, number> = {
   mortal6: -9,
 };
 
+const DEATH_SAVE_PENALTIES: Partial<Record<WoundLevel, number>> = {
+  mortal0: 0,
+  mortal1: -1,
+  mortal2: -2,
+  mortal3: -3,
+  mortal4: -4,
+  mortal5: -5,
+  mortal6: -6,
+};
+
+function computeSave(
+  baseSave: number,
+  woundLevel: WoundLevel | null,
+  penalties: Partial<Record<WoundLevel, number>>,
+): number | null {
+  if (!woundLevel) return null;
+  const penalty = penalties[woundLevel];
+  if (penalty === undefined) return null;
+  return Math.max(0, baseSave + penalty);
+}
+
 export function getBodyTypeName(bt: number): BodyTypeName {
   if (bt <= 2) return "Very Weak";
   if (bt <= 4) return "Weak";
@@ -68,5 +89,12 @@ export function getCurrentSave(
   baseSave: number,
   woundLevel: WoundLevel | null,
 ): number {
-  return Math.max(0, baseSave + getStunSavePenalty(woundLevel));
+  return computeSave(baseSave, woundLevel, STUN_SAVE_PENALTIES) ?? baseSave;
+}
+
+export function getDeathSave(
+  baseSave: number,
+  woundLevel: WoundLevel | null,
+): number | null {
+  return computeSave(baseSave, woundLevel, DEATH_SAVE_PENALTIES);
 }

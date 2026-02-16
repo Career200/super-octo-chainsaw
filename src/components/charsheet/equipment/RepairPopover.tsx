@@ -2,16 +2,36 @@ import { useState, useRef } from "preact/hooks";
 import type { RefObject } from "preact";
 import { setArmorSP, getArmorPiece } from "@stores/armor";
 import { recordManipulation } from "@stores/damage-history";
-import { PART_ABBREV, type BodyPartName } from "@scripts/armor/core";
+import {
+  PART_ABBREV,
+  getPartSpMax,
+  type ArmorTemplate,
+  type BodyPartName,
+} from "@scripts/armor/core";
 import { Popover } from "../shared/Popover";
-import { getConditionClassFromSP, getLowestSP } from "./utils";
+import { getConditionClassFromSP } from "./utils";
+
+// Face at its half-max reads as "full"
+function getLowestRatioSP(
+  template: ArmorTemplate,
+  bodyParts: BodyPartName[],
+  spByPart: Partial<Record<BodyPartName, number>>,
+): number {
+  let worstRatio = 1;
+  for (const p of bodyParts) {
+    const max = getPartSpMax(template, p);
+    const sp = spByPart[p] ?? max;
+    if (max > 0) worstRatio = Math.min(worstRatio, sp / max);
+  }
+  return Math.round(worstRatio * template.spMax);
+}
 
 interface Props {
   anchorRef: RefObject<HTMLElement | null>;
   open: boolean;
   onClose: () => void;
   armorId: string;
-  maxSP: number;
+  template: ArmorTemplate;
   bodyParts: BodyPartName[];
   spByPart: Partial<Record<BodyPartName, number>>;
 }
@@ -21,19 +41,24 @@ export const RepairPopover = ({
   open,
   onClose,
   armorId,
-  maxSP,
+  template,
   bodyParts,
   spByPart,
 }: Props) => {
   const [selected, setSelected] = useState<BodyPartName | "all">("all");
-  const [sp, setSP] = useState(() => getLowestSP(bodyParts, spByPart, maxSP));
+  const [sp, setSP] = useState(() =>
+    getLowestRatioSP(template, bodyParts, spByPart),
+  );
+
+  const maxSP =
+    selected === "all" ? template.spMax : getPartSpMax(template, selected);
 
   const selectPart = (part: BodyPartName | "all") => {
     setSelected(part);
     setSP(
       part === "all"
-        ? getLowestSP(bodyParts, spByPart, maxSP)
-        : (spByPart[part] ?? maxSP),
+        ? getLowestRatioSP(template, bodyParts, spByPart)
+        : (spByPart[part] ?? getPartSpMax(template, part)),
     );
   };
 
@@ -45,7 +70,7 @@ export const RepairPopover = ({
     if (oldSP !== sp && armor) {
       recordManipulation({
         armorId,
-        armorName: armor.name,
+        armorName: armor.shortName ?? armor.name,
         bodyParts: partsArray,
         oldSP,
         newSP: sp,

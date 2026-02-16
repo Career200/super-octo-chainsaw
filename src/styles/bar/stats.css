@@ -62,6 +62,16 @@
   color: var(--danger);
 }
 
+.death-save {
+  color: var(--danger);
+}
+
+@media (max-width: 394px) {
+  .body-type {
+    display: none;
+  }
+}
+
 /* === Stats Strip === */
 .stats-strip {
   flex: 1;
@@ -84,7 +94,7 @@
 }
 
 /* Desktop: always flex — no collapse behavior above mobile breakpoint */
-@media (min-width: 769px) {
+@media (min-width: 770px) {
   #stats-skills-panel .panel-content {
     display: flex;
   }
@@ -248,7 +258,7 @@
 }
 
 /* === Responsive === */
-@media (max-width: 768px) {
+@media (max-width: 770px) {
   .stats-strip-row,
   .body-info {
     width: 100%;

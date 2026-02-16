@@ -25,6 +25,7 @@ Reads: `getArmorPiece`, `getBodyPartLayers`, `getImplantsForPart`, `getInstalled
 ### `$damageHistory` (damage-history.ts)
 ```
 Array<DamageHistoryEntry | ManipulationHistoryEntry>
+DamageHistoryEntry includes optional: headMultiplied, btm, woundDamage
 ```
 Actions: `recordDamage`, `recordManipulation`, `clearHistory`
 
@@ -168,6 +169,8 @@ $stats ────▸ all 9 computed stat stores ──▸ $bodyType
 $ownedArmor ──▸ $encumbrance ──▸ $REF, $character
 
 $damageHistory (standalone, no dependents)
+
+HitPopover reads $bodyType.btm, mutates $health via takeDamage
 
 $notes (standalone, no dependents)
 

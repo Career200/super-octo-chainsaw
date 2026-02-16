@@ -57,6 +57,12 @@
   margin-bottom: var(--space-12);
   font-size: var(--font-ui-lg);
   box-sizing: border-box;
+  -moz-appearance: initial;
+}
+
+.popover-danger .popover-input::-webkit-inner-spin-button {
+  -webkit-appearance: auto;
+  appearance: auto;
 }
 
 .popover-danger .popover-input:focus {

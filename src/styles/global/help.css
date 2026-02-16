@@ -1,8 +1,5 @@
 /* === Help Trigger Button === */
 .help-trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   width: 16px;
   height: 16px;
   padding: 0;

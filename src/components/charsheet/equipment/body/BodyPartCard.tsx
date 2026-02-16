@@ -23,10 +23,8 @@ export const BodyPartCard = ({ part }: Props) => {
 
   const layers = getBodyPartLayers(part);
   const implants = getImplantsForPart(part);
-  // Faceplate only protects face, not head
-  const implantsSP = implants.filter((i) => i.layer !== "faceplate");
 
-  const total = getEffectiveSP(layers, { implants: implantsSP, part });
+  const total = getEffectiveSP(layers, { implants, part });
 
   const sorted = sortByLayerOrder(layers);
   const plating = implants.filter((i) => i.layer === "plating");
@@ -55,7 +53,7 @@ export const BodyPartCard = ({ part }: Props) => {
         {sorted.map((layer) => (
           <LayerBar
             key={layer.id}
-            name={layer.name}
+            name={layer.shortName ?? layer.name}
             currentSP={layer.spCurrent}
             maxSP={layer.spMax}
           />
@@ -63,7 +61,7 @@ export const BodyPartCard = ({ part }: Props) => {
         {plating.map((impl) => (
           <LayerBar
             key={impl.id}
-            name={impl.name}
+            name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
             className="layer-skinweave"
@@ -72,7 +70,7 @@ export const BodyPartCard = ({ part }: Props) => {
         {skinweave.map((impl) => (
           <LayerBar
             key={impl.id}
-            name="SkinWeave"
+            name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
             className="layer-skinweave"
@@ -81,7 +79,7 @@ export const BodyPartCard = ({ part }: Props) => {
         {subdermal.map((impl) => (
           <LayerBar
             key={impl.id}
-            name={impl.name}
+            name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
             className="layer-skinweave"

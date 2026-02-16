@@ -176,7 +176,7 @@
 }
 
 /* === Bottom Bar (collapsible shell) === */
-/* Fixed heights: collapsed = just the header row, expanded = 280px.
+/* Fixed heights: collapsed = just the header row, expanded = 240px.
    Content fills via flex, overflows independently of tab. */
 .bottom-bar {
   flex-shrink: 0;
@@ -189,7 +189,7 @@
 }
 
 .bottom-bar.expanded {
-  height: 360px;
+  height: 240px;
   border-top: 1px solid var(--accent);
 }
 
@@ -242,7 +242,7 @@
 }
 
 /* === Mobile: stacked column layout + panel collapse === */
-@media (max-width: 768px) {
+@media (max-width: 770px) {
   .container {
     flex-direction: column;
     flex-wrap: nowrap;

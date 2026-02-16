@@ -11,6 +11,7 @@ type ArmorType = "soft" | "hard";
 
 export type BodyPartName =
   | "head"
+  | "face"
   | "torso"
   | "left_arm"
   | "right_arm"
@@ -19,6 +20,7 @@ export type BodyPartName =
 
 export const BODY_PARTS: BodyPartName[] = [
   "head",
+  "face",
   "torso",
   "left_arm",
   "right_arm",
@@ -28,6 +30,7 @@ export const BODY_PARTS: BodyPartName[] = [
 
 export const PART_NAMES: Record<BodyPartName, string> = {
   head: "Head",
+  face: "Face",
   torso: "Torso",
   left_arm: "Left Arm",
   right_arm: "Right Arm",
@@ -37,6 +40,7 @@ export const PART_NAMES: Record<BodyPartName, string> = {
 
 export const PART_ABBREV: Record<BodyPartName, string> = {
   head: "H",
+  face: "F",
   torso: "T",
   left_arm: "LA",
   right_arm: "RA",
@@ -61,6 +65,7 @@ export function countsAsLayer(layer: ArmorLayer | undefined): boolean {
 export interface ArmorTemplate {
   templateId: string;
   name: string;
+  shortName?: string;
   type: ArmorType;
   spMax: number;
   bodyParts: BodyPartName[];
@@ -137,6 +142,14 @@ export function getEffectiveSP(
 export function generateId(prefix: string): string {
   const random = Math.random().toString(36).substring(2, 8);
   return `${prefix}_${random}`;
+}
+
+// Face on worn (non-implant) armor gets half SP; everything else gets full SP
+export function getPartSpMax(template: ArmorTemplate, part: BodyPartName): number {
+  if (part === "face" && !template.layer) {
+    return Math.floor(template.spMax / 2);
+  }
+  return template.spMax;
 }
 
 export interface EVResult {
