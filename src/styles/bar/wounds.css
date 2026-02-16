@@ -211,7 +211,8 @@
 }
 
 /* === Responsive: Mobile === */
-@media (max-width: 768px) {
+@media (max-width: 874px) {
+  /*  weird breakpoint but won't fit otherwise */
   .wound-bar {
     flex-wrap: wrap;
     padding: var(--space-6) 10px;
