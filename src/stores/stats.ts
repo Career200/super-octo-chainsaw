@@ -8,6 +8,7 @@ import {
   getBodyTypeInfo,
   getStunSavePenalty,
   getCurrentSave,
+  getDeathSave,
   type BodyTypeInfo,
 } from "@scripts/biomon/body";
 import type { ReadableAtom } from "nanostores";
@@ -112,6 +113,8 @@ export const STAT_STORES: Record<StatName, ReadableAtom<StatValues>> = {
 export interface BodyTypeState extends BodyTypeInfo {
   savePenalty: number;
   currentSave: number;
+  deathSave: number | null;
+  stabilized: boolean;
 }
 
 export const $bodyType = computed(
@@ -121,7 +124,8 @@ export const $bodyType = computed(
     const woundLevel = health.stun > 0 ? getWoundLevel(health.stun) : null;
     const savePenalty = getStunSavePenalty(woundLevel);
     const currentSave = getCurrentSave(info.baseSave, woundLevel);
-    return { ...info, savePenalty, currentSave };
+    const deathSave = getDeathSave(info.baseSave, woundLevel);
+    return { ...info, savePenalty, currentSave, deathSave, stabilized: health.stabilized };
   },
 );
 

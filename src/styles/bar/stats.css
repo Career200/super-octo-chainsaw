@@ -62,6 +62,16 @@
   color: var(--danger);
 }
 
+.death-save {
+  color: var(--danger);
+}
+
+@media (max-width: 394px) {
+  .body-type {
+    display: none;
+  }
+}
+
 /* === Stats Strip === */
 .stats-strip {
   flex: 1;

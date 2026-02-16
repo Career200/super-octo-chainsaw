@@ -21,7 +21,7 @@ export const $health = persistentAtom<WoundState>("health-state", defaultState()
 
 // --- Helpers ---
 
-function isMortal(physical: number): boolean {
+export function isMortal(physical: number): boolean {
   return physical > MORTAL_THRESHOLD;
 }
 

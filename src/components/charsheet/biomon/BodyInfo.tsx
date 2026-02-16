@@ -5,6 +5,7 @@ import { BodyHelpContent } from "./help/BodyHelpContent";
 
 export const BodyInfo = () => {
   const body = useStore($bodyType);
+  const showDeathSave = body.deathSave !== null && !body.stabilized;
 
   return (
     <div class="body-info" id="body-info">
@@ -31,6 +32,12 @@ export const BodyInfo = () => {
         <span class={`save-penalty${body.savePenalty < 0 ? " has-penalty" : ""}`}>
           {body.savePenalty < 0 && `(${body.savePenalty})`}
         </span>
+        {showDeathSave && (
+          <>
+            <span class="label-chip-label"> Death</span>
+            <span class="label-chip-value death-save">{body.deathSave}</span>
+          </>
+        )}
       </div>
       <HelpPopover id="body-help" content={<BodyHelpContent />} />
     </div>
