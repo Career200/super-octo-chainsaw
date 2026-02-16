@@ -115,7 +115,7 @@ export const HitPopover = () => {
         result.degradation.entries(),
       ).map(([id, sp]) => {
         const armor = getArmorPiece(id);
-        return { armorId: id, armorName: armor?.name ?? id, spLost: sp };
+        return { armorId: id, armorName: armor?.shortName ?? armor?.name ?? id, spLost: sp };
       });
 
       if (result.penetrating > 0) {
@@ -123,7 +123,7 @@ export const HitPopover = () => {
           if (getImplantSP(impl, part) > 0) {
             armorDamageEntries.push({
               armorId: impl.id,
-              armorName: impl.name,
+              armorName: impl.shortName ?? impl.name,
               spLost: 1,
             });
           }
@@ -131,8 +131,8 @@ export const HitPopover = () => {
       }
 
       const allProtectors = [
-        ...layers.map((l) => ({ name: l.name, sp: l.spCurrent })),
-        ...implants.map((i) => ({ name: i.name, sp: getImplantSP(i, part) })),
+        ...layers.map((l) => ({ name: l.shortName ?? l.name, sp: l.spCurrent })),
+        ...implants.map((i) => ({ name: i.shortName ?? i.name, sp: getImplantSP(i, part) })),
       ]
         .filter((p) => p.sp > 0)
         .sort((a, b) => b.sp - a.sp);

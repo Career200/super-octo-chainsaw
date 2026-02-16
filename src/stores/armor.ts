@@ -70,10 +70,14 @@ export function getArmorPiece(
   if (part && instance.spByPart[part] !== undefined) {
     spCurrent = instance.spByPart[part]!;
   } else {
-    const values = Object.values(instance.spByPart).filter(
-      (v): v is number => v !== undefined,
-    );
-    spCurrent = values.length > 0 ? Math.min(...values) : 0;
+    // Worst per-part ratio scaled to spMax, so face at half-max reads as "full"
+    let worstRatio = 1;
+    for (const p of template.bodyParts) {
+      const sp = instance.spByPart[p] ?? 0;
+      const max = getPartSpMax(template, p);
+      if (max > 0) worstRatio = Math.min(worstRatio, sp / max);
+    }
+    spCurrent = Math.round(worstRatio * template.spMax);
   }
 
   return {

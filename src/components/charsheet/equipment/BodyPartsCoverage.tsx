@@ -1,13 +1,13 @@
-import { BODY_PARTS, PART_ABBREV, type BodyPartName } from "@scripts/armor/core";
+import { BODY_PARTS, PART_ABBREV, type BodyPartName, type ArmorTemplate, getPartSpMax } from "@scripts/armor/core";
 import { getConditionClassFromSP } from "./utils";
 
 interface Props {
   bodyParts: BodyPartName[];
   spByPart?: Partial<Record<BodyPartName, number>>;
-  spMax?: number;
+  template?: ArmorTemplate;
 }
 
-export const BodyPartsCoverage = ({ bodyParts, spByPart, spMax }: Props) => {
+export const BodyPartsCoverage = ({ bodyParts, spByPart, template }: Props) => {
   const isFullBody = bodyParts.length >= BODY_PARTS.length;
 
   if (isFullBody && !spByPart) {
@@ -22,8 +22,9 @@ export const BodyPartsCoverage = ({ bodyParts, spByPart, spMax }: Props) => {
     <div class="flex-end gap-4 body-parts-coverage">
       {bodyParts.map((part) => {
         let cls = "coverage-badge";
-        if (spByPart && spMax) {
-          const condCls = getConditionClassFromSP(spByPart[part] ?? spMax, spMax);
+        if (spByPart && template) {
+          const partMax = getPartSpMax(template, part);
+          const condCls = getConditionClassFromSP(spByPart[part] ?? partMax, partMax);
           if (condCls === "condition-damaged" || condCls === "condition-critical") {
             cls += ` ${condCls}`;
           }

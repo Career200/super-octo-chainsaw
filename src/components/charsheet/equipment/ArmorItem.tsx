@@ -56,7 +56,7 @@ export const ArmorItem = ({ armor, showActions }: Props) => {
         <BodyPartsCoverage
           bodyParts={armor.bodyParts}
           spByPart={armor.spByPart}
-          spMax={armor.spMax}
+          template={armor}
         />
       </div>
       <RepairPopover
@@ -64,7 +64,7 @@ export const ArmorItem = ({ armor, showActions }: Props) => {
         open={repairOpen}
         onClose={() => setRepairOpen(false)}
         armorId={armor.id}
-        maxSP={armor.spMax}
+        template={armor}
         bodyParts={armor.bodyParts}
         spByPart={armor.spByPart}
       />

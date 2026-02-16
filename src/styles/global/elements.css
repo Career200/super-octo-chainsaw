@@ -50,6 +50,11 @@ input[type="number"] {
 }
 
 /* === Button Variants === */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* Ghost button - transparent with border */
 .btn-ghost {

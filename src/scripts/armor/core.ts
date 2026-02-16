@@ -65,6 +65,7 @@ export function countsAsLayer(layer: ArmorLayer | undefined): boolean {
 export interface ArmorTemplate {
   templateId: string;
   name: string;
+  shortName?: string;
   type: ArmorType;
   spMax: number;
   bodyParts: BodyPartName[];
