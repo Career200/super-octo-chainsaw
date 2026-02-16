@@ -15,7 +15,6 @@ export const CharacterArmorPanel = () => {
         </>
       }
       defaultExpanded
-      bare
       headerActions={<HitPopover />}
     >
       <BodyPartGrid />

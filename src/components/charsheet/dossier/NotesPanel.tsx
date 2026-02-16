@@ -87,7 +87,13 @@ const ContactCard = ({ contact }: { contact: Contact }) => {
 
 // --- Notes Panel ---
 
-export const NotesPanel = () => {
+export const NotesPanel = ({
+  expanded,
+  onToggle,
+}: {
+  expanded?: boolean;
+  onToggle?: () => void;
+}) => {
   const notes = useStore($notes);
   const [tab, setTab] = useState<NotesTab>("notes");
 
@@ -97,6 +103,8 @@ export const NotesPanel = () => {
     <Panel
       id="notes-panel"
       title="Notes"
+      expanded={expanded}
+      onToggle={onToggle}
       headerActions={
         <span class="tab-strip" onClick={(e) => e.stopPropagation()}>
           <button

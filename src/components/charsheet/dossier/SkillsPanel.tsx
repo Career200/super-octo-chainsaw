@@ -68,9 +68,17 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
   const selected = useStore($selectedSkill);
   const isSelected = selected === name;
   const inputRef = useRef<HTMLInputElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const wasSelected = useRef(false);
+
+  if (isSelected && !wasSelected.current && rowRef.current) {
+    rowRef.current.scrollIntoView({ block: "nearest" });
+  }
+  wasSelected.current = isSelected;
 
   return (
     <div
+      ref={rowRef}
       class={`skill-row${isSelected ? " selected" : ""}`}
       onClick={() => {
         selectSkill(isSelected ? null : name);
