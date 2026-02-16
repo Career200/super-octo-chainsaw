@@ -177,7 +177,10 @@ export const SkillsList = ({ filter = "default" }: SkillsListProps) => {
     return (
       <div>
         <div class="skills-list-toolbar">
-          <button class="btn-sm add-skill-btn" onClick={() => startAddingSkill()}>
+          <button
+            class="btn-sm add-skill-btn"
+            onClick={() => startAddingSkill()}
+          >
             + Add Skill
           </button>
         </div>

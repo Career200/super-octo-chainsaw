@@ -1,11 +1,13 @@
 import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
+import { $selectedSkill, $addingSkill, selectSkill } from "@stores/ui";
 import {
-  $selectedSkill,
-  $addingSkill,
-  selectSkill,
-} from "@stores/ui";
-import { $allSkills, addSkill, removeSkill, isCustomSkill, updateSkill } from "@stores/skills";
+  $allSkills,
+  addSkill,
+  removeSkill,
+  isCustomSkill,
+  updateSkill,
+} from "@stores/skills";
 import type { SkillStat } from "@scripts/skills/catalog";
 import { SKILL_CATALOG } from "@scripts/skills/catalog";
 import { STAT_LABELS, STAT_NAMES } from "@scripts/biomon/types";
@@ -95,8 +97,7 @@ function SkillForm({
             disabled={disabled}
             onChange={
               onCombatChange
-                ? (e) =>
-                    onCombatChange((e.target as HTMLInputElement).checked)
+                ? (e) => onCombatChange((e.target as HTMLInputElement).checked)
                 : undefined
             }
           />
@@ -108,7 +109,8 @@ function SkillForm({
         disabled={!onDescriptionChange}
         onInput={
           onDescriptionChange
-            ? (e) => onDescriptionChange((e.target as HTMLTextAreaElement).value)
+            ? (e) =>
+                onDescriptionChange((e.target as HTMLTextAreaElement).value)
             : undefined
         }
         placeholder="No description"
@@ -142,9 +144,7 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
   const description = catalogDef?.description ?? entry?.description ?? "";
 
   const hasContent = !!(entry && skillName) || adding;
-  const headerLabel = adding
-    ? "New custom skill"
-    : skillName ?? "";
+  const headerLabel = adding ? "New custom skill" : (skillName ?? "");
 
   if (!hasContent) {
     return (
@@ -157,7 +157,9 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
   const handleAdd = () => {
     const trimmed = newName.trim();
     if (!trimmed) return;
-    if (addSkill(trimmed, newStat, newCombat, newDescription.trim() || undefined)) {
+    if (
+      addSkill(trimmed, newStat, newCombat, newDescription.trim() || undefined)
+    ) {
       setNewName("");
       setNewStat("ref");
       setNewCombat(false);
@@ -256,7 +258,8 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
               description={description}
               onDescriptionChange={
                 isCustom
-                  ? (v) => updateSkill(skillName!, { description: v || undefined })
+                  ? (v) =>
+                      updateSkill(skillName!, { description: v || undefined })
                   : undefined
               }
             />
