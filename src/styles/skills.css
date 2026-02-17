@@ -1,13 +1,22 @@
-/* Row direction (desktop): stats+skills grows to fit two skill columns, notes stays near 375px.
-   columns: 280px on .skills-list auto-flows into two columns when the panel is wide enough.
-   Column direction (mobile, <770px): ID rules don't apply, .container > * { flex: 1 } takes over. */
-@media (min-width: 770px) {
-  #stats-skills-panel {
-    flex: 999 0 375px;
-  }
+/* Desktop skills layout: columns snap at container width thresholds.
+   Below 1075px: panels share space equally (flex: 1 default), single skill column.
+   1075px+: stats-skills snaps to 692px (2 columns of 280px), notes takes remaining space.
+   1363px+: stats-skills snaps to 980px (3 columns of 280px), notes takes remaining space.
+   4 columns can't fit within the 1440px max container width.
+   Panel overhead = 124px (14px panel border+padding, 102px stats section, 8px skills padding). */
 
+@container (min-width: 1095px) {
+  #stats-skills-panel {
+    flex: 0 0 712px;
+  }
   #notes-panel {
     flex: 1 0 375px;
+  }
+}
+
+@container (min-width: 1383px) {
+  #stats-skills-panel {
+    flex: 0 0 1000px;
   }
 }
 

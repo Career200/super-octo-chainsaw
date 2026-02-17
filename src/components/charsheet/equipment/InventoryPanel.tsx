@@ -3,7 +3,13 @@ import { $ownedArmor, getAllOwnedArmor, isImplant } from "@stores/armor";
 import { Panel } from "../shared/Panel";
 import { ArmorItem } from "./ArmorItem";
 
-export const InventoryPanel = () => {
+export const InventoryPanel = ({
+  expanded,
+  onToggle,
+}: {
+  expanded: boolean;
+  onToggle: () => void;
+}) => {
   useStore($ownedArmor);
 
   const owned = getAllOwnedArmor();
@@ -14,6 +20,8 @@ export const InventoryPanel = () => {
     <Panel
       id="armor-inventory-panel"
       title="Owned Armor"
+      expanded={expanded}
+      onToggle={onToggle}
       headerActions={
         <span class="flex-center gap-2 text-soft armor-legend">
           <span class="armor-type-icon">⬡</span>Hard{" "}

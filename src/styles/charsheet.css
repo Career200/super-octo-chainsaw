@@ -34,6 +34,7 @@
 /* Flex-wrap layout: panels fill width, wrap when they can't fit side-by-side.
    Panels get default sizing via flex:1; override per-panel for uneven layouts. */
 .container {
+  container-type: inline-size;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-8);
@@ -242,7 +243,7 @@
 }
 
 /* === Mobile: stacked column layout + panel collapse === */
-@media (max-width: 770px) {
+@media (max-width: 767px) {
   .container {
     flex-direction: column;
     flex-wrap: nowrap;

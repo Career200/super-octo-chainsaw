@@ -1,32 +1,28 @@
-import { useState } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 import { Chevron } from "./Chevron";
 
 interface Props {
   id: string;
   title: ComponentChildren;
-  defaultExpanded?: boolean;
+  expanded: boolean;
+  onToggle: () => void;
   headerActions?: ComponentChildren;
-  /** When true, children are rendered directly without a .panel-content wrapper */
-  bare?: boolean;
   children: ComponentChildren;
 }
 
 export const Panel = ({
   id,
   title,
-  defaultExpanded = false,
+  expanded,
+  onToggle,
   headerActions,
-  bare = false,
   children,
 }: Props) => {
-  const [expanded, setExpanded] = useState(defaultExpanded);
-
   const handleClick = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest("button, a, input, select")) return;
     if (expanded && target.closest(".panel-content, .body-grid")) return;
-    setExpanded(!expanded);
+    onToggle();
   };
 
   return (
@@ -40,7 +36,7 @@ export const Panel = ({
         {headerActions}
         <Chevron expanded={expanded} class="panel-chevron" />
       </div>
-      {bare ? children : <div class="panel-content">{children}</div>}
+      <div class="panel-content">{children}</div>
     </div>
   );
 };

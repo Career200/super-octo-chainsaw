@@ -1,8 +1,7 @@
 import { useStore } from "@nanostores/preact";
 import { Biomonitor } from "./biomon";
 import { EquipmentView } from "./equipment/EquipmentView";
-import { StatsSkillsPanel } from "./dossier/StatsSkillsPanel";
-import { NotesPanel } from "./dossier/NotesPanel";
+import { DossierView } from "./dossier/DossierView";
 import { TabStrip } from "./shared/TabStrip";
 import { WoundTracker } from "./biomon/WoundTracker";
 import { BodyInfo } from "./biomon/BodyInfo";
@@ -36,12 +35,7 @@ export const Charsheet = () => {
         </div>
       </div>
       {tab === "biomon" && <Biomonitor />}
-      {tab === "dossier" && (
-        <div class="container">
-          <StatsSkillsPanel />
-          <NotesPanel />
-        </div>
-      )}
+      {tab === "dossier" && <DossierView />}
       {tab === "equipment" && <EquipmentView />}
       <BottomBar />
     </div>

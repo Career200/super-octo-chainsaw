@@ -7,7 +7,13 @@ import { SkillsList } from "./SkillsPanel";
 
 export type SkillFilter = "default" | "custom" | "my";
 
-export const StatsSkillsPanel = () => {
+export const StatsSkillsPanel = ({
+  expanded,
+  onToggle,
+}: {
+  expanded: boolean;
+  onToggle: () => void;
+}) => {
   const myCount = useStore($mySkillsCount);
   const [filter, setFilter] = useState<SkillFilter>("default");
 
@@ -15,6 +21,8 @@ export const StatsSkillsPanel = () => {
     <Panel
       id="stats-skills-panel"
       title="Stats / Skills"
+      expanded={expanded}
+      onToggle={onToggle}
       headerActions={
         <span class="tab-strip" onClick={(e) => e.stopPropagation()}>
           <button
@@ -37,7 +45,6 @@ export const StatsSkillsPanel = () => {
           </button>
         </span>
       }
-      defaultExpanded
     >
       <div class="stats-skills-stats">
         <StatsPanel />

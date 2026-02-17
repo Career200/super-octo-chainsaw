@@ -10,9 +10,20 @@ const sortedTemplates = Object.values(armorTemplates)
     return a.name.localeCompare(b.name);
   });
 
-export const ShopPanel = () => {
+export const ShopPanel = ({
+  expanded,
+  onToggle,
+}: {
+  expanded: boolean;
+  onToggle: () => void;
+}) => {
   return (
-    <Panel id="armor-store-panel" title="Armor Store">
+    <Panel
+      id="armor-store-panel"
+      title="Armor Store"
+      expanded={expanded}
+      onToggle={onToggle}
+    >
       {sortedTemplates.map((template) => (
         <div key={template.templateId} class="store-item">
           <div class="flex-between gap-12 armor-header">
