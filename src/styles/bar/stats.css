@@ -94,7 +94,7 @@
 }
 
 /* Desktop: always flex — no collapse behavior above mobile breakpoint */
-@media (min-width: 770px) {
+@media (min-width: 768px) {
   #stats-skills-panel .panel-content {
     display: flex;
   }
@@ -258,7 +258,7 @@
 }
 
 /* === Responsive === */
-@media (max-width: 770px) {
+@media (max-width: 767px) {
   .stats-strip-row,
   .body-info {
     width: 100%;

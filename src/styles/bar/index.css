@@ -42,13 +42,13 @@
 }
 
 /* === Responsive === */
-@media (max-width: 770px) {
+@media (max-width: 767px) {
   .tab-row {
     flex-wrap: wrap-reverse;
   }
 }
 
-@media (max-width: 770px) {
+@media (max-width: 767px) {
   .secondary-bar {
     flex-wrap: wrap;
     padding: var(--space-4) 10px;
