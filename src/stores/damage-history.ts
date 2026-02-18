@@ -23,6 +23,7 @@ export interface DamageHistoryEntry {
   headMultiplied?: boolean;
   btm?: number;
   woundDamage?: number;
+  diceRolls?: number[];
 }
 
 export interface ManipulationHistoryEntry {

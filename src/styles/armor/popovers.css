@@ -123,6 +123,21 @@
   }
 }
 
+.hit-damage-row {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-12);
+}
+
+.hit-damage-row .popover-input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.hit-damage-row .select-option {
+  flex-shrink: 0;
+}
+
 /* === Implants Popover === */
 .popover-implants {
   width: min(400px, var(--popover-max-width));
