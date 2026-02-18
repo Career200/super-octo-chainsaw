@@ -6,7 +6,7 @@
     "sw head implants"
     "larm torso rarm"
     "lleg ev rleg";
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: auto 1fr auto auto;
   gap: var(--space-12);
   margin-top: 10px;
@@ -238,4 +238,20 @@
 
 .sp-total {
   color: var(--footer);
+}
+
+/* === Mobile adjustments === */
+@media (max-width: 767px) {
+  .body-grid {
+    gap: var(--space-4);
+  }
+
+  .body-part {
+    padding: var(--space-6);
+  }
+
+  .body-part h3 {
+    font-size: var(--font-ui-lg);
+    padding-right: 0;
+  }
 }

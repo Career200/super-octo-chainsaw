@@ -54,11 +54,13 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
         <div class="bottom-bar-row expandable" onClick={onToggle}>
           <div class="bottom-bar-content">
             <span class="bottom-bar-name">{template.name}</span>
-            <span class="text-soft text-sm">Catalog</span>
+            {template.cost != null && (
+              <span class="text-soft text-sm">{template.cost}eb</span>
+            )}
           </div>
           <div class="bottom-bar-actions">
             <button class="bar-action" onClick={handleAcquire}>
-              Take ({template.cost}eb)
+              Take
             </button>
             <Chevron expanded={expanded} />
           </div>

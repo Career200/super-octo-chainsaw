@@ -8,7 +8,6 @@ interface Props {
   selected?: boolean;
   highlighted?: boolean;
   onClick?: () => void;
-  onAcquire?: (e: MouseEvent) => void;
 }
 
 function isInstance(armor: ArmorPiece | ArmorTemplate): armor is ArmorPiece {
@@ -20,7 +19,6 @@ export const ArmorCard = ({
   selected,
   highlighted,
   onClick,
-  onAcquire,
 }: Props) => {
   const owned = isInstance(armor);
 
@@ -81,11 +79,6 @@ export const ArmorCard = ({
                 </span>
               )}
             </span>
-          )}
-          {onAcquire && (
-            <button class="btn-sm gear-take-btn" onClick={onAcquire}>
-              Take
-            </button>
           )}
         </span>
       </div>

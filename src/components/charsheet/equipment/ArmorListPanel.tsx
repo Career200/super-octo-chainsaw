@@ -3,13 +3,12 @@ import {
   $ownedArmor,
   getAllOwnedArmor,
   isImplant,
-  acquireArmor,
   ARMOR_CATALOG,
 } from "@stores/armor";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 import { ArmorCard } from "./ArmorCard";
-import { tabStore, $highlightedPart, selectArmor } from "@stores/ui";
+import { tabStore, $highlightedPart } from "@stores/ui";
 
 function sortArmor<T extends { type: string; spMax: number }>(items: T[]): T[] {
   return [...items].sort((a, b) => {
@@ -44,12 +43,6 @@ export const ArmorListPanel = ({
   const highlightedIds = highlightedPart
     ? new Set(owned.filter((a) => a.bodyParts.includes(highlightedPart)).map((a) => a.id))
     : undefined;
-
-  const handleAcquire = (e: MouseEvent, templateId: string) => {
-    e.stopPropagation();
-    const instance = acquireArmor(templateId);
-    if (instance) selectArmor(instance.id);
-  };
 
   return (
     <Panel
@@ -93,7 +86,6 @@ export const ArmorListPanel = ({
               selected={selectedId === tmpl.templateId}
               highlighted={highlightedPart ? tmpl.bodyParts.includes(highlightedPart) : false}
               onClick={() => onSelect(selectedId === tmpl.templateId ? null : tmpl.templateId)}
-              onAcquire={(e: MouseEvent) => handleAcquire(e, tmpl.templateId)}
             />
           ))}
         </div>
