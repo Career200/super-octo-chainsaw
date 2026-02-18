@@ -7,7 +7,7 @@ import {
   AVAILABILITY_LABELS,
 } from "@scripts/gear/catalog";
 import type { GearTemplate } from "@scripts/gear/catalog";
-import { $gear, addGear, removeGear, $ownedGearCount } from "@stores/gear";
+import { $gear, addGear, removeGear, $ownedGear, $ownedGearCount } from "@stores/gear";
 import { Panel } from "../shared/Panel";
 import { Chevron } from "../shared/Chevron";
 
@@ -129,9 +129,10 @@ export const GearPanel = () => {
   const ownedCount = useStore($ownedGearCount);
   const [tab, setTab] = useState<GearTab>("catalog");
 
-  const ownedItems = Object.entries(gearState)
-    .map(([id, qty]) => ({ template: GEAR_CATALOG[id], quantity: qty }))
-    .filter((i) => i.template && i.quantity > 0);
+  const ownedItems = useStore($ownedGear).map((item) => ({
+    template: item,
+    quantity: item.quantity,
+  }));
 
   // Group owned items by category
   const ownedByCategory = GEAR_CATEGORIES.map((cat) => ({
