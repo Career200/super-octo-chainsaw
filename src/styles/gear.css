@@ -1,0 +1,242 @@
+/* === Equipment Sub-tabs === */
+.equipment-sub-tabs {
+  flex: 0 0 auto;
+  padding: var(--space-4) var(--content-inset);
+}
+
+/* === Gear Grid === */
+.gear-grid {
+  columns: 250px;
+  column-gap: var(--space-8);
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* === Gear Groups (by category) === */
+.gear-group {
+  break-inside: avoid;
+  margin-bottom: var(--space-12);
+}
+
+.gear-group-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--accent);
+  margin-bottom: var(--space-8);
+  cursor: pointer;
+  user-select: none;
+}
+
+.gear-group-more {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+}
+
+.gear-group-more:hover {
+  color: var(--accent);
+}
+
+.gear-group-count {
+  font-weight: normal;
+  margin-left: var(--space-4);
+  color: var(--fg-soft);
+}
+
+/* === Gear Cards === */
+.gear-card {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--padding-panel);
+  margin-bottom: var(--space-8);
+  cursor: pointer;
+}
+
+.gear-card:hover {
+  border-color: var(--accent);
+}
+
+.gear-card.selected {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+}
+
+.gear-card.custom {
+  border-left: 3px solid var(--accent);
+}
+
+.gear-card h4 {
+  margin: 0;
+  font-size: var(--font-ui);
+  color: var(--accent);
+}
+
+.gear-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-6);
+  white-space: nowrap;
+  font-size: var(--font-ui);
+}
+
+.gear-avail {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+}
+
+.cash {
+  font-family: "Cash", monospace;
+  color: gold;
+  margin: 0 2px;
+}
+
+.gear-description {
+  margin: var(--space-4) 0 0;
+}
+
+/* === Gear Actions (quantity controls / take button) === */
+.gear-actions {
+  margin-top: var(--space-6);
+  height: 28px;
+}
+
+.gear-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.gear-qty-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: var(--font-ui-lg);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.gear-qty-btn:hover {
+  background: var(--accent-subtle);
+}
+
+.gear-qty-value {
+  min-width: 24px;
+  text-align: center;
+  font-weight: bold;
+  font-size: var(--font-ui);
+  color: var(--fg);
+}
+
+.gear-take-btn {
+  height: 28px;
+  padding: 0 var(--space-12);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: transparent;
+}
+
+.gear-take-btn:hover {
+  background: var(--accent-subtle);
+}
+
+/* === Gear Toolbar (custom tab) === */
+.gear-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 var(--content-inset) var(--space-6);
+}
+
+.gear-add-btn {
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: transparent;
+}
+
+.gear-add-btn:hover {
+  background: var(--accent-subtle);
+}
+
+/* === Gear Bottom Bar Form === */
+.gear-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  height: 100%;
+  min-height: 0;
+}
+
+.gear-form-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-8);
+}
+
+.gear-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.gear-form-name {
+  flex: 1 1 160px;
+}
+
+.gear-form-type {
+  flex: 1 1 120px;
+}
+
+.gear-form-cost {
+  flex: 0 1 80px;
+}
+
+.gear-form-availability {
+  flex: 0 1 100px;
+}
+
+.gear-form-label {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gear-form-input {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-ui);
+}
+
+.gear-form-description {
+  flex: 1;
+  min-height: 0;
+  resize: none;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  padding: var(--space-6) var(--space-8);
+  color: var(--fg);
+}
+
+.gear-form-description:disabled {
+  opacity: 1;
+  color: var(--fg-soft);
+  cursor: default;
+}
+

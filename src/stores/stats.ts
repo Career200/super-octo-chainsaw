@@ -30,7 +30,13 @@ function defaultState(): StatsState {
 
 export const $stats = persistentAtom<StatsState>("character-stats", defaultState(), {
   encode: JSON.stringify,
-  decode: JSON.parse,
+  decode: (raw: string): StatsState => {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return defaultState();
+    }
+  },
 });
 
 // --- Computed stats ---

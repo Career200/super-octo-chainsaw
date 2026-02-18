@@ -242,6 +242,32 @@
   gap: var(--space-4);
 }
 
+.bar-action {
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: var(--font-ui);
+  font-family: inherit;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: transparent;
+}
+
+.bar-action:hover {
+  background: var(--accent-subtle);
+}
+
+.bar-remove {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.bar-remove:hover {
+  color: var(--danger-hover);
+  border-color: var(--danger-hover);
+  background: var(--danger-subtle);
+}
+
 /* === Mobile: stacked column layout + panel collapse === */
 @media (max-width: 767px) {
   .container {

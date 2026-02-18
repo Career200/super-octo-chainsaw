@@ -66,6 +66,44 @@ Old format (all catalog skills at level 0) is dropped on load — no migration.
 Actions: `setSkillLevel`, `addSkill`, `removeSkill`, `updateSkill`
 Helper: `isCustomSkill(name)` — true if not in `SKILL_CATALOG`
 
+### `$gear` (gear.ts)
+```
+Record<string, number>
+```
+**Sparse persistence**: stores templateId/customName → quantity for all owned gear. Entries with quantity 0 are removed. Works for both catalog and custom items — definitions come from `GEAR_CATALOG` or `$customGearItems`.
+
+Actions: `addGear`, `removeGear`
+
+### `$customGearItems` (gear.ts)
+```
+Record<string, CustomGearDef>
+CustomGearDef: { name, description, type, cost?, availability? }
+```
+Custom gear definitions — user-created extension to `GEAR_CATALOG`. Persists independently of quantity (items survive at qty 0). Validated for shape on decode.
+
+Actions: `addCustomGear`, `updateCustomGear`, `removeCustomGear`
+Helper: `isCustomGear(id)` — true if not in `GEAR_CATALOG`
+
+### `$selectedGear` (ui.ts)
+```
+string | null (default: null)
+```
+Currently selected gear item ID (templateId or custom name) for the bottom bar. Non-persistent.
+Mutually exclusive with `$addingGear` — use `selectGear()` to set.
+
+### `$addingGear` (ui.ts)
+```
+boolean (default: false)
+```
+Whether the add-custom-gear form is open in the bottom bar. Non-persistent.
+Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
+
+### `$equipmentSubTab` (ui.ts)
+```
+'armor' | 'gear' (default: 'armor')
+```
+Equipment tab sub-tab selection. Subscribed by `EquipmentView`.
+
 ## Computed Stores
 
 ### Per-stat: `$REF`, `$INT`, `$CL`, `$TECH`, `$LK`, `$ATT`, `$MA`, `$EMP`, `$BT` (stats.ts)
@@ -157,6 +195,27 @@ Depends on: `$mySkills`
 Non-catalog entries from `$skills` store.
 Depends on: `$skills`
 
+### `$ownedGear` (gear.ts)
+```
+OwnedGearItem[] (each: GearTemplate + quantity + custom?)
+```
+All owned gear (qty > 0): catalog items hydrated from `GEAR_CATALOG`, custom items from `$customGearItems`. `custom: true` flag on custom items.
+Depends on: `$gear`, `$customGearItems`
+
+### `$ownedGearCount` (gear.ts)
+```
+number
+```
+Total quantity of all owned gear.
+Depends on: `$ownedGear`
+
+### `$customGear` (gear.ts)
+```
+OwnedGearItem[] (custom: true)
+```
+All custom gear definitions with current quantities (including qty 0).
+Depends on: `$gear`, `$customGearItems`
+
 ## Dependency Graph (compact)
 ```
 $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
@@ -175,6 +234,14 @@ HitPopover reads $bodyType.btm, mutates $health via takeDamage
 $notes (standalone, no dependents)
 
 $spaTab ────▸ Charsheet (tab selection)
+
+$equipmentSubTab ────▸ EquipmentView (sub-tab selection)
+
+$gear ──────────┬──▸ $ownedGear ──▸ $ownedGearCount
+$customGearItems┼──▸ $customGear
+                └──▸ GearPanel (catalog + custom + owned views)
+
+$selectedGear ◂──▸ $addingGear (mutually exclusive via selectGear/startAddingGear)
 
 $selectedSkill ◂──▸ $addingSkill (mutually exclusive via selectSkill/startAddingSkill)
 

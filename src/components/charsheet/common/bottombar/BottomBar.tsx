@@ -1,13 +1,23 @@
 import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $spaTab, $addingSkill, $selectedSkill } from "@stores/ui";
+import {
+  $spaTab,
+  $addingSkill,
+  $selectedSkill,
+  $addingGear,
+  $selectedGear,
+} from "@stores/ui";
+import { useAutoExpand } from "./useAutoExpand";
 import { BottomBarSkills } from "../../dossier/BottomBarSkills";
 import { BottomBarHistory } from "../../biomon/BottomBarHistory";
+import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
 
 export const BottomBar = () => {
   const tab = useStore($spaTab);
-  const adding = useStore($addingSkill);
-  const selected = useStore($selectedSkill);
+  const addingSkill = useStore($addingSkill);
+  const selectedSkill = useStore($selectedSkill);
+  const addingGear = useStore($addingGear);
+  const selectedGear = useStore($selectedGear);
   const [expanded, setExpanded] = useState(false);
 
   // Collapse when switching tabs
@@ -17,23 +27,17 @@ export const BottomBar = () => {
     if (expanded) setExpanded(false);
   }
 
-  // Auto-expand when entering add mode
-  const addingRef = useRef(adding);
-  if (adding && !addingRef.current) {
-    if (!expanded) setExpanded(true);
-  }
-  addingRef.current = adding;
+  useAutoExpand(addingSkill, selectedSkill, expanded, setExpanded);
+  useAutoExpand(addingGear, selectedGear, expanded, setExpanded);
 
-  // Auto-expand when selecting a skill
-  const selectedRef = useRef(selected);
-  if (selected && selected !== selectedRef.current) {
-    if (!expanded) setExpanded(true);
+  // Safety: collapse if current tab has no active content
+  const hasContent =
+    (tab === "dossier" && (selectedSkill || addingSkill)) ||
+    (tab === "equipment" && (selectedGear || addingGear)) ||
+    tab === "biomon"; // biomon always has history content
+  if (expanded && !hasContent) {
+    setExpanded(false);
   }
-  // Collapse when deselecting (and not adding)
-  if (!selected && selectedRef.current && !adding) {
-    if (expanded) setExpanded(false);
-  }
-  selectedRef.current = selected;
 
   return (
     <div class={`bottom-bar${expanded ? " expanded" : ""}`}>
@@ -45,6 +49,12 @@ export const BottomBar = () => {
       )}
       {tab === "biomon" && (
         <BottomBarHistory
+          expanded={expanded}
+          onToggle={() => setExpanded((e) => !e)}
+        />
+      )}
+      {tab === "equipment" && (
+        <BottomBarEquipment
           expanded={expanded}
           onToggle={() => setExpanded((e) => !e)}
         />

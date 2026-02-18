@@ -38,6 +38,7 @@
   --warning: #ca4;
   --danger: #c44;
   --danger-hover: #e55;
+  --danger-subtle: rgba(204, 68, 68, 0.1);
 
   --status-busy: #ff0000;
   --status-mixed: #ffff00;
