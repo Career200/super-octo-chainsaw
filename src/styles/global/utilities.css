@@ -77,6 +77,13 @@
 .text-danger {
   color: var(--danger);
 }
+
+/* Currency symbol */
+.cash {
+  font-family: "Cash", monospace;
+  color: gold;
+  margin: 0 2px;
+}
 .text-footer {
   color: var(--footer);
 }

@@ -70,12 +70,13 @@
 }
 
 .armor-card.selected {
-  background: var(--accent-subtle);
   border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-muted);
 }
 
 .armor-card.highlighted {
-  border-color: var(--accent-muted);
+  background: var(--accent-subtle);
+  border-color: var(--accent);
 }
 
 .armor-card.armor-card-worn {
@@ -103,10 +104,24 @@
   flex-wrap: wrap;
 }
 
+.armor-card-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.armor-card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
 .armor-card-ev {
-  font-size: var(--font-ui-sm);
+  font-size: var(--font-ui);
   font-weight: bold;
-  color: var(--fg-soft);
+  color: var(--danger);
   white-space: nowrap;
 }
 
@@ -120,9 +135,6 @@
   margin: var(--space-4) 0 0;
 }
 
-.armor-card-actions {
-  margin-top: var(--space-6);
-}
 
 /* === Armor bottom bar detail === */
 .armor-detail-grid {

@@ -4,6 +4,8 @@ import { $selectedArmor, selectArmor } from "@stores/ui";
 import {
   $ownedArmor,
   getArmorPiece,
+  getTemplate,
+  acquireArmor,
   toggleArmor,
   discardArmor,
 } from "@stores/armor";
@@ -23,6 +25,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
   useStore($ownedArmor); // re-render on armor state changes
 
   const armor = armorId ? getArmorPiece(armorId) : null;
+  const template = !armor && armorId ? getTemplate(armorId) : null;
 
   const [wearError, setWearError] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -30,7 +33,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
   const discardBtnRef = useRef<HTMLButtonElement>(null);
   const repairBtnRef = useRef<HTMLButtonElement>(null);
 
-  if (!armor) {
+  if (!armor && !template) {
     return (
       <div class="bottom-bar-row">
         <span class="bottom-bar-hint">Select an item</span>
@@ -38,9 +41,49 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
     );
   }
 
+  // Template selected (from catalog)
+  if (template) {
+    const handleAcquire = (e: MouseEvent) => {
+      e.stopPropagation();
+      const instance = acquireArmor(template.templateId);
+      if (instance) selectArmor(instance.id);
+    };
+
+    return (
+      <>
+        <div class="bottom-bar-row expandable" onClick={onToggle}>
+          <div class="bottom-bar-content">
+            <span class="bottom-bar-name">{template.name}</span>
+            <span class="text-soft text-sm">Catalog</span>
+          </div>
+          <div class="bottom-bar-actions">
+            <button class="bar-action" onClick={handleAcquire}>
+              Take ({template.cost}eb)
+            </button>
+            <Chevron expanded={expanded} />
+          </div>
+        </div>
+        {expanded && (
+          <div class="bottom-bar-body">
+            <div class="armor-detail-grid">
+              {template.bodyParts.map((part) => (
+                <div key={part} class="armor-detail-part">
+                  <span class="coverage-badge">{PART_ABBREV[part]}</span>
+                  <span>{template.spMax}</span>
+                </div>
+              ))}
+            </div>
+            <p class="text-desc">{template.description}</p>
+          </div>
+        )}
+      </>
+    );
+  }
+
+  // Owned armor selected
   const handleWear = (e: MouseEvent) => {
     e.stopPropagation();
-    const result = toggleArmor(armor.id);
+    const result = toggleArmor(armor!.id);
     if (!result.success) {
       setWearError(result.error);
       setTimeout(() => setWearError(null), 3000);
@@ -48,7 +91,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
   };
 
   const handleDiscard = () => {
-    discardArmor(armor.id);
+    discardArmor(armor!.id);
     selectArmor(null);
     setConfirmOpen(false);
   };
@@ -57,15 +100,15 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
     <>
       <div class="bottom-bar-row expandable" onClick={onToggle}>
         <div class="bottom-bar-content">
-          <span class="bottom-bar-name">{armor.name}</span>
+          <span class="bottom-bar-name">{armor!.name}</span>
           {wearError && <span class="text-error text-sm">{wearError}</span>}
         </div>
         <div class="bottom-bar-actions">
           <button
-            class={armor.worn ? "bar-action active" : "bar-action"}
+            class={armor!.worn ? "bar-action active" : "bar-action"}
             onClick={handleWear}
           >
-            {armor.worn ? "Remove" : "Wear"}
+            {armor!.worn ? "Remove" : "Wear"}
           </button>
           <button
             ref={repairBtnRef}
@@ -81,10 +124,10 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
             anchorRef={repairBtnRef}
             open={repairOpen}
             onClose={() => setRepairOpen(false)}
-            armorId={armor.id}
-            template={armor}
-            bodyParts={armor.bodyParts}
-            spByPart={armor.spByPart}
+            armorId={armor!.id}
+            template={armor!}
+            bodyParts={armor!.bodyParts}
+            spByPart={armor!.spByPart}
           />
           <button
             ref={discardBtnRef}
@@ -99,7 +142,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
           <ConfirmPopover
             anchorRef={discardBtnRef}
             open={confirmOpen}
-            message={`Discard ${armor.name}?`}
+            message={`Discard ${armor!.name}?`}
             confirmText="Discard"
             cancelText="Keep"
             type="danger"
@@ -112,9 +155,9 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
       {expanded && (
         <div class="bottom-bar-body">
           <div class="armor-detail-grid">
-            {armor.bodyParts.map((part) => {
-              const sp = armor.spByPart[part] ?? 0;
-              const max = getPartSpMax(armor, part);
+            {armor!.bodyParts.map((part) => {
+              const sp = armor!.spByPart[part] ?? 0;
+              const max = getPartSpMax(armor!, part);
               return (
                 <div key={part} class="armor-detail-part">
                   <span class="coverage-badge">{PART_ABBREV[part]}</span>
@@ -125,7 +168,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
               );
             })}
           </div>
-          <p class="text-desc">{armor.description}</p>
+          <p class="text-desc">{armor!.description}</p>
         </div>
       )}
     </>

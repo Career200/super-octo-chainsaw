@@ -4,6 +4,7 @@ import {
   getBodyPartLayers,
   getImplantsForPart,
   getArmorPiece,
+  getTemplate,
 } from "@stores/armor";
 import {
   getEffectiveSP,
@@ -34,7 +35,9 @@ export const FaceCard = ({ mode = "biomon" }: Props) => {
   const total = getEffectiveSP(layers, { implants, part: "face" });
 
   const selectedArmor =
-    inventory && selectedArmorId ? getArmorPiece(selectedArmorId) : null;
+    inventory && selectedArmorId
+      ? getArmorPiece(selectedArmorId) ?? getTemplate(selectedArmorId)
+      : null;
   const isHighlighted =
     inventory &&
     (highlightedPartVal === "face" ||

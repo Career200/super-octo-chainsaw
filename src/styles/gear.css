@@ -95,11 +95,6 @@
   color: var(--fg-soft);
 }
 
-.cash {
-  font-family: "Cash", monospace;
-  color: gold;
-  margin: 0 2px;
-}
 
 .gear-description {
   margin: var(--space-4) 0 0;

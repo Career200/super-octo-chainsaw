@@ -4,14 +4,12 @@ import {
   getAllOwnedArmor,
   isImplant,
   acquireArmor,
-  getBodyPartLayers,
   ARMOR_CATALOG,
 } from "@stores/armor";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 import { ArmorCard } from "./ArmorCard";
-import { BodyPartsCoverage } from "./BodyPartsCoverage";
-import { tabStore, $highlightedPart } from "@stores/ui";
+import { tabStore, $highlightedPart, selectArmor } from "@stores/ui";
 
 function sortArmor<T extends { type: string; spMax: number }>(items: T[]): T[] {
   return [...items].sort((a, b) => {
@@ -42,10 +40,16 @@ export const ArmorListPanel = ({
   const owned = getAllOwnedArmor().filter((a) => !isImplant(a));
   const sorted = sortArmor(owned);
 
-  // Compute which armor IDs cover the highlighted body part
+  // Compute which armor IDs cover the highlighted body part (all owned, not just worn)
   const highlightedIds = highlightedPart
-    ? new Set(getBodyPartLayers(highlightedPart).map((l) => l.id))
+    ? new Set(owned.filter((a) => a.bodyParts.includes(highlightedPart)).map((a) => a.id))
     : undefined;
+
+  const handleAcquire = (e: MouseEvent, templateId: string) => {
+    e.stopPropagation();
+    const instance = acquireArmor(templateId);
+    if (instance) selectArmor(instance.id);
+  };
 
   return (
     <Panel
@@ -83,38 +87,14 @@ export const ArmorListPanel = ({
       {tab === "catalog" && (
         <div class="armor-card-list">
           {catalogTemplates.map((tmpl) => (
-            <div key={tmpl.templateId} class="armor-card">
-              <div class="flex-between gap-8">
-                <h4>
-                  <span class="armor-type-icon">
-                    {tmpl.type === "hard" ? "\u2B21" : "\u2248"}
-                  </span>
-                  {tmpl.name}
-                </h4>
-                <span class="armor-card-sp">{tmpl.spMax}</span>
-              </div>
-              <div class="armor-card-details">
-                <BodyPartsCoverage bodyParts={tmpl.bodyParts} />
-                {tmpl.ev != null && tmpl.ev > 0 && (
-                  <span class="armor-card-ev">EV {tmpl.ev}</span>
-                )}
-                {tmpl.availability && (
-                  <span class="armor-card-avail">{tmpl.availability}</span>
-                )}
-              </div>
-              <p class="text-desc armor-card-description">{tmpl.description}</p>
-              <div class="armor-card-actions">
-                <button
-                  class="btn-sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    acquireArmor(tmpl.templateId);
-                  }}
-                >
-                  Acquire ({tmpl.cost}eb)
-                </button>
-              </div>
-            </div>
+            <ArmorCard
+              key={tmpl.templateId}
+              armor={tmpl}
+              selected={selectedId === tmpl.templateId}
+              highlighted={highlightedPart ? tmpl.bodyParts.includes(highlightedPart) : false}
+              onClick={() => onSelect(selectedId === tmpl.templateId ? null : tmpl.templateId)}
+              onAcquire={(e: MouseEvent) => handleAcquire(e, tmpl.templateId)}
+            />
           ))}
         </div>
       )}

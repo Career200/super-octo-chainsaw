@@ -4,6 +4,7 @@ import {
   getBodyPartLayers,
   getImplantsForPart,
   getArmorPiece,
+  getTemplate,
   isSkinweave,
 } from "@stores/armor";
 import {
@@ -53,7 +54,9 @@ export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
 
   // Inventory mode: highlight when part is clicked or selected armor covers this part
   const selectedArmor =
-    inventory && selectedArmorId ? getArmorPiece(selectedArmorId) : null;
+    inventory && selectedArmorId
+      ? getArmorPiece(selectedArmorId) ?? getTemplate(selectedArmorId)
+      : null;
   const isPartHighlighted =
     inventory &&
     (highlightedPartVal === part ||
@@ -65,7 +68,6 @@ export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
 
   const handleLayerClick = (armorId: string) => {
     selectArmor(armorId);
-    highlightPart(null);
   };
 
   const cls = [

@@ -63,6 +63,7 @@ export const $selectedArmor = atom<string | null>(null);
 
 export function selectArmor(id: string | null): void {
   $selectedArmor.set(id);
+  $highlightedPart.set(null);
 }
 
 /** Body part being highlighted on the inventory grid, or null. */
@@ -70,4 +71,5 @@ export const $highlightedPart = atom<BodyPartName | null>(null);
 
 export function highlightPart(part: BodyPartName | null): void {
   $highlightedPart.set(part);
+  $selectedArmor.set(null);
 }

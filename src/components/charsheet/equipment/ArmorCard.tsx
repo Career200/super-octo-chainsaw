@@ -8,13 +8,20 @@ interface Props {
   selected?: boolean;
   highlighted?: boolean;
   onClick?: () => void;
+  onAcquire?: (e: MouseEvent) => void;
 }
 
 function isInstance(armor: ArmorPiece | ArmorTemplate): armor is ArmorPiece {
   return "id" in armor && "worn" in armor;
 }
 
-export const ArmorCard = ({ armor, selected, highlighted, onClick }: Props) => {
+export const ArmorCard = ({
+  armor,
+  selected,
+  highlighted,
+  onClick,
+  onAcquire,
+}: Props) => {
   const owned = isInstance(armor);
 
   const cls = [
@@ -38,7 +45,9 @@ export const ArmorCard = ({ armor, selected, highlighted, onClick }: Props) => {
         <span class="armor-card-sp">
           {owned ? (
             <>
-              <span class={getConditionClassFromSP(armor.spCurrent, armor.spMax)}>
+              <span
+                class={getConditionClassFromSP(armor.spCurrent, armor.spMax)}
+              >
                 {armor.spCurrent}
               </span>
               /{armor.spMax}
@@ -57,11 +66,28 @@ export const ArmorCard = ({ armor, selected, highlighted, onClick }: Props) => {
         {armor.ev != null && armor.ev > 0 && (
           <span class="armor-card-ev">EV {armor.ev}</span>
         )}
-        {armor.availability && (
-          <span class="armor-card-avail">
-            {AVAILABILITY_LABELS[armor.availability]}
-          </span>
-        )}
+        <span class="armor-card-right">
+          {(armor.availability || (!owned && armor.cost != null)) && (
+            <span class="armor-card-meta">
+              {armor.availability && (
+                <span class="armor-card-avail">
+                  Av.{AVAILABILITY_LABELS[armor.availability]}
+                </span>
+              )}
+              {!owned && armor.cost != null && (
+                <span class="text-soft">
+                  <span class="cash">{"\u156E\u1572"}</span>
+                  {armor.cost}eb
+                </span>
+              )}
+            </span>
+          )}
+          {onAcquire && (
+            <button class="btn-sm gear-take-btn" onClick={onAcquire}>
+              Take
+            </button>
+          )}
+        </span>
       </div>
     </div>
   );
