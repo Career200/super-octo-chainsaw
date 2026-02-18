@@ -7,6 +7,7 @@ import {
   $addingGear,
   $selectedGear,
 } from "@stores/ui";
+import { useAutoExpand } from "./useAutoExpand";
 import { BottomBarSkills } from "../../dossier/BottomBarSkills";
 import { BottomBarHistory } from "../../biomon/BottomBarHistory";
 import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
@@ -26,37 +27,8 @@ export const BottomBar = () => {
     if (expanded) setExpanded(false);
   }
 
-  // --- Skills auto-expand ---
-  const addingSkillRef = useRef(addingSkill);
-  if (addingSkill && !addingSkillRef.current) {
-    if (!expanded) setExpanded(true);
-  }
-  addingSkillRef.current = addingSkill;
-
-  const selectedSkillRef = useRef(selectedSkill);
-  if (selectedSkill && selectedSkill !== selectedSkillRef.current) {
-    if (!expanded) setExpanded(true);
-  }
-  if (!selectedSkill && selectedSkillRef.current && !addingSkill) {
-    if (expanded) setExpanded(false);
-  }
-  selectedSkillRef.current = selectedSkill;
-
-  // --- Gear auto-expand ---
-  const addingGearRef = useRef(addingGear);
-  if (addingGear && !addingGearRef.current) {
-    if (!expanded) setExpanded(true);
-  }
-  addingGearRef.current = addingGear;
-
-  const selectedGearRef = useRef(selectedGear);
-  if (selectedGear && selectedGear !== selectedGearRef.current) {
-    if (!expanded) setExpanded(true);
-  }
-  if (!selectedGear && selectedGearRef.current && !addingGear) {
-    if (expanded) setExpanded(false);
-  }
-  selectedGearRef.current = selectedGear;
+  useAutoExpand(addingSkill, selectedSkill, expanded, setExpanded);
+  useAutoExpand(addingGear, selectedGear, expanded, setExpanded);
 
   // Safety: collapse if current tab has no active content
   const hasContent =

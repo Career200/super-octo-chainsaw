@@ -1,4 +1,4 @@
-import { useState, useRef } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { $selectedGear, $addingGear, selectGear } from "@stores/ui";
 import {
@@ -12,9 +12,7 @@ import {
 } from "@stores/gear";
 import { GEAR_CATALOG, AVAILABILITY_LABELS } from "@scripts/gear/catalog";
 import type { Availability } from "@scripts/gear/catalog";
-import { Chevron } from "../shared/Chevron";
-import { ConfirmPopover } from "../shared/ConfirmPopover";
-import { Popover } from "../shared/Popover";
+import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 
 type AvailabilityWithEmpty = Availability | "";
 
@@ -166,28 +164,9 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
   const [newAvailability, setNewAvailability] =
     useState<AvailabilityWithEmpty>("");
 
-  // Add button ref + error popover
-  const addBtnRef = useRef<HTMLButtonElement>(null);
-  const [addError, setAddError] = useState<string | null>(null);
-
-  // Remove confirmation
-  const removeBtnRef = useRef<HTMLButtonElement>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-
-  const hasContent = !!(resolved && gearId) || adding;
-  const headerLabel = adding ? "New custom item" : (resolved?.name ?? "");
-
-  if (!hasContent) {
-    return (
-      <div class="bottom-bar-row">
-        <span class="bottom-bar-hint">Select an item</span>
-      </div>
-    );
-  }
-
-  const handleAdd = () => {
+  const handleAdd = (): string | null => {
     const trimmed = newName.trim();
-    if (!trimmed) return;
+    if (!trimmed) return "Name cannot be empty";
     const cost = newCost ? Number(newCost) : undefined;
     if (
       addCustomGear(trimmed, {
@@ -202,11 +181,10 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
       setNewDescription("");
       setNewCost("");
       setNewAvailability("");
-      setAddError(null);
       selectGear(trimmed);
-    } else {
-      setAddError(`"${trimmed}" already exists`);
+      return null;
     }
+    return `"${trimmed}" already exists`;
   };
 
   const handleRemove = () => {
@@ -215,120 +193,70 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
   };
 
   return (
-    <>
-      <div class="bottom-bar-row expandable" onClick={onToggle}>
-        <div class="bottom-bar-content">
-          <span class="bottom-bar-name">{headerLabel}</span>
-        </div>
-        <div class="bottom-bar-actions">
-          {adding && (
-            <>
-              <button
-                ref={addBtnRef}
-                class="gear-bar-action"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAdd();
-                }}
-              >
-                Add
-              </button>
-              <Popover
-                anchorRef={addBtnRef}
-                open={addError !== null}
-                onClose={() => setAddError(null)}
-                className="popover-info"
-              >
-                <p class="popover-message">{addError}</p>
-              </Popover>
-            </>
-          )}
-          {isCustom && !adding && (
-            <>
-              <button
-                ref={removeBtnRef}
-                class="gear-bar-action gear-bar-remove"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setConfirmOpen(true);
-                }}
-              >
-                Remove
-              </button>
-              <ConfirmPopover
-                anchorRef={removeBtnRef}
-                open={confirmOpen}
-                message={`Remove ${resolved?.name}?`}
-                confirmText="Remove"
-                cancelText="Keep"
-                type="danger"
-                onConfirm={() => {
-                  setConfirmOpen(false);
-                  handleRemove();
-                }}
-                onCancel={() => setConfirmOpen(false)}
-              />
-            </>
-          )}
-          <Chevron expanded={expanded} />
-        </div>
-      </div>
-      {expanded && (
-        <div class="bottom-bar-body">
-          {adding ? (
-            <GearForm
-              disabled={false}
-              name={newName}
-              onNameChange={setNewName}
-              type={newType}
-              onTypeChange={setNewType}
-              description={newDescription}
-              onDescriptionChange={setNewDescription}
-              cost={newCost}
-              onCostChange={setNewCost}
-              availability={newAvailability}
-              onAvailabilityChange={setNewAvailability}
-            />
-          ) : resolved ? (
-            <GearForm
-              disabled
-              name={resolved.name}
-              type={resolved.type}
-              description={resolved.description}
-              onDescriptionChange={
-                isCustom && hasCustomDef
-                  ? (v) => updateCustomGear(gearId!, { description: v })
-                  : undefined
-              }
-              cost={resolved.cost != null ? String(resolved.cost) : ""}
-              onCostChange={
-                isCustom && hasCustomDef
-                  ? (v) => {
-                      const n = v ? Number(v) : undefined;
-                      updateCustomGear(gearId!, {
-                        cost: n != null && !isNaN(n) ? n : undefined,
-                      });
-                    }
-                  : undefined
-              }
-              availability={resolved.availability ?? ""}
-              onAvailabilityChange={
-                isCustom && hasCustomDef
-                  ? (v) =>
-                      updateCustomGear(gearId!, {
-                        availability: (v as Availability) || undefined,
-                      })
-                  : undefined
-              }
-              onTypeChange={
-                isCustom && hasCustomDef
-                  ? (v) => updateCustomGear(gearId!, { type: v })
-                  : undefined
-              }
-            />
-          ) : null}
-        </div>
-      )}
-    </>
+    <BottomBarItemShell
+      expanded={expanded}
+      onToggle={onToggle}
+      headerLabel={adding ? "New custom item" : (resolved?.name ?? "")}
+      hasContent={!!(resolved && gearId) || adding}
+      hintText="Select an item"
+      adding={adding}
+      onAdd={handleAdd}
+      isCustom={isCustom}
+      removeName={resolved?.name}
+      onRemove={handleRemove}
+    >
+      {adding ? (
+        <GearForm
+          disabled={false}
+          name={newName}
+          onNameChange={setNewName}
+          type={newType}
+          onTypeChange={setNewType}
+          description={newDescription}
+          onDescriptionChange={setNewDescription}
+          cost={newCost}
+          onCostChange={setNewCost}
+          availability={newAvailability}
+          onAvailabilityChange={setNewAvailability}
+        />
+      ) : resolved ? (
+        <GearForm
+          disabled
+          name={resolved.name}
+          type={resolved.type}
+          description={resolved.description}
+          onDescriptionChange={
+            isCustom && hasCustomDef
+              ? (v) => updateCustomGear(gearId!, { description: v })
+              : undefined
+          }
+          cost={resolved.cost != null ? String(resolved.cost) : ""}
+          onCostChange={
+            isCustom && hasCustomDef
+              ? (v) => {
+                  const n = v ? Number(v) : undefined;
+                  updateCustomGear(gearId!, {
+                    cost: n != null && !isNaN(n) ? n : undefined,
+                  });
+                }
+              : undefined
+          }
+          availability={resolved.availability ?? ""}
+          onAvailabilityChange={
+            isCustom && hasCustomDef
+              ? (v) =>
+                  updateCustomGear(gearId!, {
+                    availability: (v as Availability) || undefined,
+                  })
+              : undefined
+          }
+          onTypeChange={
+            isCustom && hasCustomDef
+              ? (v) => updateCustomGear(gearId!, { type: v })
+              : undefined
+          }
+        />
+      ) : null}
+    </BottomBarItemShell>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useRef } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { $selectedSkill, $addingSkill, selectSkill } from "@stores/ui";
 import {
@@ -11,9 +11,7 @@ import {
 import type { SkillStat } from "@scripts/skills/catalog";
 import { SKILL_CATALOG } from "@scripts/skills/catalog";
 import { STAT_LABELS, STAT_NAMES } from "@scripts/biomon/types";
-import { Chevron } from "../shared/Chevron";
-import { ConfirmPopover } from "../shared/ConfirmPopover";
-import { Popover } from "../shared/Popover";
+import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 
 const SKILL_STAT_OPTIONS: { value: SkillStat; label: string }[] = [
   ...STAT_NAMES.map((s) => ({ value: s as SkillStat, label: STAT_LABELS[s] })),
@@ -131,32 +129,13 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
   const [newCombat, setNewCombat] = useState(false);
   const [newDescription, setNewDescription] = useState("");
 
-  // Add button ref + error popover
-  const addBtnRef = useRef<HTMLButtonElement>(null);
-  const [addError, setAddError] = useState<string | null>(null);
-
-  // Remove confirmation
-  const removeBtnRef = useRef<HTMLButtonElement>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-
   const isCustom = skillName ? isCustomSkill(skillName) : false;
   const catalogDef = skillName && !isCustom ? SKILL_CATALOG[skillName] : null;
   const description = catalogDef?.description ?? entry?.description ?? "";
 
-  const hasContent = !!(entry && skillName) || adding;
-  const headerLabel = adding ? "New custom skill" : (skillName ?? "");
-
-  if (!hasContent) {
-    return (
-      <div class="bottom-bar-row">
-        <span class="bottom-bar-hint">Select a skill</span>
-      </div>
-    );
-  }
-
-  const handleAdd = () => {
+  const handleAdd = (): string | null => {
     const trimmed = newName.trim();
-    if (!trimmed) return;
+    if (!trimmed) return "Name cannot be empty";
     if (
       addSkill(trimmed, newStat, newCombat, newDescription.trim() || undefined)
     ) {
@@ -164,11 +143,10 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
       setNewStat("ref");
       setNewCombat(false);
       setNewDescription("");
-      setAddError(null);
       selectSkill(trimmed);
-    } else {
-      setAddError(`"${trimmed}" already exists`);
+      return null;
     }
+    return `"${trimmed}" already exists`;
   };
 
   const handleRemove = () => {
@@ -177,95 +155,44 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
   };
 
   return (
-    <>
-      <div class="bottom-bar-row expandable" onClick={onToggle}>
-        <div class="bottom-bar-content">
-          <span class="bottom-bar-name">{headerLabel}</span>
-        </div>
-        <div class="bottom-bar-actions">
-          {adding && (
-            <>
-              <button
-                ref={addBtnRef}
-                class="skill-bar-action"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAdd();
-                }}
-              >
-                Add
-              </button>
-              <Popover
-                anchorRef={addBtnRef}
-                open={addError !== null}
-                onClose={() => setAddError(null)}
-                className="popover-info"
-              >
-                <p class="popover-message">{addError}</p>
-              </Popover>
-            </>
-          )}
-          {isCustom && !adding && (
-            <>
-              <button
-                ref={removeBtnRef}
-                class="skill-bar-action skill-bar-remove"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setConfirmOpen(true);
-                }}
-              >
-                Remove
-              </button>
-              <ConfirmPopover
-                anchorRef={removeBtnRef}
-                open={confirmOpen}
-                message={`Remove ${skillName}?`}
-                confirmText="Remove"
-                cancelText="Keep"
-                type="danger"
-                onConfirm={() => {
-                  setConfirmOpen(false);
-                  handleRemove();
-                }}
-                onCancel={() => setConfirmOpen(false)}
-              />
-            </>
-          )}
-          <Chevron expanded={expanded} />
-        </div>
-      </div>
-      {expanded && (
-        <div class="bottom-bar-body">
-          {adding ? (
-            <SkillForm
-              disabled={false}
-              name={newName}
-              onNameChange={setNewName}
-              stat={newStat}
-              onStatChange={setNewStat}
-              combat={newCombat}
-              onCombatChange={setNewCombat}
-              description={newDescription}
-              onDescriptionChange={setNewDescription}
-            />
-          ) : entry ? (
-            <SkillForm
-              disabled
-              name={skillName!}
-              stat={entry.stat}
-              combat={entry.combat}
-              description={description}
-              onDescriptionChange={
-                isCustom
-                  ? (v) =>
-                      updateSkill(skillName!, { description: v || undefined })
-                  : undefined
-              }
-            />
-          ) : null}
-        </div>
-      )}
-    </>
+    <BottomBarItemShell
+      expanded={expanded}
+      onToggle={onToggle}
+      headerLabel={adding ? "New custom skill" : (skillName ?? "")}
+      hasContent={!!(entry && skillName) || adding}
+      hintText="Select a skill"
+      adding={adding}
+      onAdd={handleAdd}
+      isCustom={isCustom}
+      removeName={skillName ?? undefined}
+      onRemove={handleRemove}
+    >
+      {adding ? (
+        <SkillForm
+          disabled={false}
+          name={newName}
+          onNameChange={setNewName}
+          stat={newStat}
+          onStatChange={setNewStat}
+          combat={newCombat}
+          onCombatChange={setNewCombat}
+          description={newDescription}
+          onDescriptionChange={setNewDescription}
+        />
+      ) : entry ? (
+        <SkillForm
+          disabled
+          name={skillName!}
+          stat={entry.stat}
+          combat={entry.combat}
+          description={description}
+          onDescriptionChange={
+            isCustom
+              ? (v) => updateSkill(skillName!, { description: v || undefined })
+              : undefined
+          }
+        />
+      ) : null}
+    </BottomBarItemShell>
   );
 };
