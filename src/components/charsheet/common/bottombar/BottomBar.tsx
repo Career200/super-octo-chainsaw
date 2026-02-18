@@ -39,25 +39,28 @@ export const BottomBar = () => {
     setExpanded(false);
   }
 
+  const toggle = () => {
+    if (expanded) {
+      // Collapsing: dismiss "adding" mode so re-clicking "Add"
+      // triggers a fresh false→true transition in useAutoExpand
+      setExpanded(false);
+      if (addingSkill) $addingSkill.set(false);
+      if (addingGear) $addingGear.set(false);
+    } else {
+      setExpanded(true);
+    }
+  };
+
   return (
     <div class={`bottom-bar${expanded ? " expanded" : ""}`}>
       {tab === "dossier" && (
-        <BottomBarSkills
-          expanded={expanded}
-          onToggle={() => setExpanded((e) => !e)}
-        />
+        <BottomBarSkills expanded={expanded} onToggle={toggle} />
       )}
       {tab === "biomon" && (
-        <BottomBarHistory
-          expanded={expanded}
-          onToggle={() => setExpanded((e) => !e)}
-        />
+        <BottomBarHistory expanded={expanded} onToggle={toggle} />
       )}
       {tab === "equipment" && (
-        <BottomBarEquipment
-          expanded={expanded}
-          onToggle={() => setExpanded((e) => !e)}
-        />
+        <BottomBarEquipment expanded={expanded} onToggle={toggle} />
       )}
     </div>
   );
