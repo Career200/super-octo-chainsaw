@@ -93,6 +93,7 @@
 
 .body-part h3 {
   margin: 0;
+  padding-right: 40px;
   font-size: var(--font-ui-xl);
   color: var(--accent);
 }
