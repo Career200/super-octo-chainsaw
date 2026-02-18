@@ -10,10 +10,9 @@ import {
   $ownedGearCount,
   $customGear,
 } from "@stores/gear";
-import { $selectedGear, selectGear, startAddingGear } from "@stores/ui";
+import { $selectedGear, selectGear, startAddingGear, tabStore } from "@stores/ui";
 import { Chevron } from "../shared/Chevron";
-
-type GearTab = "catalog" | "custom" | "owned";
+import { TabStrip } from "../shared/TabStrip";
 
 function GearCard({
   id,
@@ -168,7 +167,7 @@ export const GearPanel = () => {
   const ownedCount = useStore($ownedGearCount);
   const customGear = useStore($customGear);
   const selectedId = useStore($selectedGear);
-  const [tab, setTab] = useState<GearTab>("catalog");
+  const tab = useStore(tabStore("gear-tab", "catalog"));
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
   const toggleGroup = (type: string) => {
@@ -213,26 +212,20 @@ export const GearPanel = () => {
     <div class="panel" id="gear-panel">
       <div class="panel-heading">
         <h2 class="title text-sm">Gear</h2>
-        <span class="tab-strip">
-          <button
-            class={tab === "catalog" ? "active" : ""}
-            onClick={() => setTab("catalog")}
-          >
-            Catalog
-          </button>
-          <button
-            class={tab === "custom" ? "active" : ""}
-            onClick={() => setTab("custom")}
-          >
-            Custom{customGear.length > 0 && ` ${customGear.length}`}
-          </button>
-          <button
-            class={tab === "owned" ? "active" : ""}
-            onClick={() => setTab("owned")}
-          >
-            Owned{ownedCount > 0 && ` ${ownedCount}`}
-          </button>
-        </span>
+        <TabStrip
+          persist="gear-tab"
+          tabs={[
+            { id: "catalog", label: "Catalog" },
+            {
+              id: "custom",
+              label: `Custom${customGear.length > 0 ? ` ${customGear.length}` : ""}`,
+            },
+            {
+              id: "owned",
+              label: `Owned${ownedCount > 0 ? ` ${ownedCount}` : ""}`,
+            },
+          ]}
+        />
       </div>
 
       {tab === "custom" && (

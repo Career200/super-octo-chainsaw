@@ -1,45 +1,29 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { atom } from "nanostores";
+import type { WritableAtom } from "nanostores";
 
-export type SpaTab = "biomon" | "dossier" | "equipment";
-export type EquipmentSubTab = "armor" | "gear";
+const tabStoreCache = new Map<string, WritableAtom<string>>();
 
-const TAB_MIGRATION: Record<string, SpaTab> = {
-  rp: "dossier",
-  armor: "equipment",
-};
-
-const VALID_SPA_TABS: SpaTab[] = ["biomon", "dossier", "equipment"];
-const VALID_EQUIPMENT_TABS: EquipmentSubTab[] = ["armor", "gear"];
-
-export const $spaTab = persistentAtom<SpaTab>("spa-tab", "biomon", {
-  encode: JSON.stringify,
-  decode: (raw: string): SpaTab => {
-    try {
-      const v = JSON.parse(raw);
-      const migrated = TAB_MIGRATION[v] ?? v;
-      return VALID_SPA_TABS.includes(migrated) ? migrated : "biomon";
-    } catch {
-      return "biomon";
-    }
-  },
-});
-
-export const $equipmentSubTab = persistentAtom<EquipmentSubTab>(
-  "equipment-sub-tab",
-  "armor",
-  {
-    encode: JSON.stringify,
-    decode: (raw: string): EquipmentSubTab => {
-      try {
-        const v = JSON.parse(raw);
-        return VALID_EQUIPMENT_TABS.includes(v) ? v : "armor";
-      } catch {
-        return "armor";
-      }
-    },
-  },
-);
+export function tabStore(
+  key: string,
+  defaultVal: string,
+): WritableAtom<string> {
+  let store = tabStoreCache.get(key);
+  if (!store) {
+    store = persistentAtom<string>(key, defaultVal, {
+      encode: JSON.stringify,
+      decode: (raw) => {
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return defaultVal;
+        }
+      },
+    });
+    tabStoreCache.set(key, store);
+  }
+  return store;
+}
 
 /** Currently selected skill name, or null if none selected. */
 export const $selectedSkill = atom<string | null>(null);

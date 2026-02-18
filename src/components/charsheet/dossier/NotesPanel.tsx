@@ -8,10 +8,10 @@ import {
   removeContact,
   type Contact,
 } from "@stores/notes";
+import { tabStore } from "@stores/ui";
 import { Panel } from "../shared/Panel";
+import { TabStrip } from "../shared/TabStrip";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
-
-type NotesTab = "notes" | "contacts";
 
 // --- Debounce helper ---
 
@@ -95,7 +95,7 @@ export const NotesPanel = ({
   onToggle: () => void;
 }) => {
   const notes = useStore($notes);
-  const [tab, setTab] = useState<NotesTab>("notes");
+  const tab = useStore(tabStore("notes-tab", "notes"));
 
   const debouncedSetFreeform = useDebouncedCallback(setFreeformNote, 300);
 
@@ -106,20 +106,13 @@ export const NotesPanel = ({
       expanded={expanded}
       onToggle={onToggle}
       headerActions={
-        <span class="tab-strip" onClick={(e) => e.stopPropagation()}>
-          <button
-            class={tab === "notes" ? "active" : ""}
-            onClick={() => setTab("notes")}
-          >
-            Notes
-          </button>
-          <button
-            class={tab === "contacts" ? "active" : ""}
-            onClick={() => setTab("contacts")}
-          >
-            Contacts
-          </button>
-        </span>
+        <TabStrip
+          persist="notes-tab"
+          tabs={[
+            { id: "notes", label: "Notes" },
+            { id: "contacts", label: "Contacts" },
+          ]}
+        />
       }
     >
       {tab === "notes" && (

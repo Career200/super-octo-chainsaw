@@ -1,22 +1,40 @@
 import { useStore } from "@nanostores/preact";
-import type { WritableAtom } from "nanostores";
+import type { ComponentChildren } from "preact";
+import { tabStore } from "@stores/ui";
+import { useEffect } from "preact/hooks";
 
 interface TabDef {
   id: string;
-  label: string;
+  label: ComponentChildren;
 }
 
 interface TabStripProps {
   tabs: TabDef[];
-  $store: WritableAtom<string>;
+  persist: string;
   class?: string;
 }
 
-export const TabStrip = ({ tabs, $store, class: className }: TabStripProps) => {
+export const TabStrip = ({
+  tabs,
+  persist,
+  class: className,
+}: TabStripProps) => {
+  const $store = tabStore(persist, tabs[0].id);
   const active = useStore($store);
 
+  useEffect(() => {
+    // Auto-correct invalid stored value
+    const validIds = tabs.map((t) => t.id);
+    if (!validIds.includes(active)) {
+      $store.set(tabs[0].id);
+    }
+  }, []);
+
   return (
-    <div class={`tab-strip${className ? ` ${className}` : ""}`}>
+    <span
+      class={`tab-strip${className ? ` ${className}` : ""}`}
+      onClick={(e) => e.stopPropagation()}
+    >
       {tabs.map((tab) => (
         <button
           key={tab.id}
@@ -26,6 +44,6 @@ export const TabStrip = ({ tabs, $store, class: className }: TabStripProps) => {
           {tab.label}
         </button>
       ))}
-    </div>
+    </span>
   );
 };

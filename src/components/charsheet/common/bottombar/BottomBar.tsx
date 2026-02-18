@@ -1,7 +1,7 @@
 import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import {
-  $spaTab,
+  tabStore,
   $addingSkill,
   $selectedSkill,
   $addingGear,
@@ -13,7 +13,7 @@ import { BottomBarHistory } from "../../biomon/BottomBarHistory";
 import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
 
 export const BottomBar = () => {
-  const tab = useStore($spaTab);
+  const tab = useStore(tabStore("spa-tab", "biomon"));
   const addingSkill = useStore($addingSkill);
   const selectedSkill = useStore($selectedSkill);
   const addingGear = useStore($addingGear);

@@ -45,8 +45,13 @@
                └────────────────────┘
 
                ┌────────────────────┐
-               │     $spaTab       │─────────────────────▸ Charsheet ◂──▸ TabStrip
-               │     (persist)      │                       (SPA-level tab switching)
+               │  tabStore()       │─────────────────────▸ TabStrip (self-persisting)
+               │  factory (persist) │                       Charsheet, BottomBar,
+               │  keys: spa-tab,   │                       EquipmentView, GearPanel,
+               │  equipment-sub-tab,│                       StatsSkillsPanel, NotesPanel
+               │  gear-tab,        │
+               │  skills-filter,   │
+               │  notes-tab        │
                └────────────────────┘
 
                ┌────────────────────┐
@@ -115,11 +120,6 @@
                                     Three tabs: Default / Custom / My
 
                ┌────────────────────┐
-               │$equipmentSubTab   │─────────────────────▸ EquipmentView ◂──▸
-               │     (persist)      │                       (Armor | Gear sub-tab switching)
-               └────────────────────┘
-
-               ┌────────────────────┐
                │      $gear        │─────────────────────▸ GearPanel ◂──▸ (mutates $gear)
                │     (persist)      │                       (Catalog + Custom + Owned tabs)
                │                    │                       Quantities: id → number
@@ -163,7 +163,8 @@
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$spaTab`, `$equipmentSubTab`, `$skills`, `$gear`, `$customGearItems`) own the data, persist to localStorage
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$skills`, `$gear`, `$customGearItems`) own the data, persist to localStorage
+- **Tab stores** via `tabStore()` factory — 5 keys (`spa-tab`, `equipment-sub-tab`, `gear-tab`, `skills-filter`, `notes-tab`) each persist to localStorage, cached by key so all subscribers share one atom
 - **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only id → quantity. Full objects come from static catalogs at read time. Custom skills are stored as full objects in `$skills`; custom gear definitions live in a separate `$customGearItems` store (persists independently of quantity).
 - **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`

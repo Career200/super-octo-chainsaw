@@ -1,11 +1,11 @@
-import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { $mySkillsCount } from "@stores/skills";
+import { tabStore } from "@stores/ui";
 import { Panel } from "../shared/Panel";
+import { TabStrip } from "../shared/TabStrip";
 import { StatsPanel } from "../biomon/StatsPanel";
 import { SkillsList } from "./SkillsPanel";
-
-export type SkillFilter = "default" | "custom" | "my";
+import type { SkillFilter } from "./SkillsPanel";
 
 export const StatsSkillsPanel = ({
   expanded,
@@ -15,7 +15,7 @@ export const StatsSkillsPanel = ({
   onToggle: () => void;
 }) => {
   const myCount = useStore($mySkillsCount);
-  const [filter, setFilter] = useState<SkillFilter>("default");
+  const filter = useStore(tabStore("skills-filter", "default"));
 
   return (
     <Panel
@@ -24,33 +24,21 @@ export const StatsSkillsPanel = ({
       expanded={expanded}
       onToggle={onToggle}
       headerActions={
-        <span class="tab-strip" onClick={(e) => e.stopPropagation()}>
-          <button
-            class={filter === "default" ? "active" : ""}
-            onClick={() => setFilter("default")}
-          >
-            Default
-          </button>
-          <button
-            class={filter === "custom" ? "active" : ""}
-            onClick={() => setFilter("custom")}
-          >
-            Custom
-          </button>
-          <button
-            class={filter === "my" ? "active" : ""}
-            onClick={() => setFilter("my")}
-          >
-            My {myCount > 0 && myCount}
-          </button>
-        </span>
+        <TabStrip
+          persist="skills-filter"
+          tabs={[
+            { id: "default", label: "Default" },
+            { id: "custom", label: "Custom" },
+            { id: "my", label: `My${myCount > 0 ? ` ${myCount}` : ""}` },
+          ]}
+        />
       }
     >
       <div class="stats-skills-stats">
         <StatsPanel />
       </div>
       <div class="stats-skills-skills">
-        <SkillsList filter={filter} />
+        <SkillsList filter={filter as SkillFilter} />
       </div>
     </Panel>
   );

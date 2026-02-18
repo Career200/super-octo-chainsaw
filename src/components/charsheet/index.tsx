@@ -7,7 +7,7 @@ import { WoundTracker } from "./biomon/WoundTracker";
 import { BodyInfo } from "./biomon/BodyInfo";
 import { StatsStrip } from "./biomon/StatsStrip";
 import { AwarenessLine } from "./biomon/AwarenessLine";
-import { $spaTab } from "@stores/ui";
+import { tabStore } from "@stores/ui";
 import { BottomBar } from "./common/bottombar/BottomBar";
 
 const SPA_TABS = [
@@ -17,9 +17,9 @@ const SPA_TABS = [
 ];
 
 export const Charsheet = () => {
-  const tab = useStore($spaTab);
+  const tab = useStore(tabStore("spa-tab", "biomon"));
 
-  const spaClass = `charsheet-spa ${tab}-section}`;
+  const spaClass = `charsheet-spa ${tab}-section`;
 
   return (
     <div class={spaClass}>
@@ -30,7 +30,7 @@ export const Charsheet = () => {
           <BodyInfo />
         </div>
         <div class="tab-row">
-          <TabStrip tabs={SPA_TABS} $store={$spaTab} class="spa-tabs" />
+          <TabStrip tabs={SPA_TABS} persist="spa-tab" class="spa-tabs" />
           <AwarenessLine />
         </div>
       </div>

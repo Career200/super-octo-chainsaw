@@ -35,11 +35,18 @@ Actions: `recordDamage`, `recordManipulation`, `clearHistory`
 ```
 Actions: `setFreeformNote`, `addContact`, `updateContact`, `removeContact`
 
-### `$spaTab` (ui.ts)
+### `tabStore()` factory (ui.ts)
 ```
-'biomon' | 'dossier' | 'equipment' (default: 'biomon')
+tabStore(key: string, defaultVal: string) → WritableAtom<string>
 ```
-SPA-level tab selection. Subscribed by `Charsheet`. Migrates old values (`rp` → `dossier`, `armor` → `equipment`).
+Creates/returns a cached `persistentAtom<string>` per key. Invalid stored values fall back to default.
+
+Keys in use:
+- `spa-tab` (default: `"biomon"`) — SPA-level tab, read by Charsheet + BottomBar
+- `equipment-sub-tab` (default: `"gear"`) — Armor/Gear sub-tab in EquipmentView
+- `gear-tab` (default: `"catalog"`) — Catalog/Custom/Owned in GearPanel
+- `skills-filter` (default: `"default"`) — Default/Custom/My in StatsSkillsPanel
+- `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
 
 ### `$selectedSkill` (ui.ts)
 ```
@@ -97,12 +104,6 @@ boolean (default: false)
 ```
 Whether the add-custom-gear form is open in the bottom bar. Non-persistent.
 Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
-
-### `$equipmentSubTab` (ui.ts)
-```
-'armor' | 'gear' (default: 'armor')
-```
-Equipment tab sub-tab selection. Subscribed by `EquipmentView`.
 
 ## Computed Stores
 
@@ -233,9 +234,7 @@ HitPopover reads $bodyType.btm, mutates $health via takeDamage
 
 $notes (standalone, no dependents)
 
-$spaTab ────▸ Charsheet (tab selection)
-
-$equipmentSubTab ────▸ EquipmentView (sub-tab selection)
+tabStore() ────▸ TabStrip (5 persisted keys, see factory docs above)
 
 $gear ──────────┬──▸ $ownedGear ──▸ $ownedGearCount
 $customGearItems┼──▸ $customGear

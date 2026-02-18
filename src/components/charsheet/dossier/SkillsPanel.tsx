@@ -14,7 +14,7 @@ import type { SkillEntry } from "@stores/skills";
 import { STAT_STORES } from "@stores/stats";
 import { Chevron } from "../shared/Chevron";
 import { selectSkill, startAddingSkill, $selectedSkill } from "@stores/ui";
-import type { SkillFilter } from "./StatsSkillsPanel";
+export type SkillFilter = "default" | "custom" | "my";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
   "special",
