@@ -5,16 +5,35 @@ interface Props {
   currentSP: number;
   maxSP: number;
   className?: string;
+  active?: boolean;
+  onClick?: () => void;
 }
 
-export const LayerBar = ({ name, currentSP, maxSP, className = "" }: Props) => {
+export const LayerBar = ({ name, currentSP, maxSP, className = "", active, onClick }: Props) => {
   const conditionPercent = (currentSP / maxSP) * 100;
   const conditionClass = getConditionClassFromSP(currentSP, maxSP);
 
+  const cls = [
+    "layer",
+    className,
+    active && "layer-active",
+    onClick && "layer-clickable",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div
-      class={`layer ${className}`.trim()}
+      class={cls}
       title={`${name} — ${currentSP}/${maxSP} SP`}
+      onClick={
+        onClick
+          ? (e: MouseEvent) => {
+              e.stopPropagation();
+              onClick();
+            }
+          : undefined
+      }
     >
       <span class="layer-name">
         <span class="layer-label">{name}</span>

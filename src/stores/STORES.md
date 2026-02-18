@@ -44,6 +44,7 @@ Creates/returns a cached `persistentAtom<string>` per key. Invalid stored values
 Keys in use:
 - `spa-tab` (default: `"biomon"`) — SPA-level tab, read by Charsheet + BottomBar
 - `equipment-sub-tab` (default: `"gear"`) — Armor/Gear sub-tab in EquipmentView
+- `armor-list-tab` (default: `"owned"`) — Owned/Catalog in ArmorListPanel
 - `gear-tab` (default: `"catalog"`) — Catalog/Custom/Owned in GearPanel
 - `skills-filter` (default: `"default"`) — Default/Custom/My in StatsSkillsPanel
 - `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
@@ -90,6 +91,20 @@ Custom gear definitions — user-created extension to `GEAR_CATALOG`. Persists i
 
 Actions: `addCustomGear`, `updateCustomGear`, `removeCustomGear`
 Helper: `isCustomGear(id)` — true if not in `GEAR_CATALOG`
+
+### `$selectedArmor` (ui.ts)
+```
+string | null (default: null)
+```
+Currently selected armor instance ID for the bottom bar. Non-persistent.
+Use `selectArmor()` to set.
+
+### `$highlightedPart` (ui.ts)
+```
+BodyPartName | null (default: null)
+```
+Body part being highlighted on the inventory body grid. Non-persistent.
+Use `highlightPart()` to set/toggle.
 
 ### `$selectedGear` (ui.ts)
 ```
@@ -239,6 +254,9 @@ tabStore() ────▸ TabStrip (5 persisted keys, see factory docs above)
 $gear ──────────┬──▸ $ownedGear ──▸ $ownedGearCount
 $customGearItems┼──▸ $customGear
                 └──▸ GearPanel (catalog + custom + owned views)
+
+$selectedArmor ──▸ BottomBarArmor, ArmorCard (highlight), BodyPartCard (highlight)
+$highlightedPart ──▸ BodyPartCard (highlight), ArmorListPanel (highlight cards)
 
 $selectedGear ◂──▸ $addingGear (mutually exclusive via selectGear/startAddingGear)
 

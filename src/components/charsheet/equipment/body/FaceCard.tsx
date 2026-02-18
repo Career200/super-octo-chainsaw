@@ -3,21 +3,46 @@ import {
   $ownedArmor,
   getBodyPartLayers,
   getImplantsForPart,
+  getArmorPiece,
 } from "@stores/armor";
 import {
   getEffectiveSP,
   getImplantSP,
   getPartSpMax,
 } from "@scripts/armor/core";
+import {
+  $selectedArmor,
+  $highlightedPart,
+  highlightPart,
+} from "@stores/ui";
 import { HelpPopover } from "../../shared/HelpPopover";
 import { HitPopover } from "../HitPopover";
 
-export const FaceCard = () => {
+interface Props {
+  mode?: "biomon" | "inventory";
+}
+
+export const FaceCard = ({ mode = "biomon" }: Props) => {
   useStore($ownedArmor);
+  const selectedArmorId = useStore($selectedArmor);
+  const highlightedPartVal = useStore($highlightedPart);
+
+  const inventory = mode === "inventory";
 
   const layers = getBodyPartLayers("face");
   const implants = getImplantsForPart("face");
   const total = getEffectiveSP(layers, { implants, part: "face" });
+
+  const selectedArmor =
+    inventory && selectedArmorId ? getArmorPiece(selectedArmorId) : null;
+  const isHighlighted =
+    inventory &&
+    (highlightedPartVal === "face" ||
+      (selectedArmor?.bodyParts.includes("face") ?? false));
+
+  const handleClick = () => {
+    highlightPart(highlightedPartVal === "face" ? null : "face");
+  };
 
   const sources = [
     ...layers.map((l) => ({
@@ -34,9 +59,23 @@ export const FaceCard = () => {
       })),
   ];
 
+  const cls = [
+    "body-part",
+    inventory && "body-part-clickable",
+    isHighlighted && "body-part-highlighted",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div class="body-part" id="part-face">
-      <HitPopover forPart="face">1 {">"} 1-4</HitPopover>
+    <div
+      class={cls}
+      id="part-face"
+      onClick={inventory ? handleClick : undefined}
+    >
+      {!inventory && (
+        <HitPopover forPart="face">1 {">"} 1-4</HitPopover>
+      )}
       <h3>
         Face{" "}
         <HelpPopover
@@ -72,12 +111,11 @@ export const FaceCard = () => {
               )}
             </>
           }
-        />
+        />{" "}
+        <span class="sp-value" id="sp-face">
+          {total}
+        </span>
       </h3>
-      SP:{" "}
-      <span class="sp-value" id="sp-face">
-        {total}
-      </span>
     </div>
   );
 };

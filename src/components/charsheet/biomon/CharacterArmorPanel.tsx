@@ -16,7 +16,7 @@ export const CharacterArmorPanel = ({
       id="character-armor-panel"
       title={
         <>
-          Character Armor{" "}
+          Body Armor{" "}
           <HelpPopover id="armor-help" content={<ArmorHelpContent />} />
         </>
       }

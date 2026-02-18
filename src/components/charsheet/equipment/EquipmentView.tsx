@@ -1,6 +1,5 @@
-import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { tabStore } from "@stores/ui";
+import { tabStore, $selectedArmor, selectArmor } from "@stores/ui";
 import { TwoPanelView } from "../shared/TwoPanelView";
 import { TabStrip } from "../shared/TabStrip";
 import { ArmorListPanel } from "./ArmorListPanel";
@@ -15,7 +14,7 @@ const EQUIPMENT_TABS = [
 
 export const EquipmentView = () => {
   const subTab = useStore(tabStore("equipment-sub-tab", "gear"));
-  const [selectedArmorId, setSelectedArmorId] = useState<string | null>(null);
+  const selectedArmorId = useStore($selectedArmor);
 
   return (
     <>
@@ -31,7 +30,7 @@ export const EquipmentView = () => {
               expanded={expanded}
               onToggle={onToggle}
             >
-              <BodyPartGrid />
+              <BodyPartGrid mode="inventory" />
             </Panel>
           )}
           renderSecond={(expanded, onToggle) => (
@@ -39,7 +38,7 @@ export const EquipmentView = () => {
               expanded={expanded}
               onToggle={onToggle}
               selectedId={selectedArmorId}
-              onSelect={setSelectedArmorId}
+              onSelect={(id) => selectArmor(id)}
             />
           )}
         />

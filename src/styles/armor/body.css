@@ -201,6 +201,33 @@
   color: var(--accent-muted);
 }
 
+/* === Inventory Mode — Interactive States === */
+.body-part.body-part-clickable {
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.body-part.body-part-clickable:hover {
+  background: var(--code-bg);
+}
+
+.body-part.body-part-highlighted {
+  background: var(--accent-subtle);
+}
+
+.layer.layer-clickable {
+  cursor: pointer;
+}
+
+.layer.layer-clickable:hover {
+  background: var(--code-bg);
+}
+
+.layer.layer-active {
+  background: var(--accent-subtle);
+  border-left: 2px solid var(--accent);
+}
+
 /* === SP Values === */
 .sp-value {
   font-size: var(--font-ui-xl);

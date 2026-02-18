@@ -1,28 +1,8 @@
-/* Armor Legend */
-.armor-legend {
-  font-size: var(--font-ui);
-  white-space: nowrap;
-}
-
-.armor-legend .armor-type-icon {
-  transform: scale(1.5);
-  margin: 0 var(--space-2) 0 var(--space-6);
-}
-
-/* === Armor Items === */
+/* === Armor Items (used by ImplantsDisplay) === */
 .armor-item.armor-worn {
   border-color: var(--accent);
 }
 
-.store-item h4 {
-  color: var(--link);
-}
-
-.store-description {
-  margin: var(--space-6) 0 0;
-}
-
-/* armor-header uses .flex-between .gap-12 utilities */
 
 .armor-sp {
   font-size: var(--font-ui-lg);
@@ -48,16 +28,6 @@
   color: var(--fg-soft);
 }
 
-.armor-coverage-row {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-8);
-  margin-top: var(--space-6);
-}
-
-/* body-parts-coverage uses .flex-end .gap-4 utilities */
 
 .coverage-badge {
   display: inline-block;
@@ -76,39 +46,14 @@
   letter-spacing: 1px;
 }
 
-/* armor-actions, store-actions use .flex-between .gap-8 utilities */
-.armor-actions,
-.store-actions {
+.armor-actions {
   margin-top: var(--space-8);
 }
 
-.armor-actions button,
-.store-actions button {
+.armor-actions button {
   flex: 1;
 }
 
-/* === Implant Groups (in inventory) === */
-.implant-group {
-  margin-bottom: var(--space-12);
-  padding: var(--padding-panel);
-  border: 1px dashed var(--accent-muted);
-  border-radius: var(--radius-lg);
-  background: var(--bg);
-}
-
-/* implant-group-label uses .text-label utility + custom color */
-.implant-group-label {
-  color: var(--accent-muted);
-  margin-bottom: var(--space-8);
-}
-
-.implant-group .armor-item {
-  background: var(--bg-alt);
-}
-
-.implant-group .armor-item:last-child {
-  margin-bottom: 0;
-}
 
 /* === ArmorCard (compact card for card list) === */
 .armor-card {
@@ -177,6 +122,26 @@
 
 .armor-card-actions {
   margin-top: var(--space-6);
+}
+
+/* === Armor bottom bar detail === */
+.armor-detail-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.armor-detail-part {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--font-ui);
+}
+
+.armor-detail-part [class*="condition-"] {
+  color: var(--condition-color);
+  font-weight: bold;
 }
 
 /* === Health Color Applications === */

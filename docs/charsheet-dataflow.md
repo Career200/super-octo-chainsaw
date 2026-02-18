@@ -24,8 +24,8 @@
                 └────────▲────────┘                    │
                          │                             │
                ┌─────────┴──────────┐                  │
-               │    $ownedArmor     │─────────────────┼──▸ InventoryPanel, ArmorItem
-               │     (persist)      │                  │    BodyPartCard
+               │    $ownedArmor     │─────────────────┼──▸ ArmorListPanel, ArmorCard
+               │     (persist)      │                  │    BodyPartCard, BottomBarArmor
                │                    │                  │    SkinweaveDisplay, ImplantsDisplay
                └────────────────────┘                  │    HitPopover ◂──▸, RepairPopover
                                                        │
@@ -48,7 +48,8 @@
                │  tabStore()       │─────────────────────▸ TabStrip (self-persisting)
                │  factory (persist) │                       Charsheet, BottomBar,
                │  keys: spa-tab,   │                       EquipmentView, GearPanel,
-               │  equipment-sub-tab,│                       StatsSkillsPanel, NotesPanel
+               │  equipment-sub-tab,│                       ArmorListPanel,
+               │  armor-list-tab,  │                       StatsSkillsPanel, NotesPanel
                │  gear-tab,        │
                │  skills-filter,   │
                │  notes-tab        │
@@ -159,6 +160,16 @@
                │      (atom)       │                       BottomBar (auto-expand)
                └────────────────────┘
                 Mutually exclusive with $selectedGear
+
+               ┌────────────────────┐
+               │  $selectedArmor  │─────────────────────▸ BottomBarArmor (detail view)
+               │      (atom)       │                       ArmorCard (highlight)
+               └────────────────────┘                      BodyPartCard (layer active state)
+
+               ┌────────────────────┐
+               │ $highlightedPart │─────────────────────▸ BodyPartCard (body part highlight)
+               │      (atom)       │                       ArmorListPanel (card highlight)
+               └────────────────────┘
 ```
 
 ## Key patterns
@@ -169,5 +180,5 @@
 - **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
-- **UI atoms**: `$selectedSkill`/`$addingSkill` and `$selectedGear`/`$addingGear` are each mutually exclusive pairs — setting one clears the other via helper functions
+- **UI atoms**: `$selectedSkill`/`$addingSkill` and `$selectedGear`/`$addingGear` are each mutually exclusive pairs — setting one clears the other via helper functions. `$selectedArmor` and `$highlightedPart` are independent atoms for armor selection and body part highlighting on the inventory grid.
 - `◂──▸` = component both reads and mutates that store

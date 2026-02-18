@@ -4,13 +4,14 @@ import {
   getAllOwnedArmor,
   isImplant,
   acquireArmor,
+  getBodyPartLayers,
   ARMOR_CATALOG,
 } from "@stores/armor";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 import { ArmorCard } from "./ArmorCard";
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
-import { tabStore } from "@stores/ui";
+import { tabStore, $highlightedPart } from "@stores/ui";
 
 function sortArmor<T extends { type: string; spMax: number }>(items: T[]): T[] {
   return [...items].sort((a, b) => {
@@ -27,20 +28,24 @@ export const ArmorListPanel = ({
   expanded,
   onToggle,
   selectedId,
-  highlightedIds,
   onSelect,
 }: {
   expanded: boolean;
   onToggle: () => void;
   selectedId: string | null;
-  highlightedIds?: Set<string>;
   onSelect: (id: string | null) => void;
 }) => {
   useStore($ownedArmor);
   const tab = useStore(tabStore("armor-list-tab", "owned"));
+  const highlightedPart = useStore($highlightedPart);
 
   const owned = getAllOwnedArmor().filter((a) => !isImplant(a));
   const sorted = sortArmor(owned);
+
+  // Compute which armor IDs cover the highlighted body part
+  const highlightedIds = highlightedPart
+    ? new Set(getBodyPartLayers(highlightedPart).map((l) => l.id))
+    : undefined;
 
   return (
     <Panel

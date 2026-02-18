@@ -31,7 +31,6 @@ input[type="number"] {
 /* === Base Card === */
 .card,
 .armor-item,
-.store-item,
 .history-entry,
 .body-part,
 .stat-column {
@@ -43,8 +42,7 @@ input[type="number"] {
 }
 
 .card h4,
-.armor-item h4,
-.store-item h4 {
+.armor-item h4 {
   margin: 0;
   color: var(--accent);
 }

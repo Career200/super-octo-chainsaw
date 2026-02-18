@@ -6,11 +6,13 @@ import {
   $selectedSkill,
   $addingGear,
   $selectedGear,
+  $selectedArmor,
 } from "@stores/ui";
 import { useAutoExpand } from "./useAutoExpand";
 import { BottomBarSkills } from "../../dossier/BottomBarSkills";
 import { BottomBarHistory } from "../../biomon/BottomBarHistory";
 import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
+import { BottomBarArmor } from "../../equipment/BottomBarArmor";
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "biomon"));
@@ -18,6 +20,8 @@ export const BottomBar = () => {
   const selectedSkill = useStore($selectedSkill);
   const addingGear = useStore($addingGear);
   const selectedGear = useStore($selectedGear);
+  const selectedArmor = useStore($selectedArmor);
+  const equipSubTab = useStore(tabStore("equipment-sub-tab", "gear"));
   const [expanded, setExpanded] = useState(false);
 
   // Collapse when switching tabs
@@ -29,11 +33,14 @@ export const BottomBar = () => {
 
   useAutoExpand(addingSkill, selectedSkill, expanded, setExpanded);
   useAutoExpand(addingGear, selectedGear, expanded, setExpanded);
+  useAutoExpand(false, selectedArmor, expanded, setExpanded);
 
   // Safety: collapse if current tab has no active content
   const hasContent =
     (tab === "dossier" && (selectedSkill || addingSkill)) ||
-    (tab === "equipment" && (selectedGear || addingGear)) ||
+    (tab === "equipment" &&
+      ((equipSubTab === "gear" && (selectedGear || addingGear)) ||
+        (equipSubTab === "armor" && !!selectedArmor))) ||
     tab === "biomon"; // biomon always has history content
   if (expanded && !hasContent) {
     setExpanded(false);
@@ -59,8 +66,11 @@ export const BottomBar = () => {
       {tab === "biomon" && (
         <BottomBarHistory expanded={expanded} onToggle={toggle} />
       )}
-      {tab === "equipment" && (
+      {tab === "equipment" && equipSubTab === "gear" && (
         <BottomBarEquipment expanded={expanded} onToggle={toggle} />
+      )}
+      {tab === "equipment" && equipSubTab === "armor" && (
+        <BottomBarArmor expanded={expanded} onToggle={toggle} />
       )}
     </div>
   );

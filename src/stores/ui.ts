@@ -1,6 +1,7 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { atom } from "nanostores";
 import type { WritableAtom } from "nanostores";
+import type { BodyPartName } from "@scripts/armor/core";
 
 const tabStoreCache = new Map<string, WritableAtom<string>>();
 
@@ -55,4 +56,18 @@ export function selectGear(id: string | null): void {
 export function startAddingGear(): void {
   $selectedGear.set(null);
   $addingGear.set(true);
+}
+
+/** Currently selected armor instance ID, or null. */
+export const $selectedArmor = atom<string | null>(null);
+
+export function selectArmor(id: string | null): void {
+  $selectedArmor.set(id);
+}
+
+/** Body part being highlighted on the inventory grid, or null. */
+export const $highlightedPart = atom<BodyPartName | null>(null);
+
+export function highlightPart(part: BodyPartName | null): void {
+  $highlightedPart.set(part);
 }
