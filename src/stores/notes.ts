@@ -14,7 +14,16 @@ export interface NotesState {
 export const $notes = persistentAtom<NotesState>(
   "character-notes",
   { freeform: "", contacts: [] },
-  { encode: JSON.stringify, decode: JSON.parse },
+  {
+    encode: JSON.stringify,
+    decode: (raw: string): NotesState => {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return { freeform: "", contacts: [] };
+      }
+    },
+  },
 );
 
 // --- Actions ---

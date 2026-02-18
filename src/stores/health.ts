@@ -16,7 +16,13 @@ function defaultState(): WoundState {
 
 export const $health = persistentAtom<WoundState>("health-state", defaultState(), {
   encode: JSON.stringify,
-  decode: JSON.parse,
+  decode: (raw: string): WoundState => {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return defaultState();
+    }
+  },
 });
 
 // --- Helpers ---
