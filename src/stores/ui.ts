@@ -56,3 +56,19 @@ export function startAddingSkill(): void {
   $selectedSkill.set(null);
   $addingSkill.set(true);
 }
+
+/** Currently selected gear item ID (templateId or custom name), or null. */
+export const $selectedGear = atom<string | null>(null);
+
+/** Whether the add-custom-gear form is open. Mutually exclusive with $selectedGear. */
+export const $addingGear = atom<boolean>(false);
+
+export function selectGear(id: string | null): void {
+  $addingGear.set(false);
+  $selectedGear.set(id);
+}
+
+export function startAddingGear(): void {
+  $selectedGear.set(null);
+  $addingGear.set(true);
+}

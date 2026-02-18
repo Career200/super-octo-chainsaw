@@ -121,14 +121,26 @@
 
                ┌────────────────────┐
                │      $gear        │─────────────────────▸ GearPanel ◂──▸ (mutates $gear)
-               │     (persist)      │                       (Catalog + Owned tabs)
-               │                    │                       Sparse: templateId → quantity
-               └──┬────────────────┘
-                  │
+               │     (persist)      │                       (Catalog + Custom + Owned tabs)
+               │                    │                       Quantities: id → number
+               └──┬──┬─────────────┘
+                  │  │
+                  │  │  ┌──────────────────────┐
+                  │  │  │  $customGearItems    │─────────▸ BottomBarEquipment ◂──▸
+                  │  │  │     (persist)         │           (custom gear definitions)
+                  │  │  └──┬──┬────────────────┘
+                  │  │     │  │
+                  │  ├─────┘  │
+                  │  ▾        │
+                  │ ┌──────────────┐
+                  │ │ $customGear  │─────────────────────▸ GearPanel (Custom tab)
+                  │ │  (computed)  │
+                  │ └──────────────┘
+                  ├────────────┘
                   ▾
                ┌──────────────┐
                │  $ownedGear  │─────────────────────────▸ GearPanel (owned count badge)
-               │  (computed)  │
+               │  (computed)  │                            BottomBarEquipment (selected item)
                └──────┬───────┘
                       │
                       ▾
@@ -136,14 +148,25 @@
                │$ownedGearCnt │
                │  (computed)  │
                └──────────────┘
+
+               ┌────────────────────┐
+               │  $selectedGear    │─────────────────────▸ BottomBarEquipment (detail view)
+               │      (atom)       │                       GearCard (highlight)
+               └────────────────────┘
+
+               ┌────────────────────┐
+               │   $addingGear    │─────────────────────▸ BottomBarEquipment (add-gear form)
+               │      (atom)       │                       BottomBar (auto-expand)
+               └────────────────────┘
+                Mutually exclusive with $selectedGear
 ```
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$spaTab`, `$equipmentSubTab`, `$skills`, `$gear`) own the data, persist to localStorage
-- **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only templateId → quantity. Full objects come from static catalogs at read time.
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$spaTab`, `$equipmentSubTab`, `$skills`, `$gear`, `$customGearItems`) own the data, persist to localStorage
+- **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only id → quantity. Full objects come from static catalogs at read time. Custom skills are stored as full objects in `$skills`; custom gear definitions live in a separate `$customGearItems` store (persists independently of quantity).
 - **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
-- **UI atoms**: `$selectedSkill` and `$addingSkill` are mutually exclusive — setting one clears the other via `selectSkill()` / `startAddingSkill()`
+- **UI atoms**: `$selectedSkill`/`$addingSkill` and `$selectedGear`/`$addingGear` are each mutually exclusive pairs — setting one clears the other via helper functions
 - `◂──▸` = component both reads and mutates that store

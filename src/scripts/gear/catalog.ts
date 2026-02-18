@@ -1,24 +1,26 @@
+export type Availability = "E" | "C" | "P" | "R" | "U";
+
 export interface GearTemplate {
   templateId: string;
   name: string;
   description: string;
-  category: string;
+  type: string;
   cost?: number;
-  availability?: "E" | "C" | "P" | "R" | "U";
+  availability?: Availability;
 }
 
 function t(
   templateId: string,
   name: string,
-  category: string,
+  type: string,
   description: string,
-  opts?: { cost?: number; availability?: "E" | "C" | "P" | "R" | "U" },
+  opts?: { cost?: number; availability?: Availability },
 ): GearTemplate {
   return {
     templateId,
     name,
     description,
-    category,
+    type,
     cost: opts?.cost,
     availability: opts?.availability,
   };
@@ -124,20 +126,6 @@ export const GEAR_CATALOG: Record<string, GearTemplate> = {
     "Standard steel restraints. STR 9+ to break.",
     { cost: 20, availability: "C" },
   ),
-};
-
-export const GEAR_CATEGORIES = [
-  "gadgets",
-  "tools",
-  "consumables",
-  "restraints",
-] as const;
-
-export const CATEGORY_LABELS: Record<string, string> = {
-  gadgets: "Gadgets",
-  tools: "Tools",
-  consumables: "Consumables",
-  restraints: "Restraints",
 };
 
 export const AVAILABILITY_LABELS: Record<string, string> = {

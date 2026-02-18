@@ -68,13 +68,35 @@ Helper: `isCustomSkill(name)` — true if not in `SKILL_CATALOG`
 
 ### `$gear` (gear.ts)
 ```
-Record<templateId, number>
+Record<string, number>
 ```
-**Sparse persistence**: only stores templateId → quantity for owned gear. Catalog data (name, description, category, cost, availability) comes from `GEAR_CATALOG` at read time. Entries with quantity 0 are removed.
-
-On load, drops entries with unknown templateIds or invalid quantities.
+**Sparse persistence**: stores templateId/customName → quantity for all owned gear. Entries with quantity 0 are removed. Works for both catalog and custom items — definitions come from `GEAR_CATALOG` or `$customGearItems`.
 
 Actions: `addGear`, `removeGear`
+
+### `$customGearItems` (gear.ts)
+```
+Record<string, CustomGearDef>
+CustomGearDef: { name, description, type, cost?, availability? }
+```
+Custom gear definitions — user-created extension to `GEAR_CATALOG`. Persists independently of quantity (items survive at qty 0). Validated for shape on decode.
+
+Actions: `addCustomGear`, `updateCustomGear`, `removeCustomGear`
+Helper: `isCustomGear(id)` — true if not in `GEAR_CATALOG`
+
+### `$selectedGear` (ui.ts)
+```
+string | null (default: null)
+```
+Currently selected gear item ID (templateId or custom name) for the bottom bar. Non-persistent.
+Mutually exclusive with `$addingGear` — use `selectGear()` to set.
+
+### `$addingGear` (ui.ts)
+```
+boolean (default: false)
+```
+Whether the add-custom-gear form is open in the bottom bar. Non-persistent.
+Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
 
 ### `$equipmentSubTab` (ui.ts)
 ```
@@ -175,10 +197,10 @@ Depends on: `$skills`
 
 ### `$ownedGear` (gear.ts)
 ```
-OwnedGearItem[] (each: GearTemplate + quantity)
+OwnedGearItem[] (each: GearTemplate + quantity + custom?)
 ```
-Catalog-enriched list of owned gear items.
-Depends on: `$gear`
+All owned gear (qty > 0): catalog items hydrated from `GEAR_CATALOG`, custom items from `$customGearItems`. `custom: true` flag on custom items.
+Depends on: `$gear`, `$customGearItems`
 
 ### `$ownedGearCount` (gear.ts)
 ```
@@ -186,6 +208,13 @@ number
 ```
 Total quantity of all owned gear.
 Depends on: `$ownedGear`
+
+### `$customGear` (gear.ts)
+```
+OwnedGearItem[] (custom: true)
+```
+All custom gear definitions with current quantities (including qty 0).
+Depends on: `$gear`, `$customGearItems`
 
 ## Dependency Graph (compact)
 ```
@@ -208,8 +237,11 @@ $spaTab ────▸ Charsheet (tab selection)
 
 $equipmentSubTab ────▸ EquipmentView (sub-tab selection)
 
-$gear ──┬──▸ $ownedGear ──▸ $ownedGearCount
-        └──▸ GearPanel (catalog + owned views)
+$gear ──────────┬──▸ $ownedGear ──▸ $ownedGearCount
+$customGearItems┼──▸ $customGear
+                └──▸ GearPanel (catalog + custom + owned views)
+
+$selectedGear ◂──▸ $addingGear (mutually exclusive via selectGear/startAddingGear)
 
 $selectedSkill ◂──▸ $addingSkill (mutually exclusive via selectSkill/startAddingSkill)
 

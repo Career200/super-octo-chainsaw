@@ -1,11 +1,6 @@
 import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import {
-  GEAR_CATALOG,
-  GEAR_CATEGORIES,
-  CATEGORY_LABELS,
-  AVAILABILITY_LABELS,
-} from "@scripts/gear/catalog";
+import { GEAR_CATALOG, AVAILABILITY_LABELS } from "@scripts/gear/catalog";
 import type { GearTemplate } from "@scripts/gear/catalog";
 import {
   $gear,
@@ -13,18 +8,31 @@ import {
   removeGear,
   $ownedGear,
   $ownedGearCount,
+  $customGear,
 } from "@stores/gear";
+import { $selectedGear, selectGear, startAddingGear } from "@stores/ui";
 import { Chevron } from "../shared/Chevron";
 
+type GearTab = "catalog" | "custom" | "owned";
+
 function GearCard({
+  id,
   template,
   quantity,
+  custom,
+  selected,
 }: {
+  id: string;
   template: GearTemplate;
   quantity: number;
+  custom?: boolean;
+  selected?: boolean;
 }) {
   return (
-    <div class="gear-card">
+    <div
+      class={`gear-card${selected ? " selected" : ""}${custom ? " custom" : ""}`}
+      onClick={() => selectGear(selected ? null : id)}
+    >
       <div class="flex-between gap-8">
         <h4>{template.name}</h4>
         <span class="gear-meta">
@@ -47,14 +55,20 @@ function GearCard({
           <div class="gear-qty-controls">
             <button
               class="btn-sm gear-qty-btn"
-              onClick={() => removeGear(template.templateId)}
+              onClick={(e) => {
+                e.stopPropagation();
+                removeGear(id);
+              }}
             >
               −
             </button>
             <span class="gear-qty-value">{quantity}</span>
             <button
               class="btn-sm gear-qty-btn"
-              onClick={() => addGear(template.templateId)}
+              onClick={(e) => {
+                e.stopPropagation();
+                addGear(id);
+              }}
             >
               +
             </button>
@@ -62,7 +76,10 @@ function GearCard({
         ) : (
           <button
             class="btn-sm gear-take-btn"
-            onClick={() => addGear(template.templateId)}
+            onClick={(e) => {
+              e.stopPropagation();
+              addGear(id);
+            }}
           >
             Take
           </button>
@@ -78,14 +95,14 @@ function GearGroup({
   collapsed,
   onToggle,
   items,
-  gearState,
+  selectedId,
 }: {
   label: string;
   count: number;
   collapsed: boolean;
   onToggle: () => void;
-  items: { template: GearTemplate; quantity: number }[];
-  gearState?: Record<string, number>;
+  items: { id: string; template: GearTemplate; quantity: number; custom?: boolean }[];
+  selectedId: string | null;
 }) {
   return (
     <div class="gear-group">
@@ -98,7 +115,13 @@ function GearGroup({
       </div>
       {collapsed ? (
         <>
-          <GearCard template={items[0].template} quantity={items[0].quantity} />
+          <GearCard
+            id={items[0].id}
+            template={items[0].template}
+            quantity={items[0].quantity}
+            custom={items[0].custom}
+            selected={selectedId === items[0].id}
+          />
           {items.length > 1 && (
             <div class="gear-group-more" onClick={onToggle}>
               +{items.length - 1} more
@@ -106,11 +129,14 @@ function GearGroup({
           )}
         </>
       ) : (
-        items.map(({ template, quantity }) => (
+        items.map((item) => (
           <GearCard
-            key={template.templateId}
-            template={template}
-            quantity={quantity}
+            key={item.id}
+            id={item.id}
+            template={item.template}
+            quantity={item.quantity}
+            custom={item.custom}
+            selected={selectedId === item.id}
           />
         ))
       )}
@@ -118,39 +144,70 @@ function GearGroup({
   );
 }
 
-const catalogByCategory = GEAR_CATEGORIES.map((cat) => ({
-  category: cat,
-  label: CATEGORY_LABELS[cat],
-  items: Object.values(GEAR_CATALOG).filter((t) => t.category === cat),
-})).filter((g) => g.items.length > 0);
+/** Group items by type. Returns groups in insertion order, types sorted alphabetically. */
+function groupByType(
+  items: { id: string; template: GearTemplate; quantity: number; custom?: boolean }[],
+) {
+  const grouped = new Map<
+    string,
+    { id: string; template: GearTemplate; quantity: number; custom?: boolean }[]
+  >();
+  for (const item of items) {
+    const type = item.template.type;
+    if (!grouped.has(type)) grouped.set(type, []);
+    grouped.get(type)!.push(item);
+  }
+  // Sort groups alphabetically by type
+  return [...grouped.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+}
+
+const catalogItems = Object.values(GEAR_CATALOG);
 
 export const GearPanel = () => {
   const gearState = useStore($gear);
   const ownedCount = useStore($ownedGearCount);
-  const [tab, setTab] = useState<"catalog" | "owned">("catalog");
-
-  const ownedItems = useStore($ownedGear).map((item) => ({
-    template: item,
-    quantity: item.quantity,
-  }));
-
-  // Group owned items by category
-  const ownedByCategory = GEAR_CATEGORIES.map((cat) => ({
-    category: cat,
-    label: CATEGORY_LABELS[cat],
-    items: ownedItems.filter((i) => i.template.category === cat),
-  })).filter((g) => g.items.length > 0);
-
+  const customGear = useStore($customGear);
+  const selectedId = useStore($selectedGear);
+  const [tab, setTab] = useState<GearTab>("catalog");
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
-  const toggleGroup = (cat: string) => {
+  const toggleGroup = (type: string) => {
     setCollapsed((prev) => {
       const next = new Set(prev);
-      if (next.has(cat)) next.delete(cat);
-      else next.add(cat);
+      if (next.has(type)) next.delete(type);
+      else next.add(type);
       return next;
     });
   };
+
+  // Catalog view: all templates grouped by type
+  const catalogGroups = groupByType(
+    catalogItems.map((template) => ({
+      id: template.templateId,
+      template,
+      quantity: gearState[template.templateId] ?? 0,
+    })),
+  );
+
+  // Owned view: all owned items (catalog + custom) grouped by type
+  const ownedItems = useStore($ownedGear);
+  const ownedGroups = groupByType(
+    ownedItems.map((item) => ({
+      id: item.templateId,
+      template: item,
+      quantity: item.quantity,
+      custom: item.custom,
+    })),
+  );
+
+  // Custom view: only custom items
+  const customItems = customGear.map((item) => ({
+    id: item.templateId,
+    template: item as GearTemplate,
+    quantity: item.quantity,
+    custom: true,
+  }));
+  const customGroups = groupByType(customItems);
 
   return (
     <div class="panel" id="gear-panel">
@@ -164,6 +221,12 @@ export const GearPanel = () => {
             Catalog
           </button>
           <button
+            class={tab === "custom" ? "active" : ""}
+            onClick={() => setTab("custom")}
+          >
+            Custom{customGear.length > 0 && ` ${customGear.length}`}
+          </button>
+          <button
             class={tab === "owned" ? "active" : ""}
             onClick={() => setTab("owned")}
           >
@@ -171,31 +234,58 @@ export const GearPanel = () => {
           </button>
         </span>
       </div>
+
+      {tab === "custom" && (
+        <div class="gear-toolbar">
+          <button
+            class="btn-sm gear-add-btn"
+            onClick={() => startAddingGear()}
+          >
+            + Add Custom
+          </button>
+        </div>
+      )}
+
       <div class="gear-grid">
         {tab === "catalog" &&
-          catalogByCategory.map((group) => (
+          catalogGroups.map(([type, items]) => (
             <GearGroup
-              key={group.category}
-              label={group.label}
-              count={group.items.length}
-              collapsed={collapsed.has(group.category)}
-              onToggle={() => toggleGroup(group.category)}
-              items={group.items.map((template) => ({
-                template,
-                quantity: gearState[template.templateId] ?? 0,
-              }))}
+              key={type}
+              label={type}
+              count={items.length}
+              collapsed={collapsed.has(type)}
+              onToggle={() => toggleGroup(type)}
+              items={items}
+              selectedId={selectedId}
             />
           ))}
-        {tab === "owned" &&
-          (ownedByCategory.length > 0 ? (
-            ownedByCategory.map((group) => (
+        {tab === "custom" &&
+          (customGroups.length > 0 ? (
+            customGroups.map(([type, items]) => (
               <GearGroup
-                key={group.category}
-                label={group.label}
-                count={group.items.reduce((s, i) => s + i.quantity, 0)}
-                collapsed={collapsed.has(group.category)}
-                onToggle={() => toggleGroup(group.category)}
-                items={group.items}
+                key={type}
+                label={type}
+                count={items.reduce((s, i) => s + i.quantity, 0)}
+                collapsed={collapsed.has(type)}
+                onToggle={() => toggleGroup(type)}
+                items={items}
+                selectedId={selectedId}
+              />
+            ))
+          ) : (
+            <div class="empty-message">No custom gear yet</div>
+          ))}
+        {tab === "owned" &&
+          (ownedGroups.length > 0 ? (
+            ownedGroups.map(([type, items]) => (
+              <GearGroup
+                key={type}
+                label={type}
+                count={items.reduce((s, i) => s + i.quantity, 0)}
+                collapsed={collapsed.has(type)}
+                onToggle={() => toggleGroup(type)}
+                items={items}
+                selectedId={selectedId}
               />
             ))
           ) : (

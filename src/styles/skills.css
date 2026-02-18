@@ -202,5 +202,5 @@
 .skill-bar-remove:hover {
   color: var(--danger-hover);
   border-color: var(--danger-hover);
-  background: rgba(204, 68, 68, 0.1);
+  background: var(--danger-subtle);
 }
