@@ -11,11 +11,7 @@ import {
   getImplantSP,
   getPartSpMax,
 } from "@scripts/armor/core";
-import {
-  $selectedArmor,
-  $highlightedPart,
-  highlightPart,
-} from "@stores/ui";
+import { $selectedArmor, $highlightedPart, highlightPart } from "@stores/ui";
 import { HelpPopover } from "../../shared/HelpPopover";
 import { HitPopover } from "../HitPopover";
 
@@ -36,7 +32,7 @@ export const FaceCard = ({ mode = "biomon" }: Props) => {
 
   const selectedArmor =
     inventory && selectedArmorId
-      ? getArmorPiece(selectedArmorId) ?? getTemplate(selectedArmorId)
+      ? (getArmorPiece(selectedArmorId) ?? getTemplate(selectedArmorId))
       : null;
   const isHighlighted =
     inventory &&
@@ -76,11 +72,12 @@ export const FaceCard = ({ mode = "biomon" }: Props) => {
       id="part-face"
       onClick={inventory ? handleClick : undefined}
     >
-      {!inventory && (
-        <HitPopover forPart="face">1 {">"} 1-4</HitPopover>
-      )}
+      {!inventory && <HitPopover forPart="face">1 {">"} 1-4</HitPopover>}
       <h3>
         Face{" "}
+        <span class="sp-value" id="sp-face">
+          {total}
+        </span>{" "}
         <HelpPopover
           id="face-help"
           content={
@@ -114,10 +111,7 @@ export const FaceCard = ({ mode = "biomon" }: Props) => {
               )}
             </>
           }
-        />{" "}
-        <span class="sp-value" id="sp-face">
-          {total}
-        </span>
+        />
       </h3>
     </div>
   );

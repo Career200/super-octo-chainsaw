@@ -55,39 +55,7 @@
 }
 
 
-/* === ArmorCard (compact card for card list) === */
-.armor-card {
-  background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: var(--padding-panel);
-  margin-bottom: var(--space-8);
-  cursor: pointer;
-}
-
-.armor-card:hover {
-  border-color: var(--accent);
-}
-
-.armor-card.selected {
-  border-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent-muted);
-}
-
-.armor-card.highlighted {
-  background: var(--accent-subtle);
-  border-color: var(--accent);
-}
-
-.armor-card.armor-card-worn {
-  border-left: 3px solid var(--accent);
-}
-
-.armor-card h4 {
-  margin: 0;
-  font-size: var(--font-ui);
-  color: var(--accent);
-}
+/* === ArmorCard (extends .item-card) === */
 
 .armor-card-sp {
   font-size: var(--font-ui-lg);
@@ -111,30 +79,12 @@
   gap: var(--space-8);
 }
 
-.armor-card-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-}
-
 .armor-card-ev {
   font-size: var(--font-ui);
   font-weight: bold;
   color: var(--danger);
   white-space: nowrap;
 }
-
-.armor-card-avail {
-  font-size: var(--font-ui-sm);
-  font-weight: bold;
-  color: var(--fg-soft);
-}
-
-.armor-card-description {
-  margin: var(--space-4) 0 0;
-}
-
 
 /* === Armor bottom bar detail === */
 .armor-detail-grid {

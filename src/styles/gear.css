@@ -52,54 +52,7 @@
   color: var(--fg-soft);
 }
 
-/* === Gear Cards === */
-.gear-card {
-  background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: var(--padding-panel);
-  margin-bottom: var(--space-8);
-  cursor: pointer;
-}
-
-.gear-card:hover {
-  border-color: var(--accent);
-}
-
-.gear-card.selected {
-  background: var(--accent-subtle);
-  border-color: var(--accent);
-}
-
-.gear-card.custom {
-  border-left: 3px solid var(--accent);
-}
-
-.gear-card h4 {
-  margin: 0;
-  font-size: var(--font-ui);
-  color: var(--accent);
-}
-
-.gear-meta {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-6);
-  white-space: nowrap;
-  font-size: var(--font-ui);
-}
-
-.gear-avail {
-  font-size: var(--font-ui-sm);
-  font-weight: bold;
-  color: var(--fg-soft);
-}
-
-
-.gear-description {
-  margin: var(--space-4) 0 0;
-}
-
+/* === Gear Cards (extends .item-card) === */
 /* === Gear Actions (quantity controls / take button) === */
 .gear-actions {
   margin-top: var(--space-6);

@@ -61,7 +61,8 @@ export function countsAsLayer(layer: ArmorLayer | undefined): boolean {
   return layer !== undefined && COUNTED_LAYERS.includes(layer);
 }
 
-export type Availability = "E" | "C" | "P" | "R";
+export type { Availability } from "@scripts/catalog-common";
+import type { Availability } from "@scripts/catalog-common";
 
 // Static template - defines what an armor type IS
 export interface ArmorTemplate {

@@ -1,5 +1,5 @@
 import type { ArmorPiece, ArmorTemplate } from "@scripts/armor/core";
-import { AVAILABILITY_LABELS } from "@scripts/gear/catalog";
+import { ItemMeta } from "../shared/ItemMeta";
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { getConditionClassFromSP } from "./utils";
 
@@ -23,8 +23,8 @@ export const ArmorCard = ({
   const owned = isInstance(armor);
 
   const cls = [
-    "armor-card",
-    owned && armor.worn && "armor-card-worn",
+    "item-card armor-card",
+    owned && armor.worn && "item-card-accent",
     selected && "selected",
     highlighted && "highlighted",
   ]
@@ -65,21 +65,10 @@ export const ArmorCard = ({
           <span class="armor-card-ev">EV {armor.ev}</span>
         )}
         <span class="armor-card-right">
-          {(armor.availability || (!owned && armor.cost != null)) && (
-            <span class="armor-card-meta">
-              {armor.availability && (
-                <span class="armor-card-avail">
-                  Av.{AVAILABILITY_LABELS[armor.availability]}
-                </span>
-              )}
-              {!owned && armor.cost != null && (
-                <span class="text-soft">
-                  <span class="cash">{"\u156E\u1572"}</span>
-                  {armor.cost}eb
-                </span>
-              )}
-            </span>
-          )}
+          <ItemMeta
+            availability={armor.availability}
+            cost={!owned ? armor.cost : undefined}
+          />
         </span>
       </div>
     </div>

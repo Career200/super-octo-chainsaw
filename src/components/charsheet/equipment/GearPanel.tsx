@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { GEAR_CATALOG, AVAILABILITY_LABELS } from "@scripts/gear/catalog";
+import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import type { GearTemplate } from "@scripts/gear/catalog";
 import {
   $gear,
@@ -12,6 +12,7 @@ import {
 } from "@stores/gear";
 import { $selectedGear, selectGear, startAddingGear, tabStore } from "@stores/ui";
 import { Chevron } from "../shared/Chevron";
+import { ItemMeta } from "../shared/ItemMeta";
 import { TabStrip } from "../shared/TabStrip";
 
 function GearCard({
@@ -29,26 +30,13 @@ function GearCard({
 }) {
   return (
     <div
-      class={`gear-card${selected ? " selected" : ""}${custom ? " custom" : ""}`}
+      class={`item-card gear-card${selected ? " selected" : ""}${custom ? " item-card-accent" : ""}`}
       onClick={() => selectGear(selected ? null : id)}
     >
       <div class="flex-between gap-8">
         <h4>{template.name}</h4>
-        <span class="gear-meta">
-          {template.availability && (
-            <span class="gear-avail">
-              Av.{AVAILABILITY_LABELS[template.availability]}
-            </span>
-          )}
-          {template.cost != null && (
-            <span class="text-soft">
-              <span class="cash">ᕮᕲ</span>
-              {template.cost}eb
-            </span>
-          )}
-        </span>
+        <ItemMeta availability={template.availability} cost={template.cost} />
       </div>
-      <p class="text-desc gear-description">{template.description}</p>
       <div class="gear-actions">
         {quantity > 0 ? (
           <div class="gear-qty-controls">
