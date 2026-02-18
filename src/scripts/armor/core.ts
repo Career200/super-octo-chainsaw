@@ -61,6 +61,8 @@ export function countsAsLayer(layer: ArmorLayer | undefined): boolean {
   return layer !== undefined && COUNTED_LAYERS.includes(layer);
 }
 
+export type Availability = "E" | "C" | "P" | "R";
+
 // Static template - defines what an armor type IS
 export interface ArmorTemplate {
   templateId: string;
@@ -70,8 +72,9 @@ export interface ArmorTemplate {
   spMax: number;
   bodyParts: BodyPartName[];
   ev?: number;
-  cost?: number;
-  description?: string;
+  cost: number;
+  description: string;
+  availability: Availability;
   layer?: ArmorLayer;
 }
 

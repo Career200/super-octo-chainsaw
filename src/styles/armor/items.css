@@ -110,7 +110,77 @@
   margin-bottom: 0;
 }
 
+/* === ArmorCard (compact card for card list) === */
+.armor-card {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--padding-panel);
+  margin-bottom: var(--space-8);
+  cursor: pointer;
+}
+
+.armor-card:hover {
+  border-color: var(--accent);
+}
+
+.armor-card.selected {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+}
+
+.armor-card.highlighted {
+  border-color: var(--accent-muted);
+}
+
+.armor-card.armor-card-worn {
+  border-left: 3px solid var(--accent);
+}
+
+.armor-card h4 {
+  margin: 0;
+  font-size: var(--font-ui);
+  color: var(--accent);
+}
+
+.armor-card-sp {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--link);
+  white-space: nowrap;
+}
+
+.armor-card-details {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-top: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.armor-card-ev {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+.armor-card-avail {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+}
+
+.armor-card-description {
+  margin: var(--space-4) 0 0;
+}
+
+.armor-card-actions {
+  margin-top: var(--space-6);
+}
+
 /* === Health Color Applications === */
+.armor-card-sp [class*="condition-"],
 .armor-sp [class*="condition-"],
 .repair-sp-value[class*="condition-"] {
   color: var(--condition-color);

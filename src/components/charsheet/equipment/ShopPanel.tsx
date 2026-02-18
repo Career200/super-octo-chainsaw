@@ -1,9 +1,8 @@
-import { acquireArmor, armorTemplates } from "@stores/armor";
+import { acquireArmor, ARMOR_CATALOG } from "@stores/armor";
 import { Panel } from "../shared/Panel";
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 
-const sortedTemplates = Object.values(armorTemplates)
-  .filter((t) => !t.layer)
+const sortedTemplates = Object.values(ARMOR_CATALOG)
   .sort((a, b) => {
     if (a.spMax !== b.spMax) return a.spMax - b.spMax;
     if (a.type !== b.type) return a.type === "soft" ? -1 : 1;

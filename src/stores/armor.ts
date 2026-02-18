@@ -6,11 +6,12 @@ import {
   countsAsLayer,
   type ArmorInstance,
   type ArmorPiece,
+  type ArmorTemplate,
   type ArmorLayer,
   type BodyPartName,
   type EVResult,
 } from "../scripts/armor/core";
-import { armorTemplates, getTemplate } from "../scripts/armor/equipment";
+import { ARMOR_CATALOG, IMPLANT_TEMPLATES, getTemplate } from "../scripts/armor/catalog";
 
 // Persistent state: owned armor instances
 export type OwnedArmorState = Record<string, ArmorInstance>;
@@ -307,16 +308,8 @@ export function getImplantLayer(templateId: string): ArmorLayer | null {
   return template?.layer ?? null;
 }
 
-export function getImplantTemplates(): typeof armorTemplates {
-  return Object.fromEntries(
-    Object.entries(armorTemplates).filter(
-      ([_, t]) =>
-        t.layer === "plating" ||
-        t.layer === "skinweave" ||
-        t.layer === "subdermal" ||
-        t.layer === "faceplate",
-    ),
-  );
+export function getImplantTemplates(): Record<string, ArmorTemplate> {
+  return IMPLANT_TEMPLATES;
 }
 
 export function getImplantedArmor(): ArmorPiece[] {
@@ -425,5 +418,5 @@ export function uninstallSkinweave(): void {
   }
 }
 
-// --- Re-export templates for store UI ---
-export { armorTemplates, getTemplate };
+// --- Re-export catalog for UI ---
+export { ARMOR_CATALOG, IMPLANT_TEMPLATES, getTemplate };
