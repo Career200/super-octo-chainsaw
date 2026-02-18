@@ -31,7 +31,9 @@ export const DamageEntry = ({ entry }: { entry: DamageHistoryEntry }) => {
       </div>
       <div class="history-details">
         <span class="history-detail history-damage">
-          {entry.diceRolls ? entry.diceRolls.join("+") : entry.rawDamage}
+          {entry.diceRolls
+            ? `${entry.rawDamage} = ${entry.diceRolls.join("+")}`
+            : entry.rawDamage}
           {typeStr}
         </span>
         {entry.effectiveSP > 0 && !entry.ignoredArmor && (

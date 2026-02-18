@@ -7,12 +7,21 @@ import {
 } from "@stores/armor";
 import {
   getEffectiveSP,
-  getImplantSP,
   sortByLayerOrder,
   PART_NAMES,
   type BodyPartName,
 } from "@scripts/armor/core";
 import { LayerBar } from "./LayerBar";
+import { HitPopover } from "../HitPopover";
+
+const HIT_ROLL: Record<string, string> = {
+  head: "1",
+  torso: "2-4",
+  right_arm: "5",
+  left_arm: "6",
+  right_leg: "7-8",
+  left_leg: "9-0",
+};
 
 interface Props {
   part: BodyPartName;
@@ -31,24 +40,12 @@ export const BodyPartCard = ({ part }: Props) => {
   const skinweave = implants.filter((i) => isSkinweave(i));
   const subdermal = implants.filter((i) => i.layer === "subdermal");
 
-  const activeImplants = [...plating, ...skinweave, ...subdermal].filter(
-    (i) => getImplantSP(i, part) > 0,
-  );
-
-  const spParts = [
-    ...sorted.map((l) => l.spCurrent),
-    ...activeImplants.map((i) => getImplantSP(i, part)),
-  ];
-  const breakdown = spParts.length > 1 ? ` = ${spParts.join(" + ")}` : null;
-
   return (
     <div class="body-part" id={`part-${part}`}>
-      <h3>{PART_NAMES[part]}</h3>
-      SP:{" "}
-      <span class="sp-value" id={`sp-${part}`}>
-        <span class="sp-total">{total}</span>
-        {breakdown && <span class="sp-breakdown">{breakdown}</span>}
-      </span>
+      <HitPopover forPart={part}>{HIT_ROLL[part]}</HitPopover>
+      <h3>
+        {PART_NAMES[part]} <span class="sp-total">{total}</span>
+      </h3>
       <div class="layer-list" id={`layers-${part}`}>
         {sorted.map((layer) => (
           <LayerBar

@@ -16,7 +16,10 @@ export const LayerBar = ({ name, currentSP, maxSP, className = "" }: Props) => {
       class={`layer ${className}`.trim()}
       title={`${name} — ${currentSP}/${maxSP} SP`}
     >
-      <span class="layer-name">{name}</span>
+      <span class="layer-name">
+        <span class="layer-label">{name}</span>
+        <span class="layer-sp">{currentSP}</span>
+      </span>
       <span
         class={`layer-condition ${conditionClass}`}
         style={{ width: `${conditionPercent}%` }}

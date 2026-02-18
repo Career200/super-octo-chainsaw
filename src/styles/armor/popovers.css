@@ -73,28 +73,16 @@
   color: var(--fg-soft);
 }
 
-.hit-body-select .select-options {
-  justify-items: center;
-  gap: 3px;
-  grid-template-columns: auto auto auto;
-}
-
-.hit-body-select .select-option {
-  min-width: 32px;
-  padding: var(--space-4) var(--space-8);
-  text-align: center;
-  text-transform: uppercase;
-  font-size: var(--font-ui);
-}
-
-.hit-body-select .select-option-ignoresp {
-  font-size: var(--font-ui-xs);
-  padding: var(--space-4) var(--space-6);
-  letter-spacing: 0.3px;
-}
 
 .popover-hit {
   width: min(360px, var(--popover-max-width));
+}
+
+.hit-hint {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  margin: 0 0 var(--space-12);
+  font-style: italic;
 }
 
 .popover-hit .select-options {
@@ -130,12 +118,32 @@
 }
 
 .hit-damage-row .popover-input {
+  width: auto;
   flex: 1;
+  min-width: 0;
   margin-bottom: 0;
 }
 
 .hit-damage-row .select-option {
   flex-shrink: 0;
+}
+
+.hit-bonus {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  font-weight: bold;
+  color: var(--fg-soft);
+}
+
+.hit-bonus-disabled {
+  opacity: 0.3;
+}
+
+.hit-bonus .popover-input {
+  text-align: center;
 }
 
 /* === Implants Popover === */

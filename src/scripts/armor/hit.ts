@@ -5,12 +5,17 @@ import {
   type ArmorPiece,
   type BodyPartName,
 } from "./core";
+import type { DamageType } from "./damage-types";
 import {
   damageArmor,
+  getArmorPiece,
   getBodyPartLayers,
   getImplantsForPart,
-} from "../../stores/armor";
-export type { DamageType } from "./damage-types";
+} from "@stores/armor";
+import { $bodyType } from "@stores/stats";
+import { takeDamage } from "@stores/health";
+import { recordDamage, type ArmorDamageEntry } from "@stores/damage-history";
+export type { DamageType };
 
 export interface DamageResult {
   penetrating: number;
@@ -169,4 +174,128 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   }
 
   return result;
+}
+
+export function rollHitLocation(): BodyPartName {
+  const roll = Math.floor(Math.random() * 10) + 1;
+  if (roll === 1) return "head";
+  if (roll <= 4) return "torso";
+  if (roll === 5) return "right_arm";
+  if (roll === 6) return "left_arm";
+  if (roll <= 8) return "right_leg";
+  return "left_leg";
+}
+
+export function resolveLocationalHit(
+  part: BodyPartName,
+  damage: number,
+  opts: { damageType: DamageType; ignoreSP: boolean; diceRolls?: number[] },
+): void {
+  const btm = $bodyType.get().btm;
+
+  if (opts.ignoreSP) {
+    const isHeadOrFace = part === "head" || part === "face";
+    const afterBTM = Math.max(1, damage - btm);
+    const woundDamage = isHeadOrFace ? afterBTM * 2 : afterBTM;
+    takeDamage(woundDamage, "physical");
+    recordDamage({
+      rawDamage: damage,
+      damageType: opts.damageType,
+      bodyParts: [part],
+      effectiveSP: 0,
+      armorDamage: [],
+      penetrating: damage,
+      ignoredArmor: true,
+      headMultiplied: isHeadOrFace,
+      btm,
+      woundDamage,
+      diceRolls: opts.diceRolls,
+    });
+    return;
+  }
+
+  const layers = getBodyPartLayers(part);
+  const implants = getImplantsForPart(part);
+  const effectiveSP = getEffectiveSP(layers, { implants, part });
+  const result = applyHit(part, damage);
+
+  const armorDamage: ArmorDamageEntry[] = Array.from(
+    result.degradation.entries(),
+  ).map(([id, sp]) => {
+    const armor = getArmorPiece(id);
+    return {
+      armorId: id,
+      armorName: armor?.shortName ?? armor?.name ?? id,
+      spLost: sp,
+    };
+  });
+
+  if (result.penetrating > 0) {
+    for (const impl of implants) {
+      if (getImplantSP(impl, part) > 0) {
+        armorDamage.push({
+          armorId: impl.id,
+          armorName: impl.shortName ?? impl.name,
+          spLost: 1,
+        });
+      }
+    }
+  }
+
+  const allProtectors = [
+    ...layers.map((l) => ({ name: l.shortName ?? l.name, sp: l.spCurrent })),
+    ...implants.map((i) => ({
+      name: i.shortName ?? i.name,
+      sp: getImplantSP(i, part),
+    })),
+  ]
+    .filter((p) => p.sp > 0)
+    .sort((a, b) => b.sp - a.sp);
+
+  let woundDamage: number | undefined;
+  let headMultiplied = false;
+
+  if (result.penetrating > 0) {
+    const isHeadOrFace = part === "head" || part === "face";
+    headMultiplied = isHeadOrFace;
+    const afterBTM = Math.max(1, result.penetrating - btm);
+    woundDamage = isHeadOrFace ? afterBTM * 2 : afterBTM;
+    takeDamage(woundDamage, "physical");
+  }
+
+  recordDamage({
+    rawDamage: damage,
+    damageType: opts.damageType,
+    bodyParts: [part],
+    effectiveSP,
+    topProtector: allProtectors[0]?.name,
+    armorDamage,
+    penetrating: result.penetrating,
+    ignoredArmor: false,
+    headMultiplied: headMultiplied || undefined,
+    btm,
+    woundDamage,
+    diceRolls: opts.diceRolls,
+  });
+}
+
+export function resolveNonLocationalHit(
+  damage: number,
+  opts: { damageType: DamageType; diceRolls?: number[] },
+): void {
+  const btm = $bodyType.get().btm;
+  const woundDamage = Math.max(1, damage - btm);
+  takeDamage(woundDamage, "physical");
+  recordDamage({
+    rawDamage: damage,
+    damageType: opts.damageType,
+    bodyParts: "none",
+    effectiveSP: 0,
+    armorDamage: [],
+    penetrating: damage,
+    ignoredArmor: true,
+    btm,
+    woundDamage,
+    diceRolls: opts.diceRolls,
+  });
 }

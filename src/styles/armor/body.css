@@ -66,14 +66,39 @@
 
 /* === Body Parts === */
 .body-part {
+  position: relative;
   padding: 10px;
   margin-bottom: 0;
 }
 
+/* Hit location badge — extends .btn-ghost */
+.hit-badge.btn-ghost {
+  position: absolute;
+  top: var(--space-8);
+  right: var(--space-8);
+  padding: 1px 5px;
+  font-size: var(--font-ui-m);
+  font-weight: bold;
+  border-radius: var(--radius-sm);
+  z-index: 1;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.hit-badge.btn-ghost:hover:not(:disabled) {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
 .body-part h3 {
-  margin: 0 0 5px 0;
-  font-size: var(--font-ui-lg);
+  margin: 0;
+  font-size: var(--font-ui-xl);
   color: var(--accent);
+}
+
+.body-part h3 .sp-total {
+  color: var(--footer);
 }
 
 #part-head {
@@ -121,7 +146,7 @@
 
 /* === Armor Layers === */
 .layer-list {
-  margin-top: var(--space-16);
+  margin-top: var(--space-8);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -137,10 +162,22 @@
 .layer-name {
   position: relative;
   z-index: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.layer-label {
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layer-sp {
+  flex-shrink: 0;
+  color: var(--fg-soft);
+  font-size: var(--font-ui-sm);
 }
 
 .layer-condition {
@@ -172,9 +209,4 @@
 
 .sp-total {
   color: var(--footer);
-}
-
-.sp-breakdown {
-  font-size: var(--font-ui);
-  color: color-mix(in srgb, var(--fg-soft), white 33%);
 }

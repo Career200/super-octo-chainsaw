@@ -10,6 +10,7 @@ import {
   getPartSpMax,
 } from "@scripts/armor/core";
 import { HelpPopover } from "../../shared/HelpPopover";
+import { HitPopover } from "../HitPopover";
 
 export const FaceCard = () => {
   useStore($ownedArmor);
@@ -35,6 +36,7 @@ export const FaceCard = () => {
 
   return (
     <div class="body-part" id="part-face">
+      <HitPopover forPart="face">1 {">"} 1-4</HitPopover>
       <h3>
         Face{" "}
         <HelpPopover
