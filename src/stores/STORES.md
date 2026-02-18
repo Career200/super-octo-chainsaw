@@ -66,6 +66,22 @@ Old format (all catalog skills at level 0) is dropped on load — no migration.
 Actions: `setSkillLevel`, `addSkill`, `removeSkill`, `updateSkill`
 Helper: `isCustomSkill(name)` — true if not in `SKILL_CATALOG`
 
+### `$gear` (gear.ts)
+```
+Record<templateId, number>
+```
+**Sparse persistence**: only stores templateId → quantity for owned gear. Catalog data (name, description, category, cost, availability) comes from `GEAR_CATALOG` at read time. Entries with quantity 0 are removed.
+
+On load, drops entries with unknown templateIds or invalid quantities.
+
+Actions: `addGear`, `removeGear`
+
+### `$equipmentSubTab` (ui.ts)
+```
+'armor' | 'gear' (default: 'armor')
+```
+Equipment tab sub-tab selection. Subscribed by `EquipmentView`.
+
 ## Computed Stores
 
 ### Per-stat: `$REF`, `$INT`, `$CL`, `$TECH`, `$LK`, `$ATT`, `$MA`, `$EMP`, `$BT` (stats.ts)
@@ -157,6 +173,20 @@ Depends on: `$mySkills`
 Non-catalog entries from `$skills` store.
 Depends on: `$skills`
 
+### `$ownedGear` (gear.ts)
+```
+OwnedGearItem[] (each: GearTemplate + quantity)
+```
+Catalog-enriched list of owned gear items.
+Depends on: `$gear`
+
+### `$ownedGearCount` (gear.ts)
+```
+number
+```
+Total quantity of all owned gear.
+Depends on: `$ownedGear`
+
 ## Dependency Graph (compact)
 ```
 $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
@@ -175,6 +205,11 @@ HitPopover reads $bodyType.btm, mutates $health via takeDamage
 $notes (standalone, no dependents)
 
 $spaTab ────▸ Charsheet (tab selection)
+
+$equipmentSubTab ────▸ EquipmentView (sub-tab selection)
+
+$gear ──┬──▸ $ownedGear ──▸ $ownedGearCount
+        └──▸ GearPanel (catalog + owned views)
 
 $selectedSkill ◂──▸ $addingSkill (mutually exclusive via selectSkill/startAddingSkill)
 

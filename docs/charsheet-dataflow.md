@@ -113,13 +113,36 @@
                                     StatsSkillsPanel ──▸ combined panel in Dossier tab
                                     (StatsPanel + SkillsList side by side)
                                     Three tabs: Default / Custom / My
+
+               ┌────────────────────┐
+               │$equipmentSubTab   │─────────────────────▸ EquipmentView ◂──▸
+               │     (persist)      │                       (Armor | Gear sub-tab switching)
+               └────────────────────┘
+
+               ┌────────────────────┐
+               │      $gear        │─────────────────────▸ GearPanel ◂──▸ (mutates $gear)
+               │     (persist)      │                       (Catalog + Owned tabs)
+               │                    │                       Sparse: templateId → quantity
+               └──┬────────────────┘
+                  │
+                  ▾
+               ┌──────────────┐
+               │  $ownedGear  │─────────────────────────▸ GearPanel (owned count badge)
+               │  (computed)  │
+               └──────┬───────┘
+                      │
+                      ▾
+               ┌──────────────┐
+               │$ownedGearCnt │
+               │  (computed)  │
+               └──────────────┘
 ```
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$spaTab`, `$skills`) own the data, persist to localStorage
-- **`$skills` sparse persistence**: only stores catalog skills with level > 0 and all custom skills. Catalog skills at level 0 are not persisted — they come from `SKILL_CATALOG` via `$allSkills`
-- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`) derive from persistent stores
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$spaTab`, `$equipmentSubTab`, `$skills`, `$gear`) own the data, persist to localStorage
+- **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only templateId → quantity. Full objects come from static catalogs at read time.
+- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
 - **UI atoms**: `$selectedSkill` and `$addingSkill` are mutually exclusive — setting one clears the other via `selectSkill()` / `startAddingSkill()`

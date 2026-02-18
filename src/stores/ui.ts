@@ -2,6 +2,7 @@ import { persistentAtom } from "@nanostores/persistent";
 import { atom } from "nanostores";
 
 export type SpaTab = "biomon" | "dossier" | "equipment";
+export type EquipmentSubTab = "armor" | "gear";
 
 const TAB_MIGRATION: Record<string, SpaTab> = {
   rp: "dossier",
@@ -15,6 +16,12 @@ export const $spaTab = persistentAtom<SpaTab>("spa-tab", "biomon", {
     return TAB_MIGRATION[v] ?? v;
   },
 });
+
+export const $equipmentSubTab = persistentAtom<EquipmentSubTab>(
+  "equipment-sub-tab",
+  "armor",
+  { encode: JSON.stringify, decode: (raw: string) => JSON.parse(raw) },
+);
 
 /** Currently selected skill name, or null if none selected. */
 export const $selectedSkill = atom<string | null>(null);
