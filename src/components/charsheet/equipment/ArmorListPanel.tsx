@@ -47,7 +47,7 @@ export const ArmorListPanel = ({
   return (
     <Panel
       id="armor-list-panel"
-      title="Armor"
+      title={<>Armor <span class="armor-legend"><span class="armor-type-icon">{"\u2248"}</span>Soft <span class="armor-type-icon">{"\u2B21"}</span>Hard</span></>}
       expanded={expanded}
       onToggle={onToggle}
       headerActions={

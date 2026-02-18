@@ -1,10 +1,13 @@
 import { useStore } from "@nanostores/preact";
+import { $ownedArmor, getAllOwnedArmor, isImplant, unwearAll } from "@stores/armor";
 import { tabStore, $selectedArmor, selectArmor } from "@stores/ui";
 import { TwoPanelView } from "../shared/TwoPanelView";
+import { HelpPopover } from "../shared/HelpPopover";
 import { TabStrip } from "../shared/TabStrip";
 import { ArmorListPanel } from "./ArmorListPanel";
 import { GearPanel } from "./GearPanel";
 import { BodyPartGrid } from "./body/BodyPartGrid";
+import { ArmorHelpContent } from "./help/ArmorHelpContent";
 import { Panel } from "../shared/Panel";
 
 const EQUIPMENT_TABS = [
@@ -15,6 +18,8 @@ const EQUIPMENT_TABS = [
 export const EquipmentView = () => {
   const subTab = useStore(tabStore("equipment-sub-tab", "gear"));
   const selectedArmorId = useStore($selectedArmor);
+  useStore($ownedArmor); // subscribe so hasWorn recalculates on armor changes
+  const hasWorn = subTab === "armor" && getAllOwnedArmor().some((a) => a.worn && !isImplant(a));
 
   return (
     <>
@@ -26,9 +31,10 @@ export const EquipmentView = () => {
           renderFirst={(expanded, onToggle) => (
             <Panel
               id="armor-grid-panel"
-              title="Body Armor"
+              title={<>Body Armor{" "}<HelpPopover id="armor-help-eq" content={<ArmorHelpContent />} /></>}
               expanded={expanded}
               onToggle={onToggle}
+              headerActions={hasWorn ? <button class="btn-ghost btn-sm" onClick={() => unwearAll()}>Remove All</button> : undefined}
             >
               <BodyPartGrid mode="inventory" />
             </Panel>

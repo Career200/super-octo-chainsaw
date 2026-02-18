@@ -107,7 +107,6 @@
 }
 #part-face {
   grid-area: face;
-  height: 60px;
 }
 #part-torso {
   grid-area: torso;
@@ -190,13 +189,13 @@
   transition: width var(--transition-speed);
 }
 
-.layer.layer-skinweave {
+.layer.layer-cyber {
   background: var(--bg-alt);
   border: 1px dashed var(--accent-muted);
   opacity: 0.8;
 }
 
-.layer.layer-skinweave .layer-name {
+.layer.layer-cyber .layer-name {
   font-style: italic;
   color: var(--accent-muted);
 }

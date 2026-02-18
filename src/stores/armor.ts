@@ -209,6 +209,19 @@ function removeArmor(instanceId: string): void {
   updateInstance(instanceId, { worn: false });
 }
 
+export function unwearAll(): void {
+  const state = $ownedArmor.get();
+  const next = { ...state };
+  let changed = false;
+  for (const [id, inst] of Object.entries(next)) {
+    if (inst.worn && !isImplant(inst.templateId)) {
+      next[id] = { ...inst, worn: false };
+      changed = true;
+    }
+  }
+  if (changed) $ownedArmor.set(next);
+}
+
 export function toggleArmor(instanceId: string): WearResult {
   const armor = getArmorPiece(instanceId);
   if (!armor) return { success: false, error: "Armor not found" };

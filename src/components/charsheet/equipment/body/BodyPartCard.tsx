@@ -107,7 +107,7 @@ export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
             name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
-            className="layer-skinweave"
+            className="layer-cyber"
           />
         ))}
         {skinweave.map((impl) => (
@@ -116,7 +116,7 @@ export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
             name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
-            className="layer-skinweave"
+            className="layer-cyber"
           />
         ))}
         {subdermal.map((impl) => (
@@ -125,7 +125,7 @@ export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
             name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
-            className="layer-skinweave"
+            className="layer-cyber"
           />
         ))}
       </div>

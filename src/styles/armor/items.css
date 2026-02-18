@@ -56,6 +56,12 @@
 
 
 /* === ArmorCard (extends .item-card) === */
+.armor-legend {
+  font-size: var(--font-ui-sm);
+  font-weight: normal;
+  color: var(--fg-soft);
+  margin-left: var(--space-8);
+}
 
 .armor-card-sp {
   font-size: var(--font-ui-lg);
