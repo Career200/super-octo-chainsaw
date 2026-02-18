@@ -3,11 +3,13 @@ import {
   $ownedArmor,
   getAllOwnedArmor,
   isImplant,
+  getInstalledImplants,
   ARMOR_CATALOG,
 } from "@stores/armor";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 import { ArmorCard } from "./ArmorCard";
+import { ImplantCard } from "./ImplantCard";
 import { tabStore, $highlightedPart } from "@stores/ui";
 
 function sortArmor<T extends { type: string; spMax: number }>(items: T[]): T[] {
@@ -38,23 +40,39 @@ export const ArmorListPanel = ({
 
   const owned = getAllOwnedArmor().filter((a) => !isImplant(a));
   const sorted = sortArmor(owned);
+  const implants = getInstalledImplants();
 
   // Compute which armor IDs cover the highlighted body part (all owned, not just worn)
   const highlightedIds = highlightedPart
-    ? new Set(owned.filter((a) => a.bodyParts.includes(highlightedPart)).map((a) => a.id))
+    ? new Set(
+        owned
+          .filter((a) => a.bodyParts.includes(highlightedPart))
+          .map((a) => a.id),
+      )
     : undefined;
 
   return (
     <Panel
       id="armor-list-panel"
-      title={<>Armor <span class="armor-legend"><span class="armor-type-icon">{"\u2248"}</span>Soft <span class="armor-type-icon">{"\u2B21"}</span>Hard</span></>}
+      title={
+        <>
+          Armor{" "}
+          <span class="armor-legend">
+            <span class="armor-type-icon">{"\u2248"}</span>Soft{" "}
+            <span class="armor-type-icon">{"\u2B21"}</span>Hard
+          </span>
+        </>
+      }
       expanded={expanded}
       onToggle={onToggle}
       headerActions={
         <TabStrip
           persist="armor-list-tab"
           tabs={[
-            { id: "owned", label: `Owned${owned.length > 0 ? ` ${owned.length}` : ""}` },
+            {
+              id: "owned",
+              label: `Owned${owned.length > 0 ? ` ${owned.length}` : ""}`,
+            },
             { id: "catalog", label: "Catalog" },
           ]}
         />
@@ -62,18 +80,35 @@ export const ArmorListPanel = ({
     >
       {tab === "owned" && (
         <div class="armor-card-list">
-          {sorted.length === 0 ? (
+          {implants.length > 0 && (
+            <>
+              <div class="armor-group-label">Cybernetic</div>
+              {implants.map((impl) => (
+                <ImplantCard key={impl.id} implant={impl} />
+              ))}
+            </>
+          )}
+          {sorted.length === 0 && implants.length === 0 ? (
             <div class="empty-message">No armor owned</div>
           ) : (
-            sorted.map((armor) => (
-              <ArmorCard
-                key={armor.id}
-                armor={armor}
-                selected={selectedId === armor.id}
-                highlighted={highlightedIds?.has(armor.id)}
-                onClick={() => onSelect(selectedId === armor.id ? null : armor.id)}
-              />
-            ))
+            sorted.length > 0 && (
+              <>
+                {implants.length > 0 && (
+                  <div class="armor-group-label">Worn</div>
+                )}
+                {sorted.map((armor) => (
+                  <ArmorCard
+                    key={armor.id}
+                    armor={armor}
+                    selected={selectedId === armor.id}
+                    highlighted={highlightedIds?.has(armor.id)}
+                    onClick={() =>
+                      onSelect(selectedId === armor.id ? null : armor.id)
+                    }
+                  />
+                ))}
+              </>
+            )
           )}
         </div>
       )}
@@ -84,8 +119,16 @@ export const ArmorListPanel = ({
               key={tmpl.templateId}
               armor={tmpl}
               selected={selectedId === tmpl.templateId}
-              highlighted={highlightedPart ? tmpl.bodyParts.includes(highlightedPart) : false}
-              onClick={() => onSelect(selectedId === tmpl.templateId ? null : tmpl.templateId)}
+              highlighted={
+                highlightedPart
+                  ? tmpl.bodyParts.includes(highlightedPart)
+                  : false
+              }
+              onClick={() =>
+                onSelect(
+                  selectedId === tmpl.templateId ? null : tmpl.templateId,
+                )
+              }
             />
           ))}
         </div>
