@@ -7,11 +7,14 @@ import {
   AVAILABILITY_LABELS,
 } from "@scripts/gear/catalog";
 import type { GearTemplate } from "@scripts/gear/catalog";
-import { $gear, addGear, removeGear, $ownedGear, $ownedGearCount } from "@stores/gear";
-import { Panel } from "../shared/Panel";
+import {
+  $gear,
+  addGear,
+  removeGear,
+  $ownedGear,
+  $ownedGearCount,
+} from "@stores/gear";
 import { Chevron } from "../shared/Chevron";
-
-type GearTab = "catalog" | "owned";
 
 function GearCard({
   template,
@@ -95,10 +98,7 @@ function GearGroup({
       </div>
       {collapsed ? (
         <>
-          <GearCard
-            template={items[0].template}
-            quantity={items[0].quantity}
-          />
+          <GearCard template={items[0].template} quantity={items[0].quantity} />
           {items.length > 1 && (
             <div class="gear-group-more" onClick={onToggle}>
               +{items.length - 1} more
@@ -127,7 +127,7 @@ const catalogByCategory = GEAR_CATEGORIES.map((cat) => ({
 export const GearPanel = () => {
   const gearState = useStore($gear);
   const ownedCount = useStore($ownedGearCount);
-  const [tab, setTab] = useState<GearTab>("catalog");
+  const [tab, setTab] = useState<"catalog" | "owned">("catalog");
 
   const ownedItems = useStore($ownedGear).map((item) => ({
     template: item,
@@ -142,7 +142,6 @@ export const GearPanel = () => {
   })).filter((g) => g.items.length > 0);
 
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  const [expanded, setExpanded] = useState(true);
 
   const toggleGroup = (cat: string) => {
     setCollapsed((prev) => {
@@ -154,13 +153,10 @@ export const GearPanel = () => {
   };
 
   return (
-    <Panel
-      id="gear-panel"
-      title="Gear"
-      expanded={expanded}
-      onToggle={() => setExpanded((v) => !v)}
-      headerActions={
-        <span class="tab-strip" onClick={(e) => e.stopPropagation()}>
+    <div class="panel" id="gear-panel">
+      <div class="panel-heading">
+        <h2 class="title text-sm">Gear</h2>
+        <span class="tab-strip">
           <button
             class={tab === "catalog" ? "active" : ""}
             onClick={() => setTab("catalog")}
@@ -174,8 +170,7 @@ export const GearPanel = () => {
             Owned{ownedCount > 0 && ` ${ownedCount}`}
           </button>
         </span>
-      }
-    >
+      </div>
       <div class="gear-grid">
         {tab === "catalog" &&
           catalogByCategory.map((group) => (
@@ -207,6 +202,6 @@ export const GearPanel = () => {
             <div class="empty-message">No gear yet</div>
           ))}
       </div>
-    </Panel>
+    </div>
   );
 };
