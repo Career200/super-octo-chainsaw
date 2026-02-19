@@ -12,7 +12,8 @@ Mostly inspired by [Pathbuilder](https://gitlab.com/doctor.unspeakable/pathbuild
 ### Plans
 
 The charsheet grows into a proper multi-tab SPA - tabs by real-world by usage:
-- combat - wounds, saves, armor to receive damage, weapons/skills and hints to attack (considering both ranged and melee). Requires pretty much everything else to be completed first...
+- Combat - wounds, saves, armor to receive damage, weapons/skills and hints to attack (considering both ranged and melee). Requires pretty much everything else to be completed first...
+- More combat - roll damage and location, consider different damage types, degrade armor, undo if you messed up... 
 - Skills/Notes - pretty much done, only want to add tab to notes with useful info, like installed optics or such, stuff you may want to remember when roleplaying, and chipware skills.
 - Inventory management with custom items. Gear, armor and weapons.
 - Cybernetics management, affecting stats and skills - yes, I want to switch chips and connect to smartguns with the charsheet.
