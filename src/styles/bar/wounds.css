@@ -181,8 +181,18 @@
 
 .stabilized-control.disabled {
   cursor: default;
-  opacity: 0.3;
   pointer-events: none;
+}
+
+.stabilized-control.disabled .wound-box,
+.stabilized-control.disabled .stabilized-label {
+  opacity: 0.3;
+}
+
+/* === Wound count (collapsed summary) === */
+.wound-count {
+  font-size: var(--font-ui-sm);
+  color: var(--danger);
 }
 
 /* === Collapse behavior === */

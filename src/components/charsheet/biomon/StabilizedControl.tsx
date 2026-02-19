@@ -18,6 +18,7 @@ export const StabilizedControl = () => {
     >
       <div class={`wound-box ${isStable ? "filled" : ""}`} role={"checkbox"} />
       <span class="stabilized-label">{isStable ? "Stable" : "Unstable"}</span>
+      {physical > 0 && <span class="wound-count">{physical}</span>}
     </div>
   );
 };
