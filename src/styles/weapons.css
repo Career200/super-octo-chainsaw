@@ -53,6 +53,7 @@
 /* === Weapon Form Fields (add/edit custom weapon) === */
 .weapon-form-type { flex: 0 1 100px; }
 .weapon-form-skill { flex: 1 1 120px; }
+.weapon-form-skill .item-form-input { width: 100%; }
 .weapon-form-damage { flex: 0 1 90px; }
 .weapon-form-wa { flex: 0 1 60px; }
 .weapon-form-conceal { flex: 0 1 110px; }

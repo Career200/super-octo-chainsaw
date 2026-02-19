@@ -8,12 +8,14 @@ import {
   addCustomGear,
   updateCustomGear,
   removeCustomGear,
+  renameCustomGear,
   isCustomGear,
 } from "@stores/gear";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import type { Availability } from "@scripts/gear/catalog";
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 import { ItemForm } from "../shared/ItemForm";
+import { Tip } from "../shared";
 
 interface Props {
   expanded: boolean;
@@ -43,10 +45,14 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
   const [newDescription, setNewDescription] = useState("");
   const [newCost, setNewCost] = useState("");
   const [newAvailability, setNewAvailability] = useState<Availability | "">("");
+  const [addAttempted, setAddAttempted] = useState(false);
 
   const handleAdd = (): string | null => {
     const trimmed = newName.trim();
-    if (!trimmed) return "Name cannot be empty";
+    if (!trimmed) {
+      setAddAttempted(true);
+      return "Name cannot be empty";
+    }
     const typeVal = newType.trim() || "gear";
     if (/^armor$/i.test(typeVal)) return "Please use custom armor tab";
     const cost = newCost ? Number(newCost) : undefined;
@@ -58,6 +64,7 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
         availability: newAvailability || "C",
       })
     ) {
+      setAddAttempted(false);
       setNewName("");
       setNewType("");
       setNewDescription("");
@@ -78,19 +85,24 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
     value: string,
     onChange?: (v: string) => void,
   ) => (
-    <input
-      type="text"
-      class="input item-form-input item-form-type"
-      value={value}
-      disabled={!onChange}
-      onInput={
-        onChange
-          ? (e) => onChange((e.target as HTMLInputElement).value)
-          : undefined
-      }
-      placeholder="Type"
-    />
+    <Tip label="Item type" class="item-form-type">
+      <input
+        type="text"
+        class="input item-form-input"
+        value={value}
+        disabled={!onChange}
+        onInput={
+          onChange
+            ? (e) => onChange((e.target as HTMLInputElement).value)
+            : undefined
+        }
+        placeholder="Type"
+        title="Item type"
+      />
+    </Tip>
   );
+
+  const addErrors = addAttempted && !newName.trim() ? new Set<string>(["name"]) : undefined;
 
   return (
     <BottomBarItemShell
@@ -116,6 +128,7 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
           onCostChange={setNewCost}
           availability={newAvailability}
           onAvailabilityChange={setNewAvailability}
+          errors={addErrors}
         >
           {typeField(newType, setNewType)}
         </ItemForm>
@@ -123,6 +136,13 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
         <ItemForm
           disabled
           name={resolved.name}
+          onNameChange={
+            isCustom && hasCustomDef
+              ? (v) => {
+                  if (renameCustomGear(gearId!, v)) selectGear(v);
+                }
+              : undefined
+          }
           description={resolved.description}
           onDescriptionChange={
             isCustom && hasCustomDef

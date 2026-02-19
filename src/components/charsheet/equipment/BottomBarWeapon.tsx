@@ -11,6 +11,7 @@ import {
   addCustomWeapon,
   updateCustomWeapon,
   removeCustomWeapon,
+  renameCustomWeapon,
 } from "@stores/weapons";
 import type { WeaponPiece } from "@stores/weapons";
 import type {
@@ -27,6 +28,7 @@ import {
   CALIBER_DAMAGE,
 } from "@scripts/weapons/catalog";
 import type { Availability } from "@scripts/catalog-common";
+import { $allSkills } from "@stores/skills";
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 import { ItemForm } from "../shared/ItemForm";
 import { WeaponFormFields } from "./WeaponFormFields";
@@ -42,6 +44,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
   const adding = useStore($addingWeapon);
   const ownedWeapons = useStore($allOwnedWeapons);
   const customDefs = useStore($customWeaponTemplates);
+  const allSkills = useStore($allSkills);
 
   // Resolve: owned instance, or template (catalog/custom)
   const ownedPiece: WeaponPiece | null = weaponId
@@ -75,15 +78,35 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
   const [newRange, setNewRange] = useState("");
   const [newMelee, setNewMelee] = useState(false);
 
+  // Validation: track whether user attempted to add
+  const [addAttempted, setAddAttempted] = useState(false);
+
   const handleTypeChange = (t: WeaponType) => {
     setNewType(t);
     setNewMelee(t === "melee");
   };
 
+  /** Case-insensitive CALIBER_DAMAGE lookup */
+  const lookupCaliberDamage = (cal: string): string | undefined => {
+    const lower = cal.trim().toLowerCase();
+    for (const [k, v] of Object.entries(CALIBER_DAMAGE)) {
+      if (k.toLowerCase() === lower) return v;
+    }
+  };
+
   const handleAmmoChange = (caliber: string) => {
     setNewAmmo(caliber);
-    const dmg = CALIBER_DAMAGE[caliber];
+    const dmg = lookupCaliberDamage(caliber);
     if (dmg) setNewDamage(dmg);
+  };
+
+  /** Resolve proper casing of a skill name from $allSkills */
+  const resolveSkillName = (raw: string): string => {
+    const lower = raw.trim().toLowerCase();
+    for (const name of Object.keys(allSkills)) {
+      if (name.toLowerCase() === lower) return name;
+    }
+    return raw.trim();
   };
 
   const num = (s: string, fallback: number) => {
@@ -93,14 +116,17 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
 
   const handleAdd = (): string | null => {
     const trimmed = newName.trim();
-    if (!trimmed) return "Name cannot be empty";
-    if (!newDamage.trim()) return "Damage cannot be empty";
+    if (!trimmed || !newDamage.trim()) {
+      setAddAttempted(true);
+      if (!trimmed) return "Name cannot be empty";
+      return "Damage cannot be empty";
+    }
     const isMelee = newType === "melee";
     const isSkillCustom = newType === "EX" || isMelee;
     const ok = addCustomWeapon(trimmed, {
       type: newType,
       skill: isSkillCustom
-        ? newSkill.trim() || skillForType(newType)
+        ? resolveSkillName(newSkill) || skillForType(newType)
         : skillForType(newType),
       wa: num(newWa, 0),
       concealability: newConcealability,
@@ -117,6 +143,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
       smartchipped: false,
     });
     if (ok) {
+      setAddAttempted(false);
       setNewName("");
       setNewDescription("");
       setNewCost("");
@@ -199,6 +226,11 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
   let bodyContent = null;
 
   if (adding) {
+    const addErrors = new Set<string>();
+    if (addAttempted) {
+      if (!newName.trim()) addErrors.add("name");
+      if (!newDamage.trim()) addErrors.add("damage");
+    }
     bodyContent = (
       <ItemForm
         disabled={false}
@@ -210,6 +242,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
         onCostChange={setNewCost}
         availability={newAvailability}
         onAvailabilityChange={setNewAvailability}
+        errors={addErrors}
       >
         <WeaponFormFields
           type={newType}
@@ -233,6 +266,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
           range={newRange}
           onRangeChange={setNewRange}
           melee={newMelee || newType === "melee"}
+          errors={addErrors}
         />
       </ItemForm>
     );
@@ -242,6 +276,9 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
       <ItemForm
         disabled
         name={resolved.name}
+        onNameChange={(v) => {
+          if (renameCustomWeapon(weaponId!, v)) selectWeapon(v);
+        }}
         description={resolved.description}
         onDescriptionChange={(v) =>
           updateCustomWeapon(weaponId!, { description: v })
@@ -284,7 +321,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
           ammo={resolved.ammo}
           onAmmoChange={(v) => {
             const updates: Record<string, unknown> = { ammo: v };
-            const dmg = CALIBER_DAMAGE[v];
+            const dmg = lookupCaliberDamage(v);
             if (dmg) updates.damage = dmg;
             updateCustomWeapon(weaponId!, updates);
           }}
@@ -324,6 +361,9 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
           <span class="weapon-detail-stat">
             <span class="weapon-detail-label">Skill</span>
             {resolved.skill}
+            {!Object.keys(allSkills).some((k) => k.toLowerCase() === resolved.skill.toLowerCase()) && (
+              <span class="text-danger" style="font-size: var(--font-ui-sm)">Not found</span>
+            )}
           </span>
           <span class="weapon-detail-stat">
             <span class="weapon-detail-label">Damage</span>

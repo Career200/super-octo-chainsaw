@@ -1,4 +1,5 @@
 import { BODY_PARTS, PART_ABBREV, type BodyPartName } from "@scripts/armor/core";
+import { Tip } from "../shared";
 
 interface Props {
   bodyParts: BodyPartName[];
@@ -9,6 +10,8 @@ interface Props {
   onSpMaxChange?: (sp: number) => void;
   ev: number;
   onEvChange?: (ev: number) => void;
+  /** Field names that should show error styling */
+  errors?: ReadonlySet<string>;
 }
 
 export function ArmorFormFields({
@@ -20,7 +23,9 @@ export function ArmorFormFields({
   onSpMaxChange,
   ev,
   onEvChange,
+  errors,
 }: Props) {
+  const bodyPartsError = errors?.has("bodyParts") && bodyParts.length === 0;
   const togglePart = (part: BodyPartName) => {
     if (!onBodyPartsChange) return;
     if (bodyParts.includes(part)) {
@@ -31,7 +36,7 @@ export function ArmorFormFields({
   };
 
   return (
-    <div class="armor-form-row">
+    <div class={`armor-form-row${bodyPartsError ? " armor-form-row-error" : ""}`}>
       {BODY_PARTS.map((part) => {
         const active = bodyParts.includes(part);
         return (
@@ -46,60 +51,67 @@ export function ArmorFormFields({
           </button>
         );
       })}
-      <select
-        class="input armor-form-select"
-        value={type}
-        disabled={!onTypeChange}
-        onChange={
-          onTypeChange
-            ? (e) =>
-                onTypeChange(
-                  (e.target as HTMLSelectElement).value as "soft" | "hard",
-                )
-            : undefined
-        }
-      >
-        <option value="soft">Soft</option>
-        <option value="hard">Hard</option>
-      </select>
-      <input
-        type="number"
-        class="input armor-form-num"
-        value={spMax}
-        disabled={!onSpMaxChange}
-        onInput={
-          onSpMaxChange
-            ? (e) => {
-                const raw = (e.target as HTMLInputElement).value;
-                if (raw === "") { onSpMaxChange(0); return; }
-                const v = parseInt(raw, 10);
-                if (!isNaN(v)) onSpMaxChange(Math.max(0, v));
-              }
-            : undefined
-        }
-        min="0"
-        placeholder="SP"
-        title="SP"
-      />
-      <input
-        type="number"
-        class="input armor-form-num"
-        value={ev}
-        disabled={!onEvChange}
-        onInput={
-          onEvChange
-            ? (e) => {
-                const raw = (e.target as HTMLInputElement).value;
-                if (raw === "") { onEvChange(0); return; }
-                const v = parseInt(raw, 10);
-                if (!isNaN(v)) onEvChange(Math.max(0, v));
-              }
-            : undefined
-        }
-        min="0"
-        placeholder="EV"
-        title="EV"
-      />
+      <Tip label="Armor type">
+        <select
+          class="input armor-form-select"
+          value={type}
+          disabled={!onTypeChange}
+          onChange={
+            onTypeChange
+              ? (e) =>
+                  onTypeChange(
+                    (e.target as HTMLSelectElement).value as "soft" | "hard",
+                  )
+              : undefined
+          }
+          title="Armor type"
+        >
+          <option value="soft">Soft</option>
+          <option value="hard">Hard</option>
+        </select>
+      </Tip>
+      <Tip label="Stopping power">
+        <input
+          type="number"
+          class="input armor-form-num"
+          value={spMax}
+          disabled={!onSpMaxChange}
+          onInput={
+            onSpMaxChange
+              ? (e) => {
+                  const raw = (e.target as HTMLInputElement).value;
+                  if (raw === "") { onSpMaxChange(0); return; }
+                  const v = parseInt(raw, 10);
+                  if (!isNaN(v)) onSpMaxChange(Math.max(0, v));
+                }
+              : undefined
+          }
+          min="0"
+          placeholder="SP"
+          title="Stopping power"
+        />
+      </Tip>
+      <Tip label="Encumbrance value">
+        <input
+          type="number"
+          class="input armor-form-num"
+          value={ev}
+          disabled={!onEvChange}
+          onInput={
+            onEvChange
+              ? (e) => {
+                  const raw = (e.target as HTMLInputElement).value;
+                  if (raw === "") { onEvChange(0); return; }
+                  const v = parseInt(raw, 10);
+                  if (!isNaN(v)) onEvChange(Math.max(0, v));
+                }
+              : undefined
+          }
+          min="0"
+          placeholder="EV"
+          title="Encumbrance value"
+        />
+      </Tip>
     </div>
   );
 }

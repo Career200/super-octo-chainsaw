@@ -422,6 +422,31 @@ export function updateCustomArmor(
   return removed;
 }
 
+export function renameCustomArmor(oldName: string, newName: string): boolean {
+  if (!newName.trim() || newName === oldName) return false;
+  const defs = $customArmorTemplates.get();
+  if (!(oldName in defs)) return false;
+  const key = normalizeKey(newName);
+  for (const template of Object.values(ARMOR_CATALOG)) {
+    if (normalizeKey(template.name) === key || template.templateId === key) return false;
+  }
+  for (const def of Object.values(defs)) {
+    if (def.name !== oldName && normalizeKey(def.name) === key) return false;
+  }
+  const { [oldName]: def, ...rest } = defs;
+  $customArmorTemplates.set({ ...rest, [newName]: { ...def, name: newName } });
+  // Update owned instances
+  const state = $ownedArmor.get();
+  const next = { ...state };
+  for (const [id, inst] of Object.entries(next)) {
+    if (inst.templateId === oldName) {
+      next[id] = { ...inst, templateId: newName };
+    }
+  }
+  $ownedArmor.set(next);
+  return true;
+}
+
 export function removeCustomArmor(name: string): void {
   const currentDefs = $customArmorTemplates.get();
   if (!(name in currentDefs)) return;

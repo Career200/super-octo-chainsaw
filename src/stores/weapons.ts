@@ -264,6 +264,33 @@ export function updateCustomWeapon(
   });
 }
 
+export function renameCustomWeapon(oldName: string, newName: string): boolean {
+  if (!newName.trim() || newName === oldName) return false;
+  const defs = $customWeaponTemplates.get();
+  if (!(oldName in defs)) return false;
+  // Check new name doesn't collide
+  const key = normalizeKey(newName);
+  for (const template of Object.values(WEAPON_CATALOG)) {
+    if (normalizeKey(template.name) === key || template.templateId === key) return false;
+  }
+  for (const def of Object.values(defs)) {
+    if (def.name !== oldName && normalizeKey(def.name) === key) return false;
+  }
+  // Re-key definition
+  const { [oldName]: def, ...rest } = defs;
+  $customWeaponTemplates.set({ ...rest, [newName]: { ...def, name: newName } });
+  // Update owned instances
+  const weapons = $ownedWeapons.get();
+  const next = { ...weapons };
+  for (const [id, inst] of Object.entries(next)) {
+    if (inst.templateId === oldName) {
+      next[id] = { ...inst, templateId: newName };
+    }
+  }
+  $ownedWeapons.set(next);
+  return true;
+}
+
 export function removeCustomWeapon(name: string): void {
   const currentDefs = $customWeaponTemplates.get();
   if (!(name in currentDefs)) return;

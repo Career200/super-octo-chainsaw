@@ -11,6 +11,7 @@ import {
   addCustomArmor,
   updateCustomArmor,
   removeCustomArmor,
+  renameCustomArmor,
   toggleArmor,
   discardArmor,
 } from "@stores/armor";
@@ -55,6 +56,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
   const [newEv, setNewEv] = useState(0);
 
   const [editNotice, setEditNotice] = useState<string | null>(null);
+  const [addAttempted, setAddAttempted] = useState(false);
 
   // Owned instance action state
   const [wearError, setWearError] = useState<string | null>(null);
@@ -74,8 +76,11 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
 
   const handleAdd = (): string | null => {
     const trimmed = newName.trim();
-    if (!trimmed) return "Name cannot be empty";
-    if (newBodyParts.length === 0) return "Select at least one body part";
+    if (!trimmed || newBodyParts.length === 0) {
+      setAddAttempted(true);
+      if (!trimmed) return "Name cannot be empty";
+      return "Select at least one body part";
+    }
     const cost = newCost ? Number(newCost) : 0;
     const instanceId = addCustomArmor(trimmed, {
       type: newType,
@@ -87,6 +92,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
       availability: newAvailability || "C",
     });
     if (instanceId) {
+      setAddAttempted(false);
       setNewName("");
       setNewDescription("");
       setNewCost("");
@@ -201,6 +207,11 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
   let bodyContent = null;
 
   if (adding) {
+    const addErrors = new Set<string>();
+    if (addAttempted) {
+      if (!newName.trim()) addErrors.add("name");
+      if (newBodyParts.length === 0) addErrors.add("bodyParts");
+    }
     bodyContent = (
       <ItemForm
         disabled={false}
@@ -212,6 +223,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
         onCostChange={setNewCost}
         availability={newAvailability}
         onAvailabilityChange={setNewAvailability}
+        errors={addErrors}
       >
         <ArmorFormFields
           bodyParts={newBodyParts}
@@ -222,6 +234,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
           onSpMaxChange={setNewSp}
           ev={newEv}
           onEvChange={setNewEv}
+          errors={addErrors}
         />
       </ItemForm>
     );
@@ -230,6 +243,9 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
       <ItemForm
         disabled
         name={template.name}
+        onNameChange={(v) => {
+          if (renameCustomArmor(armorId!, v)) selectArmor(v);
+        }}
         description={template.description}
         onDescriptionChange={(v) =>
           notifyIfRemoved(updateCustomArmor(armorId!, { description: v }))

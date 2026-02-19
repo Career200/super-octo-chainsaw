@@ -16,6 +16,11 @@ textarea:focus {
   border-color: var(--accent);
 }
 
+.input-error,
+.input-error:focus {
+  border-color: var(--danger);
+}
+
 /* Hide number input spinners */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
@@ -26,6 +31,28 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+/* === Tooltip wrapper for form inputs === */
+.tip {
+  display: flex;
+}
+
+.tip > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.tip-popover {
+  font-size: var(--font-ui);
+  color: var(--fg-soft);
+  background: var(--code-bg);
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius);
+  padding: 4px 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1000;
 }
 
 /* === Base Card === */

@@ -152,6 +152,29 @@ export function updateCustomGear(
   });
 }
 
+export function renameCustomGear(oldName: string, newName: string): boolean {
+  if (!newName.trim() || newName === oldName) return false;
+  const defs = $customGearItems.get();
+  if (!(oldName in defs)) return false;
+  const key = normalizeKey(newName);
+  for (const template of Object.values(GEAR_CATALOG)) {
+    if (normalizeKey(template.name) === key || template.templateId === key) return false;
+  }
+  for (const def of Object.values(defs)) {
+    if (def.name !== oldName && normalizeKey(def.name) === key) return false;
+  }
+  // Re-key definition
+  const { [oldName]: def, ...rest } = defs;
+  $customGearItems.set({ ...rest, [newName]: { ...def, name: newName } });
+  // Re-key quantity
+  const quantities = $gear.get();
+  if (oldName in quantities) {
+    const { [oldName]: qty, ...restQty } = quantities;
+    $gear.set({ ...restQty, [newName]: qty });
+  }
+  return true;
+}
+
 export function removeCustomGear(name: string): void {
   const currentDefs = $customGearItems.get();
   if (!(name in currentDefs)) return;
