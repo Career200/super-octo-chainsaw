@@ -1,0 +1,100 @@
+/* === Shared Item Card Base (gear, armor, weapons, cyber) === */
+.item-card {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--padding-panel);
+  margin-bottom: var(--space-8);
+  cursor: pointer;
+}
+
+.item-card:hover {
+  border-color: var(--accent);
+}
+
+.item-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-muted);
+}
+
+.item-card.highlighted {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+}
+
+.item-card.item-card-accent {
+  border-left: 3px solid var(--accent);
+}
+
+.item-card h4 {
+  margin: 0;
+  font-size: var(--font-ui-lg);
+  color: var(--accent);
+}
+
+.item-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.item-avail {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+}
+
+/* === Shared Item Form (gear, armor, etc.) === */
+.item-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  height: 100%;
+  min-height: 0;
+}
+
+.item-form-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-8);
+}
+
+.item-form-name {
+  flex: 1 1 160px;
+}
+
+.item-form-type {
+  flex: 1 1 120px;
+}
+
+.item-form-cost {
+  flex: 0 1 80px;
+}
+
+.item-form-availability {
+  flex: 0 1 100px;
+}
+
+.item-form-input {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-ui);
+}
+
+.item-form-description {
+  flex: 1;
+  min-height: 0;
+  resize: none;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  padding: var(--space-6) var(--space-8);
+  color: var(--fg);
+}
+
+.item-form-description:disabled {
+  opacity: 1;
+  color: var(--fg-soft);
+  cursor: default;
+}

@@ -1,4 +1,5 @@
-export type Availability = "E" | "C" | "P" | "R" | "U";
+export type { Availability } from "@scripts/catalog-common";
+import type { Availability } from "@scripts/catalog-common";
 
 export interface GearTemplate {
   templateId: string;
@@ -128,10 +129,4 @@ export const GEAR_CATALOG: Record<string, GearTemplate> = {
   ),
 };
 
-export const AVAILABILITY_LABELS: Record<string, string> = {
-  E: "Excellent",
-  C: "Common",
-  P: "Poor",
-  R: "Rare",
-  U: "Unique",
-};
+export { AVAILABILITY_LABELS } from "@scripts/catalog-common";

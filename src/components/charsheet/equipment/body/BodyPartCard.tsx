@@ -3,6 +3,8 @@ import {
   $ownedArmor,
   getBodyPartLayers,
   getImplantsForPart,
+  getArmorPiece,
+  getTemplate,
   isSkinweave,
 } from "@stores/armor";
 import {
@@ -11,6 +13,12 @@ import {
   PART_NAMES,
   type BodyPartName,
 } from "@scripts/armor/core";
+import {
+  $selectedArmor,
+  selectArmor,
+  $highlightedPart,
+  highlightPart,
+} from "@stores/ui";
 import { LayerBar } from "./LayerBar";
 import { HitPopover } from "../HitPopover";
 
@@ -25,14 +33,18 @@ const HIT_ROLL: Record<string, string> = {
 
 interface Props {
   part: BodyPartName;
+  mode?: "biomon" | "inventory";
 }
 
-export const BodyPartCard = ({ part }: Props) => {
+export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
   useStore($ownedArmor);
+  const selectedArmorId = useStore($selectedArmor);
+  const highlightedPartVal = useStore($highlightedPart);
+
+  const inventory = mode === "inventory";
 
   const layers = getBodyPartLayers(part);
   const implants = getImplantsForPart(part);
-
   const total = getEffectiveSP(layers, { implants, part });
 
   const sorted = sortByLayerOrder(layers);
@@ -40,9 +52,41 @@ export const BodyPartCard = ({ part }: Props) => {
   const skinweave = implants.filter((i) => isSkinweave(i));
   const subdermal = implants.filter((i) => i.layer === "subdermal");
 
+  // Inventory mode: highlight when part is clicked or selected armor covers this part
+  const selectedArmor =
+    inventory && selectedArmorId
+      ? getArmorPiece(selectedArmorId) ?? getTemplate(selectedArmorId)
+      : null;
+  const isPartHighlighted =
+    inventory &&
+    (highlightedPartVal === part ||
+      (selectedArmor?.bodyParts.includes(part) ?? false));
+
+  const handlePartClick = () => {
+    highlightPart(highlightedPartVal === part ? null : part);
+  };
+
+  const handleLayerClick = (armorId: string) => {
+    selectArmor(armorId);
+  };
+
+  const cls = [
+    "body-part",
+    inventory && "body-part-clickable",
+    isPartHighlighted && "body-part-highlighted",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div class="body-part" id={`part-${part}`}>
-      <HitPopover forPart={part}>{HIT_ROLL[part]}</HitPopover>
+    <div
+      class={cls}
+      id={`part-${part}`}
+      onClick={inventory ? handlePartClick : undefined}
+    >
+      {!inventory && (
+        <HitPopover forPart={part}>{HIT_ROLL[part]}</HitPopover>
+      )}
       <h3>
         {PART_NAMES[part]} <span class="sp-total">{total}</span>
       </h3>
@@ -53,6 +97,8 @@ export const BodyPartCard = ({ part }: Props) => {
             name={layer.shortName ?? layer.name}
             currentSP={layer.spCurrent}
             maxSP={layer.spMax}
+            onClick={inventory ? () => handleLayerClick(layer.id) : undefined}
+            active={inventory && selectedArmorId === layer.id}
           />
         ))}
         {plating.map((impl) => (
@@ -61,7 +107,7 @@ export const BodyPartCard = ({ part }: Props) => {
             name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
-            className="layer-skinweave"
+            className="layer-cyber"
           />
         ))}
         {skinweave.map((impl) => (
@@ -70,7 +116,7 @@ export const BodyPartCard = ({ part }: Props) => {
             name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
-            className="layer-skinweave"
+            className="layer-cyber"
           />
         ))}
         {subdermal.map((impl) => (
@@ -79,7 +125,7 @@ export const BodyPartCard = ({ part }: Props) => {
             name={impl.shortName ?? impl.name}
             currentSP={impl.spByPart[part] ?? 0}
             maxSP={impl.spMax}
-            className="layer-skinweave"
+            className="layer-cyber"
           />
         ))}
       </div>

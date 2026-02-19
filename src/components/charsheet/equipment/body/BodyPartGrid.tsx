@@ -4,19 +4,23 @@ import { SkinweaveDisplay } from "./SkinweaveDisplay";
 import { ImplantsDisplay } from "./ImplantsDisplay";
 import { EVDisplay } from "./EVDisplay";
 
-export const BodyPartGrid = () => {
+interface Props {
+  mode?: "biomon" | "inventory";
+}
+
+export const BodyPartGrid = ({ mode = "biomon" }: Props) => {
   return (
     <div class="body-grid">
       <SkinweaveDisplay />
-      <BodyPartCard part="head" />
-      <FaceCard />
+      <BodyPartCard part="head" mode={mode} />
+      <FaceCard mode={mode} />
       <ImplantsDisplay />
-      <BodyPartCard part="torso" />
-      <BodyPartCard part="left_arm" />
-      <BodyPartCard part="right_arm" />
-      <BodyPartCard part="left_leg" />
+      <BodyPartCard part="torso" mode={mode} />
+      <BodyPartCard part="left_arm" mode={mode} />
+      <BodyPartCard part="right_arm" mode={mode} />
+      <BodyPartCard part="left_leg" mode={mode} />
       <EVDisplay />
-      <BodyPartCard part="right_leg" />
+      <BodyPartCard part="right_leg" mode={mode} />
     </div>
   );
 };

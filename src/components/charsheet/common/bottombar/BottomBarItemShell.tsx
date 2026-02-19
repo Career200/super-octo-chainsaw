@@ -15,6 +15,7 @@ interface Props {
   isCustom: boolean;
   removeName?: string;
   onRemove?: () => void;
+  headerActions?: ComponentChildren;
   children: ComponentChildren;
 }
 
@@ -29,6 +30,7 @@ export function BottomBarItemShell({
   isCustom,
   removeName,
   onRemove,
+  headerActions,
   children,
 }: Props) {
   const addBtnRef = useRef<HTMLButtonElement>(null);
@@ -52,6 +54,7 @@ export function BottomBarItemShell({
           <span class="bottom-bar-name">{headerLabel}</span>
         </div>
         <div class="bottom-bar-actions">
+          {headerActions}
           {adding && onAdd && (
             <>
               <button

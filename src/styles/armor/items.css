@@ -1,28 +1,8 @@
-/* Armor Legend */
-.armor-legend {
-  font-size: var(--font-ui);
-  white-space: nowrap;
-}
-
-.armor-legend .armor-type-icon {
-  transform: scale(1.5);
-  margin: 0 var(--space-2) 0 var(--space-6);
-}
-
-/* === Armor Items === */
+/* === Armor Items (used by ImplantsDisplay) === */
 .armor-item.armor-worn {
   border-color: var(--accent);
 }
 
-.store-item h4 {
-  color: var(--link);
-}
-
-.store-description {
-  margin: var(--space-6) 0 0;
-}
-
-/* armor-header uses .flex-between .gap-12 utilities */
 
 .armor-sp {
   font-size: var(--font-ui-lg);
@@ -48,16 +28,6 @@
   color: var(--fg-soft);
 }
 
-.armor-coverage-row {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-8);
-  margin-top: var(--space-6);
-}
-
-/* body-parts-coverage uses .flex-end .gap-4 utilities */
 
 .coverage-badge {
   display: inline-block;
@@ -76,41 +46,83 @@
   letter-spacing: 1px;
 }
 
-/* armor-actions, store-actions use .flex-between .gap-8 utilities */
-.armor-actions,
-.store-actions {
+.armor-actions {
   margin-top: var(--space-8);
 }
 
-.armor-actions button,
-.store-actions button {
+.armor-actions button {
   flex: 1;
 }
 
-/* === Implant Groups (in inventory) === */
-.implant-group {
-  margin-bottom: var(--space-12);
-  padding: var(--padding-panel);
-  border: 1px dashed var(--accent-muted);
-  border-radius: var(--radius-lg);
-  background: var(--bg);
+
+/* === ArmorCard (extends .item-card) === */
+.armor-group-label {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-4);
 }
 
-/* implant-group-label uses .text-label utility + custom color */
-.implant-group-label {
-  color: var(--accent-muted);
+.armor-legend {
+  font-size: var(--font-ui-sm);
+  font-weight: normal;
+  color: var(--fg-soft);
+  margin-left: var(--space-8);
+}
+
+.armor-card-sp {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--link);
+  white-space: nowrap;
+}
+
+.armor-card-details {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-top: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.armor-card-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.armor-card-ev {
+  font-size: var(--font-ui);
+  font-weight: bold;
+  color: var(--danger);
+  white-space: nowrap;
+}
+
+/* === Armor bottom bar detail === */
+.armor-detail-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
   margin-bottom: var(--space-8);
 }
 
-.implant-group .armor-item {
-  background: var(--bg-alt);
+.armor-detail-part {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--font-ui);
 }
 
-.implant-group .armor-item:last-child {
-  margin-bottom: 0;
+.armor-detail-part [class*="condition-"] {
+  color: var(--condition-color);
+  font-weight: bold;
 }
 
 /* === Health Color Applications === */
+.armor-card-sp [class*="condition-"],
 .armor-sp [class*="condition-"],
 .repair-sp-value[class*="condition-"] {
   color: var(--condition-color);
@@ -120,4 +132,45 @@
 .coverage-badge.condition-critical {
   border-color: var(--condition-color);
   color: var(--condition-color);
+}
+
+/* === Armor Form (custom armor) === */
+.armor-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1 1 100%;
+}
+
+.coverage-badge-toggle {
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+
+.coverage-badge-toggle:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.coverage-badge-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.coverage-badge-toggle:disabled {
+  cursor: default;
+}
+
+.armor-form-select {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-ui);
+}
+
+.armor-form-num {
+  width: 52px;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-ui);
+  text-align: center;
 }

@@ -2,6 +2,7 @@ import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import type { GearTemplate, Availability } from "@scripts/gear/catalog";
+import { normalizeKey } from "@scripts/catalog-common";
 
 // --- Types ---
 
@@ -18,10 +19,6 @@ export interface CustomGearDef {
 
 export function isCustomGear(id: string): boolean {
   return !(id in GEAR_CATALOG);
-}
-
-function normalizeKey(name: string): string {
-  return name.replace(/\s+/g, "").toLowerCase();
 }
 
 // --- Persistence: quantities ---

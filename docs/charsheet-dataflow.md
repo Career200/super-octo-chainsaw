@@ -24,10 +24,20 @@
                 └────────▲────────┘                    │
                          │                             │
                ┌─────────┴──────────┐                  │
-               │    $ownedArmor     │─────────────────┼──▸ InventoryPanel, ArmorItem
-               │     (persist)      │                  │    BodyPartCard
+               │    $ownedArmor     │─────────────────┼──▸ ArmorListPanel, ArmorCard
+               │     (persist)      │                  │    BodyPartCard, BottomBarArmor
                │                    │                  │    SkinweaveDisplay, ImplantsDisplay
-               └────────────────────┘                  │    HitPopover ◂──▸, RepairPopover
+               └─────────▲──────────┘                  │    HitPopover ◂──▸, RepairPopover
+                         │                             │
+               ┌─────────┴──────────────┐              │
+               │ $customArmorTemplates  │─────────────┼──▸ BottomBarArmor ◂──▸
+               │       (persist)        │              │    ArmorListPanel (Custom tab)
+               └─────────┬──────────────┘              │
+                         │                             │
+                         ▾                             │
+               ┌────────────────────┐                  │
+               │ $customArmorList  │─────────────────┼──▸ ArmorListPanel (Custom tab count)
+               │   (computed)       │                  │
                                                        │
                ┌────────────────────┐                  │
                │  $damageHistory    │─────────────────┴──▸ BottomBarHistory (biomon bottom bar)
@@ -48,7 +58,8 @@
                │  tabStore()       │─────────────────────▸ TabStrip (self-persisting)
                │  factory (persist) │                       Charsheet, BottomBar,
                │  keys: spa-tab,   │                       EquipmentView, GearPanel,
-               │  equipment-sub-tab,│                       StatsSkillsPanel, NotesPanel
+               │  equipment-sub-tab,│                       ArmorListPanel,
+               │  armor-list-tab,  │                       StatsSkillsPanel, NotesPanel
                │  gear-tab,        │
                │  skills-filter,   │
                │  notes-tab        │
@@ -159,15 +170,31 @@
                │      (atom)       │                       BottomBar (auto-expand)
                └────────────────────┘
                 Mutually exclusive with $selectedGear
+
+               ┌────────────────────┐
+               │  $selectedArmor  │─────────────────────▸ BottomBarArmor (detail view)
+               │      (atom)       │                       ArmorCard (highlight)
+               └────────────────────┘                      BodyPartCard (layer active state)
+
+               ┌────────────────────┐
+               │   $addingArmor   │─────────────────────▸ BottomBarArmor (add-armor form)
+               │      (atom)       │                       BottomBar (auto-expand)
+               └────────────────────┘
+                Mutually exclusive with $selectedArmor
+
+               ┌────────────────────┐
+               │ $highlightedPart │─────────────────────▸ BodyPartCard (body part highlight)
+               │      (atom)       │                       ArmorListPanel (card highlight)
+               └────────────────────┘
 ```
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$damageHistory`, `$notes`, `$skills`, `$gear`, `$customGearItems`) own the data, persist to localStorage
-- **Tab stores** via `tabStore()` factory — 5 keys (`spa-tab`, `equipment-sub-tab`, `gear-tab`, `skills-filter`, `notes-tab`) each persist to localStorage, cached by key so all subscribers share one atom
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$notes`, `$skills`, `$gear`, `$customGearItems`) own the data, persist to localStorage
+- **Tab stores** via `tabStore()` factory — 6 keys (`spa-tab`, `equipment-sub-tab`, `armor-list-tab`, `gear-tab`, `skills-filter`, `notes-tab`) each persist to localStorage, cached by key so all subscribers share one atom
 - **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only id → quantity. Full objects come from static catalogs at read time. Custom skills are stored as full objects in `$skills`; custom gear definitions live in a separate `$customGearItems` store (persists independently of quantity).
-- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`) derive from persistent stores
+- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
-- **UI atoms**: `$selectedSkill`/`$addingSkill` and `$selectedGear`/`$addingGear` are each mutually exclusive pairs — setting one clears the other via helper functions
+- **UI atoms**: `$selectedSkill`/`$addingSkill`, `$selectedGear`/`$addingGear`, and `$selectedArmor`/`$addingArmor` are each mutually exclusive pairs — setting one clears the other via helper functions. `$highlightedPart` is an independent atom for body part highlighting on the inventory grid.
 - `◂──▸` = component both reads and mutates that store
