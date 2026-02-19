@@ -13,8 +13,19 @@ import {
   removeCustomWeapon,
 } from "@stores/weapons";
 import type { WeaponPiece } from "@stores/weapons";
-import type { WeaponType, Concealability, Reliability, WeaponTemplate } from "@scripts/weapons/catalog";
-import { WEAPON_CATALOG, WEAPON_TYPE_LABELS, RELIABILITY_LABELS, skillForType } from "@scripts/weapons/catalog";
+import type {
+  WeaponType,
+  Concealability,
+  Reliability,
+  WeaponTemplate,
+} from "@scripts/weapons/catalog";
+import {
+  WEAPON_CATALOG,
+  WEAPON_TYPE_LABELS,
+  RELIABILITY_LABELS,
+  skillForType,
+  CALIBER_DAMAGE,
+} from "@scripts/weapons/catalog";
 import type { Availability } from "@scripts/catalog-common";
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 import { ItemForm } from "../shared/ItemForm";
@@ -34,7 +45,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
 
   // Resolve: owned instance, or template (catalog/custom)
   const ownedPiece: WeaponPiece | null = weaponId
-    ? ownedWeapons.find((w) => w.id === weaponId) ?? null
+    ? (ownedWeapons.find((w) => w.id === weaponId) ?? null)
     : null;
   const template: WeaponTemplate | null =
     !ownedPiece && weaponId ? resolveWeaponTemplate(weaponId) : null;
@@ -54,7 +65,8 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
   const [newType, setNewType] = useState<WeaponType>("P");
   const [newSkill, setNewSkill] = useState("");
   const [newWa, setNewWa] = useState("");
-  const [newConcealability, setNewConcealability] = useState<Concealability>("J");
+  const [newConcealability, setNewConcealability] =
+    useState<Concealability>("J");
   const [newDamage, setNewDamage] = useState("");
   const [newAmmo, setNewAmmo] = useState("");
   const [newShots, setNewShots] = useState("");
@@ -63,10 +75,15 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
   const [newRange, setNewRange] = useState("");
   const [newMelee, setNewMelee] = useState(false);
 
-  // When type changes, update melee flag
   const handleTypeChange = (t: WeaponType) => {
     setNewType(t);
     setNewMelee(t === "melee");
+  };
+
+  const handleAmmoChange = (caliber: string) => {
+    setNewAmmo(caliber);
+    const dmg = CALIBER_DAMAGE[caliber];
+    if (dmg) setNewDamage(dmg);
   };
 
   const num = (s: string, fallback: number) => {
@@ -82,7 +99,9 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
     const isSkillCustom = newType === "EX" || isMelee;
     const ok = addCustomWeapon(trimmed, {
       type: newType,
-      skill: isSkillCustom ? (newSkill.trim() || skillForType(newType)) : skillForType(newType),
+      skill: isSkillCustom
+        ? newSkill.trim() || skillForType(newType)
+        : skillForType(newType),
       wa: num(newWa, 0),
       concealability: newConcealability,
       availability: (newAvailability as Availability) || "C",
@@ -126,9 +145,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
 
   // Determine what to show
   const resolved = ownedPiece ?? template;
-  const headerLabel = adding
-    ? "New custom weapon"
-    : resolved?.name ?? "";
+  const headerLabel = adding ? "New custom weapon" : (resolved?.name ?? "");
   const hasContent = adding || !!resolved;
 
   // Header actions
@@ -206,7 +223,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
           damage={newDamage}
           onDamageChange={setNewDamage}
           ammo={newAmmo}
-          onAmmoChange={setNewAmmo}
+          onAmmoChange={handleAmmoChange}
           shots={newShots}
           onShotsChange={setNewShots}
           rof={newRof}
@@ -226,38 +243,71 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
         disabled
         name={resolved.name}
         description={resolved.description}
-        onDescriptionChange={(v) => updateCustomWeapon(weaponId!, { description: v })}
+        onDescriptionChange={(v) =>
+          updateCustomWeapon(weaponId!, { description: v })
+        }
         cost={resolved.cost != null ? String(resolved.cost) : ""}
         onCostChange={(v) => {
           const n = v ? Number(v) : undefined;
-          updateCustomWeapon(weaponId!, { cost: n != null && !isNaN(n) ? n : 0 });
+          updateCustomWeapon(weaponId!, {
+            cost: n != null && !isNaN(n) ? n : 0,
+          });
         }}
         availability={resolved.availability ?? ""}
         onAvailabilityChange={(v) =>
-          updateCustomWeapon(weaponId!, { availability: (v as Availability) || undefined })
+          updateCustomWeapon(weaponId!, {
+            availability: (v as Availability) || undefined,
+          })
         }
       >
         <WeaponFormFields
           type={resolved.type}
-          onTypeChange={(t) => updateCustomWeapon(weaponId!, { type: t, melee: t === "melee", skill: skillForType(t) })}
+          onTypeChange={(t) =>
+            updateCustomWeapon(weaponId!, {
+              type: t,
+              melee: t === "melee",
+              skill: skillForType(t),
+            })
+          }
           skill={resolved.skill}
           onSkillChange={(v) => updateCustomWeapon(weaponId!, { skill: v })}
           wa={String(resolved.wa)}
-          onWaChange={(v) => updateCustomWeapon(weaponId!, { wa: Number(v) || 0 })}
+          onWaChange={(v) =>
+            updateCustomWeapon(weaponId!, { wa: Number(v) || 0 })
+          }
           concealability={resolved.concealability}
-          onConcealabilityChange={(v) => updateCustomWeapon(weaponId!, { concealability: v })}
+          onConcealabilityChange={(v) =>
+            updateCustomWeapon(weaponId!, { concealability: v })
+          }
           damage={resolved.damage}
           onDamageChange={(v) => updateCustomWeapon(weaponId!, { damage: v })}
           ammo={resolved.ammo}
-          onAmmoChange={(v) => updateCustomWeapon(weaponId!, { ammo: v })}
+          onAmmoChange={(v) => {
+            const updates: Record<string, unknown> = { ammo: v };
+            const dmg = CALIBER_DAMAGE[v];
+            if (dmg) updates.damage = dmg;
+            updateCustomWeapon(weaponId!, updates);
+          }}
           shots={String(resolved.shots)}
-          onShotsChange={(v) => updateCustomWeapon(weaponId!, { shots: Math.max(0, Number(v) || 0) })}
+          onShotsChange={(v) =>
+            updateCustomWeapon(weaponId!, {
+              shots: Math.max(0, Number(v) || 0),
+            })
+          }
           rof={String(resolved.rof)}
-          onRofChange={(v) => updateCustomWeapon(weaponId!, { rof: Math.max(0, Number(v) || 0) })}
+          onRofChange={(v) =>
+            updateCustomWeapon(weaponId!, { rof: Math.max(0, Number(v) || 0) })
+          }
           reliability={resolved.reliability}
-          onReliabilityChange={(v) => updateCustomWeapon(weaponId!, { reliability: v })}
+          onReliabilityChange={(v) =>
+            updateCustomWeapon(weaponId!, { reliability: v })
+          }
           range={String(resolved.range)}
-          onRangeChange={(v) => updateCustomWeapon(weaponId!, { range: Math.max(0, Number(v) || 0) })}
+          onRangeChange={(v) =>
+            updateCustomWeapon(weaponId!, {
+              range: Math.max(0, Number(v) || 0),
+            })
+          }
           melee={resolved.melee}
         />
       </ItemForm>
@@ -281,7 +331,8 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
           </span>
           <span class="weapon-detail-stat">
             <span class="weapon-detail-label">WA</span>
-            {resolved.wa >= 0 ? "+" : ""}{resolved.wa}
+            {resolved.wa >= 0 ? "+" : ""}
+            {resolved.wa}
           </span>
           {!resolved.melee && (
             <>

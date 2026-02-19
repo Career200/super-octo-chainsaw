@@ -185,6 +185,7 @@
   flex-direction: column;
   height: 36px;
   padding-inline: max(var(--space-12), var(--content-inset));
+  padding-bottom: var(--space-8);
   background: var(--bg-alt);
   border-top: 1px solid var(--border);
 }
@@ -219,6 +220,9 @@
 
 .bottom-bar-body .text-desc {
   font-size: var(--font-ui);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .bottom-bar-content {

@@ -75,6 +75,37 @@ export function skillForType(type: WeaponType): string {
   }
 }
 
+/**
+ * Caliber → default damage lookup.
+ * Used to auto-fill damage when caliber is entered on custom weapons.
+ * NOTE: When ammo becomes its own item type, ammo will be the source of truth
+ * for damage (and can alter it — e.g. AP rounds reduce raw damage but halve SP).
+ * This lookup is a stopgap for custom weapon creation until then.
+ */
+export const CALIBER_DAMAGE: Record<string, string> = {
+  "5mm": "1D6",
+  ".25": "1D6+1",
+  ".22": "1D6",
+  "6mm": "1D6+1",
+  "7mm": "1D6+2",
+  ".38": "1D6+2",
+  "9mm": "2D6+1",
+  "10mm": "2D6+3",
+  ".357": "3D6+1",
+  ".45": "2D6+2",
+  ".40": "2D6+3",
+  "11mm": "3D6",
+  "12mm": "4D6+1",
+  ".44": "4D6",
+  "5.56mm": "5D6",
+  "5.7mm": "3D6",
+  "7.62mm": "6D6+2",
+  "7.62x39": "5D6+2",
+  "30-06": "5D6+1",
+  "00": "4D6",
+  "20mm": "4D10 AP",
+};
+
 // Compact weapon constructor matching corebook weapon code order:
 // Name • Type • WA • Concealability • Availability • Damage • Ammo • #Shots • ROF • Reliability • Range • Cost
 function w(

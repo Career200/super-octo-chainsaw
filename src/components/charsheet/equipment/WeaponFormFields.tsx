@@ -15,10 +15,10 @@ interface Props {
   onWaChange?: (v: string) => void;
   concealability: Concealability;
   onConcealabilityChange?: (v: Concealability) => void;
-  damage: string;
-  onDamageChange?: (v: string) => void;
   ammo: string;
   onAmmoChange?: (v: string) => void;
+  damage: string;
+  onDamageChange?: (v: string) => void;
   shots: string;
   onShotsChange?: (v: string) => void;
   rof: string;
@@ -35,8 +35,8 @@ export function WeaponFormFields({
   skill, onSkillChange,
   wa, onWaChange,
   concealability, onConcealabilityChange,
-  damage, onDamageChange,
   ammo, onAmmoChange,
+  damage, onDamageChange,
   shots, onShotsChange,
   rof, onRofChange,
   reliability, onReliabilityChange,
@@ -44,7 +44,6 @@ export function WeaponFormFields({
   melee,
 }: Props) {
   const skillCanEdit = isSkillEditable(type);
-  // For non-editable skill types, show the derived skill name
   const displaySkill = skillCanEdit ? skill : skillForType(type);
 
   return (
@@ -73,6 +72,19 @@ export function WeaponFormFields({
         }
         placeholder="Skill"
       />
+      {!melee && (
+        <input
+          type="text"
+          class="input item-form-input weapon-form-ammo"
+          value={ammo}
+          disabled={!onAmmoChange}
+          onInput={onAmmoChange
+            ? (e) => onAmmoChange((e.target as HTMLInputElement).value)
+            : undefined
+          }
+          placeholder="Caliber"
+        />
+      )}
       <input
         type="text"
         class="input item-form-input weapon-form-damage"
@@ -110,17 +122,6 @@ export function WeaponFormFields({
       </select>
       {!melee && (
         <>
-          <input
-            type="text"
-            class="input item-form-input weapon-form-ammo"
-            value={ammo}
-            disabled={!onAmmoChange}
-            onInput={onAmmoChange
-              ? (e) => onAmmoChange((e.target as HTMLInputElement).value)
-              : undefined
-            }
-            placeholder="Caliber"
-          />
           <input
             type="number"
             class="input item-form-input weapon-form-shots"

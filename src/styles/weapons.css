@@ -23,6 +23,13 @@
 }
 
 /* === Weapon Detail (bottom bar read-only view) === */
+.weapon-detail {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 .weapon-detail-stats {
   display: flex;
   flex-wrap: wrap;
