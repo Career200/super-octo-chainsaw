@@ -29,10 +29,10 @@
                │                    │                  │    SkinweaveDisplay, ImplantsDisplay
                └─────────▲──────────┘                  │    HitPopover ◂──▸, RepairPopover
                          │                             │
-               ┌─────────┴──────────┐                  │
-               │$customArmorTemplts │─────────────────┼──▸ BottomBarArmor ◂──▸
-               │     (persist)      │                  │    ArmorListPanel (Custom tab)
-               └─────────┬──────────┘                  │
+               ┌─────────┴──────────────┐              │
+               │ $customArmorTemplates  │─────────────┼──▸ BottomBarArmor ◂──▸
+               │       (persist)        │              │    ArmorListPanel (Custom tab)
+               └─────────┬──────────────┘              │
                          │                             │
                          ▾                             │
                ┌────────────────────┐                  │
