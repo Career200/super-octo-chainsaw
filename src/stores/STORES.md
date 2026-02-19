@@ -103,6 +103,39 @@ Custom gear definitions — user-created extension to `GEAR_CATALOG`. Persists i
 Actions: `addCustomGear`, `updateCustomGear`, `removeCustomGear`
 Helper: `isCustomGear(id)` — true if not in `GEAR_CATALOG`
 
+### `$ownedWeapons` (weapons.ts)
+```
+Record<instanceId, { id, templateId, currentAmmo, currentAmmoType, smartchipActive }>
+```
+Owned weapon instances. Each weapon tracks its own ammo state. Validated on decode.
+
+Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon`, `setCurrentAmmo`, `setAmmoType`, `setSmartchipActive`
+Template resolution: `resolveWeaponTemplate()` — checks `WEAPON_CATALOG` + `$customWeaponTemplates`
+Helper: `isCustomWeapon(id)` — true if not in `WEAPON_CATALOG`
+
+### `$customWeaponTemplates` (weapons.ts)
+```
+Record<string, CustomWeaponDef>
+CustomWeaponDef: { name, type, skill, wa, concealability, availability, damage, ammo, shots, rof, reliability, range, cost, description, melee, smartchipped }
+```
+Custom weapon definitions — user-created extension to `WEAPON_CATALOG`. Persists independently of instances.
+
+Actions: `addCustomWeapon`, `updateCustomWeapon`, `removeCustomWeapon`
+
+### `$selectedWeapon` (ui.ts)
+```
+string | null (default: null)
+```
+Currently selected weapon instance ID for the bottom bar. Non-persistent.
+Mutually exclusive with `$addingWeapon` — use `selectWeapon()` to set.
+
+### `$addingWeapon` (ui.ts)
+```
+boolean (default: false)
+```
+Whether the add-custom-weapon form is open in the bottom bar. Non-persistent.
+Mutually exclusive with `$selectedWeapon` — use `startAddingWeapon()` to set.
+
 ### `$selectedArmor` (ui.ts)
 ```
 string | null (default: null)
@@ -250,6 +283,20 @@ OwnedGearItem[] (custom: true)
 All custom gear definitions with current quantities (including qty 0).
 Depends on: `$gear`, `$customGearItems`
 
+### `$allOwnedWeapons` (weapons.ts)
+```
+WeaponPiece[] (each: WeaponTemplate + instance state + custom?)
+```
+All owned weapons: instances hydrated with template data from `WEAPON_CATALOG` or `$customWeaponTemplates`. Used by both Inventory and Combat panels.
+Depends on: `$ownedWeapons`, `$customWeaponTemplates`
+
+### `$customWeaponList` (weapons.ts)
+```
+WeaponTemplate[]
+```
+All custom weapon definitions as full `WeaponTemplate` objects.
+Depends on: `$customWeaponTemplates`
+
 ### `$customArmorList` (armor.ts)
 ```
 ArmorTemplate[]
@@ -282,6 +329,12 @@ tabStore() ────▸ TabStrip (6 persisted keys, see factory docs above)
 $gear ──────────┬──▸ $ownedGear ──▸ $ownedGearCount
 $customGearItems┼──▸ $customGear
                 └──▸ GearPanel (catalog + custom + owned views)
+
+$ownedWeapons ─────────┬──▸ $allOwnedWeapons (hydrated with templates)
+$customWeaponTemplates─┼──▸ $customWeaponList
+                       └──▸ resolveWeaponTemplate() (used by acquireWeapon, reloadWeapon, $allOwnedWeapons)
+
+$selectedWeapon ◂──▸ $addingWeapon (mutually exclusive via selectWeapon/startAddingWeapon)
 
 $selectedArmor ◂──▸ $addingArmor (mutually exclusive via selectArmor/startAddingArmor)
 $highlightedPart ──▸ BodyPartCard (highlight), ArmorListPanel (highlight cards)

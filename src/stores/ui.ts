@@ -83,3 +83,19 @@ export function highlightPart(part: BodyPartName | null): void {
   $highlightedPart.set(part);
   $selectedArmor.set(null);
 }
+
+/** Currently selected weapon instance ID, or null. */
+export const $selectedWeapon = atom<string | null>(null);
+
+/** Whether the add-custom-weapon form is open. Mutually exclusive with $selectedWeapon. */
+export const $addingWeapon = atom<boolean>(false);
+
+export function selectWeapon(id: string | null): void {
+  $addingWeapon.set(false);
+  $selectedWeapon.set(id);
+}
+
+export function startAddingWeapon(): void {
+  $selectedWeapon.set(null);
+  $addingWeapon.set(true);
+}

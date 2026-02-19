@@ -171,6 +171,44 @@
                └────────────────────┘
                 Mutually exclusive with $selectedGear
 
+               ┌──────────────────────────┐
+               │    $ownedWeapons        │──────────────────▸ (future) WeaponListPanel ◂──▸
+               │       (persist)          │                    CombatPanel (weapon cards)
+               │  instances: id →        │
+               │  { templateId,          │
+               │    currentAmmo,         │
+               │    currentAmmoType,     │
+               │    smartchipActive }    │
+               └──────────┬──────────────┘
+                          │
+                          │  ┌────────────────────────────┐
+                          │  │  $customWeaponTemplates    │──▸ (future) BottomBarWeapon ◂──▸
+                          │  │       (persist)             │
+                          │  └──────┬──┬─────────────────┘
+                          │         │  │
+                          ├─────────┘  │
+                          ▾            │
+               ┌───────────────────┐   │
+               │ $allOwnedWeapons │   │
+               │    (computed)     │   │
+               └───────────────────┘   │
+                                       ▾
+                          ┌──────────────────┐
+                          │$customWeaponList │
+                          │   (computed)     │
+                          └──────────────────┘
+
+               ┌────────────────────┐
+               │ $selectedWeapon   │─────────────────────▸ (future) BottomBarWeapon
+               │      (atom)       │                       WeaponCard (highlight)
+               └────────────────────┘
+
+               ┌────────────────────┐
+               │  $addingWeapon    │─────────────────────▸ (future) BottomBarWeapon
+               │      (atom)       │                       BottomBar (auto-expand)
+               └────────────────────┘
+                Mutually exclusive with $selectedWeapon
+
                ┌────────────────────┐
                │  $selectedArmor  │─────────────────────▸ BottomBarArmor (detail view)
                │      (atom)       │                       ArmorCard (highlight)
@@ -190,11 +228,12 @@
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$notes`, `$skills`, `$gear`, `$customGearItems`) own the data, persist to localStorage
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`) own the data, persist to localStorage
 - **Tab stores** via `tabStore()` factory — 6 keys (`spa-tab`, `equipment-sub-tab`, `armor-list-tab`, `gear-tab`, `skills-filter`, `notes-tab`) each persist to localStorage, cached by key so all subscribers share one atom
 - **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only id → quantity. Full objects come from static catalogs at read time. Custom skills are stored as full objects in `$skills`; custom gear definitions live in a separate `$customGearItems` store (persists independently of quantity).
-- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`) derive from persistent stores
+- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$combatSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
-- **UI atoms**: `$selectedSkill`/`$addingSkill`, `$selectedGear`/`$addingGear`, and `$selectedArmor`/`$addingArmor` are each mutually exclusive pairs — setting one clears the other via helper functions. `$highlightedPart` is an independent atom for body part highlighting on the inventory grid.
+- **UI atoms**: `$selectedSkill`/`$addingSkill`, `$selectedGear`/`$addingGear`, `$selectedArmor`/`$addingArmor`, and `$selectedWeapon`/`$addingWeapon` are each mutually exclusive pairs — setting one clears the other via helper functions. `$highlightedPart` is an independent atom for body part highlighting on the inventory grid.
+- **Weapons** use instance-based persistence (like armor, unlike gear's quantity-based). Each weapon has its own ammo state. Template resolution via `resolveWeaponTemplate()` checks `WEAPON_CATALOG` + `$customWeaponTemplates`. Combat panel will read `$allOwnedWeapons` + `$allSkills` + stat stores for skill breakdowns (render-time, no new computed store needed).
 - `◂──▸` = component both reads and mutates that store
