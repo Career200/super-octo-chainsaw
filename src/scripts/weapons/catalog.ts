@@ -56,7 +56,7 @@ export const RELIABILITY_LABELS: Record<Reliability, string> = {
 
 // --- Helpers ---
 
-function skillForType(type: WeaponType): string {
+export function skillForType(type: WeaponType): string {
   switch (type) {
     case "P":
       return "Handgun";
@@ -580,54 +580,11 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1500,
     "Shoulder-mounted, rocket-powered grenade launcher. Heavily used in Central American conflicts.",
   ),
-  grenade: w(
-    "grenade",
-    "Grenade",
-    "HVY",
-    0,
-    "P",
-    "P",
-    "varies",
-    "grenade",
-    1,
-    1,
-    "VR",
-    0,
-    30,
-    "Types include Fragmentation (7D6), Incendiary (4D6 for 3 turns), Stun (-5 to Stun), Dazzle (Blind for 4 turns), Sonic (deafened 4 turns).",
-  ),
-  c6_plastic_explosive: w(
-    "c6_plastic_explosive",
-    'C-6 "Flatfire" Plastic Explosive',
-    "HVY",
-    0,
-    "P",
-    "P",
-    "8D10/kg",
-    "explosive",
-    1,
-    1,
-    "VR",
-    0,
-    100,
-    "Grey block of plastique, can be detonated by timer, tripwire or signal.",
-  ),
-  mine: w(
-    "mine",
-    "Mine (all types)",
-    "HVY",
-    0,
-    "J",
-    "P",
-    "4D10",
-    "explosive",
-    1,
-    1,
-    "VR",
-    0,
-    350,
-    "Can be detonated by timer, tripwire, signal or motion detector.",
-  ),
+  // Grenades, explosives & mines — self-deployable ammo, different rules. Will handle separately.
+  // grenade: w("grenade", "Grenade", "HVY", 0, "P", "P", "varies", "grenade", 1, 1, "VR", 0, 30, "..."),
+  // c6_plastic_explosive: w("c6_plastic_explosive", 'C-6 "Flatfire" Plastic Explosive', "HVY", 0, "P", "P", "8D10/kg", "explosive", 1, 1, "VR", 0, 100, "..."),
+  // mine: w("mine", "Mine (all types)", "HVY", 0, "J", "P", "4D10", "explosive", 1, 1, "VR", 0, 350, "..."),
+
   ka_f253_flamethrower: w(
     "ka_f253_flamethrower",
     "Kenshiri Adachi F-253 Flamethrower",

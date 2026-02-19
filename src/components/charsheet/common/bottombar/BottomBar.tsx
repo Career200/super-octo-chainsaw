@@ -8,12 +8,15 @@ import {
   $selectedGear,
   $addingArmor,
   $selectedArmor,
+  $addingWeapon,
+  $selectedWeapon,
 } from "@stores/ui";
 import { useAutoExpand } from "./useAutoExpand";
 import { BottomBarSkills } from "../../dossier/BottomBarSkills";
 import { BottomBarHistory } from "../../biomon/BottomBarHistory";
 import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
 import { BottomBarArmor } from "../../equipment/BottomBarArmor";
+import { BottomBarWeapon } from "../../equipment/BottomBarWeapon";
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "biomon"));
@@ -23,6 +26,8 @@ export const BottomBar = () => {
   const selectedGear = useStore($selectedGear);
   const addingArmor = useStore($addingArmor);
   const selectedArmor = useStore($selectedArmor);
+  const addingWeapon = useStore($addingWeapon);
+  const selectedWeapon = useStore($selectedWeapon);
   const equipSubTab = useStore(tabStore("equipment-sub-tab", "gear"));
   const [expanded, setExpanded] = useState(false);
 
@@ -36,12 +41,14 @@ export const BottomBar = () => {
   useAutoExpand(addingSkill, selectedSkill, expanded, setExpanded);
   useAutoExpand(addingGear, selectedGear, expanded, setExpanded);
   useAutoExpand(addingArmor, selectedArmor, expanded, setExpanded);
+  useAutoExpand(addingWeapon, selectedWeapon, expanded, setExpanded);
 
   // Safety: collapse if current tab has no active content
   const hasContent =
     (tab === "dossier" && (selectedSkill || addingSkill)) ||
     (tab === "equipment" &&
       ((equipSubTab === "gear" && (selectedGear || addingGear)) ||
+        (equipSubTab === "weapons" && (!!selectedWeapon || addingWeapon)) ||
         (equipSubTab === "armor" && (!!selectedArmor || addingArmor)))) ||
     tab === "biomon"; // biomon always has history content
   if (expanded && !hasContent) {
@@ -56,6 +63,7 @@ export const BottomBar = () => {
       if (addingSkill) $addingSkill.set(false);
       if (addingGear) $addingGear.set(false);
       if (addingArmor) $addingArmor.set(false);
+      if (addingWeapon) $addingWeapon.set(false);
     } else {
       setExpanded(true);
     }
@@ -71,6 +79,9 @@ export const BottomBar = () => {
       )}
       {tab === "equipment" && equipSubTab === "gear" && (
         <BottomBarEquipment expanded={expanded} onToggle={toggle} />
+      )}
+      {tab === "equipment" && equipSubTab === "weapons" && (
+        <BottomBarWeapon expanded={expanded} onToggle={toggle} />
       )}
       {tab === "equipment" && equipSubTab === "armor" && (
         <BottomBarArmor expanded={expanded} onToggle={toggle} />

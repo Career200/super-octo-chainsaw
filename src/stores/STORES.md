@@ -55,8 +55,9 @@ Creates/returns a cached `persistentAtom<string>` per key. Invalid stored values
 Keys in use:
 - `spa-tab` (default: `"biomon"`) — SPA-level tab, read by Charsheet + BottomBar
 - `equipment-sub-tab` (default: `"gear"`) — Armor/Gear sub-tab in EquipmentView
-- `armor-list-tab` (default: `"owned"`) — Owned/Catalog in ArmorListPanel
+- `armor-list-tab` (default: `"catalog"`) — Catalog/Custom/Owned in ArmorListPanel
 - `gear-tab` (default: `"catalog"`) — Catalog/Custom/Owned in GearPanel
+- `weapon-list-tab` (default: `"catalog"`) — Catalog/Custom/Owned in WeaponListPanel
 - `skills-filter` (default: `"default"`) — Default/Custom/My in StatsSkillsPanel
 - `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
 

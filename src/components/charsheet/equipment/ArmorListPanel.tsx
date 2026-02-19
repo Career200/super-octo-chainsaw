@@ -35,7 +35,7 @@ export const ArmorListPanel = ({
   onSelect: (id: string | null) => void;
 }) => {
   useStore($ownedArmor);
-  const tab = useStore(tabStore("armor-list-tab", "owned"));
+  const tab = useStore(tabStore("armor-list-tab", "catalog"));
   const highlightedPart = useStore($highlightedPart);
   const customTemplates = useStore($customArmorList);
 
@@ -69,15 +69,15 @@ export const ArmorListPanel = ({
         <TabStrip
           persist="armor-list-tab"
           tabs={[
-            {
-              id: "owned",
-              label: `Owned${owned.length > 0 ? ` ${owned.length}` : ""}`,
-            },
+            { id: "catalog", label: "Catalog" },
             {
               id: "custom",
               label: `Custom${customTemplates.length > 0 ? ` ${customTemplates.length}` : ""}`,
             },
-            { id: "catalog", label: "Catalog" },
+            {
+              id: "owned",
+              label: `Owned${owned.length > 0 ? ` ${owned.length}` : ""}`,
+            },
           ]}
         />
       }

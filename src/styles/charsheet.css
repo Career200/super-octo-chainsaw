@@ -217,6 +217,10 @@
   padding-bottom: var(--space-8);
 }
 
+.bottom-bar-body .text-desc {
+  font-size: var(--font-ui);
+}
+
 .bottom-bar-content {
   display: flex;
   align-items: baseline;

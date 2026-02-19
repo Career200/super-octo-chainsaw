@@ -1,0 +1,56 @@
+/* === Weapon Card (extends .item-card) === */
+.weapon-card-type {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: var(--space-6);
+}
+
+.weapon-card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-8);
+  margin-top: var(--space-4);
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+}
+
+.weapon-card-ammo {
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* === Weapon Detail (bottom bar read-only view) === */
+.weapon-detail-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6) var(--space-12);
+  margin-bottom: var(--space-8);
+}
+
+.weapon-detail-stat {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-ui);
+}
+
+.weapon-detail-label {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* === Weapon Form Fields (add/edit custom weapon) === */
+.weapon-form-type { flex: 0 1 100px; }
+.weapon-form-skill { flex: 1 1 120px; }
+.weapon-form-damage { flex: 0 1 90px; }
+.weapon-form-wa { flex: 0 1 60px; }
+.weapon-form-conceal { flex: 0 1 110px; }
+.weapon-form-ammo { flex: 0 1 80px; }
+.weapon-form-shots { flex: 0 1 70px; }
+.weapon-form-rof { flex: 0 1 60px; }
+.weapon-form-rel { flex: 0 1 120px; }
+.weapon-form-range { flex: 0 1 70px; }
