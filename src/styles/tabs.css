@@ -14,6 +14,10 @@
   font-size: var(--font-ui);
   cursor: pointer;
   border-radius: var(--radius) var(--radius) 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .tab-strip button:hover {

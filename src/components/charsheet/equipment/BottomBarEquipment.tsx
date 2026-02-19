@@ -10,133 +10,14 @@ import {
   removeCustomGear,
   isCustomGear,
 } from "@stores/gear";
-import { GEAR_CATALOG, AVAILABILITY_LABELS } from "@scripts/gear/catalog";
+import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import type { Availability } from "@scripts/gear/catalog";
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-
-type AvailabilityWithEmpty = Availability | "";
+import { ItemForm } from "../shared/ItemForm";
 
 interface Props {
   expanded: boolean;
   onToggle: () => void;
-}
-
-interface GearFormProps {
-  disabled: boolean;
-  name: string;
-  onNameChange?: (v: string) => void;
-  type: string;
-  onTypeChange?: (v: string) => void;
-  description: string;
-  onDescriptionChange?: (v: string) => void;
-  cost: string;
-  onCostChange?: (v: string) => void;
-  availability: string;
-  onAvailabilityChange?: (v: AvailabilityWithEmpty) => void;
-}
-
-function GearForm({
-  disabled,
-  name,
-  onNameChange,
-  type,
-  onTypeChange,
-  description,
-  onDescriptionChange,
-  cost,
-  onCostChange,
-  availability,
-  onAvailabilityChange,
-}: GearFormProps) {
-  return (
-    <div class="gear-form">
-      <div class="gear-form-fields">
-        <label class="gear-form-field gear-form-name">
-          <span class="gear-form-label">Name</span>
-          <input
-            type="text"
-            class="input gear-form-input"
-            value={name}
-            disabled={disabled}
-            onInput={
-              onNameChange
-                ? (e) => onNameChange((e.target as HTMLInputElement).value)
-                : undefined
-            }
-            placeholder="Item name"
-            autoFocus={!disabled}
-          />
-        </label>
-        <label class="gear-form-field gear-form-type">
-          <span class="gear-form-label">Type</span>
-          <input
-            type="text"
-            class="input gear-form-input"
-            value={type}
-            disabled={!onTypeChange}
-            onInput={
-              onTypeChange
-                ? (e) => onTypeChange((e.target as HTMLInputElement).value)
-                : undefined
-            }
-            placeholder="e.g. gadgets, tools"
-          />
-        </label>
-        <label class="gear-form-field gear-form-cost">
-          <span class="gear-form-label">Cost</span>
-          <input
-            type="number"
-            class="input gear-form-input"
-            value={cost}
-            disabled={!onCostChange}
-            onInput={
-              onCostChange
-                ? (e) => onCostChange((e.target as HTMLInputElement).value)
-                : undefined
-            }
-            placeholder="—"
-            min="0"
-          />
-        </label>
-        <label class="gear-form-field gear-form-availability">
-          <span class="gear-form-label">Avail.</span>
-          <select
-            class="input gear-form-input"
-            value={availability}
-            disabled={!onAvailabilityChange}
-            onChange={
-              onAvailabilityChange
-                ? (e) =>
-                    onAvailabilityChange(
-                      (e.target as HTMLSelectElement)
-                        .value as AvailabilityWithEmpty,
-                    )
-                : undefined
-            }
-          >
-            <option value="">—</option>
-            {Object.entries(AVAILABILITY_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <textarea
-        class="input gear-form-description"
-        value={description}
-        disabled={!onDescriptionChange}
-        onInput={
-          onDescriptionChange
-            ? (e) =>
-                onDescriptionChange((e.target as HTMLTextAreaElement).value)
-            : undefined
-        }
-        placeholder="No description"
-      />
-    </div>
-  );
 }
 
 export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
@@ -161,17 +42,18 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
   const [newType, setNewType] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newCost, setNewCost] = useState("");
-  const [newAvailability, setNewAvailability] =
-    useState<AvailabilityWithEmpty>("");
+  const [newAvailability, setNewAvailability] = useState<Availability | "">("");
 
   const handleAdd = (): string | null => {
     const trimmed = newName.trim();
     if (!trimmed) return "Name cannot be empty";
+    const typeVal = newType.trim() || "gear";
+    if (/^armor$/i.test(typeVal)) return "Please use custom armor tab";
     const cost = newCost ? Number(newCost) : undefined;
     if (
       addCustomGear(trimmed, {
         description: newDescription.trim(),
-        type: newType.trim() || "gear",
+        type: typeVal,
         cost: cost != null && !isNaN(cost) ? cost : undefined,
         availability: newAvailability || "C",
       })
@@ -192,6 +74,24 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
     selectGear(null);
   };
 
+  const typeField = (
+    value: string,
+    onChange?: (v: string) => void,
+  ) => (
+    <input
+      type="text"
+      class="input item-form-input item-form-type"
+      value={value}
+      disabled={!onChange}
+      onInput={
+        onChange
+          ? (e) => onChange((e.target as HTMLInputElement).value)
+          : undefined
+      }
+      placeholder="Type"
+    />
+  );
+
   return (
     <BottomBarItemShell
       expanded={expanded}
@@ -206,24 +106,23 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
       onRemove={handleRemove}
     >
       {adding ? (
-        <GearForm
+        <ItemForm
           disabled={false}
           name={newName}
           onNameChange={setNewName}
-          type={newType}
-          onTypeChange={setNewType}
           description={newDescription}
           onDescriptionChange={setNewDescription}
           cost={newCost}
           onCostChange={setNewCost}
           availability={newAvailability}
           onAvailabilityChange={setNewAvailability}
-        />
+        >
+          {typeField(newType, setNewType)}
+        </ItemForm>
       ) : resolved ? (
-        <GearForm
+        <ItemForm
           disabled
           name={resolved.name}
-          type={resolved.type}
           description={resolved.description}
           onDescriptionChange={
             isCustom && hasCustomDef
@@ -250,12 +149,14 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
                   })
               : undefined
           }
-          onTypeChange={
+        >
+          {typeField(
+            resolved.type,
             isCustom && hasCustomDef
               ? (v) => updateCustomGear(gearId!, { type: v })
-              : undefined
-          }
-        />
+              : undefined,
+          )}
+        </ItemForm>
       ) : null}
     </BottomBarItemShell>
   );

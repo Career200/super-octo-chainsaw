@@ -61,9 +61,19 @@ export function startAddingGear(): void {
 /** Currently selected armor instance ID, or null. */
 export const $selectedArmor = atom<string | null>(null);
 
+/** Whether the add-custom-armor form is open. Mutually exclusive with $selectedArmor. */
+export const $addingArmor = atom<boolean>(false);
+
 export function selectArmor(id: string | null): void {
+  $addingArmor.set(false);
   $selectedArmor.set(id);
   $highlightedPart.set(null);
+}
+
+export function startAddingArmor(): void {
+  $selectedArmor.set(null);
+  $highlightedPart.set(null);
+  $addingArmor.set(true);
 }
 
 /** Body part being highlighted on the inventory grid, or null. */

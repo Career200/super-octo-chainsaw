@@ -14,6 +14,16 @@ Actions: `takeDamage`, `heal`, `setDamage`, `setStabilized`, `syncStunToPhysical
 ```
 Actions: `setStatInherent`, `setStatCyber`
 
+### `$customArmorTemplates` (armor.ts)
+```
+Record<string, CustomArmorDef>
+CustomArmorDef: { name, type: "soft"|"hard", spMax, bodyParts: BodyPartName[], ev, cost, description, availability }
+```
+Custom armor definitions — user-created extension to `ARMOR_CATALOG`. Persists independently of instances. Used by `resolveTemplate()` to hydrate owned instances.
+
+Actions: `addCustomArmor`, `updateCustomArmor`, `removeCustomArmor`
+Helper: `isCustomArmor(id)` — true if not in `ARMOR_CATALOG` or `IMPLANT_TEMPLATES`
+
 ### `$ownedArmor` (armor.ts)
 ```
 Record<instanceId, { id, templateId, spByPart: { [bodyPart]: currentSP }, worn: bool }>
@@ -21,6 +31,7 @@ Record<instanceId, { id, templateId, spByPart: { [bodyPart]: currentSP }, worn: 
 Actions: `acquireArmor`, `toggleArmor`, `wearArmor`, `damageArmor`, `setArmorSP`, `discardArmor`
 Implants: `installImplant`, `uninstallImplant`, `installSkinweave`, `repairImplant`
 Reads: `getArmorPiece`, `getBodyPartLayers`, `getImplantsForPart`, `getInstalledImplants`, `getSkinweaveLevel`, `isImplantInstalled`, `getImplantTemplates`
+Template resolution: `resolveTemplate()` — checks `ARMOR_CATALOG` + `IMPLANT_TEMPLATES` + `$customArmorTemplates`
 
 ### `$damageHistory` (damage-history.ts)
 ```
@@ -96,8 +107,15 @@ Helper: `isCustomGear(id)` — true if not in `GEAR_CATALOG`
 ```
 string | null (default: null)
 ```
-Currently selected armor instance ID for the bottom bar. Non-persistent.
-Use `selectArmor()` to set.
+Currently selected armor instance/template ID for the bottom bar. Non-persistent.
+Mutually exclusive with `$addingArmor` — use `selectArmor()` to set.
+
+### `$addingArmor` (ui.ts)
+```
+boolean (default: false)
+```
+Whether the add-custom-armor form is open in the bottom bar. Non-persistent.
+Mutually exclusive with `$selectedArmor` — use `startAddingArmor()` to set.
 
 ### `$highlightedPart` (ui.ts)
 ```
@@ -232,6 +250,13 @@ OwnedGearItem[] (custom: true)
 All custom gear definitions with current quantities (including qty 0).
 Depends on: `$gear`, `$customGearItems`
 
+### `$customArmorList` (armor.ts)
+```
+ArmorTemplate[]
+```
+All custom armor definitions as full `ArmorTemplate` objects.
+Depends on: `$customArmorTemplates`
+
 ## Dependency Graph (compact)
 ```
 $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
@@ -241,6 +266,9 @@ $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
 
 $stats ────▸ all 9 computed stat stores ──▸ $bodyType
 
+$customArmorTemplates ──▸ $customArmorList
+                       ──▸ resolveTemplate() (used by $ownedArmor load, getArmorPiece, acquireArmor, setArmorSP)
+
 $ownedArmor ──▸ $encumbrance ──▸ $REF, $character
 
 $damageHistory (standalone, no dependents)
@@ -249,13 +277,13 @@ HitPopover reads $bodyType.btm, mutates $health via takeDamage
 
 $notes (standalone, no dependents)
 
-tabStore() ────▸ TabStrip (5 persisted keys, see factory docs above)
+tabStore() ────▸ TabStrip (6 persisted keys, see factory docs above)
 
 $gear ──────────┬──▸ $ownedGear ──▸ $ownedGearCount
 $customGearItems┼──▸ $customGear
                 └──▸ GearPanel (catalog + custom + owned views)
 
-$selectedArmor ──▸ BottomBarArmor, ArmorCard (highlight), BodyPartCard (highlight)
+$selectedArmor ◂──▸ $addingArmor (mutually exclusive via selectArmor/startAddingArmor)
 $highlightedPart ──▸ BodyPartCard (highlight), ArmorListPanel (highlight cards)
 
 $selectedGear ◂──▸ $addingGear (mutually exclusive via selectGear/startAddingGear)

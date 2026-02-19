@@ -8,6 +8,7 @@ import {
   COMBAT_SENSE_SKILL,
 } from "@scripts/skills/catalog";
 import type { SkillStat } from "@scripts/skills/catalog";
+import { normalizeKey } from "@scripts/catalog-common";
 
 export interface SkillEntry {
   stat: SkillStat;
@@ -100,10 +101,6 @@ export function setSkillLevel(name: string, level: number): void {
       [name]: { ...current[name], level: clamped },
     });
   }
-}
-
-function normalizeKey(name: string): string {
-  return name.replace(/\s+/g, "").toLowerCase();
 }
 
 export function addSkill(

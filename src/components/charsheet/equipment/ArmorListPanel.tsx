@@ -1,11 +1,13 @@
 import { useStore } from "@nanostores/preact";
 import {
   $ownedArmor,
+  $customArmorList,
   getAllOwnedArmor,
   isImplant,
   getInstalledImplants,
   ARMOR_CATALOG,
 } from "@stores/armor";
+import { startAddingArmor } from "@stores/ui";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 import { ArmorCard } from "./ArmorCard";
@@ -14,9 +16,7 @@ import { tabStore, $highlightedPart } from "@stores/ui";
 
 function sortArmor<T extends { type: string; spMax: number }>(items: T[]): T[] {
   return [...items].sort((a, b) => {
-    // soft before hard
     if (a.type !== b.type) return a.type === "soft" ? -1 : 1;
-    // ascending SP within type
     return a.spMax - b.spMax;
   });
 }
@@ -37,12 +37,12 @@ export const ArmorListPanel = ({
   useStore($ownedArmor);
   const tab = useStore(tabStore("armor-list-tab", "owned"));
   const highlightedPart = useStore($highlightedPart);
+  const customTemplates = useStore($customArmorList);
 
   const owned = getAllOwnedArmor().filter((a) => !isImplant(a));
   const sorted = sortArmor(owned);
   const implants = getInstalledImplants();
 
-  // Compute which armor IDs cover the highlighted body part (all owned, not just worn)
   const highlightedIds = highlightedPart
     ? new Set(
         owned
@@ -72,6 +72,10 @@ export const ArmorListPanel = ({
             {
               id: "owned",
               label: `Owned${owned.length > 0 ? ` ${owned.length}` : ""}`,
+            },
+            {
+              id: "custom",
+              label: `Custom${customTemplates.length > 0 ? ` ${customTemplates.length}` : ""}`,
             },
             { id: "catalog", label: "Catalog" },
           ]}
@@ -109,6 +113,40 @@ export const ArmorListPanel = ({
                 ))}
               </>
             )
+          )}
+        </div>
+      )}
+      {tab === "custom" && (
+        <div class="armor-card-list">
+          <div class="gear-toolbar">
+            <button
+              class="gear-add-btn"
+              onClick={() => startAddingArmor()}
+            >
+              + Add Custom
+            </button>
+          </div>
+          {customTemplates.length === 0 ? (
+            <div class="empty-message">No custom armor</div>
+          ) : (
+            sortArmor(customTemplates).map((tmpl) => (
+              <ArmorCard
+                key={tmpl.templateId}
+                armor={tmpl}
+                custom
+                selected={selectedId === tmpl.templateId}
+                highlighted={
+                  highlightedPart
+                    ? tmpl.bodyParts.includes(highlightedPart)
+                    : false
+                }
+                onClick={() =>
+                  onSelect(
+                    selectedId === tmpl.templateId ? null : tmpl.templateId,
+                  )
+                }
+              />
+            ))
           )}
         </div>
       )}

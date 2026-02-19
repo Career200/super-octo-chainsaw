@@ -133,3 +133,44 @@
   border-color: var(--condition-color);
   color: var(--condition-color);
 }
+
+/* === Armor Form (custom armor) === */
+.armor-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1 1 100%;
+}
+
+.coverage-badge-toggle {
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+
+.coverage-badge-toggle:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.coverage-badge-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.coverage-badge-toggle:disabled {
+  cursor: default;
+}
+
+.armor-form-select {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-ui);
+}
+
+.armor-form-num {
+  width: 52px;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-ui);
+  text-align: center;
+}

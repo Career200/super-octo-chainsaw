@@ -6,6 +6,7 @@ import {
   $selectedSkill,
   $addingGear,
   $selectedGear,
+  $addingArmor,
   $selectedArmor,
 } from "@stores/ui";
 import { useAutoExpand } from "./useAutoExpand";
@@ -20,6 +21,7 @@ export const BottomBar = () => {
   const selectedSkill = useStore($selectedSkill);
   const addingGear = useStore($addingGear);
   const selectedGear = useStore($selectedGear);
+  const addingArmor = useStore($addingArmor);
   const selectedArmor = useStore($selectedArmor);
   const equipSubTab = useStore(tabStore("equipment-sub-tab", "gear"));
   const [expanded, setExpanded] = useState(false);
@@ -33,14 +35,14 @@ export const BottomBar = () => {
 
   useAutoExpand(addingSkill, selectedSkill, expanded, setExpanded);
   useAutoExpand(addingGear, selectedGear, expanded, setExpanded);
-  useAutoExpand(false, selectedArmor, expanded, setExpanded);
+  useAutoExpand(addingArmor, selectedArmor, expanded, setExpanded);
 
   // Safety: collapse if current tab has no active content
   const hasContent =
     (tab === "dossier" && (selectedSkill || addingSkill)) ||
     (tab === "equipment" &&
       ((equipSubTab === "gear" && (selectedGear || addingGear)) ||
-        (equipSubTab === "armor" && !!selectedArmor))) ||
+        (equipSubTab === "armor" && (!!selectedArmor || addingArmor)))) ||
     tab === "biomon"; // biomon always has history content
   if (expanded && !hasContent) {
     setExpanded(false);
@@ -53,6 +55,7 @@ export const BottomBar = () => {
       setExpanded(false);
       if (addingSkill) $addingSkill.set(false);
       if (addingGear) $addingGear.set(false);
+      if (addingArmor) $addingArmor.set(false);
     } else {
       setExpanded(true);
     }

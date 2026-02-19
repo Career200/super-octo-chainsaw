@@ -44,3 +44,57 @@
   font-weight: bold;
   color: var(--fg-soft);
 }
+
+/* === Shared Item Form (gear, armor, etc.) === */
+.item-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  height: 100%;
+  min-height: 0;
+}
+
+.item-form-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-8);
+}
+
+.item-form-name {
+  flex: 1 1 160px;
+}
+
+.item-form-type {
+  flex: 1 1 120px;
+}
+
+.item-form-cost {
+  flex: 0 1 80px;
+}
+
+.item-form-availability {
+  flex: 0 1 100px;
+}
+
+.item-form-input {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-ui);
+}
+
+.item-form-description {
+  flex: 1;
+  min-height: 0;
+  resize: none;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  padding: var(--space-6) var(--space-8);
+  color: var(--fg);
+}
+
+.item-form-description:disabled {
+  opacity: 1;
+  color: var(--fg-soft);
+  cursor: default;
+}

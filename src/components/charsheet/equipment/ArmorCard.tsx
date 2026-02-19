@@ -7,6 +7,7 @@ interface Props {
   armor: ArmorPiece | ArmorTemplate;
   selected?: boolean;
   highlighted?: boolean;
+  custom?: boolean;
   onClick?: () => void;
 }
 
@@ -18,13 +19,14 @@ export const ArmorCard = ({
   armor,
   selected,
   highlighted,
+  custom,
   onClick,
 }: Props) => {
   const owned = isInstance(armor);
 
   const cls = [
     "item-card armor-card",
-    owned && armor.worn && "item-card-accent",
+    ((owned && armor.worn) || custom) && "item-card-accent",
     selected && "selected",
     highlighted && "highlighted",
   ]

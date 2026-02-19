@@ -7,3 +7,7 @@ export const AVAILABILITY_LABELS: Record<string, string> = {
   R: "Rare",
   U: "Unique",
 };
+
+export function normalizeKey(name: string): string {
+  return name.replace(/\s+/g, "").toLowerCase();
+}
