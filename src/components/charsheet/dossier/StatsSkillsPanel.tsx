@@ -3,7 +3,7 @@ import { useStore } from "@nanostores/preact";
 import { $mySkillsCount } from "@stores/skills";
 import { tabStore } from "@stores/ui";
 
-import { StatsPanel } from "../biomon/StatsPanel";
+import { StatsPanel } from "../combat/StatsPanel";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 

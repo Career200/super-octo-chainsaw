@@ -8,10 +8,10 @@ import {
   getCurrentSave,
   getDeathSave,
   getStunSavePenalty,
-} from "@scripts/biomon/body";
-import { calculateStat } from "@scripts/biomon/stats";
-import type { StatName, StatsState, StatValues } from "@scripts/biomon/types";
-import { getWoundLevel } from "@scripts/biomon/wounds";
+} from "@scripts/combat/body";
+import { calculateStat } from "@scripts/combat/stats";
+import type { StatName, StatsState, StatValues } from "@scripts/combat/types";
+import { getWoundLevel } from "@scripts/combat/wounds";
 
 import { $encumbrance } from "./armor";
 import { $health } from "./health";

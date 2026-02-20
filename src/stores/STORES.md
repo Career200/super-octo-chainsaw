@@ -53,7 +53,7 @@ tabStore(key: string, defaultVal: string) → WritableAtom<string>
 Creates/returns a cached `persistentAtom<string>` per key. Invalid stored values fall back to default.
 
 Keys in use:
-- `spa-tab` (default: `"biomon"`) — SPA-level tab, read by Charsheet + BottomBar
+- `spa-tab` (default: `"combat"`) — SPA-level tab, read by Charsheet + BottomBar
 - `equipment-sub-tab` (default: `"gear"`) — Armor/Gear sub-tab in EquipmentView
 - `armor-list-tab` (default: `"catalog"`) — Catalog/Custom/Owned in ArmorListPanel
 - `gear-tab` (default: `"catalog"`) — Catalog/Custom/Owned in GearPanel

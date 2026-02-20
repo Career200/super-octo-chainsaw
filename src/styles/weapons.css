@@ -85,7 +85,7 @@
   flex: 0 1 70px;
 }
 
-/* === Combat Card (biomon panel) === */
+/* === Combat Card (combat panel) === */
 
 .combat-empty {
   color: var(--fg-soft);

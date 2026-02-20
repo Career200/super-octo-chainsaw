@@ -2,7 +2,7 @@ import {
   BOXES_PER_LEVEL,
   WOUND_LEVEL_NAMES,
   type WoundLevel,
-} from "@scripts/biomon/types";
+} from "@scripts/combat/types";
 
 import { WoundBox } from "./WoundBox";
 

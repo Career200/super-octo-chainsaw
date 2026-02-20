@@ -28,10 +28,10 @@ import { HitPopover } from "../HitPopover";
 import { LayerBar } from "./LayerBar";
 
 interface Props {
-  mode?: "biomon" | "inventory";
+  mode?: "combat" | "inventory";
 }
 
-export const FaceCard = ({ mode = "biomon" }: Props) => {
+export const FaceCard = ({ mode = "combat" }: Props) => {
   useStore($ownedArmor);
   const selectedArmorId = useStore($selectedArmor);
   const highlightedPartVal = useStore($highlightedPart);

@@ -1,8 +1,8 @@
 import { useStore } from "@nanostores/preact";
 import { useRef, useState } from "preact/hooks";
 
-import type { StatName } from "@scripts/biomon/types";
-import { STAT_LABELS } from "@scripts/biomon/types";
+import type { StatName } from "@scripts/combat/types";
+import { STAT_LABELS } from "@scripts/combat/types";
 import type { SkillStat } from "@scripts/skills/catalog";
 import type { SkillEntry } from "@stores/skills";
 import {

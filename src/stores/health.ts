@@ -5,8 +5,8 @@ import {
   type DamageType,
   TOTAL_BOXES,
   type WoundState,
-} from "@scripts/biomon/types";
-import { applyDamage, healDamage } from "@scripts/biomon/wounds";
+} from "@scripts/combat/types";
+import { applyDamage, healDamage } from "@scripts/combat/wounds";
 
 // Mortal starts at box 13 (after 3 levels of 4 boxes each)
 const MORTAL_THRESHOLD = 3 * BOXES_PER_LEVEL;

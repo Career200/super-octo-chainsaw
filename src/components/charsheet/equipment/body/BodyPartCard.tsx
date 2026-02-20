@@ -36,10 +36,10 @@ const HIT_ROLL: Record<string, string> = {
 
 interface Props {
   part: BodyPartName;
-  mode?: "biomon" | "inventory";
+  mode?: "combat" | "inventory";
 }
 
-export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
+export const BodyPartCard = ({ part, mode = "combat" }: Props) => {
   useStore($ownedArmor);
   const selectedArmorId = useStore($selectedArmor);
   const highlightedPartVal = useStore($highlightedPart);

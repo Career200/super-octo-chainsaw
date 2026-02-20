@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/preact";
 import { useEffect, useState } from "preact/hooks";
 
-import { WOUND_LEVELS } from "@scripts/biomon/types";
+import { WOUND_LEVELS } from "@scripts/combat/types";
 import { $health, syncStunToPhysical } from "@stores/health";
 
 import { HelpPopover } from "../shared/HelpPopover";

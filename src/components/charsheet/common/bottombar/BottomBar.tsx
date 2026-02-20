@@ -13,7 +13,7 @@ import {
   tabStore,
 } from "@stores/ui";
 
-import { BottomBarHistory } from "../../biomon/BottomBarHistory";
+import { BottomBarHistory } from "../../combat/BottomBarHistory";
 import { BottomBarSkills } from "../../dossier/BottomBarSkills";
 import { BottomBarArmor } from "../../equipment/BottomBarArmor";
 import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
@@ -22,7 +22,7 @@ import { BottomBarWeapon } from "../../equipment/BottomBarWeapon";
 import { useAutoExpand } from "./useAutoExpand";
 
 export const BottomBar = () => {
-  const tab = useStore(tabStore("spa-tab", "biomon"));
+  const tab = useStore(tabStore("spa-tab", "combat"));
   const addingSkill = useStore($addingSkill);
   const selectedSkill = useStore($selectedSkill);
   const addingGear = useStore($addingGear);
@@ -53,7 +53,7 @@ export const BottomBar = () => {
       ((equipSubTab === "gear" && (selectedGear || addingGear)) ||
         (equipSubTab === "weapons" && (!!selectedWeapon || addingWeapon)) ||
         (equipSubTab === "armor" && (!!selectedArmor || addingArmor)))) ||
-    tab === "biomon"; // biomon always has history content
+    tab === "combat"; // combat always has history content
   if (expanded && !hasContent) {
     setExpanded(false);
   }
@@ -77,7 +77,7 @@ export const BottomBar = () => {
       {tab === "dossier" && (
         <BottomBarSkills expanded={expanded} onToggle={toggle} />
       )}
-      {tab === "biomon" && (
+      {tab === "combat" && (
         <BottomBarHistory expanded={expanded} onToggle={toggle} />
       )}
       {tab === "equipment" && equipSubTab === "gear" && (

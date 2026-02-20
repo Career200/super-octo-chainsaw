@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 
-import { STAT_LABELS, STAT_NAMES, type StatName } from "@scripts/biomon/types";
+import { STAT_LABELS, STAT_NAMES, type StatName } from "@scripts/combat/types";
 import {
   $ATT,
   $BT,

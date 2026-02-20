@@ -1,4 +1,4 @@
-import type { DamageType } from "@scripts/biomon/types";
+import type { DamageType } from "@scripts/combat/types";
 import { $health, setDamage } from "@stores/health";
 
 interface Props {

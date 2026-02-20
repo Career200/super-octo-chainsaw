@@ -1,4 +1,4 @@
-import type { StatName, StatValues } from "@scripts/biomon/types";
+import type { StatName, StatValues } from "@scripts/combat/types";
 import { setStatCyber, setStatInherent } from "@stores/stats";
 
 interface Props {

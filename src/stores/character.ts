@@ -10,8 +10,8 @@
 
 import { computed } from "nanostores";
 
-import type { WoundState } from "@scripts/biomon/types";
-import { getWoundLevel } from "@scripts/biomon/wounds";
+import type { WoundState } from "@scripts/combat/types";
+import { getWoundLevel } from "@scripts/combat/wounds";
 
 import { $encumbrance } from "./armor";
 import { $health } from "./health";

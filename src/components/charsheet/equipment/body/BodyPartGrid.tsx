@@ -5,10 +5,10 @@ import { ImplantsDisplay } from "./ImplantsDisplay";
 import { SkinweaveDisplay } from "./SkinweaveDisplay";
 
 interface Props {
-  mode?: "biomon" | "inventory";
+  mode?: "combat" | "inventory";
 }
 
-export const BodyPartGrid = ({ mode = "biomon" }: Props) => {
+export const BodyPartGrid = ({ mode = "combat" }: Props) => {
   return (
     <div class="body-grid">
       <SkinweaveDisplay />

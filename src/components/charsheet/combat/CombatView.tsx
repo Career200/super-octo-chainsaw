@@ -4,15 +4,15 @@ import { TwoPanelView } from "../shared/TwoPanelView";
 import { CharacterArmorPanel } from "./CharacterArmorPanel";
 import { CombatPanel } from "./CombatPanel";
 
-export const Biomonitor = () => (
+export const CombatView = () => (
   <TwoPanelView
     renderFirst={(expanded, onToggle) => (
       <CharacterArmorPanel expanded={expanded} onToggle={onToggle} />
     )}
     renderSecond={(expanded, onToggle) => (
       <Panel
-        id="biomon-combat-panel"
-        title="Combat"
+        id="combat-offense-panel"
+        title="Offense"
         expanded={expanded}
         onToggle={onToggle}
       >

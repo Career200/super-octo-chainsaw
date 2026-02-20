@@ -2,24 +2,24 @@ import { useStore } from "@nanostores/preact";
 
 import { tabStore } from "@stores/ui";
 
-import { Biomonitor } from "./biomon";
-import { AwarenessLine } from "./biomon/AwarenessLine";
-import { BodyInfo } from "./biomon/BodyInfo";
-import { StatsStrip } from "./biomon/StatsStrip";
-import { WoundTracker } from "./biomon/WoundTracker";
+import { CombatView } from "./combat";
+import { AwarenessLine } from "./combat/AwarenessLine";
+import { BodyInfo } from "./combat/BodyInfo";
+import { StatsStrip } from "./combat/StatsStrip";
+import { WoundTracker } from "./combat/WoundTracker";
 import { BottomBar } from "./common/bottombar/BottomBar";
 import { DossierView } from "./dossier/DossierView";
 import { EquipmentView } from "./equipment/EquipmentView";
 import { TabStrip } from "./shared/TabStrip";
 
 const SPA_TABS = [
-  { id: "biomon", label: "BIOMON" },
+  { id: "combat", label: "COMBAT" },
   { id: "dossier", label: "DOSSIER" },
   { id: "equipment", label: "EQUIP" },
 ];
 
 export const Charsheet = () => {
-  const tab = useStore(tabStore("spa-tab", "biomon"));
+  const tab = useStore(tabStore("spa-tab", "combat"));
 
   const spaClass = `charsheet-spa ${tab}-section`;
 
@@ -36,7 +36,7 @@ export const Charsheet = () => {
           <AwarenessLine />
         </div>
       </div>
-      {tab === "biomon" && <Biomonitor />}
+      {tab === "combat" && <CombatView />}
       {tab === "dossier" && <DossierView />}
       {tab === "equipment" && <EquipmentView />}
       <BottomBar />

@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 
-import type { StatValues } from "@scripts/biomon/types";
+import type { StatValues } from "@scripts/combat/types";
 import { $ATT, $CL, $EMP, $INT, $LK, $MA, $REF, $TECH } from "@stores/stats";
 
 const STRIP_STATS = [
