@@ -10,9 +10,7 @@ import type {
 } from "@scripts/weapons/catalog";
 import {
   CALIBER_DAMAGE,
-  RELIABILITY_LABELS,
   skillForType,
-  WEAPON_TYPE_LABELS,
 } from "@scripts/weapons/catalog";
 import { $allSkills } from "@stores/skills";
 import { $addingWeapon, $selectedWeapon, selectWeapon } from "@stores/ui";
@@ -34,6 +32,7 @@ import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
 import { ItemForm } from "../shared/ItemForm";
 
+import { WeaponDetail } from "./WeaponDetail";
 import { WeaponFormFields } from "./WeaponFormFields";
 
 interface Props {
@@ -353,61 +352,7 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
     );
   } else if (resolved) {
     // Catalog template or owned instance — read-only detail
-    bodyContent = (
-      <div class="weapon-detail">
-        <div class="weapon-detail-stats">
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Type</span>
-            {WEAPON_TYPE_LABELS[resolved.type]}
-          </span>
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Skill</span>
-            {resolved.skill}
-            {!Object.keys(allSkills).some(
-              (k) => k.toLowerCase() === resolved.skill.toLowerCase(),
-            ) && (
-              <span class="text-danger" style="font-size: var(--font-ui-sm)">
-                Not found
-              </span>
-            )}
-          </span>
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Damage</span>
-            {resolved.damage}
-          </span>
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">WA</span>
-            {resolved.wa >= 0 ? "+" : ""}
-            {resolved.wa}
-          </span>
-          {!resolved.melee && (
-            <>
-              <span class="weapon-detail-stat">
-                <span class="weapon-detail-label">Range</span>
-                {resolved.range}m
-              </span>
-              <span class="weapon-detail-stat">
-                <span class="weapon-detail-label">Ammo</span>
-                {resolved.ammo}
-              </span>
-              <span class="weapon-detail-stat">
-                <span class="weapon-detail-label">Shots</span>
-                {resolved.shots}
-              </span>
-            </>
-          )}
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">RoF</span>
-            {resolved.rof}
-          </span>
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Rel.</span>
-            {RELIABILITY_LABELS[resolved.reliability]}
-          </span>
-        </div>
-        <p class="text-desc">{resolved.description}</p>
-      </div>
-    );
+    bodyContent = <WeaponDetail weapon={resolved} />;
   }
 
   return (

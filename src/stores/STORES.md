@@ -14,7 +14,7 @@ Actions: `takeDamage`, `heal`, `setDamage`, `setStabilized`, `syncStunToPhysical
 ```
 Actions: `setStatInherent`, `setStatCyber`
 
-### `$customArmorTemplates` (armor.ts)
+### `$customArmorTemplates` (armor/)
 ```
 Record<string, CustomArmorDef>
 CustomArmorDef: { name, type: "soft"|"hard", spMax, bodyParts: BodyPartName[], ev, cost, description, availability }
@@ -24,7 +24,7 @@ Custom armor definitions — user-created extension to `ARMOR_CATALOG`. Persists
 Actions: `addCustomArmor`, `updateCustomArmor`, `removeCustomArmor`
 Helper: `isCustomArmor(id)` — true if not in `ARMOR_CATALOG` or `IMPLANT_TEMPLATES`
 
-### `$ownedArmor` (armor.ts)
+### `$ownedArmor` (armor/)
 ```
 Record<instanceId, { id, templateId, spByPart: { [bodyPart]: currentSP }, worn: bool }>
 ```
@@ -189,7 +189,7 @@ Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
 ```
 Depends on: `$BT`, `$health` (wound penalties on save)
 
-### `$encumbrance` (armor.ts)
+### `$encumbrance` (armor/)
 ```
 number (total EV)
 ```
@@ -298,7 +298,7 @@ WeaponTemplate[]
 All custom weapon definitions as full `WeaponTemplate` objects.
 Depends on: `$customWeaponTemplates`
 
-### `$customArmorList` (armor.ts)
+### `$customArmorList` (armor/)
 ```
 ArmorTemplate[]
 ```

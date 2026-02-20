@@ -8,80 +8,17 @@ import {
   $gear,
   $ownedGear,
   $ownedGearCount,
-  addGear,
-  removeGear,
 } from "@stores/gear";
 import {
   $selectedGear,
-  selectGear,
   startAddingGear,
   tabStore,
 } from "@stores/ui";
 
 import { Chevron } from "../shared/Chevron";
-import { ItemMeta } from "../shared/ItemMeta";
 import { TabStrip } from "../shared/TabStrip";
 
-function GearCard({
-  id,
-  template,
-  quantity,
-  custom,
-  selected,
-}: {
-  id: string;
-  template: GearTemplate;
-  quantity: number;
-  custom?: boolean;
-  selected?: boolean;
-}) {
-  return (
-    <div
-      class={`item-card gear-card${selected ? " selected" : ""}${custom ? " item-card-accent" : ""}`}
-      onClick={() => selectGear(selected ? null : id)}
-    >
-      <div class="flex-between gap-8">
-        <h4>{template.name}</h4>
-        <ItemMeta availability={template.availability} cost={template.cost} />
-      </div>
-      <div class="gear-actions">
-        {quantity > 0 ? (
-          <div class="gear-qty-controls">
-            <button
-              class="btn-sm gear-qty-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                removeGear(id);
-              }}
-            >
-              −
-            </button>
-            <span class="gear-qty-value">{quantity}</span>
-            <button
-              class="btn-sm gear-qty-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                addGear(id);
-              }}
-            >
-              +
-            </button>
-          </div>
-        ) : (
-          <button
-            class="btn-sm gear-take-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              addGear(id);
-            }}
-          >
-            Take
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
+import { GearCard } from "./GearCard";
 
 function GearGroup({
   label,
