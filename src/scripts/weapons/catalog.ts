@@ -1119,11 +1119,11 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     "2D6+2",
     ".45",
     30,
-    5,
+    10,
     "UR",
     150,
     200,
-    "A very small SMG used by covert units and terrorists. Easily silenced, hard to control on full auto.",
+    "A very small SMG used by covert units and terrorists. Easily silenced, hard to control on full auto. Note: original RoF is 5.",
   ),
   hk_mp5: w(
     "hk_mp5",

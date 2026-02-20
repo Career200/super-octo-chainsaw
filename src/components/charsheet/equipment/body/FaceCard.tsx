@@ -90,11 +90,10 @@ export const FaceCard = ({ mode = "biomon" }: Props) => {
     >
       {!inventory && <HitPopover forPart="face">1 {">"} 1-4</HitPopover>}
       <h3>
-        Face{" "}
+        Face <br />
         <span class="sp-value" id="sp-face">
           {total}
-        </span>
-        <br />
+        </span>{" "}
         <HelpPopover
           id="face-help"
           content={

@@ -51,14 +51,213 @@
 }
 
 /* === Weapon Form Fields (add/edit custom weapon) === */
-.weapon-form-type { flex: 0 1 100px; }
-.weapon-form-skill { flex: 1 1 120px; }
-.weapon-form-skill .item-form-input { width: 100%; }
-.weapon-form-damage { flex: 0 1 90px; }
-.weapon-form-wa { flex: 0 1 60px; }
-.weapon-form-conceal { flex: 0 1 110px; }
-.weapon-form-ammo { flex: 0 1 80px; }
-.weapon-form-shots { flex: 0 1 70px; }
-.weapon-form-rof { flex: 0 1 60px; }
-.weapon-form-rel { flex: 0 1 120px; }
-.weapon-form-range { flex: 0 1 70px; }
+.weapon-form-type {
+  flex: 0 1 100px;
+}
+.weapon-form-skill {
+  flex: 1 1 120px;
+}
+.weapon-form-skill .item-form-input {
+  width: 100%;
+}
+.weapon-form-damage {
+  flex: 0 1 90px;
+}
+.weapon-form-wa {
+  flex: 0 1 60px;
+}
+.weapon-form-conceal {
+  flex: 0 1 110px;
+}
+.weapon-form-ammo {
+  flex: 0 1 80px;
+}
+.weapon-form-shots {
+  flex: 0 1 70px;
+}
+.weapon-form-rof {
+  flex: 0 1 60px;
+}
+.weapon-form-rel {
+  flex: 0 1 120px;
+}
+.weapon-form-range {
+  flex: 0 1 70px;
+}
+
+/* === Combat Card (biomon panel) === */
+
+.combat-empty {
+  color: var(--fg-soft);
+  font-size: var(--font-ui);
+  padding: var(--space-8);
+}
+
+.combat-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.combat-card {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+/* --- Header: name + ammo --- */
+.cc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-6) var(--space-8);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.cc-name {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--accent);
+  min-width: 0;
+}
+
+.cc-type {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: var(--space-6);
+}
+
+.cc-caliber {
+  font-weight: normal;
+  font-size: var(--font-ui);
+  color: var(--fg-soft);
+}
+
+.cc-ammo-btn {
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: var(--font-ui);
+  padding: 2px var(--space-8);
+  color: var(--accent);
+  border-color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* --- Hero row: damage | RoF | skill = total --- */
+.cc-hero {
+  display: flex;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.cc-hero-cell {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-8);
+  white-space: nowrap;
+}
+
+.cc-hero-cell + .cc-hero-cell {
+  border-left: 1px solid var(--border-light);
+}
+
+.cc-hero-label {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+}
+
+.cc-hero-value {
+  font-size: var(--font-ui-xl);
+  font-weight: bold;
+  color: var(--fg);
+}
+
+.cc-hero-skill {
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.cc-hero-formula {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+}
+
+.cc-hero-total {
+  font-size: var(--font-ui-xl);
+  font-weight: bold;
+  color: var(--fg);
+}
+
+/* --- Range/DC table --- */
+.cc-range {
+  display: flex;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.cc-range-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4) 2px;
+  font-size: var(--font-ui-sm);
+}
+
+.cc-range-col + .cc-range-col {
+  border-left: 1px solid var(--border-light);
+}
+
+.cc-range-label {
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+.cc-range-label strong {
+  color: var(--fg);
+}
+
+.cc-range-distance {
+  color: var(--fg-soft);
+}
+
+/* --- Fire buttons --- */
+.cc-fire {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-8);
+  height: 36px;
+}
+
+.cc-fire-btn {
+  font-size: var(--font-ui);
+  padding: 2px var(--space-8);
+  color: var(--accent);
+}
+
+.cc-empty-mag {
+  color: var(--danger, #c44);
+  font-weight: bold;
+}
+
+.cc-fire-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* --- Ammo popover (repair-style stepper) --- */
+.cc-ammo-stepper {
+  margin-bottom: var(--space-12);
+}
+
+.cc-ammo-value {
+  min-width: 48px;
+  text-align: center;
+  color: var(--accent);
+}

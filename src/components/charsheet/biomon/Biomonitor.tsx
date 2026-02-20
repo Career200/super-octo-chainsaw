@@ -2,6 +2,7 @@ import { Panel } from "../shared";
 import { TwoPanelView } from "../shared/TwoPanelView";
 
 import { CharacterArmorPanel } from "./CharacterArmorPanel";
+import { CombatPanel } from "./CombatPanel";
 
 export const Biomonitor = () => (
   <TwoPanelView
@@ -15,7 +16,7 @@ export const Biomonitor = () => (
         expanded={expanded}
         onToggle={onToggle}
       >
-        <p>Combat info goes here</p>
+        <CombatPanel />
       </Panel>
     )}
   />
