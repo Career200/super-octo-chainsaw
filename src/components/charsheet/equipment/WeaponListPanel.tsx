@@ -17,8 +17,10 @@ import {
   tabStore,
 } from "@stores/ui";
 import { Chevron } from "../shared/Chevron";
+import { HelpPopover } from "../shared/HelpPopover";
 import { TabStrip } from "../shared/TabStrip";
 import { WeaponCard } from "./WeaponCard";
+import { WeaponHelpContent } from "./help/WeaponHelpContent";
 
 // Weapon type display order
 const TYPE_ORDER: WeaponType[] = ["P", "SMG", "RIF", "SHT", "HVY", "EX", "melee"];
@@ -145,7 +147,7 @@ export const WeaponListPanel = () => {
   return (
     <div class="panel" id="weapon-panel">
       <div class="panel-heading">
-        <h2 class="title text-sm">Weapons</h2>
+        <h2 class="title text-sm">Weapons{" "}<HelpPopover id="weapon-help" content={<WeaponHelpContent />} /></h2>
         <TabStrip
           persist="weapon-list-tab"
           tabs={[
