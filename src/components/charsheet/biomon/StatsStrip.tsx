@@ -1,15 +1,7 @@
 import { useStore } from "@nanostores/preact";
-import {
-  $REF,
-  $INT,
-  $CL,
-  $TECH,
-  $LK,
-  $ATT,
-  $MA,
-  $EMP,
-} from "@stores/stats";
+
 import type { StatValues } from "@scripts/biomon/types";
+import { $ATT, $CL, $EMP, $INT, $LK, $MA, $REF, $TECH } from "@stores/stats";
 
 const STRIP_STATS = [
   { key: "ref", label: "REF", $store: $REF },
@@ -22,7 +14,13 @@ const STRIP_STATS = [
   { key: "emp", label: "EMP", $store: $EMP },
 ] as const;
 
-const StatChip = ({ $store, label }: { $store: (typeof STRIP_STATS)[number]["$store"]; label: string }) => {
+const StatChip = ({
+  $store,
+  label,
+}: {
+  $store: (typeof STRIP_STATS)[number]["$store"];
+  label: string;
+}) => {
   const values: StatValues = useStore($store);
   const diminished = values.current < values.total;
 

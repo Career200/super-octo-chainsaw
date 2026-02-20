@@ -1,7 +1,9 @@
 import { selectSkill } from "@stores/ui";
+
 import { TwoPanelView } from "../shared/TwoPanelView";
-import { StatsSkillsPanel } from "./StatsSkillsPanel";
+
 import { NotesPanel } from "./NotesPanel";
+import { StatsSkillsPanel } from "./StatsSkillsPanel";
 
 export const DossierView = () => (
   <TwoPanelView

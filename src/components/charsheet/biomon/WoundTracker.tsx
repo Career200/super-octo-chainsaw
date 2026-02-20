@@ -1,11 +1,14 @@
 import { useStore } from "@nanostores/preact";
-import { useState, useEffect } from "preact/hooks";
-import { $health, syncStunToPhysical } from "@stores/health";
+import { useEffect, useState } from "preact/hooks";
+
 import { WOUND_LEVELS } from "@scripts/biomon/types";
-import { WoundLevelGroup } from "./WoundLevelGroup";
-import { StabilizedControl } from "./StabilizedControl";
+import { $health, syncStunToPhysical } from "@stores/health";
+
 import { HelpPopover } from "../shared/HelpPopover";
+
 import { WoundHelpContent } from "./help/WoundHelpContent";
+import { StabilizedControl } from "./StabilizedControl";
+import { WoundLevelGroup } from "./WoundLevelGroup";
 
 export const WoundTracker = () => {
   const health = useStore($health);

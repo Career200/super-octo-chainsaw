@@ -1,5 +1,6 @@
 import { Panel } from "../shared";
 import { TwoPanelView } from "../shared/TwoPanelView";
+
 import { CharacterArmorPanel } from "./CharacterArmorPanel";
 
 export const Biomonitor = () => (

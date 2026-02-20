@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/preact";
+
 import {
   $ownedArmor,
   getSkinweaveLevel,
@@ -23,7 +24,10 @@ export const SkinweaveDisplay = () => {
   const isInstalled = level > 0;
 
   const handleChange = (e: Event) => {
-    const value = parseInt((e.target as HTMLSelectElement).value, 10) as SkinweaveLevel;
+    const value = parseInt(
+      (e.target as HTMLSelectElement).value,
+      10,
+    ) as SkinweaveLevel;
     const templateId = SKINWEAVE_TEMPLATE_MAP[value];
 
     if (templateId) {

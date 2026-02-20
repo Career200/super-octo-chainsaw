@@ -1,20 +1,21 @@
 import {
-  getEffectiveSP,
-  getImplantSP,
-  sortByLayerOrder,
-  type ArmorPiece,
-  type BodyPartName,
-} from "./core";
-import type { DamageType } from "./damage-types";
-import {
   damageArmor,
   getArmorPiece,
   getBodyPartLayers,
   getImplantsForPart,
 } from "@stores/armor";
-import { $bodyType } from "@stores/stats";
+import { type ArmorDamageEntry, recordDamage } from "@stores/damage-history";
 import { takeDamage } from "@stores/health";
-import { recordDamage, type ArmorDamageEntry } from "@stores/damage-history";
+import { $bodyType } from "@stores/stats";
+
+import {
+  type ArmorPiece,
+  type BodyPartName,
+  getEffectiveSP,
+  getImplantSP,
+  sortByLayerOrder,
+} from "./core";
+import type { DamageType } from "./damage-types";
 export type { DamageType };
 
 export interface DamageResult {

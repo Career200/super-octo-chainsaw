@@ -9,14 +9,16 @@
  */
 
 import { computed } from "nanostores";
-import { $health } from "./health";
-import { $encumbrance } from "./armor";
+
 import type { WoundState } from "@scripts/biomon/types";
 import { getWoundLevel } from "@scripts/biomon/wounds";
 
+import { $encumbrance } from "./armor";
+import { $health } from "./health";
+
+export { $encumbrance, $ownedArmor } from "./armor";
 export { $health } from "./health";
-export { $ownedArmor, $encumbrance } from "./armor";
-export { $stats, $REF } from "./stats";
+export { $REF, $stats } from "./stats";
 
 export interface CharacterState {
   health: WoundState;

@@ -1,6 +1,7 @@
-import { useState, useRef, useCallback } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 import { createPortal } from "preact/compat";
+import { useCallback, useRef, useState } from "preact/hooks";
+
 import { cls } from ".";
 
 interface Props {
@@ -32,20 +33,21 @@ export function Tip({ label, class: className, children }: Props) {
       onBlur={hide}
     >
       {children}
-      {pos && createPortal(
-        <span
-          class="tip-popover"
-          style={{
-            position: "fixed",
-            top: `${pos.top}px`,
-            left: `${pos.left}px`,
-            transform: "translateY(-100%) translateY(-4px)",
-          }}
-        >
-          {label}
-        </span>,
-        document.body,
-      )}
+      {pos &&
+        createPortal(
+          <span
+            class="tip-popover"
+            style={{
+              position: "fixed",
+              top: `${pos.top}px`,
+              left: `${pos.left}px`,
+              transform: "translateY(-100%) translateY(-4px)",
+            }}
+          >
+            {label}
+          </span>,
+          document.body,
+        )}
     </span>
   );
 }

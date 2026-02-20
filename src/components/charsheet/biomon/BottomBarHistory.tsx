@@ -1,17 +1,20 @@
 import { useStore } from "@nanostores/preact";
+
 import {
   $damageHistory,
   clearHistory,
   type DamageHistoryEntry,
   type ManipulationHistoryEntry,
 } from "@stores/damage-history";
+
+import { Chevron } from "../shared/Chevron";
+
 import {
   DamageEntry,
-  ManipulationEntry,
-  formatTime,
   formatBodyParts,
+  formatTime,
+  ManipulationEntry,
 } from "./history-entries";
-import { Chevron } from "../shared/Chevron";
 
 function DamageSummary({ entry }: { entry: DamageHistoryEntry }) {
   const typeStr =

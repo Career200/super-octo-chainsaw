@@ -1,29 +1,34 @@
-import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { WEAPON_CATALOG, WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
+import { useState } from "preact/hooks";
+
 import type { WeaponTemplate, WeaponType } from "@scripts/weapons/catalog";
-import {
-  $allOwnedWeapons,
-  $customWeaponList,
-  acquireWeapon,
-  discardWeapon,
-  isCustomWeapon,
-} from "@stores/weapons";
-import type { WeaponPiece } from "@stores/weapons";
+import { WEAPON_CATALOG, WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
 import {
   $selectedWeapon,
   selectWeapon,
   startAddingWeapon,
   tabStore,
 } from "@stores/ui";
+import type { WeaponPiece } from "@stores/weapons";
+import { $allOwnedWeapons, $customWeaponList } from "@stores/weapons";
+
 import { Chevron } from "../shared/Chevron";
 import { HelpPopover } from "../shared/HelpPopover";
 import { TabStrip } from "../shared/TabStrip";
-import { WeaponCard } from "./WeaponCard";
+
 import { WeaponHelpContent } from "./help/WeaponHelpContent";
+import { WeaponCard } from "./WeaponCard";
 
 // Weapon type display order
-const TYPE_ORDER: WeaponType[] = ["P", "SMG", "RIF", "SHT", "HVY", "EX", "melee"];
+const TYPE_ORDER: WeaponType[] = [
+  "P",
+  "SMG",
+  "RIF",
+  "SHT",
+  "HVY",
+  "EX",
+  "melee",
+];
 
 type GroupItem = {
   id: string;
@@ -38,9 +43,10 @@ function groupByType(items: GroupItem[]): [string, GroupItem[]][] {
     if (!grouped.has(type)) grouped.set(type, []);
     grouped.get(type)!.push(item);
   }
-  return TYPE_ORDER
-    .filter((t) => grouped.has(t))
-    .map((t) => [WEAPON_TYPE_LABELS[t], grouped.get(t)!]);
+  return TYPE_ORDER.filter((t) => grouped.has(t)).map((t) => [
+    WEAPON_TYPE_LABELS[t],
+    grouped.get(t)!,
+  ]);
 }
 
 function WeaponGroup({
@@ -147,7 +153,10 @@ export const WeaponListPanel = () => {
   return (
     <div class="panel" id="weapon-panel">
       <div class="panel-heading">
-        <h2 class="title text-sm">Weapons{" "}<HelpPopover id="weapon-help" content={<WeaponHelpContent />} /></h2>
+        <h2 class="title text-sm">
+          Weapons{" "}
+          <HelpPopover id="weapon-help" content={<WeaponHelpContent />} />
+        </h2>
         <TabStrip
           persist="weapon-list-tab"
           tabs={[

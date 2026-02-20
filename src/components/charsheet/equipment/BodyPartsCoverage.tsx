@@ -1,4 +1,11 @@
-import { BODY_PARTS, PART_ABBREV, type BodyPartName, type ArmorTemplate, getPartSpMax } from "@scripts/armor/core";
+import {
+  type ArmorTemplate,
+  BODY_PARTS,
+  type BodyPartName,
+  getPartSpMax,
+  PART_ABBREV,
+} from "@scripts/armor/core";
+
 import { getConditionClassFromSP } from "./utils";
 
 interface Props {
@@ -24,8 +31,14 @@ export const BodyPartsCoverage = ({ bodyParts, spByPart, template }: Props) => {
         let cls = "coverage-badge";
         if (spByPart && template) {
           const partMax = getPartSpMax(template, part);
-          const condCls = getConditionClassFromSP(spByPart[part] ?? partMax, partMax);
-          if (condCls === "condition-damaged" || condCls === "condition-critical") {
+          const condCls = getConditionClassFromSP(
+            spByPart[part] ?? partMax,
+            partMax,
+          );
+          if (
+            condCls === "condition-damaged" ||
+            condCls === "condition-critical"
+          ) {
             cls += ` ${condCls}`;
           }
         }

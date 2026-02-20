@@ -1,10 +1,10 @@
 import {
   BOXES_PER_LEVEL,
+  type DamageType,
   TOTAL_BOXES,
   WOUND_LEVELS,
   type WoundLevel,
   type WoundState,
-  type DamageType,
 } from "./types";
 
 export function getWoundLevel(boxes: number): WoundLevel | null {

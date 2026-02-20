@@ -1,4 +1,5 @@
 import { atom } from "nanostores";
+
 import type { BodyPartName } from "../scripts/armor/core";
 import type { DamageType } from "../scripts/armor/hit";
 

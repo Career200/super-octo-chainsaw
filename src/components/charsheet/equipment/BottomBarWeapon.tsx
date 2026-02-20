@@ -1,38 +1,40 @@
-import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $selectedWeapon, $addingWeapon, selectWeapon } from "@stores/ui";
-import {
-  $allOwnedWeapons,
-  $customWeaponTemplates,
-  resolveWeaponTemplate,
-  isCustomWeapon,
-  acquireWeapon,
-  discardWeapon,
-  addCustomWeapon,
-  updateCustomWeapon,
-  removeCustomWeapon,
-  renameCustomWeapon,
-} from "@stores/weapons";
-import type { WeaponPiece } from "@stores/weapons";
+import { useRef, useState } from "preact/hooks";
+
+import type { Availability } from "@scripts/catalog-common";
 import type {
-  WeaponType,
   Concealability,
   Reliability,
   WeaponTemplate,
+  WeaponType,
 } from "@scripts/weapons/catalog";
 import {
-  WEAPON_CATALOG,
-  WEAPON_TYPE_LABELS,
+  CALIBER_DAMAGE,
   RELIABILITY_LABELS,
   skillForType,
-  CALIBER_DAMAGE,
+  WEAPON_TYPE_LABELS,
 } from "@scripts/weapons/catalog";
-import type { Availability } from "@scripts/catalog-common";
 import { $allSkills } from "@stores/skills";
+import { $addingWeapon, $selectedWeapon, selectWeapon } from "@stores/ui";
+import type { WeaponPiece } from "@stores/weapons";
+import {
+  $allOwnedWeapons,
+  $customWeaponTemplates,
+  acquireWeapon,
+  addCustomWeapon,
+  discardWeapon,
+  isCustomWeapon,
+  removeCustomWeapon,
+  renameCustomWeapon,
+  resolveWeaponTemplate,
+  updateCustomWeapon,
+} from "@stores/weapons";
+
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { ItemForm } from "../shared/ItemForm";
-import { WeaponFormFields } from "./WeaponFormFields";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
+import { ItemForm } from "../shared/ItemForm";
+
+import { WeaponFormFields } from "./WeaponFormFields";
 
 interface Props {
   expanded: boolean;
@@ -361,8 +363,12 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
           <span class="weapon-detail-stat">
             <span class="weapon-detail-label">Skill</span>
             {resolved.skill}
-            {!Object.keys(allSkills).some((k) => k.toLowerCase() === resolved.skill.toLowerCase()) && (
-              <span class="text-danger" style="font-size: var(--font-ui-sm)">Not found</span>
+            {!Object.keys(allSkills).some(
+              (k) => k.toLowerCase() === resolved.skill.toLowerCase(),
+            ) && (
+              <span class="text-danger" style="font-size: var(--font-ui-sm)">
+                Not found
+              </span>
             )}
           </span>
           <span class="weapon-detail-stat">

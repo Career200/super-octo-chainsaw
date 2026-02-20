@@ -1,30 +1,32 @@
-import { useState, useRef, useCallback } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
+import { useCallback, useRef, useState } from "preact/hooks";
+
 import {
   $notes,
-  setFreeformNote,
   addContact,
-  updateContact,
-  removeContact,
   type Contact,
+  removeContact,
+  setFreeformNote,
+  updateContact,
 } from "@stores/notes";
 import { tabStore } from "@stores/ui";
+
+import { ConfirmPopover } from "../shared/ConfirmPopover";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
-import { ConfirmPopover } from "../shared/ConfirmPopover";
 
 // --- Debounce helper ---
 
-function useDebouncedCallback<T extends (...args: any[]) => void>(
-  fn: T,
+function useDebouncedCallback<A extends unknown[]>(
+  fn: (...args: A) => void,
   delay: number,
-): T {
+): (...args: A) => void {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   return useCallback(
-    ((...args: any[]) => {
+    (...args: A) => {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => fn(...args), delay);
-    }) as T,
+    },
     [fn, delay],
   );
 }
@@ -132,10 +134,7 @@ export const NotesPanel = ({
           ) : (
             notes.contacts.map((c) => <ContactCard key={c.id} contact={c} />)
           )}
-          <button
-            class="btn-ghost notes-add-btn"
-            onClick={() => addContact()}
-          >
+          <button class="btn-ghost notes-add-btn" onClick={() => addContact()}>
             + Add Contact
           </button>
         </div>

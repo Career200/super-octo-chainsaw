@@ -1,4 +1,9 @@
-import { BODY_PARTS, PART_ABBREV, type BodyPartName } from "@scripts/armor/core";
+import {
+  BODY_PARTS,
+  type BodyPartName,
+  PART_ABBREV,
+} from "@scripts/armor/core";
+
 import { Tip } from "../shared";
 
 interface Props {
@@ -36,7 +41,9 @@ export function ArmorFormFields({
   };
 
   return (
-    <div class={`armor-form-row${bodyPartsError ? " armor-form-row-error" : ""}`}>
+    <div
+      class={`armor-form-row${bodyPartsError ? " armor-form-row-error" : ""}`}
+    >
       {BODY_PARTS.map((part) => {
         const active = bodyParts.includes(part);
         return (
@@ -80,7 +87,10 @@ export function ArmorFormFields({
             onSpMaxChange
               ? (e) => {
                   const raw = (e.target as HTMLInputElement).value;
-                  if (raw === "") { onSpMaxChange(0); return; }
+                  if (raw === "") {
+                    onSpMaxChange(0);
+                    return;
+                  }
                   const v = parseInt(raw, 10);
                   if (!isNaN(v)) onSpMaxChange(Math.max(0, v));
                 }
@@ -101,7 +111,10 @@ export function ArmorFormFields({
             onEvChange
               ? (e) => {
                   const raw = (e.target as HTMLInputElement).value;
-                  if (raw === "") { onEvChange(0); return; }
+                  if (raw === "") {
+                    onEvChange(0);
+                    return;
+                  }
                   const v = parseInt(raw, 10);
                   if (!isNaN(v)) onEvChange(Math.max(0, v));
                 }

@@ -1,18 +1,20 @@
-import { useState, useEffect, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
+import { useEffect, useRef, useState } from "preact/hooks";
+
 import type {
-  WeaponType,
   Concealability,
   Reliability,
+  WeaponType,
 } from "@scripts/weapons/catalog";
 import {
-  WEAPON_TYPE_LABELS,
   CONCEALABILITY_LABELS,
   RELIABILITY_LABELS,
   skillForType,
+  WEAPON_TYPE_LABELS,
 } from "@scripts/weapons/catalog";
 import { $allSkills } from "@stores/skills";
-import { Popover, Tip, cls } from "../shared";
+
+import { cls, Popover, Tip } from "../shared";
 
 /** Types where the user can pick a custom skill name. Others auto-derive from type. */
 function isSkillEditable(type: WeaponType): boolean {
@@ -144,7 +146,9 @@ export function WeaponFormFields({
             }}
             className="popover-info"
           >
-            <p class="popover-message">Skill "{displaySkill.trim()}" not found</p>
+            <p class="popover-message">
+              Skill "{displaySkill.trim()}" not found
+            </p>
           </Popover>
         </div>
       </Tip>

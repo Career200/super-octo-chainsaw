@@ -1,22 +1,25 @@
-import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
+import { useRef, useState } from "preact/hooks";
+
 import {
-  tabStore,
-  $addingSkill,
-  $selectedSkill,
-  $addingGear,
-  $selectedGear,
   $addingArmor,
-  $selectedArmor,
+  $addingGear,
+  $addingSkill,
   $addingWeapon,
+  $selectedArmor,
+  $selectedGear,
+  $selectedSkill,
   $selectedWeapon,
+  tabStore,
 } from "@stores/ui";
-import { useAutoExpand } from "./useAutoExpand";
-import { BottomBarSkills } from "../../dossier/BottomBarSkills";
+
 import { BottomBarHistory } from "../../biomon/BottomBarHistory";
-import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
+import { BottomBarSkills } from "../../dossier/BottomBarSkills";
 import { BottomBarArmor } from "../../equipment/BottomBarArmor";
+import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
 import { BottomBarWeapon } from "../../equipment/BottomBarWeapon";
+
+import { useAutoExpand } from "./useAutoExpand";
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "biomon"));

@@ -1,18 +1,21 @@
 import { useStore } from "@nanostores/preact";
+
 import {
-  $ownedArmor,
   $customArmorList,
-  getAllOwnedArmor,
-  isImplant,
-  getInstalledImplants,
+  $ownedArmor,
   ARMOR_CATALOG,
+  getAllOwnedArmor,
+  getInstalledImplants,
+  isImplant,
 } from "@stores/armor";
 import { startAddingArmor } from "@stores/ui";
+import { $highlightedPart, tabStore } from "@stores/ui";
+
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
+
 import { ArmorCard } from "./ArmorCard";
 import { ImplantCard } from "./ImplantCard";
-import { tabStore, $highlightedPart } from "@stores/ui";
 
 function sortArmor<T extends { type: string; spMax: number }>(items: T[]): T[] {
   return [...items].sort((a, b) => {
@@ -119,10 +122,7 @@ export const ArmorListPanel = ({
       {tab === "custom" && (
         <div class="armor-card-list">
           <div class="gear-toolbar">
-            <button
-              class="gear-add-btn"
-              onClick={() => startAddingArmor()}
-            >
+            <button class="gear-add-btn" onClick={() => startAddingArmor()}>
               + Add Custom
             </button>
           </div>

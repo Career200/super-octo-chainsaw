@@ -1,23 +1,25 @@
 import { atom, computed } from "nanostores";
+
+import type { Availability } from "@scripts/catalog-common";
+import { normalizeKey } from "@scripts/catalog-common";
+
 import {
+  ARMOR_CATALOG,
+  getTemplate,
+  IMPLANT_TEMPLATES,
+} from "../scripts/armor/catalog";
+import {
+  type ArmorInstance,
+  type ArmorLayer,
+  type ArmorPiece,
+  type ArmorTemplate,
+  type BodyPartName,
+  countsAsLayer,
+  type EVResult,
   generateId,
   getPartSpMax,
   getTotalEV,
-  countsAsLayer,
-  type ArmorInstance,
-  type ArmorPiece,
-  type ArmorTemplate,
-  type ArmorLayer,
-  type BodyPartName,
-  type EVResult,
 } from "../scripts/armor/core";
-import {
-  ARMOR_CATALOG,
-  IMPLANT_TEMPLATES,
-  getTemplate,
-} from "../scripts/armor/catalog";
-import { normalizeKey } from "@scripts/catalog-common";
-import type { Availability } from "@scripts/catalog-common";
 
 // --- Custom Armor Definitions ---
 
@@ -428,7 +430,8 @@ export function renameCustomArmor(oldName: string, newName: string): boolean {
   if (!(oldName in defs)) return false;
   const key = normalizeKey(newName);
   for (const template of Object.values(ARMOR_CATALOG)) {
-    if (normalizeKey(template.name) === key || template.templateId === key) return false;
+    if (normalizeKey(template.name) === key || template.templateId === key)
+      return false;
   }
   for (const def of Object.values(defs)) {
     if (def.name !== oldName && normalizeKey(def.name) === key) return false;
@@ -620,4 +623,4 @@ export function uninstallSkinweave(): void {
 }
 
 // --- Re-export catalog for UI ---
-export { ARMOR_CATALOG, IMPLANT_TEMPLATES, getTemplate };
+export { ARMOR_CATALOG, getTemplate, IMPLANT_TEMPLATES };

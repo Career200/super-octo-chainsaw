@@ -1,7 +1,8 @@
 import { useStore } from "@nanostores/preact";
 import type { ComponentChildren } from "preact";
-import { tabStore } from "@stores/ui";
 import { useEffect } from "preact/hooks";
+
+import { tabStore } from "@stores/ui";
 
 interface TabDef {
   id: string;

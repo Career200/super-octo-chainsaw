@@ -1,4 +1,5 @@
 import type { RefObject } from "preact";
+
 import { Popover } from "./Popover";
 
 interface Props {

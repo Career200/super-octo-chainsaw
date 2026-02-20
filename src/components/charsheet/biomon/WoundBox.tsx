@@ -1,5 +1,5 @@
-import { $health, setDamage } from "@stores/health";
 import type { DamageType } from "@scripts/biomon/types";
+import { $health, setDamage } from "@stores/health";
 
 interface Props {
   index: number;

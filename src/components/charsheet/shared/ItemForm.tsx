@@ -1,6 +1,7 @@
 import type { ComponentChildren } from "preact";
-import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
+
 import type { Availability } from "@scripts/catalog-common";
+import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
 
 type AvailabilityWithEmpty = Availability | "";
 

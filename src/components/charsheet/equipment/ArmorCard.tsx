@@ -1,5 +1,7 @@
 import type { ArmorPiece, ArmorTemplate } from "@scripts/armor/core";
+
 import { ItemMeta } from "../shared/ItemMeta";
+
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { getConditionClassFromSP } from "./utils";
 

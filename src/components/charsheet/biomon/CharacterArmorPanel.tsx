@@ -1,8 +1,8 @@
-import { Panel } from "../shared/Panel";
-import { HelpPopover } from "../shared/HelpPopover";
 import { BodyPartGrid } from "../equipment/body/BodyPartGrid";
-import { HitPopover } from "../equipment/HitPopover";
 import { ArmorHelpContent } from "../equipment/help/ArmorHelpContent";
+import { HitPopover } from "../equipment/HitPopover";
+import { HelpPopover } from "../shared/HelpPopover";
+import { Panel } from "../shared/Panel";
 
 export const CharacterArmorPanel = ({
   expanded,

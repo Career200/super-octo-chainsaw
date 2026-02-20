@@ -1,12 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import {
-  $ownedArmor,
-  getBodyPartLayers,
-  getImplantsForPart,
-  getArmorPiece,
-  getTemplate,
-  isSkinweave,
-} from "@stores/armor";
+
 import {
   getEffectiveSP,
   getImplantSP,
@@ -14,13 +7,24 @@ import {
   sortByLayerOrder,
 } from "@scripts/armor/core";
 import {
-  $selectedArmor,
-  selectArmor,
+  $ownedArmor,
+  getArmorPiece,
+  getBodyPartLayers,
+  getImplantsForPart,
+  getTemplate,
+  isSkinweave,
+} from "@stores/armor";
+import {
   $highlightedPart,
+  $selectedArmor,
   highlightPart,
+  selectArmor,
 } from "@stores/ui";
+
 import { HelpPopover } from "../../shared/HelpPopover";
+
 import { HitPopover } from "../HitPopover";
+
 import { LayerBar } from "./LayerBar";
 
 interface Props {

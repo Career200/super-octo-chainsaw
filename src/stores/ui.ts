@@ -1,6 +1,7 @@
 import { persistentAtom } from "@nanostores/persistent";
-import { atom } from "nanostores";
 import type { WritableAtom } from "nanostores";
+import { atom } from "nanostores";
+
 import type { BodyPartName } from "@scripts/armor/core";
 
 const tabStoreCache = new Map<string, WritableAtom<string>>();

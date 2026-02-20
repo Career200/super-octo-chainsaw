@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/preact";
+
 import { $awareness } from "@stores/skills";
 
 export const AwarenessLine = () => {

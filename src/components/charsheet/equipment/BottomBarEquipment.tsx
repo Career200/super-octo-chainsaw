@@ -1,21 +1,23 @@
-import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $selectedGear, $addingGear, selectGear } from "@stores/ui";
+import { useState } from "preact/hooks";
+
+import type { Availability } from "@scripts/gear/catalog";
+import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import {
-  $ownedGear,
-  $customGearItems,
   $customGear,
+  $customGearItems,
+  $ownedGear,
   addCustomGear,
-  updateCustomGear,
+  isCustomGear,
   removeCustomGear,
   renameCustomGear,
-  isCustomGear,
+  updateCustomGear,
 } from "@stores/gear";
-import { GEAR_CATALOG } from "@scripts/gear/catalog";
-import type { Availability } from "@scripts/gear/catalog";
+import { $addingGear, $selectedGear, selectGear } from "@stores/ui";
+
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { ItemForm } from "../shared/ItemForm";
 import { Tip } from "../shared";
+import { ItemForm } from "../shared/ItemForm";
 
 interface Props {
   expanded: boolean;
@@ -81,10 +83,7 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
     selectGear(null);
   };
 
-  const typeField = (
-    value: string,
-    onChange?: (v: string) => void,
-  ) => (
+  const typeField = (value: string, onChange?: (v: string) => void) => (
     <Tip label="Item type" class="item-form-type">
       <input
         type="text"
@@ -102,7 +101,8 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
     </Tip>
   );
 
-  const addErrors = addAttempted && !newName.trim() ? new Set<string>(["name"]) : undefined;
+  const addErrors =
+    addAttempted && !newName.trim() ? new Set<string>(["name"]) : undefined;
 
   return (
     <BottomBarItemShell

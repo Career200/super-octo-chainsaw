@@ -1,14 +1,17 @@
-import { useState, useRef } from "preact/hooks";
 import type { RefObject } from "preact";
-import { setArmorSP, getArmorPiece } from "@stores/armor";
-import { recordManipulation } from "@stores/damage-history";
+import { useState } from "preact/hooks";
+
 import {
-  PART_ABBREV,
-  getPartSpMax,
   type ArmorTemplate,
   type BodyPartName,
+  getPartSpMax,
+  PART_ABBREV,
 } from "@scripts/armor/core";
+import { getArmorPiece, setArmorSP } from "@stores/armor";
+import { recordManipulation } from "@stores/damage-history";
+
 import { Popover } from "../shared/Popover";
+
 import { getConditionClassFromSP } from "./utils";
 
 // Face at its half-max reads as "full"

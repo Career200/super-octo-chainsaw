@@ -1,6 +1,9 @@
 import { useStore } from "@nanostores/preact";
+
 import { $bodyType } from "@stores/stats";
+
 import { HelpPopover } from "../shared/HelpPopover";
+
 import { BodyHelpContent } from "./help/BodyHelpContent";
 
 export const BodyInfo = () => {
@@ -29,7 +32,9 @@ export const BodyInfo = () => {
       <div class="label-chip body-save">
         <span class="label-chip-label">Save</span>
         <span class="label-chip-value">{body.currentSave}</span>
-        <span class={`save-penalty${body.savePenalty < 0 ? " has-penalty" : ""}`}>
+        <span
+          class={`save-penalty${body.savePenalty < 0 ? " has-penalty" : ""}`}
+        >
           {body.savePenalty < 0 && `(${body.savePenalty})`}
         </span>
         {showDeathSave && (

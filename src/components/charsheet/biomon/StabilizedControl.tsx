@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/preact";
-import { $health, setStabilized, isMortal } from "@stores/health";
+
+import { $health, isMortal, setStabilized } from "@stores/health";
 
 export const StabilizedControl = () => {
   const health = useStore($health);

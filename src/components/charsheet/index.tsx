@@ -1,14 +1,16 @@
 import { useStore } from "@nanostores/preact";
+
+import { tabStore } from "@stores/ui";
+
 import { Biomonitor } from "./biomon";
-import { EquipmentView } from "./equipment/EquipmentView";
-import { DossierView } from "./dossier/DossierView";
-import { TabStrip } from "./shared/TabStrip";
-import { WoundTracker } from "./biomon/WoundTracker";
+import { AwarenessLine } from "./biomon/AwarenessLine";
 import { BodyInfo } from "./biomon/BodyInfo";
 import { StatsStrip } from "./biomon/StatsStrip";
-import { AwarenessLine } from "./biomon/AwarenessLine";
-import { tabStore } from "@stores/ui";
+import { WoundTracker } from "./biomon/WoundTracker";
 import { BottomBar } from "./common/bottombar/BottomBar";
+import { DossierView } from "./dossier/DossierView";
+import { EquipmentView } from "./equipment/EquipmentView";
+import { TabStrip } from "./shared/TabStrip";
 
 const SPA_TABS = [
   { id: "biomon", label: "BIOMON" },

@@ -1,30 +1,33 @@
-import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $selectedArmor, $addingArmor, selectArmor } from "@stores/ui";
+import { useRef, useState } from "preact/hooks";
+
 import {
-  $ownedArmor,
-  $customArmorTemplates,
-  getArmorPiece,
-  resolveTemplate,
-  isCustomArmor,
-  acquireArmor,
-  addCustomArmor,
-  updateCustomArmor,
-  removeCustomArmor,
-  renameCustomArmor,
-  toggleArmor,
-  discardArmor,
-} from "@stores/armor";
-import {
-  PART_ABBREV,
-  getPartSpMax,
   type BodyPartName,
+  getPartSpMax,
+  PART_ABBREV,
 } from "@scripts/armor/core";
 import type { Availability } from "@scripts/catalog-common";
+import {
+  $customArmorTemplates,
+  $ownedArmor,
+  acquireArmor,
+  addCustomArmor,
+  discardArmor,
+  getArmorPiece,
+  isCustomArmor,
+  removeCustomArmor,
+  renameCustomArmor,
+  resolveTemplate,
+  toggleArmor,
+  updateCustomArmor,
+} from "@stores/armor";
+import { $addingArmor, $selectedArmor, selectArmor } from "@stores/ui";
+
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { ItemForm } from "../shared/ItemForm";
-import { ArmorFormFields } from "./ArmorFormFields";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
+import { ItemForm } from "../shared/ItemForm";
+
+import { ArmorFormFields } from "./ArmorFormFields";
 import { RepairPopover } from "./RepairPopover";
 import { getConditionClassFromSP } from "./utils";
 

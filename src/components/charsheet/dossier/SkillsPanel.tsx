@@ -1,19 +1,20 @@
-import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { STAT_LABELS } from "@scripts/biomon/types";
+import { useRef, useState } from "preact/hooks";
+
 import type { StatName } from "@scripts/biomon/types";
+import { STAT_LABELS } from "@scripts/biomon/types";
 import type { SkillStat } from "@scripts/skills/catalog";
+import type { SkillEntry } from "@stores/skills";
 import {
-  $skillsByStat,
   $customSkills,
   $mySkills,
+  $skillsByStat,
   setSkillLevel,
-  isCustomSkill,
 } from "@stores/skills";
-import type { SkillEntry } from "@stores/skills";
 import { STAT_STORES } from "@stores/stats";
+import { $selectedSkill, selectSkill, startAddingSkill } from "@stores/ui";
+
 import { Chevron } from "../shared/Chevron";
-import { selectSkill, startAddingSkill, $selectedSkill } from "@stores/ui";
 export type SkillFilter = "default" | "custom" | "my";
 
 const STAT_GROUP_ORDER: SkillStat[] = [

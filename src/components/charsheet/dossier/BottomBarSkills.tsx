@@ -1,16 +1,18 @@
-import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $selectedSkill, $addingSkill, selectSkill } from "@stores/ui";
+import { useState } from "preact/hooks";
+
+import { STAT_LABELS, STAT_NAMES } from "@scripts/biomon/types";
+import type { SkillStat } from "@scripts/skills/catalog";
+import { SKILL_CATALOG } from "@scripts/skills/catalog";
 import {
   $allSkills,
   addSkill,
-  removeSkill,
   isCustomSkill,
+  removeSkill,
   updateSkill,
 } from "@stores/skills";
-import type { SkillStat } from "@scripts/skills/catalog";
-import { SKILL_CATALOG } from "@scripts/skills/catalog";
-import { STAT_LABELS, STAT_NAMES } from "@scripts/biomon/types";
+import { $addingSkill, $selectedSkill, selectSkill } from "@stores/ui";
+
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 
 const SKILL_STAT_OPTIONS: { value: SkillStat; label: string }[] = [

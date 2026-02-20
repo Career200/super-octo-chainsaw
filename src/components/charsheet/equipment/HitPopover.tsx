@@ -1,15 +1,17 @@
-import { useState, useRef, useEffect } from "preact/hooks";
 import type { ComponentChildren } from "preact";
+import { useEffect, useRef, useState } from "preact/hooks";
+
 import type { BodyPartName } from "@scripts/armor/core";
 import {
   DAMAGE_TYPE_OPTIONS,
   type DamageType,
 } from "@scripts/armor/damage-types";
 import {
-  rollHitLocation,
   resolveLocationalHit,
   resolveNonLocationalHit,
+  rollHitLocation,
 } from "@scripts/armor/hit";
+
 import { Popover } from "../shared/Popover";
 
 interface Props {

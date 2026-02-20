@@ -1,16 +1,23 @@
-import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { GEAR_CATALOG } from "@scripts/gear/catalog";
+import { useState } from "preact/hooks";
+
 import type { GearTemplate } from "@scripts/gear/catalog";
+import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import {
+  $customGear,
   $gear,
-  addGear,
-  removeGear,
   $ownedGear,
   $ownedGearCount,
-  $customGear,
+  addGear,
+  removeGear,
 } from "@stores/gear";
-import { $selectedGear, selectGear, startAddingGear, tabStore } from "@stores/ui";
+import {
+  $selectedGear,
+  selectGear,
+  startAddingGear,
+  tabStore,
+} from "@stores/ui";
+
 import { Chevron } from "../shared/Chevron";
 import { ItemMeta } from "../shared/ItemMeta";
 import { TabStrip } from "../shared/TabStrip";
@@ -88,7 +95,12 @@ function GearGroup({
   count: number;
   collapsed: boolean;
   onToggle: () => void;
-  items: { id: string; template: GearTemplate; quantity: number; custom?: boolean }[];
+  items: {
+    id: string;
+    template: GearTemplate;
+    quantity: number;
+    custom?: boolean;
+  }[];
   selectedId: string | null;
 }) {
   return (
@@ -133,7 +145,12 @@ function GearGroup({
 
 /** Group items by type. Returns groups in insertion order, types sorted alphabetically. */
 function groupByType(
-  items: { id: string; template: GearTemplate; quantity: number; custom?: boolean }[],
+  items: {
+    id: string;
+    template: GearTemplate;
+    quantity: number;
+    custom?: boolean;
+  }[],
 ) {
   const grouped = new Map<
     string,
@@ -218,10 +235,7 @@ export const GearPanel = () => {
 
       {tab === "custom" && (
         <div class="gear-toolbar">
-          <button
-            class="btn-sm gear-add-btn"
-            onClick={() => startAddingGear()}
-          >
+          <button class="btn-sm gear-add-btn" onClick={() => startAddingGear()}>
             + Add Custom
           </button>
         </div>

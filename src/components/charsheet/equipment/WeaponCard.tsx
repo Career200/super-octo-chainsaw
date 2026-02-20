@@ -1,6 +1,10 @@
 import type { WeaponTemplate } from "@scripts/weapons/catalog";
-import { WEAPON_TYPE_LABELS, CONCEALABILITY_LABELS } from "@scripts/weapons/catalog";
+import {
+  CONCEALABILITY_LABELS,
+  WEAPON_TYPE_LABELS,
+} from "@scripts/weapons/catalog";
 import type { WeaponPiece } from "@stores/weapons";
+
 import { ItemMeta } from "../shared/ItemMeta";
 
 function isInstance(
@@ -35,9 +39,7 @@ export const WeaponCard = ({ weapon, selected, custom, onClick }: Props) => {
       </div>
       <div class="weapon-card-details">
         <span class="weapon-card-stat">{weapon.damage}</span>
-        {!weapon.melee && (
-          <span class="weapon-card-stat">{weapon.range}m</span>
-        )}
+        {!weapon.melee && <span class="weapon-card-stat">{weapon.range}m</span>}
         <span class="weapon-card-stat">
           WA {weapon.wa >= 0 ? "+" : ""}
           {weapon.wa}

@@ -1,14 +1,15 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
-import { WEAPON_CATALOG } from "@scripts/weapons/catalog";
+
+import { normalizeKey } from "@scripts/catalog-common";
 import type {
-  WeaponTemplate,
-  WeaponType,
+  Availability,
   Concealability,
   Reliability,
-  Availability,
+  WeaponTemplate,
+  WeaponType,
 } from "@scripts/weapons/catalog";
-import { normalizeKey } from "@scripts/catalog-common";
+import { WEAPON_CATALOG } from "@scripts/weapons/catalog";
 
 // --- Types ---
 
@@ -202,7 +203,10 @@ export function setCurrentAmmo(instanceId: string, ammo: number): void {
   const max = template?.shots ?? ammo;
   $ownedWeapons.set({
     ...current,
-    [instanceId]: { ...instance, currentAmmo: Math.max(0, Math.min(max, ammo)) },
+    [instanceId]: {
+      ...instance,
+      currentAmmo: Math.max(0, Math.min(max, ammo)),
+    },
   });
 }
 
@@ -216,10 +220,7 @@ export function setAmmoType(instanceId: string, type: string): void {
   });
 }
 
-export function setSmartchipActive(
-  instanceId: string,
-  active: boolean,
-): void {
+export function setSmartchipActive(instanceId: string, active: boolean): void {
   const current = $ownedWeapons.get();
   const instance = current[instanceId];
   if (!instance) return;
@@ -271,7 +272,8 @@ export function renameCustomWeapon(oldName: string, newName: string): boolean {
   // Check new name doesn't collide
   const key = normalizeKey(newName);
   for (const template of Object.values(WEAPON_CATALOG)) {
-    if (normalizeKey(template.name) === key || template.templateId === key) return false;
+    if (normalizeKey(template.name) === key || template.templateId === key)
+      return false;
   }
   for (const def of Object.values(defs)) {
     if (def.name !== oldName && normalizeKey(def.name) === key) return false;

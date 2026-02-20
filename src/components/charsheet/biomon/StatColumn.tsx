@@ -1,5 +1,5 @@
-import { setStatInherent, setStatCyber } from "@stores/stats";
 import type { StatName, StatValues } from "@scripts/biomon/types";
+import { setStatCyber, setStatInherent } from "@stores/stats";
 
 interface Props {
   name: StatName;

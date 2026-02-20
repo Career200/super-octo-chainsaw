@@ -1,18 +1,20 @@
 import { persistentAtom } from "@nanostores/persistent";
+import type { ReadableAtom } from "nanostores";
 import { computed } from "nanostores";
-import { $health } from "./health";
-import { $encumbrance } from "./armor";
-import { calculateStat } from "@scripts/biomon/stats";
-import { getWoundLevel } from "@scripts/biomon/wounds";
+
 import {
+  type BodyTypeInfo,
   getBodyTypeInfo,
-  getStunSavePenalty,
   getCurrentSave,
   getDeathSave,
-  type BodyTypeInfo,
+  getStunSavePenalty,
 } from "@scripts/biomon/body";
-import type { ReadableAtom } from "nanostores";
-import type { StatsState, StatName, StatValues } from "@scripts/biomon/types";
+import { calculateStat } from "@scripts/biomon/stats";
+import type { StatName, StatsState, StatValues } from "@scripts/biomon/types";
+import { getWoundLevel } from "@scripts/biomon/wounds";
+
+import { $encumbrance } from "./armor";
+import { $health } from "./health";
 
 function defaultState(): StatsState {
   return {
@@ -28,16 +30,20 @@ function defaultState(): StatsState {
   };
 }
 
-export const $stats = persistentAtom<StatsState>("character-stats", defaultState(), {
-  encode: JSON.stringify,
-  decode: (raw: string): StatsState => {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return defaultState();
-    }
+export const $stats = persistentAtom<StatsState>(
+  "character-stats",
+  defaultState(),
+  {
+    encode: JSON.stringify,
+    decode: (raw: string): StatsState => {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return defaultState();
+      }
+    },
   },
-});
+);
 
 // --- Computed stats ---
 
@@ -112,8 +118,15 @@ export const $BT = computed(
 );
 
 export const STAT_STORES: Record<StatName, ReadableAtom<StatValues>> = {
-  ref: $REF, int: $INT, cl: $CL, tech: $TECH,
-  lk: $LK, att: $ATT, ma: $MA, emp: $EMP, bt: $BT,
+  ref: $REF,
+  int: $INT,
+  cl: $CL,
+  tech: $TECH,
+  lk: $LK,
+  att: $ATT,
+  ma: $MA,
+  emp: $EMP,
+  bt: $BT,
 };
 
 export interface BodyTypeState extends BodyTypeInfo {
@@ -131,7 +144,13 @@ export const $bodyType = computed(
     const savePenalty = getStunSavePenalty(woundLevel);
     const currentSave = getCurrentSave(info.baseSave, woundLevel);
     const deathSave = getDeathSave(info.baseSave, woundLevel);
-    return { ...info, savePenalty, currentSave, deathSave, stabilized: health.stabilized };
+    return {
+      ...info,
+      savePenalty,
+      currentSave,
+      deathSave,
+      stabilized: health.stabilized,
+    };
   },
 );
 

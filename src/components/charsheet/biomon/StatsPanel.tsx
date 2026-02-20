@@ -1,16 +1,18 @@
 import { useStore } from "@nanostores/preact";
+
+import { STAT_LABELS, STAT_NAMES, type StatName } from "@scripts/biomon/types";
 import {
-  $REF,
-  $INT,
-  $CL,
-  $TECH,
-  $LK,
   $ATT,
-  $MA,
-  $EMP,
   $BT,
+  $CL,
+  $EMP,
+  $INT,
+  $LK,
+  $MA,
+  $REF,
+  $TECH,
 } from "@stores/stats";
-import { STAT_NAMES, STAT_LABELS, type StatName } from "@scripts/biomon/types";
+
 import { StatColumn } from "./StatColumn";
 
 const STAT_STORES = {

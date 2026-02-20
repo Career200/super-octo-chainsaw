@@ -1,8 +1,9 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
-import { GEAR_CATALOG } from "@scripts/gear/catalog";
-import type { GearTemplate, Availability } from "@scripts/gear/catalog";
+
 import { normalizeKey } from "@scripts/catalog-common";
+import type { Availability, GearTemplate } from "@scripts/gear/catalog";
+import { GEAR_CATALOG } from "@scripts/gear/catalog";
 
 // --- Types ---
 
@@ -158,7 +159,8 @@ export function renameCustomGear(oldName: string, newName: string): boolean {
   if (!(oldName in defs)) return false;
   const key = normalizeKey(newName);
   for (const template of Object.values(GEAR_CATALOG)) {
-    if (normalizeKey(template.name) === key || template.templateId === key) return false;
+    if (normalizeKey(template.name) === key || template.templateId === key)
+      return false;
   }
   for (const def of Object.values(defs)) {
     if (def.name !== oldName && normalizeKey(def.name) === key) return false;
