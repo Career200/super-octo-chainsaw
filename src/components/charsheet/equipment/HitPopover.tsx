@@ -14,6 +14,13 @@ import {
 
 import { Popover } from "../shared/Popover";
 
+let lastInputs = {
+  damageType: "normal" as DamageType,
+  damage: "",
+  dieType: null as null | 6 | 10,
+  bonus: "",
+};
+
 interface Props {
   forPart?: BodyPartName;
   children?: ComponentChildren;
@@ -32,15 +39,15 @@ export const HitPopover = ({ forPart, children }: Props) => {
 
   useEffect(() => {
     if (isOpen) {
+      setDamageType(lastInputs.damageType);
+      setDamage(lastInputs.damage);
+      setDieType(lastInputs.dieType);
+      setBonus(lastInputs.bonus);
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [isOpen]);
 
   const reset = () => {
-    setDamageType("normal");
-    setDamage("");
-    setBonus("");
-    setDieType(null);
     setIgnoreSP(false);
     setRollLocation(true);
   };
@@ -67,6 +74,8 @@ export const HitPopover = ({ forPart, children }: Props) => {
     } else {
       dmg = raw;
     }
+
+    lastInputs = { damageType, damage, dieType, bonus };
 
     const part = forPart ?? (rollLocation ? rollHitLocation() : null);
     if (part) {
