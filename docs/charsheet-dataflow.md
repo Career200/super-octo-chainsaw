@@ -40,7 +40,7 @@
                │   (computed)       │                  │
                                                        │
                ┌────────────────────┐                  │
-               │  $damageHistory    │─────────────────┴──▸ BottomBarHistory (biomon bottom bar)
+               │  $damageHistory    │─────────────────┴──▸ BottomBarHistory (combat bottom bar)
                │     (persist)      │                       HitPopover, RepairPopover
                └────────────────────┘                       (record entries)
 
@@ -190,8 +190,8 @@
                           ├─────────┘  │
                           ▾            │
                ┌───────────────────┐   │
-               │ $allOwnedWeapons │   │
-               │    (computed)     │   │
+               │ $allOwnedWeapons │   │──▸ CombatPanel → WeaponCombatCard
+               │    (computed)     │   │    (also reads $allSkills + $REF)
                └───────────────────┘   │
                                        ▾
                           ┌──────────────────┐
