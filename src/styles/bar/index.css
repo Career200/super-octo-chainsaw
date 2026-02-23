@@ -9,6 +9,11 @@
   padding-inline: var(--content-inset);
 }
 
+/* Reserve space for lazy wound-bar + secondary-bar so tab-row doesn't jump */
+.bar-loading {
+  height: 93px;
+}
+
 /* === Secondary Bar (below wounds) === */
 .secondary-bar {
   padding: var(--space-6) var(--padding-bar);

@@ -174,7 +174,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 120px;
+  min-height: 100dvh;
   color: var(--accent-muted);
   font-family: var(--font-mono);
   font-size: 0.8rem;

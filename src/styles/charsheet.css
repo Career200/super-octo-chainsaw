@@ -6,6 +6,12 @@
   overflow: hidden;
 }
 
+/* Views fill remaining space between fixed-bar and bottom-bar */
+.charsheet-spa > .container {
+  flex: 1;
+  min-height: 0;
+}
+
 /* === Charsheet Footer Override === */
 /* Hide footer content, keep nav toggle as floating button */
 .charsheet-page footer {

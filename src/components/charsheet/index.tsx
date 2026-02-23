@@ -3,9 +3,9 @@ import { Suspense } from "preact/compat";
 
 import { tabStore } from "@stores/ui";
 
+import { BottomBar } from "./common/bottombar/BottomBar";
 import { lazyNamed } from "./shared";
 import { TabStrip } from "./shared/TabStrip";
-
 // Fixed bar components (defer stats/health/skills/armor store chains)
 const WoundTracker = lazyNamed(
   () => import("./combat/WoundTracker"),
@@ -29,12 +29,6 @@ const EquipmentView = lazyNamed(
   "EquipmentView",
 );
 
-// Bottom bar
-const BottomBar = lazyNamed(
-  () => import("./common/bottombar/BottomBar"),
-  "BottomBar",
-);
-
 const SPA_TABS = [
   { id: "combat", label: "COMBAT" },
   { id: "dossier", label: "DOSSIER" },
@@ -49,15 +43,13 @@ export const Charsheet = () => {
   return (
     <div class={spaClass}>
       <div class="fixed-bar">
-        <Suspense fallback={null}>
+        <Suspense fallback={<div class="bar-loading" />}>
           <WoundTracker />
-        </Suspense>
-        <div class="secondary-bar flex-between">
-          <Suspense fallback={null}>
+          <div class="secondary-bar flex-between">
             <StatsStrip />
             <BodyInfo />
-          </Suspense>
-        </div>
+          </div>
+        </Suspense>
         <div class="tab-row">
           <TabStrip tabs={SPA_TABS} persist="spa-tab" class="spa-tabs" />
           <Suspense fallback={null}>
@@ -70,9 +62,7 @@ export const Charsheet = () => {
         {tab === "dossier" && <DossierView />}
         {tab === "equipment" && <EquipmentView />}
       </Suspense>
-      <Suspense fallback={null}>
-        <BottomBar />
-      </Suspense>
+      <BottomBar />
     </div>
   );
 };
