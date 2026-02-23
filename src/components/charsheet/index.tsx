@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import { lazy, Suspense } from "preact/compat";
+import { useEffect } from "preact/hooks";
 
 import { tabStore } from "@stores/ui";
 
@@ -25,6 +26,18 @@ const SPA_TABS = [
 
 export const Charsheet = () => {
   const tab = useStore(tabStore("spa-tab", "combat"));
+
+  // Preload on idle
+  useEffect(() => {
+    const preload = () => {
+      // handled by browser cache
+      import("./combat/CombatView");
+      import("./dossier/DossierView");
+      import("./equipment/EquipmentView");
+    };
+    const id = requestIdleCallback(preload);
+    return () => cancelIdleCallback(id);
+  }, []);
 
   const spaClass = `charsheet-spa ${tab}-section`;
 
