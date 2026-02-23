@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import { lazy, Suspense } from "preact/compat";
+import { Suspense } from "preact/compat";
 import { useRef, useState } from "preact/hooks";
 
 import {
@@ -14,32 +14,29 @@ import {
   tabStore,
 } from "@stores/ui";
 
+import { lazyNamed } from "../../shared";
+
 import { useAutoExpand } from "./useAutoExpand";
 
-const BottomBarHistory = lazy(() =>
-  import("../../combat/BottomBarHistory").then((m) => ({
-    default: m.BottomBarHistory,
-  })),
+const BottomBarHistory = lazyNamed(
+  () => import("../../combat/BottomBarHistory"),
+  "BottomBarHistory",
 );
-const BottomBarSkills = lazy(() =>
-  import("../../dossier/BottomBarSkills").then((m) => ({
-    default: m.BottomBarSkills,
-  })),
+const BottomBarSkills = lazyNamed(
+  () => import("../../dossier/BottomBarSkills"),
+  "BottomBarSkills",
 );
-const BottomBarArmor = lazy(() =>
-  import("../../equipment/BottomBarArmor").then((m) => ({
-    default: m.BottomBarArmor,
-  })),
+const BottomBarArmor = lazyNamed(
+  () => import("../../equipment/BottomBarArmor"),
+  "BottomBarArmor",
 );
-const BottomBarEquipment = lazy(() =>
-  import("../../equipment/BottomBarEquipment").then((m) => ({
-    default: m.BottomBarEquipment,
-  })),
+const BottomBarEquipment = lazyNamed(
+  () => import("../../equipment/BottomBarEquipment"),
+  "BottomBarEquipment",
 );
-const BottomBarWeapon = lazy(() =>
-  import("../../equipment/BottomBarWeapon").then((m) => ({
-    default: m.BottomBarWeapon,
-  })),
+const BottomBarWeapon = lazyNamed(
+  () => import("../../equipment/BottomBarWeapon"),
+  "BottomBarWeapon",
 );
 
 export const BottomBar = () => {
