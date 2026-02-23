@@ -1,9 +1,10 @@
 import {
-  WOUND_LEVEL_NAMES,
   BOXES_PER_LEVEL,
+  WOUND_LEVEL_NAMES,
   type WoundLevel,
-} from '@scripts/biomon/types';
-import { WoundBox } from './WoundBox';
+} from "@scripts/combat/types";
+
+import { WoundBox } from "./WoundBox";
 
 interface Props {
   level: WoundLevel;

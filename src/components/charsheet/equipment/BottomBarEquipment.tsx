@@ -1,18 +1,22 @@
-import { useState } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $selectedGear, $addingGear, selectGear } from "@stores/ui";
-import {
-  $ownedGear,
-  $customGearItems,
-  $customGear,
-  addCustomGear,
-  updateCustomGear,
-  removeCustomGear,
-  isCustomGear,
-} from "@stores/gear";
-import { GEAR_CATALOG } from "@scripts/gear/catalog";
+import { useState } from "preact/hooks";
+
 import type { Availability } from "@scripts/gear/catalog";
+import { GEAR_CATALOG } from "@scripts/gear/catalog";
+import {
+  $customGear,
+  $customGearItems,
+  $ownedGear,
+  addCustomGear,
+  isCustomGear,
+  removeCustomGear,
+  renameCustomGear,
+  updateCustomGear,
+} from "@stores/gear";
+import { $addingGear, $selectedGear, selectGear } from "@stores/ui";
+
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
+import { Tip } from "../shared";
 import { ItemForm } from "../shared/ItemForm";
 
 interface Props {
@@ -20,7 +24,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
+export default function BottomBarEquipment({ expanded, onToggle }: Props) {
   const gearId = useStore($selectedGear);
   const adding = useStore($addingGear);
   const ownedGear = useStore($ownedGear);
@@ -43,10 +47,14 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
   const [newDescription, setNewDescription] = useState("");
   const [newCost, setNewCost] = useState("");
   const [newAvailability, setNewAvailability] = useState<Availability | "">("");
+  const [addAttempted, setAddAttempted] = useState(false);
 
   const handleAdd = (): string | null => {
     const trimmed = newName.trim();
-    if (!trimmed) return "Name cannot be empty";
+    if (!trimmed) {
+      setAddAttempted(true);
+      return "Name cannot be empty";
+    }
     const typeVal = newType.trim() || "gear";
     if (/^armor$/i.test(typeVal)) return "Please use custom armor tab";
     const cost = newCost ? Number(newCost) : undefined;
@@ -58,6 +66,7 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
         availability: newAvailability || "C",
       })
     ) {
+      setAddAttempted(false);
       setNewName("");
       setNewType("");
       setNewDescription("");
@@ -74,23 +83,26 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
     selectGear(null);
   };
 
-  const typeField = (
-    value: string,
-    onChange?: (v: string) => void,
-  ) => (
-    <input
-      type="text"
-      class="input item-form-input item-form-type"
-      value={value}
-      disabled={!onChange}
-      onInput={
-        onChange
-          ? (e) => onChange((e.target as HTMLInputElement).value)
-          : undefined
-      }
-      placeholder="Type"
-    />
+  const typeField = (value: string, onChange?: (v: string) => void) => (
+    <Tip label="Item type" class="item-form-type">
+      <input
+        type="text"
+        class="input item-form-input"
+        value={value}
+        disabled={!onChange}
+        onInput={
+          onChange
+            ? (e) => onChange((e.target as HTMLInputElement).value)
+            : undefined
+        }
+        placeholder="Type"
+        title="Item type"
+      />
+    </Tip>
   );
+
+  const addErrors =
+    addAttempted && !newName.trim() ? new Set<string>(["name"]) : undefined;
 
   return (
     <BottomBarItemShell
@@ -116,6 +128,7 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
           onCostChange={setNewCost}
           availability={newAvailability}
           onAvailabilityChange={setNewAvailability}
+          errors={addErrors}
         >
           {typeField(newType, setNewType)}
         </ItemForm>
@@ -123,6 +136,13 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
         <ItemForm
           disabled
           name={resolved.name}
+          onNameChange={
+            isCustom && hasCustomDef
+              ? (v) => {
+                  if (renameCustomGear(gearId!, v)) selectGear(v);
+                }
+              : undefined
+          }
           description={resolved.description}
           onDescriptionChange={
             isCustom && hasCustomDef
@@ -160,4 +180,4 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
       ) : null}
     </BottomBarItemShell>
   );
-};
+}

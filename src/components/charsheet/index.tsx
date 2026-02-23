@@ -1,42 +1,68 @@
 import { useStore } from "@nanostores/preact";
-import { Biomonitor } from "./biomon";
-import { EquipmentView } from "./equipment/EquipmentView";
-import { DossierView } from "./dossier/DossierView";
-import { TabStrip } from "./shared/TabStrip";
-import { WoundTracker } from "./biomon/WoundTracker";
-import { BodyInfo } from "./biomon/BodyInfo";
-import { StatsStrip } from "./biomon/StatsStrip";
-import { AwarenessLine } from "./biomon/AwarenessLine";
+import { lazy, Suspense } from "preact/compat";
+import { useEffect } from "preact/hooks";
+
 import { tabStore } from "@stores/ui";
+
 import { BottomBar } from "./common/bottombar/BottomBar";
+import { TabStrip } from "./shared/TabStrip";
+
+// Fixed bar components (defer stats/health/skills/armor store chains)
+const WoundTracker = lazy(() => import("./combat/WoundTracker"));
+const StatsStrip = lazy(() => import("./combat/StatsStrip"));
+const BodyInfo = lazy(() => import("./combat/BodyInfo"));
+const AwarenessLine = lazy(() => import("./combat/AwarenessLine"));
+
+// Views
+const CombatView = lazy(() => import("./combat/CombatView"));
+const DossierView = lazy(() => import("./dossier/DossierView"));
+const EquipmentView = lazy(() => import("./equipment/EquipmentView"));
 
 const SPA_TABS = [
-  { id: "biomon", label: "BIOMON" },
+  { id: "combat", label: "COMBAT" },
   { id: "dossier", label: "DOSSIER" },
   { id: "equipment", label: "EQUIP" },
 ];
 
 export const Charsheet = () => {
-  const tab = useStore(tabStore("spa-tab", "biomon"));
+  const tab = useStore(tabStore("spa-tab", "combat"));
+
+  // Preload on idle
+  useEffect(() => {
+    const preload = () => {
+      // handled by browser cache
+      import("./combat/CombatView");
+      import("./dossier/DossierView");
+      import("./equipment/EquipmentView");
+    };
+    const id = requestIdleCallback(preload);
+    return () => cancelIdleCallback(id);
+  }, []);
 
   const spaClass = `charsheet-spa ${tab}-section`;
 
   return (
     <div class={spaClass}>
       <div class="fixed-bar">
-        <WoundTracker />
-        <div class="secondary-bar flex-between">
-          <StatsStrip />
-          <BodyInfo />
-        </div>
+        <Suspense fallback={<div class="bar-loading" />}>
+          <WoundTracker />
+          <div class="secondary-bar flex-between">
+            <StatsStrip />
+            <BodyInfo />
+          </div>
+        </Suspense>
         <div class="tab-row">
           <TabStrip tabs={SPA_TABS} persist="spa-tab" class="spa-tabs" />
-          <AwarenessLine />
+          <Suspense fallback={null}>
+            <AwarenessLine />
+          </Suspense>
         </div>
       </div>
-      {tab === "biomon" && <Biomonitor />}
-      {tab === "dossier" && <DossierView />}
-      {tab === "equipment" && <EquipmentView />}
+      <Suspense fallback={<div class="loading-fallback">Loading</div>}>
+        {tab === "combat" && <CombatView />}
+        {tab === "dossier" && <DossierView />}
+        {tab === "equipment" && <EquipmentView />}
+      </Suspense>
       <BottomBar />
     </div>
   );

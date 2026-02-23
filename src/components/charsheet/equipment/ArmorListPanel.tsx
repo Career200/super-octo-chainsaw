@@ -1,18 +1,21 @@
 import { useStore } from "@nanostores/preact";
+
 import {
-  $ownedArmor,
   $customArmorList,
-  getAllOwnedArmor,
-  isImplant,
-  getInstalledImplants,
+  $ownedArmor,
   ARMOR_CATALOG,
+  getAllOwnedArmor,
+  getInstalledImplants,
+  isImplant,
 } from "@stores/armor";
 import { startAddingArmor } from "@stores/ui";
+import { $highlightedPart, tabStore } from "@stores/ui";
+
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
+
 import { ArmorCard } from "./ArmorCard";
 import { ImplantCard } from "./ImplantCard";
-import { tabStore, $highlightedPart } from "@stores/ui";
 
 function sortArmor<T extends { type: string; spMax: number }>(items: T[]): T[] {
   return [...items].sort((a, b) => {
@@ -35,7 +38,7 @@ export const ArmorListPanel = ({
   onSelect: (id: string | null) => void;
 }) => {
   useStore($ownedArmor);
-  const tab = useStore(tabStore("armor-list-tab", "owned"));
+  const tab = useStore(tabStore("armor-list-tab", "catalog"));
   const highlightedPart = useStore($highlightedPart);
   const customTemplates = useStore($customArmorList);
 
@@ -69,15 +72,15 @@ export const ArmorListPanel = ({
         <TabStrip
           persist="armor-list-tab"
           tabs={[
-            {
-              id: "owned",
-              label: `Owned${owned.length > 0 ? ` ${owned.length}` : ""}`,
-            },
+            { id: "catalog", label: "Catalog" },
             {
               id: "custom",
               label: `Custom${customTemplates.length > 0 ? ` ${customTemplates.length}` : ""}`,
             },
-            { id: "catalog", label: "Catalog" },
+            {
+              id: "owned",
+              label: `Owned${owned.length > 0 ? ` ${owned.length}` : ""}`,
+            },
           ]}
         />
       }
@@ -119,10 +122,7 @@ export const ArmorListPanel = ({
       {tab === "custom" && (
         <div class="armor-card-list">
           <div class="gear-toolbar">
-            <button
-              class="gear-add-btn"
-              onClick={() => startAddingArmor()}
-            >
+            <button class="gear-add-btn" onClick={() => startAddingArmor()}>
               + Add Custom
             </button>
           </div>

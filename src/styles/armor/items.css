@@ -143,6 +143,10 @@
   flex: 1 1 100%;
 }
 
+.armor-form-row-error .coverage-badge-toggle:not(.active) {
+  border-color: var(--danger);
+}
+
 .coverage-badge-toggle {
   cursor: pointer;
   transition: background 0.1s, border-color 0.1s, color 0.1s;

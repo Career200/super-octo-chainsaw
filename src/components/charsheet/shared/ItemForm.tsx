@@ -1,8 +1,11 @@
 import type { ComponentChildren } from "preact";
-import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
+
 import type { Availability } from "@scripts/catalog-common";
+import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
 
 type AvailabilityWithEmpty = Availability | "";
+
+import { cls, Tip } from ".";
 
 interface Props {
   disabled: boolean;
@@ -14,6 +17,8 @@ interface Props {
   onAvailabilityChange?: (v: AvailabilityWithEmpty) => void;
   description: string;
   onDescriptionChange?: (v: string) => void;
+  /** Field names that should show error styling */
+  errors?: ReadonlySet<string>;
   children?: ComponentChildren;
 }
 
@@ -27,6 +32,7 @@ export function ItemForm({
   onAvailabilityChange,
   description,
   onDescriptionChange,
+  errors,
   children,
 }: Props) {
   return (
@@ -34,52 +40,59 @@ export function ItemForm({
       <div class="item-form-fields">
         <input
           type="text"
-          class="input item-form-input item-form-name"
+          class={cls("input item-form-input item-form-name", errors?.has("name") && "input-error")}
           value={name}
-          disabled={disabled}
+          disabled={!onNameChange}
           onInput={
             onNameChange
               ? (e) => onNameChange((e.target as HTMLInputElement).value)
               : undefined
           }
           placeholder="Name"
+          title="Name"
           autoFocus={!disabled}
         />
         {children}
-        <input
-          type="number"
-          class="input item-form-input item-form-cost"
-          value={cost}
-          disabled={!onCostChange}
-          onInput={
-            onCostChange
-              ? (e) => onCostChange((e.target as HTMLInputElement).value)
-              : undefined
-          }
-          placeholder="Cost"
-          min="0"
-        />
-        <select
-          class="input item-form-input item-form-availability"
-          value={availability}
-          disabled={!onAvailabilityChange}
-          onChange={
-            onAvailabilityChange
-              ? (e) =>
-                  onAvailabilityChange(
-                    (e.target as HTMLSelectElement)
-                      .value as AvailabilityWithEmpty,
-                  )
-              : undefined
-          }
-        >
-          <option value="">Availability</option>
-          {Object.entries(AVAILABILITY_LABELS).map(([k, v]) => (
-            <option key={k} value={k}>
-              {v}
-            </option>
-          ))}
-        </select>
+        <Tip label="Cost in eurobucks" class="item-form-cost">
+          <input
+            type="number"
+            class="input item-form-input"
+            value={cost}
+            disabled={!onCostChange}
+            onInput={
+              onCostChange
+                ? (e) => onCostChange((e.target as HTMLInputElement).value)
+                : undefined
+            }
+            placeholder="Cost"
+            title="Cost in eurobucks"
+            min="0"
+          />
+        </Tip>
+        <Tip label="Street availability" class="item-form-availability">
+          <select
+            class="input item-form-input"
+            value={availability}
+            disabled={!onAvailabilityChange}
+            onChange={
+              onAvailabilityChange
+                ? (e) =>
+                    onAvailabilityChange(
+                      (e.target as HTMLSelectElement)
+                        .value as AvailabilityWithEmpty,
+                    )
+                : undefined
+            }
+            title="Street availability"
+          >
+            <option value="">Availability</option>
+            {Object.entries(AVAILABILITY_LABELS).map(([k, v]) => (
+              <option key={k} value={k}>
+                {v}
+              </option>
+            ))}
+          </select>
+        </Tip>
       </div>
       <textarea
         class="input item-form-description"
@@ -92,6 +105,7 @@ export function ItemForm({
             : undefined
         }
         placeholder="No description"
+        title="Description"
       />
     </div>
   );

@@ -11,7 +11,7 @@
  *   attempt to dodge gunfire (not RAW).
  */
 
-import type { StatName } from "@scripts/biomon/types";
+import type { StatName } from "@scripts/combat/types";
 
 export type SkillStat = StatName | "special";
 
@@ -682,7 +682,7 @@ export const SKILL_CATALOG: Record<string, SkillDefinition> = {
   },
 };
 
-/** Display order for the biomon combat panel, maybe broken down to melee/ranged? Not relevant right now though */
+/** Display order for the combat panel, maybe broken down to melee/ranged? Not relevant right now though */
 export const COMBAT_SKILLS_ORDER: string[] = [
   "Handgun",
   "Rifle",

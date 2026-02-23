@@ -1,5 +1,6 @@
-import { useState, useRef } from "preact/hooks";
 import type { ComponentChildren } from "preact";
+import { useRef, useState } from "preact/hooks";
+
 import { Chevron } from "../../shared/Chevron";
 import { ConfirmPopover } from "../../shared/ConfirmPopover";
 import { Popover } from "../../shared/Popover";

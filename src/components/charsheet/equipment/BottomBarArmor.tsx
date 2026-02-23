@@ -1,29 +1,33 @@
-import { useState, useRef } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
-import { $selectedArmor, $addingArmor, selectArmor } from "@stores/ui";
+import { useRef, useState } from "preact/hooks";
+
 import {
-  $ownedArmor,
-  $customArmorTemplates,
-  getArmorPiece,
-  resolveTemplate,
-  isCustomArmor,
-  acquireArmor,
-  addCustomArmor,
-  updateCustomArmor,
-  removeCustomArmor,
-  toggleArmor,
-  discardArmor,
-} from "@stores/armor";
-import {
-  PART_ABBREV,
-  getPartSpMax,
   type BodyPartName,
+  getPartSpMax,
+  PART_ABBREV,
 } from "@scripts/armor/core";
 import type { Availability } from "@scripts/catalog-common";
+import {
+  $customArmorTemplates,
+  $ownedArmor,
+  acquireArmor,
+  addCustomArmor,
+  discardArmor,
+  getArmorPiece,
+  isCustomArmor,
+  removeCustomArmor,
+  renameCustomArmor,
+  resolveTemplate,
+  toggleArmor,
+  updateCustomArmor,
+} from "@stores/armor";
+import { $addingArmor, $selectedArmor, selectArmor } from "@stores/ui";
+
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { ItemForm } from "../shared/ItemForm";
-import { ArmorFormFields } from "./ArmorFormFields";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
+import { ItemForm } from "../shared/ItemForm";
+
+import { ArmorFormFields } from "./ArmorFormFields";
 import { RepairPopover } from "./RepairPopover";
 import { getConditionClassFromSP } from "./utils";
 
@@ -32,7 +36,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
+export default function BottomBarArmor({ expanded, onToggle }: Props) {
   const armorId = useStore($selectedArmor);
   const adding = useStore($addingArmor);
   useStore($ownedArmor);
@@ -55,6 +59,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
   const [newEv, setNewEv] = useState(0);
 
   const [editNotice, setEditNotice] = useState<string | null>(null);
+  const [addAttempted, setAddAttempted] = useState(false);
 
   // Owned instance action state
   const [wearError, setWearError] = useState<string | null>(null);
@@ -74,8 +79,11 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
 
   const handleAdd = (): string | null => {
     const trimmed = newName.trim();
-    if (!trimmed) return "Name cannot be empty";
-    if (newBodyParts.length === 0) return "Select at least one body part";
+    if (!trimmed || newBodyParts.length === 0) {
+      setAddAttempted(true);
+      if (!trimmed) return "Name cannot be empty";
+      return "Select at least one body part";
+    }
     const cost = newCost ? Number(newCost) : 0;
     const instanceId = addCustomArmor(trimmed, {
       type: newType,
@@ -87,6 +95,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
       availability: newAvailability || "C",
     });
     if (instanceId) {
+      setAddAttempted(false);
       setNewName("");
       setNewDescription("");
       setNewCost("");
@@ -201,6 +210,11 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
   let bodyContent = null;
 
   if (adding) {
+    const addErrors = new Set<string>();
+    if (addAttempted) {
+      if (!newName.trim()) addErrors.add("name");
+      if (newBodyParts.length === 0) addErrors.add("bodyParts");
+    }
     bodyContent = (
       <ItemForm
         disabled={false}
@@ -212,6 +226,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
         onCostChange={setNewCost}
         availability={newAvailability}
         onAvailabilityChange={setNewAvailability}
+        errors={addErrors}
       >
         <ArmorFormFields
           bodyParts={newBodyParts}
@@ -222,6 +237,7 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
           onSpMaxChange={setNewSp}
           ev={newEv}
           onEvChange={setNewEv}
+          errors={addErrors}
         />
       </ItemForm>
     );
@@ -230,6 +246,9 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
       <ItemForm
         disabled
         name={template.name}
+        onNameChange={(v) => {
+          if (renameCustomArmor(armorId!, v)) selectArmor(v);
+        }}
         description={template.description}
         onDescriptionChange={(v) =>
           notifyIfRemoved(updateCustomArmor(armorId!, { description: v }))
@@ -332,4 +351,4 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
       {bodyContent}
     </BottomBarItemShell>
   );
-};
+}

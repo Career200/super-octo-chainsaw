@@ -1,10 +1,10 @@
-import { getWoundLevel } from "./wounds";
 import type {
-  WoundLevel,
-  WoundPenaltyType,
   CalculateStatOptions,
   StatValues,
+  WoundLevel,
+  WoundPenaltyType,
 } from "./types";
+import { getWoundLevel } from "./wounds";
 
 function isMortal(level: WoundLevel): boolean {
   return level.startsWith("mortal");

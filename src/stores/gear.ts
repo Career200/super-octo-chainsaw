@@ -1,8 +1,9 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
-import { GEAR_CATALOG } from "@scripts/gear/catalog";
-import type { GearTemplate, Availability } from "@scripts/gear/catalog";
+
 import { normalizeKey } from "@scripts/catalog-common";
+import type { Availability, GearTemplate } from "@scripts/gear/catalog";
+import { GEAR_CATALOG } from "@scripts/gear/catalog";
 
 // --- Types ---
 
@@ -150,6 +151,30 @@ export function updateCustomGear(
     ...current,
     [name]: { ...current[name], ...updates },
   });
+}
+
+export function renameCustomGear(oldName: string, newName: string): boolean {
+  if (!newName.trim() || newName === oldName) return false;
+  const defs = $customGearItems.get();
+  if (!(oldName in defs)) return false;
+  const key = normalizeKey(newName);
+  for (const template of Object.values(GEAR_CATALOG)) {
+    if (normalizeKey(template.name) === key || template.templateId === key)
+      return false;
+  }
+  for (const def of Object.values(defs)) {
+    if (def.name !== oldName && normalizeKey(def.name) === key) return false;
+  }
+  // Re-key definition
+  const { [oldName]: def, ...rest } = defs;
+  $customGearItems.set({ ...rest, [newName]: { ...def, name: newName } });
+  // Re-key quantity
+  const quantities = $gear.get();
+  if (oldName in quantities) {
+    const { [oldName]: qty, ...restQty } = quantities;
+    $gear.set({ ...restQty, [newName]: qty });
+  }
+  return true;
 }
 
 export function removeCustomGear(name: string): void {

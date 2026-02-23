@@ -1,26 +1,29 @@
 import { useStore } from "@nanostores/preact";
+
+import {
+  type BodyPartName,
+  getEffectiveSP,
+  PART_NAMES,
+  sortByLayerOrder,
+} from "@scripts/armor/core";
 import {
   $ownedArmor,
+  getArmorPiece,
   getBodyPartLayers,
   getImplantsForPart,
-  getArmorPiece,
   getTemplate,
   isSkinweave,
 } from "@stores/armor";
 import {
-  getEffectiveSP,
-  sortByLayerOrder,
-  PART_NAMES,
-  type BodyPartName,
-} from "@scripts/armor/core";
-import {
-  $selectedArmor,
-  selectArmor,
   $highlightedPart,
+  $selectedArmor,
   highlightPart,
+  selectArmor,
 } from "@stores/ui";
-import { LayerBar } from "./LayerBar";
+
 import { HitPopover } from "../HitPopover";
+
+import { LayerBar } from "./LayerBar";
 
 const HIT_ROLL: Record<string, string> = {
   head: "1",
@@ -33,10 +36,10 @@ const HIT_ROLL: Record<string, string> = {
 
 interface Props {
   part: BodyPartName;
-  mode?: "biomon" | "inventory";
+  mode?: "combat" | "inventory";
 }
 
-export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
+export const BodyPartCard = ({ part, mode = "combat" }: Props) => {
   useStore($ownedArmor);
   const selectedArmorId = useStore($selectedArmor);
   const highlightedPartVal = useStore($highlightedPart);
@@ -55,7 +58,7 @@ export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
   // Inventory mode: highlight when part is clicked or selected armor covers this part
   const selectedArmor =
     inventory && selectedArmorId
-      ? getArmorPiece(selectedArmorId) ?? getTemplate(selectedArmorId)
+      ? (getArmorPiece(selectedArmorId) ?? getTemplate(selectedArmorId))
       : null;
   const isPartHighlighted =
     inventory &&
@@ -84,9 +87,7 @@ export const BodyPartCard = ({ part, mode = "biomon" }: Props) => {
       id={`part-${part}`}
       onClick={inventory ? handlePartClick : undefined}
     >
-      {!inventory && (
-        <HitPopover forPart={part}>{HIT_ROLL[part]}</HitPopover>
-      )}
+      {!inventory && <HitPopover forPart={part}>{HIT_ROLL[part]}</HitPopover>}
       <h3>
         {PART_NAMES[part]} <span class="sp-total">{total}</span>
       </h3>

@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/preact";
-import { $encumbrance } from "@stores/armor";
+
 import { PART_NAMES } from "@scripts/armor/core";
+import { $encumbrance } from "@stores/armor";
 
 export const EVDisplay = () => {
   const { ev, maxLayers, maxLocation } = useStore($encumbrance);

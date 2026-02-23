@@ -1,28 +1,37 @@
 import { useStore } from "@nanostores/preact";
-import {
-  $ownedArmor,
-  getBodyPartLayers,
-  getImplantsForPart,
-  getArmorPiece,
-  getTemplate,
-  isSkinweave,
-} from "@stores/armor";
+
 import {
   getEffectiveSP,
   getImplantSP,
   getPartSpMax,
   sortByLayerOrder,
 } from "@scripts/armor/core";
-import { $selectedArmor, selectArmor, $highlightedPart, highlightPart } from "@stores/ui";
+import {
+  $ownedArmor,
+  getArmorPiece,
+  getBodyPartLayers,
+  getImplantsForPart,
+  getTemplate,
+  isSkinweave,
+} from "@stores/armor";
+import {
+  $highlightedPart,
+  $selectedArmor,
+  highlightPart,
+  selectArmor,
+} from "@stores/ui";
+
 import { HelpPopover } from "../../shared/HelpPopover";
+
 import { HitPopover } from "../HitPopover";
+
 import { LayerBar } from "./LayerBar";
 
 interface Props {
-  mode?: "biomon" | "inventory";
+  mode?: "combat" | "inventory";
 }
 
-export const FaceCard = ({ mode = "biomon" }: Props) => {
+export const FaceCard = ({ mode = "combat" }: Props) => {
   useStore($ownedArmor);
   const selectedArmorId = useStore($selectedArmor);
   const highlightedPartVal = useStore($highlightedPart);
@@ -81,7 +90,7 @@ export const FaceCard = ({ mode = "biomon" }: Props) => {
     >
       {!inventory && <HitPopover forPart="face">1 {">"} 1-4</HitPopover>}
       <h3>
-        Face{" "}
+        Face <br />
         <span class="sp-value" id="sp-face">
           {total}
         </span>{" "}
@@ -120,63 +129,64 @@ export const FaceCard = ({ mode = "biomon" }: Props) => {
           }
         />
       </h3>
-      {inventory && (() => {
-        const sorted = sortByLayerOrder(layers);
-        const faceplate = implants.filter((i) => i.layer === "faceplate");
-        const plating = implants.filter((i) => i.layer === "plating");
-        const skinweave = implants.filter((i) => isSkinweave(i));
-        const subdermal = implants.filter((i) => i.layer === "subdermal");
-        return (
-        <div class="layer-list" id="layers-face">
-          {sorted.map((layer) => (
-            <LayerBar
-              key={layer.id}
-              name={layer.shortName ?? layer.name}
-              currentSP={layer.spCurrent}
-              maxSP={getPartSpMax(layer, "face")}
-              onClick={() => handleLayerClick(layer.id)}
-              active={selectedArmorId === layer.id}
-            />
-          ))}
-          {faceplate.map((impl) => (
-            <LayerBar
-              key={impl.id}
-              name={impl.shortName ?? impl.name}
-              currentSP={impl.spByPart.face ?? 0}
-              maxSP={getPartSpMax(impl, "face")}
-              className="layer-cyber"
-            />
-          ))}
-          {plating.map((impl) => (
-            <LayerBar
-              key={impl.id}
-              name={impl.shortName ?? impl.name}
-              currentSP={impl.spByPart.face ?? 0}
-              maxSP={getPartSpMax(impl, "face")}
-              className="layer-cyber"
-            />
-          ))}
-          {skinweave.map((impl) => (
-            <LayerBar
-              key={impl.id}
-              name={impl.shortName ?? impl.name}
-              currentSP={impl.spByPart.face ?? 0}
-              maxSP={getPartSpMax(impl, "face")}
-              className="layer-cyber"
-            />
-          ))}
-          {subdermal.map((impl) => (
-            <LayerBar
-              key={impl.id}
-              name={impl.shortName ?? impl.name}
-              currentSP={impl.spByPart.face ?? 0}
-              maxSP={getPartSpMax(impl, "face")}
-              className="layer-cyber"
-            />
-          ))}
-        </div>
-        );
-      })()}
+      {inventory &&
+        (() => {
+          const sorted = sortByLayerOrder(layers);
+          const faceplate = implants.filter((i) => i.layer === "faceplate");
+          const plating = implants.filter((i) => i.layer === "plating");
+          const skinweave = implants.filter((i) => isSkinweave(i));
+          const subdermal = implants.filter((i) => i.layer === "subdermal");
+          return (
+            <div class="layer-list" id="layers-face">
+              {sorted.map((layer) => (
+                <LayerBar
+                  key={layer.id}
+                  name={layer.shortName ?? layer.name}
+                  currentSP={layer.spCurrent}
+                  maxSP={getPartSpMax(layer, "face")}
+                  onClick={() => handleLayerClick(layer.id)}
+                  active={selectedArmorId === layer.id}
+                />
+              ))}
+              {faceplate.map((impl) => (
+                <LayerBar
+                  key={impl.id}
+                  name={impl.shortName ?? impl.name}
+                  currentSP={impl.spByPart.face ?? 0}
+                  maxSP={getPartSpMax(impl, "face")}
+                  className="layer-cyber"
+                />
+              ))}
+              {plating.map((impl) => (
+                <LayerBar
+                  key={impl.id}
+                  name={impl.shortName ?? impl.name}
+                  currentSP={impl.spByPart.face ?? 0}
+                  maxSP={getPartSpMax(impl, "face")}
+                  className="layer-cyber"
+                />
+              ))}
+              {skinweave.map((impl) => (
+                <LayerBar
+                  key={impl.id}
+                  name={impl.shortName ?? impl.name}
+                  currentSP={impl.spByPart.face ?? 0}
+                  maxSP={getPartSpMax(impl, "face")}
+                  className="layer-cyber"
+                />
+              ))}
+              {subdermal.map((impl) => (
+                <LayerBar
+                  key={impl.id}
+                  name={impl.shortName ?? impl.name}
+                  currentSP={impl.spByPart.face ?? 0}
+                  maxSP={getPartSpMax(impl, "face")}
+                  className="layer-cyber"
+                />
+              ))}
+            </div>
+          );
+        })()}
     </div>
   );
 };

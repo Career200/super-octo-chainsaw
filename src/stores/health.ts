@@ -1,11 +1,12 @@
 import { persistentAtom } from "@nanostores/persistent";
+
 import {
-  TOTAL_BOXES,
   BOXES_PER_LEVEL,
-  type WoundState,
   type DamageType,
-} from "@scripts/biomon/types";
-import { applyDamage, healDamage } from "@scripts/biomon/wounds";
+  TOTAL_BOXES,
+  type WoundState,
+} from "@scripts/combat/types";
+import { applyDamage, healDamage } from "@scripts/combat/wounds";
 
 // Mortal starts at box 13 (after 3 levels of 4 boxes each)
 const MORTAL_THRESHOLD = 3 * BOXES_PER_LEVEL;
@@ -14,16 +15,20 @@ function defaultState(): WoundState {
   return { physical: 0, stun: 0, stabilized: false };
 }
 
-export const $health = persistentAtom<WoundState>("health-state", defaultState(), {
-  encode: JSON.stringify,
-  decode: (raw: string): WoundState => {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return defaultState();
-    }
+export const $health = persistentAtom<WoundState>(
+  "health-state",
+  defaultState(),
+  {
+    encode: JSON.stringify,
+    decode: (raw: string): WoundState => {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return defaultState();
+      }
+    },
   },
-});
+);
 
 // --- Helpers ---
 
@@ -38,8 +43,12 @@ export function takeDamage(amount: number, type: DamageType): void {
   const newState = applyDamage(current, amount, type);
 
   // Auto-destabilize when crossing into mortal
-  const crossingMortal = !isMortal(current.physical) && isMortal(newState.physical);
-  $health.set({ ...newState, stabilized: crossingMortal ? false : newState.stabilized });
+  const crossingMortal =
+    !isMortal(current.physical) && isMortal(newState.physical);
+  $health.set({
+    ...newState,
+    stabilized: crossingMortal ? false : newState.stabilized,
+  });
 }
 
 export function heal(amount: number, type: DamageType): void {

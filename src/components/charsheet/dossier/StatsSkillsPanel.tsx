@@ -1,11 +1,14 @@
 import { useStore } from "@nanostores/preact";
+
 import { $mySkillsCount } from "@stores/skills";
 import { tabStore } from "@stores/ui";
+
+import { StatsPanel } from "../combat/StatsPanel";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
-import { StatsPanel } from "../biomon/StatsPanel";
-import { SkillsList } from "./SkillsPanel";
+
 import type { SkillFilter } from "./SkillsPanel";
+import { SkillsList } from "./SkillsPanel";
 
 export const StatsSkillsPanel = ({
   expanded,

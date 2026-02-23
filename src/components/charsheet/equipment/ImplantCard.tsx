@@ -1,5 +1,7 @@
 import { useRef, useState } from "preact/hooks";
+
 import type { ArmorPiece } from "@scripts/armor/core";
+
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { RepairPopover } from "./RepairPopover";
 import { getConditionClassFromSP } from "./utils";
@@ -19,7 +21,9 @@ export const ImplantCard = ({ implant }: Props) => {
       <div class="flex-between gap-8">
         <h4>{implant.name}</h4>
         <span class="armor-card-sp">
-          <span class={getConditionClassFromSP(implant.spCurrent, implant.spMax)}>
+          <span
+            class={getConditionClassFromSP(implant.spCurrent, implant.spMax)}
+          >
             {implant.spCurrent}
           </span>
           /{implant.spMax}

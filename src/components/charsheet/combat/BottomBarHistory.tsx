@@ -1,17 +1,20 @@
 import { useStore } from "@nanostores/preact";
+
 import {
   $damageHistory,
   clearHistory,
   type DamageHistoryEntry,
   type ManipulationHistoryEntry,
 } from "@stores/damage-history";
+
+import { Chevron } from "../shared/Chevron";
+
 import {
   DamageEntry,
-  ManipulationEntry,
-  formatTime,
   formatBodyParts,
+  formatTime,
+  ManipulationEntry,
 } from "./history-entries";
-import { Chevron } from "../shared/Chevron";
 
 function DamageSummary({ entry }: { entry: DamageHistoryEntry }) {
   const typeStr =
@@ -57,7 +60,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export const BottomBarHistory = ({ expanded, onToggle }: Props) => {
+export default function BottomBarHistory({ expanded, onToggle }: Props) {
   const history = useStore($damageHistory);
   const lastEntry = history[0];
 
@@ -103,4 +106,4 @@ export const BottomBarHistory = ({ expanded, onToggle }: Props) => {
       )}
     </>
   );
-};
+}

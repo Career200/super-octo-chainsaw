@@ -1,25 +1,37 @@
 import { useStore } from "@nanostores/preact";
-import { $ownedArmor, getAllOwnedArmor, isImplant, unwearAll } from "@stores/armor";
-import { tabStore, $selectedArmor, selectArmor } from "@stores/ui";
-import { TwoPanelView } from "../shared/TwoPanelView";
+
+import {
+  $ownedArmor,
+  getAllOwnedArmor,
+  isImplant,
+  unwearAll,
+} from "@stores/armor";
+import { $selectedArmor, selectArmor, tabStore } from "@stores/ui";
+
 import { HelpPopover } from "../shared/HelpPopover";
-import { TabStrip } from "../shared/TabStrip";
-import { ArmorListPanel } from "./ArmorListPanel";
-import { GearPanel } from "./GearPanel";
-import { BodyPartGrid } from "./body/BodyPartGrid";
-import { ArmorHelpContent } from "./help/ArmorHelpContent";
 import { Panel } from "../shared/Panel";
+import { TabStrip } from "../shared/TabStrip";
+import { TwoPanelView } from "../shared/TwoPanelView";
+
+import { ArmorListPanel } from "./ArmorListPanel";
+import { BodyPartGrid } from "./body/BodyPartGrid";
+import { GearPanel } from "./GearPanel";
+import { ArmorHelpContent } from "./help/ArmorHelpContent";
+import { WeaponListPanel } from "./WeaponListPanel";
 
 const EQUIPMENT_TABS = [
   { id: "gear", label: "Gear" },
+  { id: "weapons", label: "Weapons" },
   { id: "armor", label: "Armor" },
 ];
 
-export const EquipmentView = () => {
+export default function EquipmentView() {
   const subTab = useStore(tabStore("equipment-sub-tab", "gear"));
   const selectedArmorId = useStore($selectedArmor);
   useStore($ownedArmor); // subscribe so hasWorn recalculates on armor changes
-  const hasWorn = subTab === "armor" && getAllOwnedArmor().some((a) => a.worn && !isImplant(a));
+  const hasWorn =
+    subTab === "armor" &&
+    getAllOwnedArmor().some((a) => a.worn && !isImplant(a));
 
   return (
     <>
@@ -31,10 +43,24 @@ export const EquipmentView = () => {
           renderFirst={(expanded, onToggle) => (
             <Panel
               id="armor-grid-panel"
-              title={<>Body Armor{" "}<HelpPopover id="armor-help-eq" content={<ArmorHelpContent />} /></>}
+              title={
+                <>
+                  Body Armor{" "}
+                  <HelpPopover
+                    id="armor-help-eq"
+                    content={<ArmorHelpContent />}
+                  />
+                </>
+              }
               expanded={expanded}
               onToggle={onToggle}
-              headerActions={hasWorn ? <button class="btn-ghost btn-sm" onClick={() => unwearAll()}>Remove All</button> : undefined}
+              headerActions={
+                hasWorn ? (
+                  <button class="btn-ghost btn-sm" onClick={() => unwearAll()}>
+                    Remove All
+                  </button>
+                ) : undefined
+              }
             >
               <BodyPartGrid mode="inventory" />
             </Panel>
@@ -48,6 +74,10 @@ export const EquipmentView = () => {
             />
           )}
         />
+      ) : subTab === "weapons" ? (
+        <div class="container">
+          <WeaponListPanel />
+        </div>
       ) : (
         <div class="container">
           <GearPanel />
@@ -55,4 +85,4 @@ export const EquipmentView = () => {
       )}
     </>
   );
-};
+}

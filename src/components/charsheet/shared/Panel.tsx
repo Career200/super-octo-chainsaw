@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+
 import { Chevron } from "./Chevron";
 
 interface Props {

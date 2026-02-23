@@ -88,7 +88,6 @@
   color: var(--footer);
 }
 
-
 /* === Layout Utilities === */
 
 /* Flex row - space between */
@@ -167,20 +166,41 @@
 }
 
 /* === Loading Fallback === */
+.charsheet-spa > .loading-fallback {
+  flex: 1;
+}
+
 .loading-fallback {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 120px;
-}
-
-.loading-spinner {
-  width: 24px;
-  height: 24px;
+  min-height: 100dvh;
   color: var(--accent-muted);
-  animation: spin 1s linear infinite;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.loading-fallback::after {
+  content: "";
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+  animation: loading-dots 1.2s steps(4, end) infinite;
+}
+
+@keyframes loading-dots {
+  0% {
+    content: "";
+  }
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
 }

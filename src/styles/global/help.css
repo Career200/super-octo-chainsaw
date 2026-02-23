@@ -74,6 +74,26 @@
   color: var(--fg);
 }
 
+.popover-help table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 6px 0 4px;
+}
+
+.popover-help th {
+  text-align: left;
+  color: var(--fg);
+  font-weight: 600;
+  padding: 2px 8px 4px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.popover-help td {
+  color: var(--fg-soft);
+  padding: 2px 8px 2px 0;
+}
+
 .popover-help blockquote {
   margin: 12px 0 0 0;
   padding: 8px 12px;

@@ -1,14 +1,14 @@
 import { BodyPartCard } from "./BodyPartCard";
-import { FaceCard } from "./FaceCard";
-import { SkinweaveDisplay } from "./SkinweaveDisplay";
-import { ImplantsDisplay } from "./ImplantsDisplay";
 import { EVDisplay } from "./EVDisplay";
+import { FaceCard } from "./FaceCard";
+import { ImplantsDisplay } from "./ImplantsDisplay";
+import { SkinweaveDisplay } from "./SkinweaveDisplay";
 
 interface Props {
-  mode?: "biomon" | "inventory";
+  mode?: "combat" | "inventory";
 }
 
-export const BodyPartGrid = ({ mode = "biomon" }: Props) => {
+export const BodyPartGrid = ({ mode = "combat" }: Props) => {
   return (
     <div class="body-grid">
       <SkinweaveDisplay />

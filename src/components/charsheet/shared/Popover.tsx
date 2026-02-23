@@ -1,6 +1,6 @@
-import { useRef, useEffect, useCallback } from "preact/hooks";
 import type { ComponentChildren, RefObject } from "preact";
 import { createPortal } from "preact/compat";
+import { useCallback, useEffect, useRef } from "preact/hooks";
 
 interface Props {
   anchorRef: RefObject<HTMLElement | null>;

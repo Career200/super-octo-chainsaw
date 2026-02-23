@@ -1,9 +1,10 @@
+import { type BodyPartName, PART_NAMES } from "@scripts/armor/core";
+import { getArmorPiece } from "@stores/armor";
 import type {
   DamageHistoryEntry,
   ManipulationHistoryEntry,
 } from "@stores/damage-history";
-import { getArmorPiece } from "@stores/armor";
-import { PART_NAMES, type BodyPartName } from "@scripts/armor/core";
+
 import { getConditionClassFromSP } from "../equipment/utils";
 
 export function formatTime(timestamp: number): string {

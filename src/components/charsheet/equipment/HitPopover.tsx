@@ -1,16 +1,25 @@
-import { useState, useRef, useEffect } from "preact/hooks";
 import type { ComponentChildren } from "preact";
+import { useEffect, useRef, useState } from "preact/hooks";
+
 import type { BodyPartName } from "@scripts/armor/core";
 import {
   DAMAGE_TYPE_OPTIONS,
   type DamageType,
 } from "@scripts/armor/damage-types";
 import {
-  rollHitLocation,
   resolveLocationalHit,
   resolveNonLocationalHit,
+  rollHitLocation,
 } from "@scripts/armor/hit";
+
 import { Popover } from "../shared/Popover";
+
+let lastInputs = {
+  damageType: "normal" as DamageType,
+  damage: "",
+  dieType: null as null | 6 | 10,
+  bonus: "",
+};
 
 interface Props {
   forPart?: BodyPartName;
@@ -30,15 +39,15 @@ export const HitPopover = ({ forPart, children }: Props) => {
 
   useEffect(() => {
     if (isOpen) {
+      setDamageType(lastInputs.damageType);
+      setDamage(lastInputs.damage);
+      setDieType(lastInputs.dieType);
+      setBonus(lastInputs.bonus);
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [isOpen]);
 
   const reset = () => {
-    setDamageType("normal");
-    setDamage("");
-    setBonus("");
-    setDieType(null);
     setIgnoreSP(false);
     setRollLocation(true);
   };
@@ -65,6 +74,8 @@ export const HitPopover = ({ forPart, children }: Props) => {
     } else {
       dmg = raw;
     }
+
+    lastInputs = { damageType, damage, dieType, bonus };
 
     const part = forPart ?? (rollLocation ? rollHitLocation() : null);
     if (part) {

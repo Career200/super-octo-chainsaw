@@ -6,6 +6,12 @@
   overflow: hidden;
 }
 
+/* Views fill remaining space between fixed-bar and bottom-bar */
+.charsheet-spa > .container {
+  flex: 1;
+  min-height: 0;
+}
+
 /* === Charsheet Footer Override === */
 /* Hide footer content, keep nav toggle as floating button */
 .charsheet-page footer {
@@ -185,6 +191,7 @@
   flex-direction: column;
   height: 36px;
   padding-inline: max(var(--space-12), var(--content-inset));
+  padding-bottom: var(--space-8);
   background: var(--bg-alt);
   border-top: 1px solid var(--border);
 }
@@ -215,6 +222,13 @@
   min-height: 0;
   overflow-y: auto;
   padding-bottom: var(--space-8);
+}
+
+.bottom-bar-body .text-desc {
+  font-size: var(--font-ui);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .bottom-bar-content {

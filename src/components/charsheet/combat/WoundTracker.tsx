@@ -1,13 +1,16 @@
 import { useStore } from "@nanostores/preact";
-import { useState, useEffect } from "preact/hooks";
-import { $health, syncStunToPhysical } from "@stores/health";
-import { WOUND_LEVELS } from "@scripts/biomon/types";
-import { WoundLevelGroup } from "./WoundLevelGroup";
-import { StabilizedControl } from "./StabilizedControl";
-import { HelpPopover } from "../shared/HelpPopover";
-import { WoundHelpContent } from "./help/WoundHelpContent";
+import { useEffect, useState } from "preact/hooks";
 
-export const WoundTracker = () => {
+import { WOUND_LEVELS } from "@scripts/combat/types";
+import { $health, syncStunToPhysical } from "@stores/health";
+
+import { HelpPopover } from "../shared/HelpPopover";
+
+import { WoundHelpContent } from "./help/WoundHelpContent";
+import { StabilizedControl } from "./StabilizedControl";
+import { WoundLevelGroup } from "./WoundLevelGroup";
+
+export default function WoundTracker() {
   const health = useStore($health);
   const [showStun, setShowStun] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -73,4 +76,4 @@ export const WoundTracker = () => {
       </div>
     </div>
   );
-};
+}

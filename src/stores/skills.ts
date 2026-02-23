@@ -1,14 +1,16 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
-import { $INT } from "./stats";
+
+import { normalizeKey } from "@scripts/catalog-common";
+import type { SkillStat } from "@scripts/skills/catalog";
 import {
-  SKILL_CATALOG,
-  COMBAT_SKILLS_ORDER,
   AWARENESS_SKILL,
   COMBAT_SENSE_SKILL,
+  COMBAT_SKILLS_ORDER,
+  SKILL_CATALOG,
 } from "@scripts/skills/catalog";
-import type { SkillStat } from "@scripts/skills/catalog";
-import { normalizeKey } from "@scripts/catalog-common";
+
+import { $INT } from "./stats";
 
 export interface SkillEntry {
   stat: SkillStat;
@@ -41,7 +43,12 @@ function isValidNewFormat(data: unknown): data is SkillsState {
   for (const [, entry] of entries) {
     if (!entry || typeof entry !== "object") return false;
     const e = entry as Record<string, unknown>;
-    if (typeof e.stat !== "string" || typeof e.level !== "number" || typeof e.combat !== "boolean") return false;
+    if (
+      typeof e.stat !== "string" ||
+      typeof e.level !== "number" ||
+      typeof e.combat !== "boolean"
+    )
+      return false;
   }
   return true;
 }
@@ -84,7 +91,11 @@ export function setSkillLevel(name: string, level: number): void {
       const catalogDef = SKILL_CATALOG[name];
       $skills.set({
         ...current,
-        [name]: { stat: catalogDef.stat, level: clamped, combat: catalogDef.combat },
+        [name]: {
+          stat: catalogDef.stat,
+          level: clamped,
+          combat: catalogDef.combat,
+        },
       });
     } else {
       // Level 0 → remove from store (falls back to catalog default)
