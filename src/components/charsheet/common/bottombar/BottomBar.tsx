@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/preact";
+import { lazy, Suspense } from "preact/compat";
 import { useRef, useState } from "preact/hooks";
 
 import {
@@ -13,13 +14,33 @@ import {
   tabStore,
 } from "@stores/ui";
 
-import { BottomBarHistory } from "../../combat/BottomBarHistory";
-import { BottomBarSkills } from "../../dossier/BottomBarSkills";
-import { BottomBarArmor } from "../../equipment/BottomBarArmor";
-import { BottomBarEquipment } from "../../equipment/BottomBarEquipment";
-import { BottomBarWeapon } from "../../equipment/BottomBarWeapon";
-
 import { useAutoExpand } from "./useAutoExpand";
+
+const BottomBarHistory = lazy(() =>
+  import("../../combat/BottomBarHistory").then((m) => ({
+    default: m.BottomBarHistory,
+  })),
+);
+const BottomBarSkills = lazy(() =>
+  import("../../dossier/BottomBarSkills").then((m) => ({
+    default: m.BottomBarSkills,
+  })),
+);
+const BottomBarArmor = lazy(() =>
+  import("../../equipment/BottomBarArmor").then((m) => ({
+    default: m.BottomBarArmor,
+  })),
+);
+const BottomBarEquipment = lazy(() =>
+  import("../../equipment/BottomBarEquipment").then((m) => ({
+    default: m.BottomBarEquipment,
+  })),
+);
+const BottomBarWeapon = lazy(() =>
+  import("../../equipment/BottomBarWeapon").then((m) => ({
+    default: m.BottomBarWeapon,
+  })),
+);
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "combat"));
@@ -74,21 +95,23 @@ export const BottomBar = () => {
 
   return (
     <div class={`bottom-bar${expanded ? " expanded" : ""}`}>
-      {tab === "dossier" && (
-        <BottomBarSkills expanded={expanded} onToggle={toggle} />
-      )}
-      {tab === "combat" && (
-        <BottomBarHistory expanded={expanded} onToggle={toggle} />
-      )}
-      {tab === "equipment" && equipSubTab === "gear" && (
-        <BottomBarEquipment expanded={expanded} onToggle={toggle} />
-      )}
-      {tab === "equipment" && equipSubTab === "weapons" && (
-        <BottomBarWeapon expanded={expanded} onToggle={toggle} />
-      )}
-      {tab === "equipment" && equipSubTab === "armor" && (
-        <BottomBarArmor expanded={expanded} onToggle={toggle} />
-      )}
+      <Suspense fallback={null}>
+        {tab === "dossier" && (
+          <BottomBarSkills expanded={expanded} onToggle={toggle} />
+        )}
+        {tab === "combat" && (
+          <BottomBarHistory expanded={expanded} onToggle={toggle} />
+        )}
+        {tab === "equipment" && equipSubTab === "gear" && (
+          <BottomBarEquipment expanded={expanded} onToggle={toggle} />
+        )}
+        {tab === "equipment" && equipSubTab === "weapons" && (
+          <BottomBarWeapon expanded={expanded} onToggle={toggle} />
+        )}
+        {tab === "equipment" && equipSubTab === "armor" && (
+          <BottomBarArmor expanded={expanded} onToggle={toggle} />
+        )}
+      </Suspense>
     </div>
   );
 };
