@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/preact";
 
 import { $awareness } from "@stores/skills";
 
-export const AwarenessLine = () => {
+export default function AwarenessLine() {
   const aw = useStore($awareness);
 
   return (
@@ -31,4 +31,4 @@ export const AwarenessLine = () => {
       </span>
     </div>
   );
-};
+}

@@ -8,10 +8,7 @@ import type {
   WeaponTemplate,
   WeaponType,
 } from "@scripts/weapons/catalog";
-import {
-  CALIBER_DAMAGE,
-  skillForType,
-} from "@scripts/weapons/catalog";
+import { CALIBER_DAMAGE, skillForType } from "@scripts/weapons/catalog";
 import { $allSkills } from "@stores/skills";
 import { $addingWeapon, $selectedWeapon, selectWeapon } from "@stores/ui";
 import type { WeaponPiece } from "@stores/weapons";
@@ -40,7 +37,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
+export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   const weaponId = useStore($selectedWeapon);
   const adding = useStore($addingWeapon);
   const ownedWeapons = useStore($allOwnedWeapons);
@@ -372,4 +369,4 @@ export const BottomBarWeapon = ({ expanded, onToggle }: Props) => {
       {bodyContent}
     </BottomBarItemShell>
   );
-};
+}

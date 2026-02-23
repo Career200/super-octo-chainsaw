@@ -10,7 +10,7 @@ import { WoundHelpContent } from "./help/WoundHelpContent";
 import { StabilizedControl } from "./StabilizedControl";
 import { WoundLevelGroup } from "./WoundLevelGroup";
 
-export const WoundTracker = () => {
+export default function WoundTracker() {
   const health = useStore($health);
   const [showStun, setShowStun] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -76,4 +76,4 @@ export const WoundTracker = () => {
       </div>
     </div>
   );
-};
+}

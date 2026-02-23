@@ -36,7 +36,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
+export default function BottomBarArmor({ expanded, onToggle }: Props) {
   const armorId = useStore($selectedArmor);
   const adding = useStore($addingArmor);
   useStore($ownedArmor);
@@ -351,4 +351,4 @@ export const BottomBarArmor = ({ expanded, onToggle }: Props) => {
       {bodyContent}
     </BottomBarItemShell>
   );
-};
+}

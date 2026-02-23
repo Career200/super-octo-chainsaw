@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import { Suspense } from "preact/compat";
+import { lazy, Suspense } from "preact/compat";
 import { useRef, useState } from "preact/hooks";
 
 import {
@@ -14,30 +14,15 @@ import {
   tabStore,
 } from "@stores/ui";
 
-import { lazyNamed } from "../../shared";
-
 import { useAutoExpand } from "./useAutoExpand";
 
-const BottomBarHistory = lazyNamed(
-  () => import("../../combat/BottomBarHistory"),
-  "BottomBarHistory",
-);
-const BottomBarSkills = lazyNamed(
-  () => import("../../dossier/BottomBarSkills"),
-  "BottomBarSkills",
-);
-const BottomBarArmor = lazyNamed(
-  () => import("../../equipment/BottomBarArmor"),
-  "BottomBarArmor",
-);
-const BottomBarEquipment = lazyNamed(
+const BottomBarHistory = lazy(() => import("../../combat/BottomBarHistory"));
+const BottomBarSkills = lazy(() => import("../../dossier/BottomBarSkills"));
+const BottomBarArmor = lazy(() => import("../../equipment/BottomBarArmor"));
+const BottomBarEquipment = lazy(
   () => import("../../equipment/BottomBarEquipment"),
-  "BottomBarEquipment",
 );
-const BottomBarWeapon = lazyNamed(
-  () => import("../../equipment/BottomBarWeapon"),
-  "BottomBarWeapon",
-);
+const BottomBarWeapon = lazy(() => import("../../equipment/BottomBarWeapon"));
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "combat"));

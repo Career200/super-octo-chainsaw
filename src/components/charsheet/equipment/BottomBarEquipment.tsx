@@ -24,7 +24,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
+export default function BottomBarEquipment({ expanded, onToggle }: Props) {
   const gearId = useStore($selectedGear);
   const adding = useStore($addingGear);
   const ownedGear = useStore($ownedGear);
@@ -180,4 +180,4 @@ export const BottomBarEquipment = ({ expanded, onToggle }: Props) => {
       ) : null}
     </BottomBarItemShell>
   );
-};
+}

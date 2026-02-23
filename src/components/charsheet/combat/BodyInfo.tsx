@@ -6,7 +6,7 @@ import { HelpPopover } from "../shared/HelpPopover";
 
 import { BodyHelpContent } from "./help/BodyHelpContent";
 
-export const BodyInfo = () => {
+export default function BodyInfo() {
   const body = useStore($bodyType);
   const showDeathSave = body.deathSave !== null && !body.stabilized;
 
@@ -47,4 +47,4 @@ export const BodyInfo = () => {
       <HelpPopover id="body-help" content={<BodyHelpContent />} />
     </div>
   );
-};
+}

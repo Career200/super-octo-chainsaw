@@ -34,7 +34,7 @@ const StatChip = ({
   );
 };
 
-export const StatsStrip = () => {
+export default function StatsStrip() {
   return (
     <div class="stats-strip">
       <div class="stats-strip-row">
@@ -44,4 +44,4 @@ export const StatsStrip = () => {
       </div>
     </div>
   );
-};
+}

@@ -60,7 +60,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export const BottomBarHistory = ({ expanded, onToggle }: Props) => {
+export default function BottomBarHistory({ expanded, onToggle }: Props) {
   const history = useStore($damageHistory);
   const lastEntry = history[0];
 
@@ -106,4 +106,4 @@ export const BottomBarHistory = ({ expanded, onToggle }: Props) => {
       )}
     </>
   );
-};
+}

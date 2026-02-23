@@ -1,33 +1,21 @@
 import { useStore } from "@nanostores/preact";
-import { Suspense } from "preact/compat";
+import { lazy, Suspense } from "preact/compat";
 
 import { tabStore } from "@stores/ui";
 
 import { BottomBar } from "./common/bottombar/BottomBar";
-import { lazyNamed } from "./shared";
 import { TabStrip } from "./shared/TabStrip";
+
 // Fixed bar components (defer stats/health/skills/armor store chains)
-const WoundTracker = lazyNamed(
-  () => import("./combat/WoundTracker"),
-  "WoundTracker",
-);
-const StatsStrip = lazyNamed(() => import("./combat/StatsStrip"), "StatsStrip");
-const BodyInfo = lazyNamed(() => import("./combat/BodyInfo"), "BodyInfo");
-const AwarenessLine = lazyNamed(
-  () => import("./combat/AwarenessLine"),
-  "AwarenessLine",
-);
+const WoundTracker = lazy(() => import("./combat/WoundTracker"));
+const StatsStrip = lazy(() => import("./combat/StatsStrip"));
+const BodyInfo = lazy(() => import("./combat/BodyInfo"));
+const AwarenessLine = lazy(() => import("./combat/AwarenessLine"));
 
 // Views
-const CombatView = lazyNamed(() => import("./combat"), "CombatView");
-const DossierView = lazyNamed(
-  () => import("./dossier/DossierView"),
-  "DossierView",
-);
-const EquipmentView = lazyNamed(
-  () => import("./equipment/EquipmentView"),
-  "EquipmentView",
-);
+const CombatView = lazy(() => import("./combat/CombatView"));
+const DossierView = lazy(() => import("./dossier/DossierView"));
+const EquipmentView = lazy(() => import("./equipment/EquipmentView"));
 
 const SPA_TABS = [
   { id: "combat", label: "COMBAT" },

@@ -119,7 +119,7 @@ function SkillForm({
   );
 }
 
-export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
+export default function BottomBarSkills({ expanded, onToggle }: Props) {
   const skillName = useStore($selectedSkill);
   const adding = useStore($addingSkill);
   const allSkills = useStore($allSkills);
@@ -197,4 +197,4 @@ export const BottomBarSkills = ({ expanded, onToggle }: Props) => {
       ) : null}
     </BottomBarItemShell>
   );
-};
+}

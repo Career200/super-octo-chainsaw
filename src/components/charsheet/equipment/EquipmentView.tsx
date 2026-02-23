@@ -25,7 +25,7 @@ const EQUIPMENT_TABS = [
   { id: "armor", label: "Armor" },
 ];
 
-export const EquipmentView = () => {
+export default function EquipmentView() {
   const subTab = useStore(tabStore("equipment-sub-tab", "gear"));
   const selectedArmorId = useStore($selectedArmor);
   useStore($ownedArmor); // subscribe so hasWorn recalculates on armor changes
@@ -85,4 +85,4 @@ export const EquipmentView = () => {
       )}
     </>
   );
-};
+}
