@@ -1,40 +1,24 @@
-/* === Wound Tracker === */
-.wound-bar {
-  position: relative;
-  padding: var(--padding-bar);
-  display: flex;
-  align-items: start;
-  gap: var(--space-12);
+/* === Wound Column — sits inside defense panel flex layout === */
+.wound-column {
+  flex: 0 0 auto;
+  overflow-y: auto;
+  border-right: 1px solid var(--accent);
+  padding-right: var(--space-4);
 }
 
-.wound-bar-header {
+.wound-column-controls {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: var(--space-4);
-  flex-shrink: 0;
-}
-
-/* Stun Toggle Button - extends .btn-ghost */
-#stun-toggle {
-  padding: var(--padding-button);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-ui-sm);
-  white-space: nowrap;
-}
-
-#stun-toggle.active {
-  background: var(--accent-muted);
-  border-color: var(--accent-muted);
-  color: var(--fg);
+  margin-bottom: var(--space-8);
+  padding: 0 var(--space-4);
 }
 
 /* === Wound Tracker Container === */
 #wound-tracker {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: var(--space-1);
-  flex: 1;
-  min-width: 0;
 }
 
 #wound-tracker.show-stun .wound-track-stun {
@@ -42,36 +26,42 @@
   pointer-events: auto;
 }
 
+/* Each wound level: vertical stack (label on top, boxes below) */
 .wound-level-group {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-2);
-  padding: 0 var(--space-4);
-  border-right: 1px solid var(--accent);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .wound-level-group:last-child {
-  border-right: none;
+  border-bottom: none;
 }
 
 .wound-level-label {
-  font-size: var(--font-ui-xs);
+  font-size: var(--font-ui-sm);
   color: var(--fg-soft);
-  text-align: center;
   white-space: nowrap;
   line-height: 1;
+  cursor: pointer;
+}
+
+.wound-level-label:hover {
+  color: var(--fg);
 }
 
 .wound-boxes {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  width: 100%;
 }
 
 .wound-track {
   display: flex;
-  gap: var(--space-1);
+  justify-content: space-between;
 }
 
 .wound-box {
@@ -133,14 +123,36 @@
   color: var(--danger);
 }
 
-/* === Wound Bar Controls === */
-.wound-bar-controls {
+/* === Stun Control (checkbox style) === */
+.stun-control {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  align-items: center;
+  gap: var(--space-6);
+  cursor: pointer;
+}
+
+.stun-control .wound-box {
   flex-shrink: 0;
 }
 
+.stun-label {
+  font-size: var(--font-ui-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-soft);
+  transition: color 0.15s;
+}
+
+.stun-control.active .wound-box {
+  background: var(--accent-muted);
+  border-color: var(--accent-muted);
+}
+
+.stun-control.active .stun-label {
+  color: var(--accent-muted);
+}
+
+/* === Stabilized Control === */
 .stabilized-control {
   width: 72px;
   display: flex;
@@ -189,94 +201,59 @@
   opacity: 0.3;
 }
 
-/* === Wound count (collapsed summary) === */
-.wound-count {
-  font-size: var(--font-ui-sm);
+/* === Wound Indicator (compact header chip) === */
+.label-chip-danger {
   color: var(--danger);
 }
 
-/* === Collapse behavior === */
-.wound-bar {
-  cursor: pointer;
+.label-chip-danger .label-chip-value {
+  color: var(--danger);
 }
 
-.wound-collapsed #wound-tracker {
-  display: none;
-}
-
-.wound-collapsed .wound-bar-controls {
-  flex-direction: row;
+/* === Damage Info (BTM/Save/Death chips) === */
+.damage-info {
+  display: flex;
+  margin-right: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-4);
   align-items: center;
-  gap: var(--space-8);
 }
 
-.wound-collapse-chevron {
-  position: absolute;
-  top: var(--space-2);
-  right: var(--space-8);
-  color: var(--fg-soft);
-  text-shadow: var(--glow-green);
-  font-size: var(--font-ui-2xl);
-  line-height: 1;
+#combat-defense-panel .btn-outline-danger {
+  padding-inline: var(--space-8);
 }
 
-/* === Responsive: Mobile === */
-@media (max-width: 874px) {
-  /*  weird breakpoint but won't fit otherwise */
-  .wound-bar {
-    flex-wrap: wrap;
-    padding: var(--space-6) 10px;
-    gap: var(--space-6);
-  }
+/* === Defense Panel Layout === */
+#combat-defense-panel .panel-content {
+  overflow: hidden;
+}
 
-  .wound-bar-header {
-    width: 100%;
-    justify-content: space-between;
-    flex-direction: row;
-    align-items: center;
-  }
+#combat-defense-panel.expanded .panel-content {
+  display: flex;
+}
 
-  #wound-tracker {
+@media (min-width: 768px) {
+  #combat-defense-panel .panel-content {
     display: flex;
-    justify-content: safe center;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent-muted) transparent;
-    padding-bottom: var(--space-4);
   }
+}
 
-  #wound-tracker::-webkit-scrollbar {
-    height: var(--space-4);
-  }
+.defense-armor {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding-left: var(--space-4);
+}
 
-  #wound-tracker::-webkit-scrollbar-track {
-    background: transparent;
-  }
+/* Compact layers inside defense panel: row wrap, shrink to content */
+#combat-defense-panel .layer-list {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-top: var(--space-4);
+}
 
-  #wound-tracker::-webkit-scrollbar-thumb {
-    background: var(--accent-muted);
-    border-radius: var(--space-2);
-  }
-
-  .wound-level-group {
-    flex-shrink: 0;
-    padding: 0 var(--space-6);
-  }
-
-  .wound-box {
-    width: 18px;
-    height: 18px;
-  }
-
-  .wound-level-label {
-    font-size: var(--font-ui-sm);
-  }
-
-  .wound-bar-controls {
-    flex-direction: row;
-    gap: var(--space-12);
-    margin-right: 24px;
-  }
+#combat-defense-panel .layer-name {
+  gap: var(--space-16);
+  min-width: 100px;
 }

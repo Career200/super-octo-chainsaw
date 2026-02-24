@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/preact";
+import { useRef, useState } from "preact/hooks";
 
 import {
   $damageHistory,
@@ -8,6 +9,7 @@ import {
 } from "@stores/damage-history";
 
 import { Chevron } from "../shared/Chevron";
+import { ConfirmPopover } from "../shared/ConfirmPopover";
 
 import {
   DamageEntry,
@@ -63,6 +65,8 @@ interface Props {
 export default function BottomBarHistory({ expanded, onToggle }: Props) {
   const history = useStore($damageHistory);
   const lastEntry = history[0];
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const clearBtnRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
@@ -80,15 +84,31 @@ export default function BottomBarHistory({ expanded, onToggle }: Props) {
         </div>
         <div class="flex-between gap-8">
           {expanded && history.length > 0 && (
-            <button
-              class="btn-ghost-danger btn-sm"
-              onClick={(e: Event) => {
-                e.stopPropagation();
-                clearHistory();
-              }}
-            >
-              Clear
-            </button>
+            <>
+              <button
+                ref={clearBtnRef}
+                class="btn-ghost-danger btn-sm"
+                onClick={(e: Event) => {
+                  e.stopPropagation();
+                  setConfirmOpen(true);
+                }}
+              >
+                Clear
+              </button>
+              <ConfirmPopover
+                anchorRef={clearBtnRef}
+                open={confirmOpen}
+                message={`Clear ${history.length} entries?`}
+                confirmText="Clear"
+                cancelText="Keep"
+                type="danger"
+                onConfirm={() => {
+                  clearHistory();
+                  setConfirmOpen(false);
+                }}
+                onCancel={() => setConfirmOpen(false)}
+              />
+            </>
           )}
           <Chevron expanded={expanded} />
         </div>

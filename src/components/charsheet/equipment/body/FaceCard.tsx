@@ -74,6 +74,12 @@ export const FaceCard = ({ mode = "combat" }: Props) => {
       })),
   ];
 
+  const sorted = sortByLayerOrder(layers);
+  const faceplate = implants.filter((i) => i.layer === "faceplate");
+  const plating = implants.filter((i) => i.layer === "plating");
+  const skinweave = implants.filter((i) => isSkinweave(i));
+  const subdermal = implants.filter((i) => i.layer === "subdermal");
+
   const cls = [
     "body-part",
     inventory && "body-part-clickable",
@@ -88,105 +94,97 @@ export const FaceCard = ({ mode = "combat" }: Props) => {
       id="part-face"
       onClick={inventory ? handleClick : undefined}
     >
-      {!inventory && <HitPopover forPart="face">1 {">"} 1-4</HitPopover>}
-      <h3>
-        Face <br />
-        <span class="sp-value" id="sp-face">
-          {total}
-        </span>{" "}
-        <HelpPopover
-          id="face-help"
-          content={
-            <>
-              <h3>Face Protection</h3>
-              <section>
-                <h4>Targeting</h4>
+      <div class="body-part-header">
+        <h3>
+          Face{" "}
+          <span class="sp-total">{total}</span>{" "}
+          <HelpPopover
+            id="face-help"
+            content={
+              <>
+                <h3>Face Protection</h3>
+                <section>
+                  <h4>Targeting</h4>
+                  <p>
+                    On head hits, roll <strong>1d10</strong>: results{" "}
+                    <strong>1-4</strong> hit the face, <strong>5-10</strong> hit
+                    the head.
+                  </p>
+                </section>
+                <h4>Coverage</h4>
                 <p>
-                  On head hits, roll <strong>1d10</strong>: results{" "}
-                  <strong>1-4</strong> hit the face, <strong>5-10</strong> hit
-                  the head.
+                  Hard helmets protect face at <strong>half SP</strong>.
+                  Faceplate and SkinWeave provide full SP.
                 </p>
-              </section>
-              <h4>Coverage</h4>
-              <p>
-                Hard helmets protect face at <strong>half SP</strong>. Faceplate
-                and SkinWeave provide full SP.
-              </p>
-              {sources.length > 0 ? (
-                <ul>
-                  {sources.map((s) => (
-                    <li key={s.name}>
-                      {s.name}: {s.sp}/{s.max}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>
-                  <em>No face protection equipped.</em>
-                </p>
-              )}
-            </>
-          }
-        />
-      </h3>
-      {inventory &&
-        (() => {
-          const sorted = sortByLayerOrder(layers);
-          const faceplate = implants.filter((i) => i.layer === "faceplate");
-          const plating = implants.filter((i) => i.layer === "plating");
-          const skinweave = implants.filter((i) => isSkinweave(i));
-          const subdermal = implants.filter((i) => i.layer === "subdermal");
-          return (
-            <div class="layer-list" id="layers-face">
-              {sorted.map((layer) => (
-                <LayerBar
-                  key={layer.id}
-                  name={layer.shortName ?? layer.name}
-                  currentSP={layer.spCurrent}
-                  maxSP={getPartSpMax(layer, "face")}
-                  onClick={() => handleLayerClick(layer.id)}
-                  active={selectedArmorId === layer.id}
-                />
-              ))}
-              {faceplate.map((impl) => (
-                <LayerBar
-                  key={impl.id}
-                  name={impl.shortName ?? impl.name}
-                  currentSP={impl.spByPart.face ?? 0}
-                  maxSP={getPartSpMax(impl, "face")}
-                  className="layer-cyber"
-                />
-              ))}
-              {plating.map((impl) => (
-                <LayerBar
-                  key={impl.id}
-                  name={impl.shortName ?? impl.name}
-                  currentSP={impl.spByPart.face ?? 0}
-                  maxSP={getPartSpMax(impl, "face")}
-                  className="layer-cyber"
-                />
-              ))}
-              {skinweave.map((impl) => (
-                <LayerBar
-                  key={impl.id}
-                  name={impl.shortName ?? impl.name}
-                  currentSP={impl.spByPart.face ?? 0}
-                  maxSP={getPartSpMax(impl, "face")}
-                  className="layer-cyber"
-                />
-              ))}
-              {subdermal.map((impl) => (
-                <LayerBar
-                  key={impl.id}
-                  name={impl.shortName ?? impl.name}
-                  currentSP={impl.spByPart.face ?? 0}
-                  maxSP={getPartSpMax(impl, "face")}
-                  className="layer-cyber"
-                />
-              ))}
-            </div>
-          );
-        })()}
+                {sources.length > 0 ? (
+                  <ul>
+                    {sources.map((s) => (
+                      <li key={s.name}>
+                        {s.name}: {s.sp}/{s.max}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>
+                    <em>No face protection equipped.</em>
+                  </p>
+                )}
+              </>
+            }
+          />
+        </h3>
+        {!inventory && (
+          <HitPopover forPart="face">1 {">"} 1-4</HitPopover>
+        )}
+      </div>
+      <div class="layer-list" id="layers-face">
+        {sorted.map((layer) => (
+          <LayerBar
+            key={layer.id}
+            name={layer.shortName ?? layer.name}
+            currentSP={layer.spCurrent}
+            maxSP={getPartSpMax(layer, "face")}
+            onClick={inventory ? () => handleLayerClick(layer.id) : undefined}
+            active={inventory && selectedArmorId === layer.id}
+          />
+        ))}
+        {faceplate.map((impl) => (
+          <LayerBar
+            key={impl.id}
+            name={impl.shortName ?? impl.name}
+            currentSP={impl.spByPart.face ?? 0}
+            maxSP={getPartSpMax(impl, "face")}
+            className="layer-cyber"
+          />
+        ))}
+        {plating.map((impl) => (
+          <LayerBar
+            key={impl.id}
+            name={impl.shortName ?? impl.name}
+            currentSP={impl.spByPart.face ?? 0}
+            maxSP={getPartSpMax(impl, "face")}
+            className="layer-cyber"
+          />
+        ))}
+        {skinweave.map((impl) => (
+          <LayerBar
+            key={impl.id}
+            name={impl.shortName ?? impl.name}
+            currentSP={impl.spByPart.face ?? 0}
+            maxSP={getPartSpMax(impl, "face")}
+            className="layer-cyber"
+          />
+        ))}
+        {subdermal.map((impl) => (
+          <LayerBar
+            key={impl.id}
+            name={impl.shortName ?? impl.name}
+            currentSP={impl.spByPart.face ?? 0}
+            maxSP={getPartSpMax(impl, "face")}
+            className="layer-cyber"
+          />
+        ))}
+      </div>
     </div>
   );
 };

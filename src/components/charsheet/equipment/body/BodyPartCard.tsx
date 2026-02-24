@@ -87,10 +87,12 @@ export const BodyPartCard = ({ part, mode = "combat" }: Props) => {
       id={`part-${part}`}
       onClick={inventory ? handlePartClick : undefined}
     >
-      {!inventory && <HitPopover forPart={part}>{HIT_ROLL[part]}</HitPopover>}
-      <h3>
-        {PART_NAMES[part]} <span class="sp-total">{total}</span>
-      </h3>
+      <div class="body-part-header">
+        <h3>
+          {PART_NAMES[part]} <span class="sp-total">{total}</span>
+        </h3>
+        {!inventory && <HitPopover forPart={part}>{HIT_ROLL[part]}</HitPopover>}
+      </div>
       <div class="layer-list" id={`layers-${part}`}>
         {sorted.map((layer) => (
           <LayerBar

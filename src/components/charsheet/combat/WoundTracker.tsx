@@ -4,16 +4,12 @@ import { useEffect, useState } from "preact/hooks";
 import { WOUND_LEVELS } from "@scripts/combat/types";
 import { $health, syncStunToPhysical } from "@stores/health";
 
-import { HelpPopover } from "../shared/HelpPopover";
-
-import { WoundHelpContent } from "./help/WoundHelpContent";
 import { StabilizedControl } from "./StabilizedControl";
 import { WoundLevelGroup } from "./WoundLevelGroup";
 
 export default function WoundTracker() {
   const health = useStore($health);
   const [showStun, setShowStun] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     if (health.stun !== health.physical) {
@@ -29,38 +25,17 @@ export default function WoundTracker() {
     }
   };
 
-  const handleBarClick = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (
-      target.closest(
-        "button, a, input, [popover], .help-trigger, [role=checkbox], .stabilized-label",
-      )
-    )
-      return;
-    setCollapsed(!collapsed);
-  };
-
   return (
-    <div
-      class={`wound-bar${collapsed ? " wound-collapsed" : ""}`}
-      onClick={handleBarClick}
-    >
-      <div class="wound-bar-header">
-        <span class="title text-sm">
-          Wounds <HelpPopover id="wound-help" content={<WoundHelpContent />} />
-        </span>
-        <div class="wound-bar-controls">
-          <button
-            class={`btn-ghost ${showStun ? "active" : ""}`}
-            onClick={handleStunToggle}
-          >
-            Stun
-          </button>
-          <StabilizedControl />
-          <span class="wound-collapse-chevron">
-            {collapsed ? "\u25BE" : "\u25B4"}
-          </span>
+    <div class="wound-column">
+      <div class="wound-column-controls">
+        <div
+          class={`stun-control${showStun ? " active" : ""}`}
+          onClick={handleStunToggle}
+        >
+          <div class={`wound-box${showStun ? " filled" : ""}`} role="checkbox" />
+          <span class="stun-label">Stun</span>
         </div>
+        <StabilizedControl />
       </div>
       <div id="wound-tracker" class={showStun ? "show-stun" : ""}>
         {WOUND_LEVELS.map((level, index) => (

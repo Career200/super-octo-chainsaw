@@ -114,6 +114,7 @@
 
 .panel-heading h2 {
   flex: 1;
+  margin: var(--space-4) var(--space-8);
 }
 
 /* === Shared collapse chevron (▾/▴) === */
@@ -183,7 +184,7 @@
 }
 
 /* === Bottom Bar (collapsible shell) === */
-/* Fixed heights: collapsed = just the header row, expanded = 240px.
+/* Collapsed = just the header row, expanded = content-driven up to 320px.
    Content fills via flex, overflows independently of tab. */
 .bottom-bar {
   flex-shrink: 0;
@@ -197,7 +198,8 @@
 }
 
 .bottom-bar.expanded {
-  height: 240px;
+  height: auto;
+  max-height: 360px;
   border-top: 1px solid var(--accent);
 }
 
@@ -221,6 +223,12 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  padding-bottom: 48px;
+}
+
+/* Forms need a definite height for textarea flex:1 to expand into */
+.bottom-bar-body:has(.item-form) {
+  min-height: 316px;
   padding-bottom: var(--space-8);
 }
 
