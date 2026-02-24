@@ -28,7 +28,16 @@ interface Props {
   skillLevel: number;
   skillName: string;
 }
+const flashClasses = [
+  "cc-flash-1",
+  "cc-flash-3",
+  "cc-flash-5",
+  "cc-flash-reload",
+];
 
+/**
+ * Potentially we can generate and write to history
+ */
 export const WeaponCombatCard = ({
   weapon,
   refCurrent,
@@ -51,17 +60,37 @@ export const WeaponCombatCard = ({
     setAmmoOpen(false);
   };
 
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const flash = (cls: string) => {
+    const el = cardRef.current;
+    if (!el) return;
+    el.classList.remove(...flashClasses);
+    void el.offsetWidth; // restart animation if fired again quickly
+    el.classList.add(cls);
+  };
+
   const handleReload = () => {
     reloadWeapon(weapon.id);
     setAmmoOpen(false);
+    flash("cc-flash-reload");
   };
 
   const handleFire = (shots: number) => {
     fireWeapon(weapon.id, shots);
+    flash(
+      shots === 1 ? "cc-flash-1" : shots <= 3 ? "cc-flash-3" : "cc-flash-5",
+    );
   };
 
   return (
-    <div class="combat-card">
+    <div
+      ref={cardRef}
+      class="combat-card"
+      onAnimationEnd={() => {
+        cardRef.current?.classList.remove(...flashClasses);
+      }}
+    >
       {/* Header: name + ammo */}
       <div class="cc-header">
         <div class="cc-name">
@@ -128,7 +157,10 @@ export const WeaponCombatCard = ({
         <div class="cc-fire">
           {weapon.currentAmmo > 0 ? (
             <>
-              <button class="btn-ghost cc-fire-btn" onClick={() => handleFire(1)}>
+              <button
+                class="btn-ghost cc-fire-btn"
+                onClick={() => handleFire(1)}
+              >
                 Fire 1
               </button>
               {weapon.rof >= 3 && (

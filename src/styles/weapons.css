@@ -100,9 +100,52 @@
 }
 
 .combat-card {
+  position: relative;
   background: var(--code-bg);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
+}
+
+/* Fire-flash glow */
+.combat-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    0 0 8px 2px var(--accent),
+    inset 0 0 4px 1px var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.combat-card.cc-flash-1::after {
+  will-change: opacity;
+  animation: cc-flash 0.4s ease-out;
+}
+
+.combat-card.cc-flash-3::after {
+  will-change: opacity;
+  animation: cc-flash 0.16s ease-out 3;
+}
+
+.combat-card.cc-flash-5::after {
+  will-change: opacity;
+  animation: cc-flash 0.12s ease-out 5;
+}
+
+.combat-card.cc-flash-reload::after {
+  will-change: opacity;
+  animation: cc-flash 0.35s ease-out 3;
+}
+
+@keyframes cc-flash {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* --- Header: name + ammo --- */
