@@ -114,6 +114,7 @@
 
 .panel-heading h2 {
   flex: 1;
+  margin: var(--space-4) var(--space-8);
 }
 
 /* === Shared collapse chevron (▾/▴) === */

@@ -1,7 +1,7 @@
 /* === Equipment Sub-tabs === */
 .equipment-sub-tabs {
   flex: 0 0 auto;
-  padding: var(--space-4) var(--content-inset);
+  padding: var(--space-4) var(--content-inset) 0;
 }
 
 /* === Gear Grid === */
@@ -120,5 +120,3 @@
 .gear-add-btn:hover {
   background: var(--accent-subtle);
 }
-
-
