@@ -9,7 +9,6 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: auto 1fr auto auto;
   gap: var(--space-12);
-  margin-top: 10px;
 }
 
 /* === Display Boxes (use .display-box utility) === */
@@ -247,7 +246,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  margin-top: var(--space-8);
 }
 
 .body-grid-combat .body-part {
