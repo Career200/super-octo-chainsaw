@@ -19,6 +19,8 @@ import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 import { Tip } from "../shared";
 import { ItemForm } from "../shared/ItemForm";
 
+import { GearDetail } from "./GearDetail";
+
 interface Props {
   expanded: boolean;
   onToggle: () => void;
@@ -40,6 +42,11 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
 
   const isCustom = gearId ? isCustomGear(gearId) : false;
   const hasCustomDef = gearId ? gearId in customDefs : false;
+  const isOwned = !!resolved && ownedGear.some((i) => i.templateId === gearId);
+
+  // Edit-in-place for owned custom items (auto-resets on selection change)
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const editing = isOwned && isCustom && hasCustomDef && editingId === gearId;
 
   // Add-mode form state
   const [newName, setNewName] = useState("");
@@ -116,6 +123,19 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
       isCustom={isCustom}
       removeName={resolved?.name}
       onRemove={handleRemove}
+      headerActions={
+        isOwned && isCustom && hasCustomDef ? (
+          <button
+            class="bar-action"
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingId(editing ? null : gearId);
+            }}
+          >
+            {editing ? "Done" : "Edit"}
+          </button>
+        ) : null
+      }
     >
       {adding ? (
         <ItemForm
@@ -132,51 +152,37 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
         >
           {typeField(newType, setNewType)}
         </ItemForm>
-      ) : resolved ? (
+      ) : resolved && isCustom && hasCustomDef && (!isOwned || editing) ? (
         <ItemForm
           disabled
           name={resolved.name}
-          onNameChange={
-            isCustom && hasCustomDef
-              ? (v) => {
-                  if (renameCustomGear(gearId!, v)) selectGear(v);
-                }
-              : undefined
-          }
+          onNameChange={(v) => {
+            if (renameCustomGear(gearId!, v)) selectGear(v);
+          }}
           description={resolved.description}
-          onDescriptionChange={
-            isCustom && hasCustomDef
-              ? (v) => updateCustomGear(gearId!, { description: v })
-              : undefined
+          onDescriptionChange={(v) =>
+            updateCustomGear(gearId!, { description: v })
           }
           cost={resolved.cost != null ? String(resolved.cost) : ""}
-          onCostChange={
-            isCustom && hasCustomDef
-              ? (v) => {
-                  const n = v ? Number(v) : undefined;
-                  updateCustomGear(gearId!, {
-                    cost: n != null && !isNaN(n) ? n : undefined,
-                  });
-                }
-              : undefined
-          }
+          onCostChange={(v) => {
+            const n = v ? Number(v) : undefined;
+            updateCustomGear(gearId!, {
+              cost: n != null && !isNaN(n) ? n : undefined,
+            });
+          }}
           availability={resolved.availability ?? ""}
-          onAvailabilityChange={
-            isCustom && hasCustomDef
-              ? (v) =>
-                  updateCustomGear(gearId!, {
-                    availability: (v as Availability) || undefined,
-                  })
-              : undefined
+          onAvailabilityChange={(v) =>
+            updateCustomGear(gearId!, {
+              availability: (v as Availability) || undefined,
+            })
           }
         >
-          {typeField(
-            resolved.type,
-            isCustom && hasCustomDef
-              ? (v) => updateCustomGear(gearId!, { type: v })
-              : undefined,
+          {typeField(resolved.type, (v) =>
+            updateCustomGear(gearId!, { type: v }),
           )}
         </ItemForm>
+      ) : resolved ? (
+        <GearDetail item={resolved} />
       ) : null}
     </BottomBarItemShell>
   );
