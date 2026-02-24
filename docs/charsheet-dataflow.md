@@ -5,16 +5,16 @@
                         ══════                                    ══════════
 
                    ┌─────────────┐
-                   │   $health   │─────────────────────┬──▸ WoundTracker ◂──▸ WoundBox
-                   │  (persist)  │                     │    StabilizedControl, HitPopover ◂──▸
-                   └──────┬──────┘                     │
+                   │   $health   │─────────────────────┬──▸ WoundIndicator (header chip)
+                   │  (persist)  │                     │    WoundTracker ◂──▸ WoundBox (DefensePanel)
+                   └──────┬──────┘                     │    StabilizedControl, HitPopover ◂──▸
                           │ wound penalties            │
                           ▾                            │
 ┌──────────┐    ┌─────────────────┐                    │
 │  $stats  │───▸│  $REF $INT $CL  │                    │
 │ (persist)│    │  $TECH $MA      │───────────────────┼──▸ StatsPanel (via StatColumnWrapper)
 │          │───▸│  $LK $ATT $EMP  │                    │
-│          │───▸│  $BT ──▸ $body  │───────────────────┼──▸ BodyInfo, HitPopover (reads BTM)
+│          │───▸│  $BT ──▸ $body  │───────────────────┼──▸ BodyInfo (name/carry/lift), DamageInfo (BTM/Save)
 └──────────┘    │         Type    │                    │    StatColumn ◂──▸ (mutates $stats)
                 └────────▲────────┘                    │
                          │ EV penalty (REF only)       │
@@ -113,8 +113,11 @@
                └────────────────────┘
                 Depends on: $INT, $allSkills
 
-                                    StatsStrip ──▸ reads all 9 computed stat stores
+                                    StatsStrip ──▸ reads all 9 computed stat stores (incl. BT)
                                     (compact strip in header, chips only)
+
+                                    DefensePanel ──▸ WoundTracker + DamageInfo + BodyPartGrid(combat)
+                                    (wound column left, armor list right)
 
                ┌────────────────────┐
                │   $selectedSkill  │─────────────────────▸ BottomBarSkills (dossier bottom bar)

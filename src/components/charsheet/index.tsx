@@ -8,7 +8,7 @@ import { BottomBar } from "./common/bottombar/BottomBar";
 import { TabStrip } from "./shared/TabStrip";
 
 // Fixed bar components (defer stats/health/skills/armor store chains)
-const WoundTracker = lazy(() => import("./combat/WoundTracker"));
+const WoundIndicator = lazy(() => import("./combat/WoundIndicator"));
 const StatsStrip = lazy(() => import("./combat/StatsStrip"));
 const BodyInfo = lazy(() => import("./combat/BodyInfo"));
 const AwarenessLine = lazy(() => import("./combat/AwarenessLine"));
@@ -45,10 +45,10 @@ export const Charsheet = () => {
     <div class={spaClass}>
       <div class="fixed-bar">
         <Suspense fallback={<div class="bar-loading" />}>
-          <WoundTracker />
-          <div class="secondary-bar flex-between">
-            <StatsStrip />
+          <div class="secondary-bar">
             <BodyInfo />
+            <WoundIndicator />
+            <StatsStrip />
           </div>
         </Suspense>
         <div class="tab-row">

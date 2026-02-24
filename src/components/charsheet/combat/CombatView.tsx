@@ -1,14 +1,14 @@
 import { Panel } from "../shared";
 import { TwoPanelView } from "../shared/TwoPanelView";
 
-import { CharacterArmorPanel } from "./CharacterArmorPanel";
 import { CombatPanel } from "./CombatPanel";
+import DefensePanel from "./DefensePanel";
 
 export default function CombatView() {
   return (
     <TwoPanelView
       renderFirst={(expanded, onToggle) => (
-        <CharacterArmorPanel expanded={expanded} onToggle={onToggle} />
+        <DefensePanel expanded={expanded} onToggle={onToggle} />
       )}
       renderSecond={(expanded, onToggle) => (
         <Panel

@@ -66,40 +66,43 @@
 
 /* === Body Parts === */
 .body-part {
-  position: relative;
   padding: 10px;
   margin-bottom: 0;
 }
 
-/* Hit location badge — extends .btn-ghost */
+/* Body-part header: title + SP + hit badge in one flex row */
+.body-part-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-6);
+}
+
+.body-part-header h3 {
+  margin: 0;
+  font-size: var(--font-ui-xl);
+  color: var(--accent);
+}
+
+.body-part-header h3 .sp-total {
+  color: var(--footer);
+}
+
+/* Hit location badge — extends .btn-ghost, inline in header row */
 .hit-badge.btn-ghost {
-  position: absolute;
-  top: var(--space-8);
-  right: var(--space-8);
   padding: 1px 5px;
   font-size: var(--font-ui-m);
   font-weight: bold;
   border-radius: var(--radius-sm);
-  z-index: 1;
   border-color: var(--danger);
   color: var(--danger);
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .hit-badge.btn-ghost:hover:not(:disabled) {
   background: var(--danger);
   border-color: var(--danger);
   color: #fff;
-}
-
-.body-part h3 {
-  margin: 0;
-  padding-right: 40px;
-  font-size: var(--font-ui-xl);
-  color: var(--accent);
-}
-
-.body-part h3 .sp-total {
-  color: var(--footer);
 }
 
 #part-head {
@@ -239,6 +242,22 @@
   color: var(--footer);
 }
 
+/* === Combat mode: vertical body-part list, layers wrap within each part === */
+.body-grid-combat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.body-grid-combat .body-part {
+  padding: var(--space-4) var(--space-6);
+}
+
+.body-grid-combat .body-part-header h3 {
+  font-size: var(--font-ui-lg);
+}
+
 /* === Mobile adjustments === */
 @media (max-width: 767px) {
   .body-grid {
@@ -249,8 +268,7 @@
     padding: var(--space-6);
   }
 
-  .body-part h3 {
+  .body-part-header h3 {
     font-size: var(--font-ui-lg);
-    padding-right: 0;
   }
 }

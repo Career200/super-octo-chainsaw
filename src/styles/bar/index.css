@@ -9,16 +9,18 @@
   padding-inline: var(--content-inset);
 }
 
-/* Reserve space for lazy wound-bar + secondary-bar so tab-row doesn't jump */
+/* Reserve space for lazy secondary-bar so tab-row doesn't jump */
 .bar-loading {
-  height: 93px;
+  height: 36px;
 }
 
-/* === Secondary Bar (below wounds) === */
+/* === Secondary Bar (body info + wound indicator + stats strip) === */
 .secondary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
   padding: var(--space-6) var(--padding-bar);
-  border-top: 1px solid var(--border);
-  align-items: stretch;
 }
 
 /* === Tab Row (tabs + awareness) === */
@@ -48,15 +50,12 @@
 
 /* === Responsive === */
 @media (max-width: 767px) {
-  .tab-row {
-    flex-wrap: wrap-reverse;
-  }
-}
-
-@media (max-width: 767px) {
   .secondary-bar {
     flex-wrap: wrap;
     padding: var(--space-4) 10px;
-    gap: var(--space-8);
+  }
+
+  .tab-row {
+    flex-wrap: wrap-reverse;
   }
 }

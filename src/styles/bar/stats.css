@@ -74,7 +74,6 @@
 
 /* === Stats Strip === */
 .stats-strip {
-  flex: 1;
   min-width: 0;
 }
 
@@ -259,9 +258,12 @@
 
 /* === Responsive === */
 @media (max-width: 767px) {
-  .stats-strip-row,
-  .body-info {
-    width: 100%;
+  .stats-strip {
+    flex-basis: 100%;
+  }
+
+  .stats-strip-row {
+    justify-content: space-around;
     gap: var(--space-2);
   }
 
@@ -269,10 +271,6 @@
   .body-info .label-chip {
     padding: var(--space-2) var(--space-4);
     gap: var(--space-2);
-  }
-
-  .stats-strip {
-    width: 100%;
   }
 
   .body-info .help-trigger {

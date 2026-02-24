@@ -197,7 +197,7 @@
 }
 
 .bottom-bar.expanded {
-  height: 240px;
+  height: 320px;
   border-top: 1px solid var(--accent);
 }
 

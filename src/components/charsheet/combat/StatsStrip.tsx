@@ -1,7 +1,17 @@
 import { useStore } from "@nanostores/preact";
 
 import type { StatValues } from "@scripts/combat/types";
-import { $ATT, $CL, $EMP, $INT, $LK, $MA, $REF, $TECH } from "@stores/stats";
+import {
+  $ATT,
+  $BT,
+  $CL,
+  $EMP,
+  $INT,
+  $LK,
+  $MA,
+  $REF,
+  $TECH,
+} from "@stores/stats";
 
 const STRIP_STATS = [
   { key: "ref", label: "REF", $store: $REF },
@@ -12,6 +22,7 @@ const STRIP_STATS = [
   { key: "att", label: "ATT", $store: $ATT },
   { key: "ma", label: "MA", $store: $MA },
   { key: "emp", label: "EMP", $store: $EMP },
+  { key: "bt", label: "BT", $store: $BT },
 ] as const;
 
 const StatChip = ({
