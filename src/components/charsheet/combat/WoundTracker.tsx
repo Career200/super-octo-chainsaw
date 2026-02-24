@@ -4,6 +4,9 @@ import { useEffect, useState } from "preact/hooks";
 import { WOUND_LEVELS } from "@scripts/combat/types";
 import { $health, syncStunToPhysical } from "@stores/health";
 
+import { HelpPopover } from "../shared/HelpPopover";
+
+import { WoundHelpContent } from "./help/WoundHelpContent";
 import { StabilizedControl } from "./StabilizedControl";
 import { WoundLevelGroup } from "./WoundLevelGroup";
 
@@ -27,12 +30,19 @@ export default function WoundTracker() {
 
   return (
     <div class="wound-column">
+      <div class="panel-sub-heading">
+        <span class="panel-sub-heading-title">Wounds</span>
+        <HelpPopover id="wound-help" content={<WoundHelpContent />} />
+      </div>
       <div class="wound-column-controls">
         <div
           class={`stun-control${showStun ? " active" : ""}`}
           onClick={handleStunToggle}
         >
-          <div class={`wound-box${showStun ? " filled" : ""}`} role="checkbox" />
+          <div
+            class={`wound-box${showStun ? " filled" : ""}`}
+            role="checkbox"
+          />
           <span class="stun-label">Stun</span>
         </div>
         <StabilizedControl />

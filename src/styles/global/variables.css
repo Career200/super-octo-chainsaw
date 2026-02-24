@@ -36,6 +36,7 @@
 
   /* Status colors */
   --warning: #ca4;
+  --warning-hot: #d84;
   --danger: #c44;
   --danger-hover: #e55;
   --danger-subtle: rgba(204, 68, 68, 0.1);

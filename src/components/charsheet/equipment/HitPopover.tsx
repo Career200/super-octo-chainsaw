@@ -95,7 +95,7 @@ export const HitPopover = ({ forPart, children }: Props) => {
     <>
       <button
         ref={triggerRef}
-        class={forPart ? "btn-ghost hit-badge" : "btn-outline-danger btn-md"}
+        class="btn-ghost hit-badge"
         onClick={(e: Event) => {
           e.stopPropagation();
           setIsOpen(true);

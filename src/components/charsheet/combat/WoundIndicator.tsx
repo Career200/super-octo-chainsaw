@@ -10,11 +10,18 @@ export default function WoundIndicator() {
 
   if (!level) return null;
 
-  const isMortal = level.startsWith("mortal");
   const name = WOUND_LEVEL_NAMES[level];
 
+  const colorClass = level.startsWith("mortal")
+    ? " label-chip-danger"
+    : level === "critical"
+      ? " label-chip-critical"
+      : level === "serious"
+        ? " label-chip-warning"
+        : "";
+
   return (
-    <span class={`label-chip${isMortal ? " label-chip-danger" : ""}`}>
+    <span class={`label-chip${colorClass}`}>
       <span class="label-chip-label">Wounds</span>
       <span class="label-chip-value">{health.physical}</span>
       <span class="label-chip-label">({name})</span>

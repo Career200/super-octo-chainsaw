@@ -6,6 +6,7 @@
   padding-right: var(--space-4);
 }
 
+
 .wound-column-controls {
   display: flex;
   flex-direction: column;
@@ -202,6 +203,22 @@
 }
 
 /* === Wound Indicator (compact header chip) === */
+.label-chip-warning {
+  color: var(--warning);
+}
+
+.label-chip-warning .label-chip-value {
+  color: var(--warning);
+}
+
+.label-chip-critical {
+  color: var(--warning-hot);
+}
+
+.label-chip-critical .label-chip-value {
+  color: var(--warning-hot);
+}
+
 .label-chip-danger {
   color: var(--danger);
 }
@@ -219,8 +236,8 @@
   align-items: center;
 }
 
-#combat-defense-panel .btn-outline-danger {
-  padding-inline: var(--space-8);
+.panel-sub-heading .hit-badge {
+  margin-left: auto;
 }
 
 /* === Defense Panel Layout === */

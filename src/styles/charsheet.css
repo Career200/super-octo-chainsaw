@@ -112,6 +112,23 @@
   border-bottom: 1px solid var(--border-light);
 }
 
+/* Sub-headings inside panel content (e.g. "Wounds", "Body Armor") */
+.panel-sub-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: 0 var(--space-4);
+  margin-bottom: var(--space-4);
+  height: 24px;
+}
+
+.panel-sub-heading-title {
+  font-size: var(--font-ui-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg);
+}
+
 .panel-heading h2 {
   flex: 1;
   margin: var(--space-4) var(--space-8);
