@@ -89,7 +89,7 @@ export const BodyPartCard = ({ part, mode = "combat" }: Props) => {
     >
       <div class="body-part-header">
         <h3>
-          {PART_NAMES[part]} <span class="sp-total">{total}</span>
+          {PART_NAMES[part]} <span class="sp-total">SP: {total}</span>
         </h3>
         {!inventory && <HitPopover forPart={part}>{HIT_ROLL[part]}</HitPopover>}
       </div>

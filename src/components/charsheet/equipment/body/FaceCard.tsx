@@ -96,8 +96,7 @@ export const FaceCard = ({ mode = "combat" }: Props) => {
     >
       <div class="body-part-header">
         <h3>
-          Face{" "}
-          <span class="sp-total">{total}</span>{" "}
+          Face <span class="sp-total">SP: {total}</span>{" "}
           <HelpPopover
             id="face-help"
             content={
@@ -133,9 +132,7 @@ export const FaceCard = ({ mode = "combat" }: Props) => {
             }
           />
         </h3>
-        {!inventory && (
-          <HitPopover forPart="face">1 {">"} 1-4</HitPopover>
-        )}
+        {!inventory && <HitPopover forPart="face">1 {">"} 1-4</HitPopover>}
       </div>
       <div class="layer-list" id="layers-face">
         {sorted.map((layer) => (

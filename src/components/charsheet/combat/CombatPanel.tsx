@@ -14,7 +14,7 @@ export const CombatPanel = () => {
   if (weapons.length === 0) {
     return (
       <p class="combat-empty">
-        No weapons. Acquire some in the Equipment tab.
+        No weapons. Add some in the Equipment tab.
       </p>
     );
   }
