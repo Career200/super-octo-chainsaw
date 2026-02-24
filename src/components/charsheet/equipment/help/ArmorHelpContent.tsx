@@ -10,21 +10,17 @@ export const ArmorHelpContent = () => {
           If damage is less than your SP, you walk away clean.
         </p>
       </section>
-      <blockquote>
-        "Rated SP20. You can walk through fire. Just like the holos, choomba..."
-        <cite>— Unidentified Fixer, 2015</cite>
-      </blockquote>
-      <section>
-        <h4>Hard vs Soft Armor</h4>
+      <details>
+        <summary>Hard vs Soft Armor</summary>
         <p>
           Armor is classified as <strong>hard</strong>{" "}
           (metal/ceramic/composite) or <strong>soft</strong> (ballistic fabric)
           — affecting layering rules, degradation rates, and how certain weapons
           interact with it.
         </p>
-      </section>
-      <section>
-        <h4>Layered Protection</h4>
+      </details>
+      <details>
+        <summary>Layered Protection</summary>
         <p>
           Multiple armor layers combine using <strong>proportional SP</strong> —
           the strongest layer provides full protection, weaker layers add a bonus
@@ -35,9 +31,9 @@ export const ArmorHelpContent = () => {
           extra bulk and heat, that is reflected in Encumbrance Value (EV) -
           which will be deducted from your REF stat.
         </p>
-      </section>
-      <section>
-        <h4>Taking Hits</h4>
+      </details>
+      <details>
+        <summary>Taking Hits</summary>
         <p>
           When damage exceeds your effective SP, it{" "}
           <strong>penetrates</strong>. All layers take 1 SP damage. The{" "}
@@ -46,34 +42,39 @@ export const ArmorHelpContent = () => {
           <strong>Soft</strong> armor: +1 per 5 over. <strong>Hard</strong>{" "}
           armor: +1 per 6 over.
         </p>
-      </section>
-      <section>
-        <h4>Layer Rotation</h4>
+      </details>
+      <details>
+        <summary>Layer Rotation</summary>
         <p>
           As your top layer shreds, another becomes your primary protection.
           Your backup armor <strong>takes point</strong>, spreading wear across
           your gear.
         </p>
-      </section>
-      <section>
-        <h4>Implanted armor</h4>
+      </details>
+      <details>
+        <summary>Implanted Armor</summary>
         <p>
           Implanted armor provides a baseline protection that's always active.
           It follows the same proportional SP armor rules, but cannot be removed.
-          There are three types of implanted armor:{" "}
-          <strong>SkinWeave</strong> - a biotech mod, the result of hard work of
-          thousands of nanomachines weaving protective fibers into your skin.{" "}
-          <strong>Subdermal Armor</strong> - a mesh/ballistic plastic plates,
-          surgically implanted into the torso.{" "}
-          <strong>Body plating</strong> - ablative plastic shell with metal
-          energy absorbing honeycomb directly anchored to the skin.
         </p>
         <p>
-          SkinWeave ranges from SP8 (impossible to notice) to SP14 (rubbery to
-          the touch). Subdermal armor offers SP20 and is difficult to notice.
-          Body plating provides SP25, but is bulky and highly visible.
+          <strong>SkinWeave</strong> — biotech nanomachines weave protective
+          fibers into your skin. SP8 (invisible) to SP14 (rubbery to the
+          touch).
         </p>
-      </section>
+        <p>
+          <strong>Subdermal Armor</strong> — mesh/ballistic plates surgically
+          implanted in the torso. SP20, difficult to notice.
+        </p>
+        <p>
+          <strong>Body Plating</strong> — ablative plastic shell with metal
+          honeycomb anchored to the skin. SP25, bulky and highly visible.
+        </p>
+      </details>
+      <blockquote>
+        "Rated SP20. You can walk through fire. Just like the holos, choomba..."
+        <cite>— Unidentified Fixer, 2015</cite>
+      </blockquote>
     </>
   );
 };

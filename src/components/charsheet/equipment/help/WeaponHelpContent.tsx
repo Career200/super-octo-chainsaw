@@ -14,12 +14,8 @@ export const WeaponHelpContent = () => {
           normal.
         </p>
       </section>
-      <blockquote>
-        "Everyone's got a gun. The trick is hitting something with it."
-        <cite>— John Idaho, Lone Star Shooting Range CEO</cite>
-      </blockquote>
-      <section>
-        <h4>Range Brackets</h4>
+      <details>
+        <summary>Range Brackets</summary>
         <p>
           Range determines how hard it is to hit. All ranges are calculated from
           the weapon's <strong>maximum range</strong> stat.
@@ -64,97 +60,74 @@ export const WeaponHelpContent = () => {
           At <strong>point blank</strong> with a gun pressed to the target, skip
           the roll — deal <strong>maximum damage</strong> instead.
         </p>
-      </section>
-      <section>
-        <h4>Rate of Fire (RoF)</h4>
+      </details>
+      <details>
+        <summary>Rate of Fire (RoF)</summary>
         <p>
           RoF is how many shots you can fire <strong>per turn</strong>. You can
           always choose to fire <strong>Single</strong> shots, but not more than
           your RoF allows.
-          <br />
+        </p>
+        <p>
           <strong>Three-round</strong> burst adds <strong>+3</strong> to your
           attack roll, but only works against single targets at medium range or
-          closer - on success roll 1d6/3 to determine how many bullets hit (1-2:
+          closer — on success roll 1d6/3 to determine how many bullets hit (1-2:
           1 bullet, 3-4: 2 bullets, 5-6: all 3 bullets).
-          <br />
-          <strong>Full-auto</strong> on automatic weapons sprays wildly at full
-          RoF:
-          <br /> <strong>1.</strong> Decide how many targets you want to attack
-          - for multiple targets, divide your RoF by the number of targets,
-          round down.
-          <i>
-            <strong>Ask your GM</strong>, but I consider the spray unbroken, so
-            if you attack two targets two meters apart, you treat each meter
-            between targets as a separate target - so you divide RoF by 4.
-          </i>
-          <br /> <strong>2.</strong> For each target, make an attack roll as
-          normal. Add 1 per 10 rounds at point-blank or close range or subtract
-          1 at all other ranges.
-          <br /> <strong>3.</strong>For every point above the DV, you hit with
-          one bullet. Calculate hit damage for each bullet normally.
-          <br />
-          <strong>Suppressive fire</strong> allows you to create a fire zone.
-          Calculate a save number by dividing your number of shots by the width
-          of the fire zone in meters, round down. Enemies entering or crossing
-          fire zone must make an Athletics + REF + 1d10 roll over the save
-          number or be hit with 1d6 rounds. save against that number or be
-          pinned down, unable to move or attack until the end of their next
-          turn.{" "}
-          <i>
-            <strong>I</strong> like to make targets who wish to enter or cross
-            the fire zone to make a COOL save first, unless RP reasons dictate
-            otherwise - hardened solos aren't going to be fazed by bullets
-            flying around, but a civilian might be compelled to dive for cover.
-          </i>
         </p>
-      </section>
-      <section>
-        <h4>Reliability</h4>
+        <p>
+          <strong>Full-auto</strong> sprays at full RoF. Divide RoF by number of
+          targets (round down). Roll attack as normal, +1 per 10 rounds at
+          point-blank/close, -1 at all other ranges. Every point above the DV =
+          one bullet hits. Calculate damage per bullet normally.
+        </p>
+        <p>
+          <strong>Suppressive fire</strong> creates a fire zone. Save number =
+          shots / zone width in meters. Enemies crossing must roll Athletics +
+          REF + 1d10 over the save number or be hit with 1d6 rounds.
+        </p>
+      </details>
+      <details>
+        <summary>Reliability</summary>
         <p>
           When you roll a <strong>fumble</strong> (natural 1 on the attack die),
-          roll again. Semi-auto follow fumble table first, auto-weapons (
-          <i>only on auto or burst at my table</i>) may jam right away -{" "}
-          <i>Very Reliable</i> on 3 or lower, <i>Standard</i> {"<"}6,{" "}
-          <i>Unreliable</i> {"<"}9. Jammed weapons take 1d6 turns to clear, and
-          won't fire them again until cleared.
+          roll again. Semi-auto follow the fumble table first, auto-weapons may
+          jam right away — <em>Very Reliable</em> on 3 or lower,{" "}
+          <em>Standard</em> {"<"}6, <em>Unreliable</em> {"<"}9. Jammed weapons
+          take 1d6 turns to clear.
         </p>
-      </section>
-      <section>
-        <h4>Concealability</h4>
+      </details>
+      <details>
+        <summary>Concealability</summary>
         <p>
-          How large and imposing the weapon is. <strong>P</strong> (Pocket) —
-          easily hidden in a pocket, sleeve, pants leg. <strong>J</strong>{" "}
-          (Jacket) — worn under a jacket, coat, shoulder rig. Not overt, but
-          will be found. <strong>L</strong> (Longcoat) — hiding the weapon under
-          the coat could buy you a second or two. <strong>N</strong> (No way
-          you're hiding that) — visible no matter what, expect to draw
-          attention.
+          How easy the weapon is to hide. <strong>P</strong> (Pocket) — easily
+          hidden in a pocket or sleeve. <strong>J</strong> (Jacket) — fits under
+          a jacket or coat. <strong>L</strong> (Longcoat) — hidden under a long
+          coat, barely. <strong>N</strong> (No way) — visible no matter what.
         </p>
-      </section>
-      <section>
-        <h4>Damage & Ammo Types</h4>
+      </details>
+      <details>
+        <summary>Damage & Ammo Types</summary>
         <p>
-          Guns don't hurt people, bullets do. The weapon's damage stat relies on
-          the <strong>Caliber</strong>, which determines what kind of{" "}
-          <strong>ammunition</strong> it can fire - damage and damage type
-          depends on it, and not the weapon itself. See more in the{" "}
-          <i>Ammo help bubble</i>
+          The weapon's damage depends on its <strong>caliber</strong>, which
+          determines what <strong>ammunition</strong> it can fire. Damage and
+          damage type depend on the ammo, not the weapon itself.
         </p>
-      </section>
-      <section>
-        <h4>Smartguns</h4>
+      </details>
+      <details>
+        <summary>Smartguns</summary>
         <p>
           <strong>Smartchipped</strong> weapons connect to your neuralware
-          interface plugs and pick up your mental signals, firing quicker and
-          more precise than any finger ever could. This grants{" "}
-          <strong>+2 WA</strong> — but only if you have the matching cyberware
-          installed and you are connected to the weapon. <i>Targeting scope</i>{" "}
-          eyeware option will project a targeting reticle into your field of
-          vision, with an additional +1. <i>SmartPlate weapon link</i> implant
-          will allow you to use the weapon's smartgun link by simply holding it
-          in hand, no wires required.
+          interface, granting <strong>+2 WA</strong> — but only if you have the
+          matching cyberware installed and connected. <em>Targeting scope</em>{" "}
+          eyeware adds an additional +1. <em>SmartPlate weapon link</em> lets
+          you use the smartgun link by simply holding the weapon, no wires
+          required.
         </p>
-      </section>
+      </details>
+      <blockquote>
+        "Everyone's got a gun. The trick is hitting something with it."
+        <cite>— John Idaho, Lone Star Shooting Range CEO</cite>
+      </blockquote>
     </>
   );
 };

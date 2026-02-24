@@ -5,10 +5,13 @@ export const WoundHelpContent = () => {
       <section>
         <h4>Wound Levels</h4>
         <p>
-          Levels represent severity of injuries. Levels apply increasing
+          Levels represent severity of injuries. Higher levels apply increasing
           penalties — always to STUN/SHOCK saves, and to other stats and actions
           depending on the character's state.
         </p>
+      </section>
+      <details>
+        <summary>Level Breakdown</summary>
         <p>
           <strong>Light</strong> — minor injuries, bruises, small cuts. No
           penalties, minor discomfort.
@@ -29,13 +32,11 @@ export const WoundHelpContent = () => {
           likely comatose, or on life support. Requires constant care, REF at -4
           during recovery.
         </p>
-      </section>
-      <section>
-        <h4>Physical vs Stun</h4>
+      </details>
+      <details>
+        <summary>Physical vs Stun</summary>
         <p>
-          <strong>Physical</strong> — real wounds (bullets, blades, fire).
-        </p>
-        <p>
+          <strong>Physical</strong> — real wounds (bullets, blades, fire).{" "}
           <strong>Stun</strong> — shock, pain, exhaustion (tasers, stun
           grenades, concussion).
         </p>
@@ -43,9 +44,9 @@ export const WoundHelpContent = () => {
           Taking physical damage <strong>always applies stun</strong>. Stun
           damage determines wound penalties for saves.
         </p>
-      </section>
-      <section>
-        <h4>Stable vs Unstable</h4>
+      </details>
+      <details>
+        <summary>Stable vs Unstable</summary>
         <p>
           <strong>Unstable</strong> — active combat or uncontrolled injury.
           Harsh penalties: REF at -2 (Serious), REF/INT/CL halved (Critical), or
@@ -62,7 +63,7 @@ export const WoundHelpContent = () => {
           Stabilization requires medical attention or successful stabilization
           roll.
         </p>
-      </section>
+      </details>
     </>
   );
 };

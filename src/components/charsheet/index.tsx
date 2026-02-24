@@ -25,7 +25,7 @@ const SPA_TABS = [
 ];
 
 export const Charsheet = () => {
-  const tab = useStore(tabStore("spa-tab", "combat"));
+  const tab = useStore(tabStore("spa-tab", "dossier"));
 
   // Preload on idle
   useEffect(() => {

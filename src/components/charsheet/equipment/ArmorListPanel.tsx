@@ -96,7 +96,7 @@ export const ArmorListPanel = ({
             </>
           )}
           {sorted.length === 0 && implants.length === 0 ? (
-            <div class="empty-message">No armor owned</div>
+            <div class="empty-message">No armor yet. Browse the Catalog to add some.</div>
           ) : (
             sorted.length > 0 && (
               <>

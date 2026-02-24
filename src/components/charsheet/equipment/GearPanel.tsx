@@ -221,7 +221,7 @@ export const GearPanel = () => {
               />
             ))
           ) : (
-            <div class="empty-message">No gear yet</div>
+            <div class="empty-message">No gear yet. Browse the Catalog to add some.</div>
           ))}
       </div>
     </div>

@@ -15,7 +15,7 @@ import { STAT_STORES } from "@stores/stats";
 import { $selectedSkill, selectSkill, startAddingSkill } from "@stores/ui";
 
 import { Chevron } from "../shared/Chevron";
-export type SkillFilter = "default" | "custom" | "my";
+export type SkillFilter = "catalog" | "custom" | "my";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
   "special",
@@ -152,9 +152,15 @@ function SkillGroup({
 }
 
 /** Flat list for custom/my tabs (no stat grouping needed) */
-function FlatSkillsList({ skills }: { skills: [string, SkillEntry][] }) {
+function FlatSkillsList({
+  skills,
+  emptyMessage = "No skills yet",
+}: {
+  skills: [string, SkillEntry][];
+  emptyMessage?: string;
+}) {
   if (skills.length === 0) {
-    return <div class="empty-message">No skills yet</div>;
+    return <div class="empty-message">{emptyMessage}</div>;
   }
   return (
     <div class="skills-list">
@@ -169,7 +175,7 @@ interface SkillsListProps {
   filter?: SkillFilter;
 }
 
-export const SkillsList = ({ filter = "default" }: SkillsListProps) => {
+export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
   const grouped = useStore($skillsByStat);
   const customSkills = useStore($customSkills);
   const mySkills = useStore($mySkills);
@@ -204,7 +210,12 @@ export const SkillsList = ({ filter = "default" }: SkillsListProps) => {
   }
 
   if (filter === "my") {
-    return <FlatSkillsList skills={mySkills} />;
+    return (
+      <FlatSkillsList
+        skills={mySkills}
+        emptyMessage="Set skill levels in the Catalog tab to see them here."
+      />
+    );
   }
 
   // Default tab: grouped by stat, showing all catalog skills

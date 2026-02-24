@@ -227,7 +227,7 @@ export const WeaponListPanel = () => {
               />
             ))
           ) : (
-            <div class="empty-message">No weapons yet</div>
+            <div class="empty-message">No weapons yet. Browse the Catalog to add some.</div>
           ))}
       </div>
     </div>
