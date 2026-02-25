@@ -113,8 +113,8 @@
   inset: 0;
   border-radius: inherit;
   box-shadow:
-    0 0 8px 2px var(--accent),
-    inset 0 0 4px 1px var(--accent);
+    0 0 8px 2px var(--warning-hot),
+    inset 0 0 4px 1px var(--warning-hot);
   opacity: 0;
   pointer-events: none;
 }
@@ -261,12 +261,10 @@
   white-space: nowrap;
 }
 
-.cc-range-label strong {
-  color: var(--fg);
-}
-
 .cc-range-distance {
-  color: var(--fg-soft);
+  color: var(--fg);
+  font-size: var(--font-ui);
+  font-weight: bold;
 }
 
 /* --- Fire buttons --- */

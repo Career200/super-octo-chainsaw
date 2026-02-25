@@ -1,5 +1,6 @@
 import { useRef, useState } from "preact/hooks";
 
+import { flashElement } from "@scripts/flash";
 import { WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
 import type { WeaponPiece } from "@stores/weapons";
 import { fireWeapon, reloadWeapon, setCurrentAmmo } from "@stores/weapons";
@@ -28,12 +29,7 @@ interface Props {
   skillLevel: number;
   skillName: string;
 }
-const flashClasses = [
-  "cc-flash-1",
-  "cc-flash-3",
-  "cc-flash-5",
-  "cc-flash-reload",
-];
+const CC_FLASH = ["cc-flash-1", "cc-flash-3", "cc-flash-5", "cc-flash-reload"];
 
 /**
  * Potentially we can generate and write to history
@@ -62,13 +58,8 @@ export const WeaponCombatCard = ({
 
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const flash = (cls: string) => {
-    const el = cardRef.current;
-    if (!el) return;
-    el.classList.remove(...flashClasses);
-    void el.offsetWidth; // restart animation if fired again quickly
-    el.classList.add(cls);
-  };
+  const flash = (cls: string) =>
+    flashElement(cardRef.current, cls, CC_FLASH);
 
   const handleReload = () => {
     reloadWeapon(weapon.id);
@@ -87,9 +78,6 @@ export const WeaponCombatCard = ({
     <div
       ref={cardRef}
       class="combat-card"
-      onAnimationEnd={() => {
-        cardRef.current?.classList.remove(...flashClasses);
-      }}
     >
       {/* Header: name + ammo */}
       <div class="cc-header">
@@ -121,17 +109,18 @@ export const WeaponCombatCard = ({
           </div>
         )}
         <div class="cc-hero-cell cc-hero-skill">
+          <span class="cc-hero-total">+{total} </span>
           <span class="cc-hero-formula">
-            REF {refCurrent} + {skillName} {skillLevel}
+            (REF {refCurrent} + {skillName} {skillLevel}
             {weapon.wa !== 0 && (
               <>
                 {" "}
                 ({weapon.wa >= 0 ? "+" : ""}
                 {weapon.wa})
               </>
-            )}{" "}
+            )}
+            )
           </span>
-          <span class="cc-hero-total">= {total}</span>
         </div>
         <div class="cc-hero-cell">
           <span class="cc-hero-value">{weapon.reliability}</span>
@@ -144,7 +133,7 @@ export const WeaponCombatCard = ({
           {getRangeTable(weapon.range).map((e) => (
             <div key={e.label} class="cc-range-col">
               <span class="cc-range-label">
-                {e.label} <strong>{e.dc}</strong>
+                {e.label} {e.dc}
               </span>
               <span class="cc-range-distance">{e.distance}</span>
             </div>

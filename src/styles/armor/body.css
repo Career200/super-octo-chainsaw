@@ -65,8 +65,36 @@
 
 /* === Body Parts === */
 .body-part {
+  position: relative;
   padding: 10px;
   margin-bottom: 0;
+}
+
+/* Hit flash glow overlay */
+.body-part::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    0 0 8px 2px var(--danger),
+    inset 0 0 4px 1px var(--danger);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.body-part.bp-flash-hit::after {
+  will-change: opacity;
+  animation: bp-flash 2s ease-out;
+}
+
+@keyframes bp-flash {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* Body-part header: title + SP + hit badge in one flex row */

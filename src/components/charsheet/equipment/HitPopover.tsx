@@ -11,6 +11,7 @@ import {
   resolveNonLocationalHit,
   rollHitLocation,
 } from "@scripts/armor/hit";
+import { flashElement } from "@scripts/flash";
 
 import { Popover } from "../shared/Popover";
 
@@ -80,6 +81,7 @@ export const HitPopover = ({ forPart, children }: Props) => {
     const part = forPart ?? (rollLocation ? rollHitLocation() : null);
     if (part) {
       resolveLocationalHit(part, dmg, { damageType, ignoreSP, diceRolls });
+      flashElement(document.getElementById(`part-${part}`), "bp-flash-hit");
     } else {
       resolveNonLocationalHit(dmg, { damageType, diceRolls });
     }
