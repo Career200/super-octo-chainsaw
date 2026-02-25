@@ -5,6 +5,17 @@ import { normalizeKey } from "@scripts/catalog-common";
 import type { Availability, GearTemplate } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
 
+// --- Money ---
+
+export const $eurodollars = persistentAtom<number>("character-eb", 0, {
+  encode: String,
+  decode: (raw) => Math.max(0, parseInt(raw, 10) || 0),
+});
+
+export function setEurodollars(value: number): void {
+  $eurodollars.set(Math.max(0, value));
+}
+
 // --- Types ---
 
 /** Custom gear definition — user-created extension to GEAR_CATALOG. */

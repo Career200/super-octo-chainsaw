@@ -246,7 +246,7 @@
 
 .layer.layer-active {
   background: var(--accent-subtle);
-  border-left: 2px solid var(--accent);
+  outline: 1px solid var(--accent);
 }
 
 /* === SP Values === */
