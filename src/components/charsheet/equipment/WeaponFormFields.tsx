@@ -7,6 +7,7 @@ import type {
   WeaponType,
 } from "@scripts/weapons/catalog";
 import {
+  CALIBER_DAMAGE,
   CONCEALABILITY_LABELS,
   RELIABILITY_LABELS,
   skillForType,
@@ -156,6 +157,7 @@ export function WeaponFormFields({
         <Tip label="Ammo caliber" class="weapon-form-ammo">
           <input
             type="text"
+            list="caliber-suggestions"
             class="input item-form-input"
             value={ammo}
             disabled={!onAmmoChange}
@@ -167,6 +169,11 @@ export function WeaponFormFields({
             placeholder="Caliber"
             title="Ammo caliber"
           />
+          <datalist id="caliber-suggestions">
+            {Object.keys(CALIBER_DAMAGE).map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
         </Tip>
       )}
       <Tip label="Damage dice" class="weapon-form-damage">
