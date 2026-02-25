@@ -113,39 +113,30 @@
   inset: 0;
   border-radius: inherit;
   box-shadow:
-    0 0 8px 2px var(--warning-hot),
-    inset 0 0 4px 1px var(--warning-hot);
+    0 0 8px 2px var(--flash-color, transparent),
+    inset 0 0 4px 1px var(--flash-color, transparent);
   opacity: 0;
   pointer-events: none;
 }
 
 .combat-card.cc-flash-1::after {
   will-change: opacity;
-  animation: cc-flash 0.4s ease-out;
+  animation: ui-flash 0.4s ease-out;
 }
 
 .combat-card.cc-flash-3::after {
   will-change: opacity;
-  animation: cc-flash 0.16s ease-out 3;
+  animation: ui-flash 0.16s ease-out 3;
 }
 
 .combat-card.cc-flash-5::after {
   will-change: opacity;
-  animation: cc-flash 0.12s ease-out 5;
+  animation: ui-flash 0.12s ease-out 5;
 }
 
 .combat-card.cc-flash-reload::after {
   will-change: opacity;
-  animation: cc-flash 0.35s ease-out 3;
-}
-
-@keyframes cc-flash {
-  0% {
-    opacity: 0.9;
-  }
-  100% {
-    opacity: 0;
-  }
+  animation: ui-flash 0.35s ease-out 3;
 }
 
 /* --- Header: name + ammo --- */

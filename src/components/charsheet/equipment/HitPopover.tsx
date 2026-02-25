@@ -81,7 +81,7 @@ export const HitPopover = ({ forPart, children }: Props) => {
     const part = forPart ?? (rollLocation ? rollHitLocation() : null);
     if (part) {
       resolveLocationalHit(part, dmg, { damageType, ignoreSP, diceRolls });
-      flashElement(document.getElementById(`part-${part}`), "bp-flash-hit");
+      flashElement(document.getElementById(`part-${part}`), "bp-flash", { color: "var(--danger)" });
     } else {
       resolveNonLocationalHit(dmg, { damageType, diceRolls });
     }

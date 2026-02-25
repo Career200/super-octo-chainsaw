@@ -59,7 +59,7 @@ export const WeaponCombatCard = ({
   const cardRef = useRef<HTMLDivElement>(null);
 
   const flash = (cls: string) =>
-    flashElement(cardRef.current, cls, CC_FLASH);
+    flashElement(cardRef.current, cls, { color: "var(--warning-hot)", clearClasses: CC_FLASH });
 
   const handleReload = () => {
     reloadWeapon(weapon.id);
