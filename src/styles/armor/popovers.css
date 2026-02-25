@@ -111,6 +111,21 @@
   }
 }
 
+.hit-damage-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+}
+
+.hit-shot-count {
+  width: 80px !important;
+  margin: 0 !important;
+  padding: var(--space-4) var(--space-8) !important;
+  font-size: var(--font-ui-sm) !important;
+  margin-left: auto !important;
+  text-align: center;
+}
+
 .hit-damage-row {
   display: flex;
   gap: var(--space-4);

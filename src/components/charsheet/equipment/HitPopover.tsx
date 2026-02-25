@@ -35,6 +35,7 @@ export const HitPopover = ({ forPart, children }: Props) => {
   const [bonus, setBonus] = useState("");
   const [ignoreSP, setIgnoreSP] = useState(false);
   const [rollLocation, setRollLocation] = useState(true);
+  const [shotCount, setShotCount] = useState("");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -51,6 +52,7 @@ export const HitPopover = ({ forPart, children }: Props) => {
   const reset = () => {
     setIgnoreSP(false);
     setRollLocation(true);
+    setShotCount("");
   };
 
   const close = () => {
@@ -59,34 +61,56 @@ export const HitPopover = ({ forPart, children }: Props) => {
   };
 
   const handleApply = () => {
-    const raw = parseInt(damage, 10) || (dieType ? 1 : 0);
+    const raw = parseInt(damage) || (dieType ? 1 : 0);
     if (raw <= 0) return;
 
-    let dmg: number;
-    let diceRolls: number[] | undefined;
-    if (dieType) {
-      const flat = Math.max(0, parseInt(bonus, 10) || 0);
-      diceRolls = Array.from(
-        { length: raw },
-        () => Math.floor(Math.random() * dieType) + 1,
-      );
-      if (flat) diceRolls.push(flat);
-      dmg = diceRolls.reduce((a, b) => a + b, 0);
-    } else {
-      dmg = raw;
-    }
-
+    // Snapshot all state before close() resets it
+    const snap = { damageType, dieType, bonus, ignoreSP, rollLocation };
+    const count = parseInt(shotCount) || 1;
     lastInputs = { damageType, damage, dieType, bonus };
-
-    const part = forPart ?? (rollLocation ? rollHitLocation() : null);
-    if (part) {
-      resolveLocationalHit(part, dmg, { damageType, ignoreSP, diceRolls });
-      flashElement(document.getElementById(`part-${part}`), "bp-flash", { color: "var(--danger)" });
-    } else {
-      resolveNonLocationalHit(dmg, { damageType, diceRolls });
-    }
-
     close();
+
+    const flat = snap.dieType ? parseInt(snap.bonus) || 0 : 0;
+
+    const rollOnce = () => {
+      let dmg: number;
+      let diceRolls: number[] | undefined;
+      if (snap.dieType) {
+        diceRolls = Array.from(
+          { length: raw },
+          () => Math.floor(Math.random() * snap.dieType!) + 1,
+        );
+        if (flat) diceRolls.push(flat);
+        dmg = diceRolls.reduce((a, b) => a + b, 0);
+      } else {
+        dmg = raw;
+      }
+      return { dmg, diceRolls };
+    };
+
+    const fireOnce = () => {
+      const { dmg, diceRolls } = rollOnce();
+      const part = forPart ?? (snap.rollLocation ? rollHitLocation() : null);
+      if (part) {
+        resolveLocationalHit(part, dmg, {
+          damageType: snap.damageType,
+          ignoreSP: snap.ignoreSP,
+          diceRolls,
+        });
+        flashElement(document.getElementById(`part-${part}`), "bp-flash", {
+          color: "var(--danger)",
+        });
+      } else {
+        resolveNonLocationalHit(dmg, {
+          damageType: snap.damageType,
+          diceRolls,
+        });
+      }
+    };
+
+    for (let i = 0; i < count; i++) {
+      setTimeout(fireOnce, i * 500);
+    }
   };
 
   const selectedTypeOption = DAMAGE_TYPE_OPTIONS.find(
@@ -152,7 +176,17 @@ export const HitPopover = ({ forPart, children }: Props) => {
         {selectedTypeOption?.description && (
           <p class="select-description">{selectedTypeOption.description}</p>
         )}
-        <p class="popover-message">Raw damage?</p>
+        <p class="popover-message hit-damage-header">
+          Raw damage?
+          <input
+            type="number"
+            class="popover-input hit-shot-count"
+            placeholder="x times"
+            min="1"
+            value={shotCount}
+            onInput={(e) => setShotCount((e.target as HTMLInputElement).value)}
+          />
+        </p>
         <div class="hit-damage-row">
           <input
             ref={inputRef}
