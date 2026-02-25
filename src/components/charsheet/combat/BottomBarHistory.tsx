@@ -6,6 +6,7 @@ import {
   clearHistory,
   type DamageHistoryEntry,
   type ManipulationHistoryEntry,
+  undoLatest,
 } from "@stores/damage-history";
 
 import { Chevron } from "../shared/Chevron";
@@ -115,11 +116,19 @@ export default function BottomBarHistory({ expanded, onToggle }: Props) {
       </div>
       {expanded && (
         <div class="bottom-bar-body">
-          {history.map((entry) =>
+          {history.map((entry, i) =>
             entry.type === "manipulation" ? (
-              <ManipulationEntry key={entry.id} entry={entry} />
+              <ManipulationEntry
+                key={entry.id}
+                entry={entry}
+                onUndo={i === 0 ? undoLatest : undefined}
+              />
             ) : (
-              <DamageEntry key={entry.id} entry={entry} />
+              <DamageEntry
+                key={entry.id}
+                entry={entry}
+                onUndo={i === 0 ? undoLatest : undefined}
+              />
             ),
           )}
         </div>

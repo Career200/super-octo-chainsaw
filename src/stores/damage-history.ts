@@ -3,6 +3,9 @@ import { atom } from "nanostores";
 import type { BodyPartName } from "../scripts/armor/core";
 import type { DamageType } from "../scripts/armor/hit";
 
+import { $ownedArmor, setArmorSP } from "./armor";
+import { $health, isMortal } from "./health";
+
 export interface ArmorDamageEntry {
   armorId: string;
   armorName: string;
@@ -92,6 +95,39 @@ export function recordManipulation(
 
   $damageHistory.set([fullEntry, ...$damageHistory.get()]);
   return fullEntry;
+}
+
+export function undoLatest(): void {
+  const entries = $damageHistory.get();
+  if (entries.length === 0) return;
+  const entry = entries[0];
+
+  if (entry.type === "damage") {
+    const woundDamage = entry.woundDamage ?? entry.penetrating;
+    if (woundDamage > 0) {
+      const cur = $health.get();
+      const phys = Math.max(0, cur.physical - woundDamage);
+      const stun = Math.max(phys, cur.stun - woundDamage);
+      $health.set({
+        physical: phys,
+        stun,
+        stabilized: isMortal(stun) ? cur.stabilized : false,
+      });
+    }
+    if (entry.bodyParts !== "none") {
+      const part = entry.bodyParts[0];
+      for (const ad of entry.armorDamage) {
+        const inst = $ownedArmor.get()[ad.armorId];
+        if (!inst) continue;
+        const curSP = inst.spByPart[part] ?? 0;
+        setArmorSP(ad.armorId, curSP + ad.spLost, [part]);
+      }
+    }
+  } else {
+    setArmorSP(entry.armorId, entry.oldSP, entry.bodyParts);
+  }
+
+  $damageHistory.set(entries.slice(1));
 }
 
 export function clearHistory(): void {

@@ -38,7 +38,13 @@ function getSpecialWoundNote(entry: DamageHistoryEntry): string | null {
   return null;
 }
 
-export const DamageEntry = ({ entry }: { entry: DamageHistoryEntry }) => {
+export const DamageEntry = ({
+  entry,
+  onUndo,
+}: {
+  entry: DamageHistoryEntry;
+  onUndo?: () => void;
+}) => {
   const typeStr =
     entry.damageType !== "normal" ? ` ${entry.damageType.toUpperCase()}` : "";
   const blocked = entry.penetrating === 0 && !entry.ignoredArmor;
@@ -49,64 +55,71 @@ export const DamageEntry = ({ entry }: { entry: DamageHistoryEntry }) => {
       <div class="history-header">
         <span class="history-time">{formatTime(entry.timestamp)}</span>
       </div>
-      <div class="history-details">
-        <span class="history-detail history-damage">
-          {entry.diceRolls
-            ? `${entry.rawDamage} = ${entry.diceRolls.join("+")}`
-            : entry.rawDamage}
-          {typeStr}
-        </span>
-        {entry.effectiveSP > 0 && !entry.ignoredArmor && (
-          <span class="history-detail">
-            <span class="history-label">SP:</span> {entry.effectiveSP}
+      <div class="flex-between">
+        <div class="history-details">
+          <span class="history-detail history-damage">
+            {entry.diceRolls
+              ? `${entry.rawDamage} = ${entry.diceRolls.join("+")}`
+              : entry.rawDamage}
+            {typeStr}
           </span>
-        )}
-        {entry.ignoredArmor && (
-          <span class="history-detail history-ignored">
-            <span class="history-label">SP:</span> ignored
-          </span>
-        )}
-        {blocked && (
-          <>
-            {entry.topProtector ? (
-              <span class="history-detail history-blocked">
-                <span class="history-label">Blocked by</span>{" "}
-                {entry.topProtector}
-              </span>
-            ) : (
-              <span class="history-detail history-blocked">Blocked</span>
-            )}
+          {entry.effectiveSP > 0 && !entry.ignoredArmor && (
             <span class="history-detail">
-              {formatBodyParts(entry.bodyParts)}
+              <span class="history-label">SP:</span> {entry.effectiveSP}
             </span>
-          </>
-        )}
-        {!blocked && (
-          <>
-            {entry.armorDamage.length > 0 && (
+          )}
+          {entry.ignoredArmor && (
+            <span class="history-detail history-ignored">
+              <span class="history-label">SP:</span> ignored
+            </span>
+          )}
+          {blocked && (
+            <>
+              {entry.topProtector ? (
+                <span class="history-detail history-blocked">
+                  <span class="history-label">Blocked by</span>{" "}
+                  {entry.topProtector}
+                </span>
+              ) : (
+                <span class="history-detail history-blocked">Blocked</span>
+              )}
               <span class="history-detail">
-                <span class="history-label">Armor:</span>{" "}
-                {entry.armorDamage
-                  .map((a) => `${a.armorName} -${a.spLost}`)
-                  .join(", ")}
-              </span>
-            )}
-            {entry.btm != null && entry.btm > 0 && (
-              <span class="history-detail">
-                <span class="history-label">BTM</span> {"\u2212"}
-                {entry.btm}
-              </span>
-            )}
-            <span class="history-detail">
-              <span class="history-label">
                 {formatBodyParts(entry.bodyParts)}
-                {entry.headMultiplied ? " \u00d72" : ""}:
-              </span>{" "}
-              <span class="history-penetrating">
-                {entry.woundDamage ?? entry.penetrating}
               </span>
-            </span>
-          </>
+            </>
+          )}
+          {!blocked && (
+            <>
+              {entry.armorDamage.length > 0 && (
+                <span class="history-detail">
+                  <span class="history-label">Armor:</span>{" "}
+                  {entry.armorDamage
+                    .map((a) => `${a.armorName} -${a.spLost}`)
+                    .join(", ")}
+                </span>
+              )}
+              {entry.btm != null && entry.btm > 0 && (
+                <span class="history-detail">
+                  <span class="history-label">BTM</span> {"\u2212"}
+                  {entry.btm}
+                </span>
+              )}
+              <span class="history-detail">
+                <span class="history-label">
+                  {formatBodyParts(entry.bodyParts)}
+                  {entry.headMultiplied ? " \u00d72" : ""}:
+                </span>{" "}
+                <span class="history-penetrating">
+                  {entry.woundDamage ?? entry.penetrating}
+                </span>
+              </span>
+            </>
+          )}
+        </div>
+        {onUndo && (
+          <button class="btn-ghost btn-sm" onClick={onUndo}>
+            Undo
+          </button>
         )}
       </div>
       {specialWound && <div class="history-special-wound">{specialWound}</div>}
@@ -116,8 +129,10 @@ export const DamageEntry = ({ entry }: { entry: DamageHistoryEntry }) => {
 
 export const ManipulationEntry = ({
   entry,
+  onUndo,
 }: {
   entry: ManipulationHistoryEntry;
+  onUndo?: () => void;
 }) => {
   const armor = getArmorPiece(entry.armorId);
   const maxSP = armor?.spMax ?? entry.newSP;
@@ -132,6 +147,11 @@ export const ManipulationEntry = ({
       <div class="history-header">
         <span class="history-time">{formatTime(entry.timestamp)}</span>
         <span class={labelClass}>{label}</span>
+        {onUndo && (
+          <button class="btn-ghost btn-sm" onClick={onUndo}>
+            Undo
+          </button>
+        )}
       </div>
       <div class="history-details">
         <span class="history-detail">
