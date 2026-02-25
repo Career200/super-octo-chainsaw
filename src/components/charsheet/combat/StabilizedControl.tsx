@@ -4,8 +4,8 @@ import { $health, isMortal, setStabilized } from "@stores/health";
 
 export const StabilizedControl = () => {
   const health = useStore($health);
-  const { stabilized, physical } = health;
-  const mortal = isMortal(physical);
+  const { stabilized, stun } = health;
+  const mortal = isMortal(stun);
   const isStable = !mortal || stabilized;
 
   const handleClick = () => {

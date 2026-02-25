@@ -32,8 +32,8 @@ export const $health = persistentAtom<WoundState>(
 
 // --- Helpers ---
 
-export function isMortal(physical: number): boolean {
-  return physical > MORTAL_THRESHOLD;
+export function isMortal(stun: number): boolean {
+  return stun > MORTAL_THRESHOLD;
 }
 
 // --- Actions ---
@@ -42,17 +42,20 @@ export function takeDamage(amount: number, type: DamageType): void {
   const current = $health.get();
   const newState = applyDamage(current, amount, type);
 
-  // Auto-destabilize when crossing into mortal
-  const crossingMortal =
-    !isMortal(current.physical) && isMortal(newState.physical);
+  // Auto-destabilize when in mortal
   $health.set({
     ...newState,
-    stabilized: crossingMortal ? false : newState.stabilized,
+    stabilized: isMortal(newState.stun) ? false : newState.stabilized,
   });
 }
 
 export function heal(amount: number, type: DamageType): void {
-  $health.set(healDamage($health.get(), amount, type));
+  const newState = healDamage($health.get(), amount, type);
+  // Auto-clear stabilization when dropping below mortal
+  $health.set({
+    ...newState,
+    stabilized: isMortal(newState.stun) ? newState.stabilized : false,
+  });
 }
 
 export function setDamage(
@@ -64,21 +67,16 @@ export function setDamage(
   const current = $health.get();
 
   if (type === "physical") {
-    const crossingMortal = !isMortal(current.physical) && isMortal(clamped);
-
-    // Auto-destabilize when crossing into mortal
-    const stabilized = crossingMortal ? false : current.stabilized;
-
     $health.set({
       physical: clamped,
       stun: syncStun ? clamped : Math.max(current.stun, clamped),
-      stabilized,
+      stabilized: false,
     });
   } else {
     $health.set({
       physical: current.physical,
       stun: Math.max(current.physical, clamped),
-      stabilized: current.stabilized,
+      stabilized: false,
     });
   }
 }
