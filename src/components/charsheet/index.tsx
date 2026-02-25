@@ -1,16 +1,16 @@
 import { useStore } from "@nanostores/preact";
 import { lazy, Suspense } from "preact/compat";
-import { useEffect } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 import { tabStore } from "@stores/ui";
 
+import { BodyInfo } from "./combat/BodyInfo";
+import { StatsStrip } from "./combat/StatsStrip";
 import { BottomBar } from "./common/bottombar/BottomBar";
 import { TabStrip } from "./shared/TabStrip";
 
-// Fixed bar components (defer stats/health/skills/armor store chains)
+// Deferred
 const WoundIndicator = lazy(() => import("./combat/WoundIndicator"));
-const StatsStrip = lazy(() => import("./combat/StatsStrip"));
-const BodyInfo = lazy(() => import("./combat/BodyInfo"));
 const AwarenessLine = lazy(() => import("./combat/AwarenessLine"));
 
 // Views
@@ -26,16 +26,15 @@ const SPA_TABS = [
 
 export const Charsheet = () => {
   const tab = useStore(tabStore("spa-tab", "dossier"));
+  const [idleReached, setIdleReached] = useState(false);
 
-  // Preload on idle
   useEffect(() => {
-    const preload = () => {
-      // handled by browser cache
+    const id = requestIdleCallback(() => {
+      setIdleReached(true);
       import("./combat/CombatView");
       import("./dossier/DossierView");
       import("./equipment/EquipmentView");
-    };
-    const id = requestIdleCallback(preload);
+    });
     return () => cancelIdleCallback(id);
   }, []);
 
@@ -44,13 +43,15 @@ export const Charsheet = () => {
   return (
     <div class={spaClass}>
       <div class="fixed-bar">
-        <Suspense fallback={<div class="bar-loading" />}>
-          <div class="secondary-bar">
-            <BodyInfo />
-            <WoundIndicator />
-            <StatsStrip />
-          </div>
-        </Suspense>
+        <div class="secondary-bar">
+          <BodyInfo />
+          {(tab === "combat" || idleReached) && (
+            <Suspense fallback={null}>
+              <WoundIndicator />
+            </Suspense>
+          )}
+          <StatsStrip />
+        </div>
         <div class="tab-row">
           <TabStrip tabs={SPA_TABS} persist="spa-tab" class="spa-tabs" />
           <Suspense fallback={null}>

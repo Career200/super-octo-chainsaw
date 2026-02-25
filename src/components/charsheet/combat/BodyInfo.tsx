@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/preact";
 
 import { $bodyType } from "@stores/stats";
 
-export default function BodyInfo() {
+export function BodyInfo() {
   const body = useStore($bodyType);
 
   return (
