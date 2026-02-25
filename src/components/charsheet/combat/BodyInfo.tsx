@@ -2,10 +2,6 @@ import { useStore } from "@nanostores/preact";
 
 import { $bodyType } from "@stores/stats";
 
-import { HelpPopover } from "../shared/HelpPopover";
-
-import { BodyHelpContent } from "./help/BodyHelpContent";
-
 export default function BodyInfo() {
   const body = useStore($bodyType);
 
@@ -20,7 +16,6 @@ export default function BodyInfo() {
         <span class="label-chip-label"> Lift</span>
         <span class="carry-value">{body.deadlift}kg</span>
       </div>
-      <HelpPopover id="body-help" content={<BodyHelpContent />} />
     </div>
   );
 }

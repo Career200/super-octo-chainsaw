@@ -66,12 +66,6 @@
   color: var(--danger);
 }
 
-@media (max-width: 394px) {
-  .body-type {
-    display: none;
-  }
-}
-
 /* === Stats Strip === */
 .stats-strip {
   min-width: 0;
@@ -254,10 +248,6 @@
 
 .stat-row.stat-current.diminished .stat-value {
   color: var(--danger);
-}
-
-.body-info .help-trigger {
-  padding-left: 1px;
 }
 
 /* === Responsive === */
