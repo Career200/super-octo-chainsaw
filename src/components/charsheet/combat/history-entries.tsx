@@ -20,10 +20,29 @@ export function formatBodyParts(parts: BodyPartName[] | "none"): string {
   return parts.map((p) => PART_NAMES[p]).join(", ");
 }
 
+const LIMBS: BodyPartName[] = [
+  "right_arm",
+  "left_arm",
+  "right_leg",
+  "left_leg",
+];
+
+function getSpecialWoundNote(entry: DamageHistoryEntry): string | null {
+  const dmg = entry.woundDamage ?? entry.penetrating;
+  if (dmg <= 8 || entry.bodyParts === "none") return null;
+  const parts = entry.bodyParts;
+  if (parts.includes("head") || parts.includes("face"))
+    return "Lethal head wound. You're dead.";
+  if (parts.some((p) => LIMBS.includes(p)))
+    return "Limb loss — Death Save at Mortal 0 or higher.";
+  return null;
+}
+
 export const DamageEntry = ({ entry }: { entry: DamageHistoryEntry }) => {
   const typeStr =
     entry.damageType !== "normal" ? ` ${entry.damageType.toUpperCase()}` : "";
   const blocked = entry.penetrating === 0 && !entry.ignoredArmor;
+  const specialWound = getSpecialWoundNote(entry);
 
   return (
     <div class="history-entry history-entry-damage">
@@ -90,6 +109,7 @@ export const DamageEntry = ({ entry }: { entry: DamageHistoryEntry }) => {
           </>
         )}
       </div>
+      {specialWound && <div class="history-special-wound">{specialWound}</div>}
     </div>
   );
 };

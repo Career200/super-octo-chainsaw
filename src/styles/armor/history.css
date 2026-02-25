@@ -91,3 +91,10 @@
 .history-break {
   color: var(--accent-muted);
 }
+
+.history-special-wound {
+  margin-top: var(--space-2);
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--danger);
+}
