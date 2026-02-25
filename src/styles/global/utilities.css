@@ -168,6 +168,7 @@
 /* === Loading Fallback === */
 .charsheet-spa > .loading-fallback {
   flex: 1;
+  min-height: 0;
 }
 
 .loading-fallback {
