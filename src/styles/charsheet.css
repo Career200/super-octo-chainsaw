@@ -1,3 +1,11 @@
+/* Override only digits */
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("https://fonts.gstatic.com/s/synemono/v16/K2FzfZNHj_FHBmRbFvHzIg.ttf")
+    format("truetype");
+  unicode-range: U+0030-0039;
+}
+
 /* === App Shell === */
 .charsheet-spa {
   display: flex;
