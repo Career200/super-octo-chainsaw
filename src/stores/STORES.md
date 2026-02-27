@@ -110,7 +110,8 @@ Record<instanceId, { id, templateId, currentAmmo, loadedAmmo, smartchipActive }>
 ```
 Owned weapon instances. Each weapon tracks its own ammo state. `loadedAmmo` is a `LoadedAmmoInfo | null` snapshot (templateId, type, damage, effects) — `null` means manual mode (no ammo system, free reload).
 
-Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon`, `setCurrentAmmo`, `setSmartchipActive`
+Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon(id, ammoTemplateId?)`, `setCurrentAmmo`, `setSmartchipActive`
+Cross-store: `reloadWeapon` reads `$ammoByCaliberLookup` + `$ownedAmmo`, mutates `$ownedAmmo` via `addAmmo`/`removeAmmo`
 Template resolution: `resolveWeaponTemplate()` — checks `WEAPON_CATALOG` + `$customWeaponTemplates`
 Helper: `isCustomWeapon(id)` — true if not in `WEAPON_CATALOG`
 

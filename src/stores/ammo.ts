@@ -37,7 +37,7 @@ export const $customAmmoItems = persistentAtom<CustomAmmoState>(
 
 // --- Helpers ---
 
-function resolveAmmoTemplate(templateId: string): AmmoTemplate | null {
+export function resolveAmmoTemplate(templateId: string): AmmoTemplate | null {
   if (templateId in AMMO_CATALOG) return AMMO_CATALOG[templateId];
   const custom = $customAmmoItems.get()[templateId];
   if (custom) {

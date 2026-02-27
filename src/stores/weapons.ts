@@ -3,6 +3,13 @@ import { computed } from "nanostores";
 
 import type { LoadedAmmoInfo } from "@scripts/ammo/catalog";
 import { normalizeKey } from "@scripts/catalog-common";
+import {
+  $ammoByCaliberLookup,
+  $ownedAmmo,
+  addAmmo,
+  removeAmmo,
+  resolveAmmoTemplate,
+} from "@stores/ammo";
 import type {
   Availability,
   Concealability,
@@ -129,16 +136,76 @@ export function fireWeapon(instanceId: string, shots: number = 1): void {
   });
 }
 
-export function reloadWeapon(instanceId: string): void {
+export function reloadWeapon(
+  instanceId: string,
+  ammoTemplateId?: string,
+): boolean {
   const current = $ownedWeapons.get();
   const instance = current[instanceId];
-  if (!instance) return;
+  if (!instance) return false;
   const template = resolveWeaponTemplate(instance.templateId);
-  if (!template) return;
+  if (!template) return false;
+
+  // Determine target ammo type
+  const targetAmmoId = ammoTemplateId ?? instance.loadedAmmo?.templateId ?? null;
+
+  // Check if any reserves exist for this weapon's caliber
+  const caliberAmmo = template.ammo
+    ? ($ammoByCaliberLookup.get()[template.ammo] ?? [])
+    : [];
+  const hasReserves = caliberAmmo.length > 0;
+
+  // No reserves for caliber → free reload (soft mode: warn but allow)
+  if (!hasReserves) {
+    $ownedWeapons.set({
+      ...current,
+      [instanceId]: { ...instance, currentAmmo: template.shots, loadedAmmo: null },
+    });
+    return true;
+  }
+
+  // Reserves exist but no type selected → user must pick via popover
+  if (!targetAmmoId) return false;
+
+  // Resolve ammo template
+  const ammoTemplate = resolveAmmoTemplate(targetAmmoId);
+  if (!ammoTemplate) return false;
+
+  // Type switching: return current magazine rounds to reserves
+  const switching =
+    instance.loadedAmmo != null &&
+    instance.loadedAmmo.templateId !== targetAmmoId;
+  if (switching && instance.loadedAmmo && instance.currentAmmo > 0) {
+    addAmmo(instance.loadedAmmo.templateId, instance.currentAmmo);
+  }
+
+  const currentInMag = switching ? 0 : instance.currentAmmo;
+  const roundsNeeded = template.shots - currentInMag;
+
+  // Check available reserves (re-read after potential addAmmo above)
+  const reserves = $ownedAmmo.get()[targetAmmoId] ?? 0;
+  const roundsToLoad = Math.min(roundsNeeded, reserves);
+
+  if (roundsToLoad > 0) {
+    removeAmmo(targetAmmoId, roundsToLoad);
+  }
+
+  const loadedAmmo: LoadedAmmoInfo = {
+    templateId: targetAmmoId,
+    type: ammoTemplate.type,
+    damage: ammoTemplate.damage,
+    effects: ammoTemplate.effects,
+  };
+
   $ownedWeapons.set({
-    ...current,
-    [instanceId]: { ...instance, currentAmmo: template.shots },
+    ...$ownedWeapons.get(), // re-read in case addAmmo triggered listeners
+    [instanceId]: {
+      ...instance,
+      currentAmmo: currentInMag + roundsToLoad,
+      loadedAmmo,
+    },
   });
+  return true;
 }
 
 export function setCurrentAmmo(instanceId: string, ammo: number): void {

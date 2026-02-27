@@ -195,7 +195,8 @@
                ┌───────────────────┐   │
                │ $allOwnedWeapons │   │──▸ CombatPanel → WeaponCombatCard
                │    (computed)     │   │    (also reads $allSkills + $REF)
-               └───────────────────┘   │
+               └───────────────────┘   │    WeaponCombatCard reads $ammoByCaliberLookup (reload popover)
+                                       │    reloadWeapon() cross-store: reads $ammoByCaliberLookup, mutates $ownedAmmo
                                        ▾
                           ┌──────────────────┐
                           │$customWeaponList │
