@@ -6,11 +6,10 @@ import {
   $addingArmor,
   $addingGear,
   $addingSkill,
-  $addingWeapon,
   $selectedArmor,
   $selectedGear,
   $selectedSkill,
-  $selectedWeapon,
+  $weaponAmmoFocus,
   tabStore,
 } from "@stores/ui";
 
@@ -32,8 +31,7 @@ export const BottomBar = () => {
   const selectedGear = useStore($selectedGear);
   const addingArmor = useStore($addingArmor);
   const selectedArmor = useStore($selectedArmor);
-  const addingWeapon = useStore($addingWeapon);
-  const selectedWeapon = useStore($selectedWeapon);
+  const weaponAmmoFocus = useStore($weaponAmmoFocus);
   const equipSubTab = useStore(tabStore("equipment-sub-tab", "gear"));
   const [expanded, setExpanded] = useState(false);
 
@@ -47,14 +45,25 @@ export const BottomBar = () => {
   useAutoExpand(addingSkill, selectedSkill, expanded, setExpanded);
   useAutoExpand(addingGear, selectedGear, expanded, setExpanded);
   useAutoExpand(addingArmor, selectedArmor, expanded, setExpanded);
-  useAutoExpand(addingWeapon, selectedWeapon, expanded, setExpanded);
+  const hasWeaponAmmo = weaponAmmoFocus !== null;
+  const isAddingWeaponAmmo =
+    weaponAmmoFocus?.kind === "adding-weapon" ||
+    weaponAmmoFocus?.kind === "adding-ammo";
+  const hasWeaponAmmoSelection =
+    weaponAmmoFocus?.kind === "weapon" || weaponAmmoFocus?.kind === "ammo";
+  useAutoExpand(
+    isAddingWeaponAmmo,
+    hasWeaponAmmoSelection ? "yes" : null,
+    expanded,
+    setExpanded,
+  );
 
   // Safety: collapse if current tab has no active content
   const hasContent =
     (tab === "dossier" && (selectedSkill || addingSkill)) ||
     (tab === "equipment" &&
       ((equipSubTab === "gear" && (selectedGear || addingGear)) ||
-        (equipSubTab === "weapons" && (!!selectedWeapon || addingWeapon)) ||
+        (equipSubTab === "weapons" && hasWeaponAmmo) ||
         (equipSubTab === "armor" && (!!selectedArmor || addingArmor)))) ||
     tab === "combat"; // combat always has history content
   if (expanded && !hasContent) {
@@ -69,7 +78,7 @@ export const BottomBar = () => {
       if (addingSkill) $addingSkill.set(false);
       if (addingGear) $addingGear.set(false);
       if (addingArmor) $addingArmor.set(false);
-      if (addingWeapon) $addingWeapon.set(false);
+      if (isAddingWeaponAmmo) $weaponAmmoFocus.set(null);
     } else {
       setExpanded(true);
     }

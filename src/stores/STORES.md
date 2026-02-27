@@ -106,11 +106,11 @@ Helper: `isCustomGear(id)` — true if not in `GEAR_CATALOG`
 
 ### `$ownedWeapons` (weapons.ts)
 ```
-Record<instanceId, { id, templateId, currentAmmo, currentAmmoType, smartchipActive }>
+Record<instanceId, { id, templateId, currentAmmo, loadedAmmo, smartchipActive }>
 ```
-Owned weapon instances. Each weapon tracks its own ammo state. Validated on decode.
+Owned weapon instances. Each weapon tracks its own ammo state. `loadedAmmo` is a `LoadedAmmoInfo | null` snapshot (templateId, type, damage, effects) — `null` means manual mode (no ammo system, free reload).
 
-Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon`, `setCurrentAmmo`, `setAmmoType`, `setSmartchipActive`
+Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon`, `setCurrentAmmo`, `setSmartchipActive`
 Template resolution: `resolveWeaponTemplate()` — checks `WEAPON_CATALOG` + `$customWeaponTemplates`
 Helper: `isCustomWeapon(id)` — true if not in `WEAPON_CATALOG`
 
@@ -129,6 +129,7 @@ string | null (default: null)
 ```
 Currently selected weapon instance ID for the bottom bar. Non-persistent.
 Mutually exclusive with `$addingWeapon` — use `selectWeapon()` to set.
+Cross-highlighting: `selectWeapon()` also clears `$selectedAmmo`/`$addingAmmo`.
 
 ### `$addingWeapon` (ui.ts)
 ```
@@ -136,6 +137,38 @@ boolean (default: false)
 ```
 Whether the add-custom-weapon form is open in the bottom bar. Non-persistent.
 Mutually exclusive with `$selectedWeapon` — use `startAddingWeapon()` to set.
+
+### `$ownedAmmo` (ammo.ts)
+```
+Record<templateId, number>
+```
+Owned ammo quantities. Same sparse pattern as `$gear`. Catalog data from `AMMO_CATALOG`, custom defs from `$customAmmoItems`.
+
+Actions: `addAmmo`, `removeAmmo`
+
+### `$customAmmoItems` (ammo.ts)
+```
+Record<string, CustomAmmoDef>
+CustomAmmoDef: { caliber, type, damage, effects, description, cost?, availability? }
+```
+Custom ammo definitions — user-created. `templateId` generated as `${caliber}_${type}`.
+
+Actions: `addCustomAmmo`, `updateCustomAmmo`, `removeCustomAmmo`
+
+### `$selectedAmmo` (ui.ts)
+```
+string | null (default: null)
+```
+Currently selected ammo templateId for the bottom bar. Non-persistent.
+Mutually exclusive with `$addingAmmo` — use `selectAmmo()` to set.
+Cross-highlighting: `selectAmmo()` also clears `$selectedWeapon`/`$addingWeapon`.
+
+### `$addingAmmo` (ui.ts)
+```
+boolean (default: false)
+```
+Whether the add-custom-ammo form is open in the bottom bar. Non-persistent.
+Mutually exclusive with `$selectedAmmo` — use `startAddingAmmo()` to set.
 
 ### `$selectedArmor` (ui.ts)
 ```
@@ -284,6 +317,27 @@ OwnedGearItem[] (custom: true)
 All custom gear definitions with current quantities (including qty 0).
 Depends on: `$gear`, `$customGearItems`
 
+### `$allOwnedAmmo` (ammo.ts)
+```
+OwnedAmmoItem[] (each: AmmoTemplate + quantity + custom?)
+```
+All owned ammo (qty > 0): catalog items hydrated from `AMMO_CATALOG`, custom items from `$customAmmoItems`.
+Depends on: `$ownedAmmo`, `$customAmmoItems`
+
+### `$ammoByCaliberLookup` (ammo.ts)
+```
+Record<caliber, OwnedAmmoItem[]>
+```
+Owned ammo grouped by caliber. Used by reload popover for type switching.
+Depends on: `$allOwnedAmmo`
+
+### `$customAmmoList` (ammo.ts)
+```
+OwnedAmmoItem[] (custom: true)
+```
+All custom ammo definitions with current quantities (including qty 0).
+Depends on: `$customAmmoItems`, `$ownedAmmo`
+
 ### `$allOwnedWeapons` (weapons.ts)
 ```
 WeaponPiece[] (each: WeaponTemplate + instance state + custom?)
@@ -334,6 +388,13 @@ $customGearItems┼──▸ $customGear
 $ownedWeapons ─────────┬──▸ $allOwnedWeapons (hydrated with templates)
 $customWeaponTemplates─┼──▸ $customWeaponList
                        └──▸ resolveWeaponTemplate() (used by acquireWeapon, reloadWeapon, $allOwnedWeapons)
+
+$ownedAmmo ─────────┬──▸ $allOwnedAmmo ──▸ $ammoByCaliberLookup
+$customAmmoItems────┼──▸ $customAmmoList
+                    └──▸ resolveAmmoTemplate() (used by addAmmo)
+
+$selectedAmmo ◂──▸ $addingAmmo (mutually exclusive via selectAmmo/startAddingAmmo)
+  ◂──▸ $selectedWeapon (cross-highlighting: selecting one clears the other)
 
 $selectedWeapon ◂──▸ $addingWeapon (mutually exclusive via selectWeapon/startAddingWeapon)
 

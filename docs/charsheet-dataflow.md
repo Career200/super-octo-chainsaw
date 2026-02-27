@@ -181,7 +181,7 @@
                │  instances: id →        │
                │  { templateId,          │
                │    currentAmmo,         │
-               │    currentAmmoType,     │
+               │    loadedAmmo,          │
                │    smartchipActive }    │
                └──────────┬──────────────┘
                           │
@@ -212,6 +212,45 @@
                │      (atom)       │                       BottomBar (auto-expand)
                └────────────────────┘
                 Mutually exclusive with $selectedWeapon
+                Cross-highlighting: selectWeapon/startAddingWeapon clear $selectedAmmo/$addingAmmo
+
+               ┌──────────────────────────┐
+               │    $ownedAmmo           │──────────────────▸ AmmoListPanel ◂──▸
+               │       (persist)          │                    BottomBarAmmo ◂──▸
+               │  templateId → quantity   │
+               └──────────┬──────────────┘
+                          │
+                          │  ┌────────────────────────────┐
+                          │  │  $customAmmoItems          │──▸ BottomBarAmmo ◂──▸
+                          │  │       (persist)             │
+                          │  └──────┬──┬─────────────────┘
+                          │         │  │
+                          ├─────────┘  │
+                          ▾            │
+               ┌───────────────────┐   │
+               │  $allOwnedAmmo   │   │──▸ AmmoListPanel (owned tab)
+               │    (computed)     │   │
+               └───────┬───────────┘   │
+                       │               ▾
+                       ▾     ┌──────────────────┐
+               ┌────────────────────────────┐   │  $customAmmoList │
+               │ $ammoByCaliberLookup      │   │   (computed)     │
+               │    (computed)              │   └──────────────────┘
+               │ caliber → OwnedAmmoItem[] │
+               └────────────────────────────┘
+                 Used by reload popover for ammo type switching
+
+               ┌────────────────────┐
+               │  $selectedAmmo    │─────────────────────▸ BottomBarAmmo (detail view)
+               │      (atom)       │                       AmmoCard (highlight)
+               └────────────────────┘
+
+               ┌────────────────────┐
+               │   $addingAmmo     │─────────────────────▸ BottomBarAmmo (add-ammo form)
+               │      (atom)       │                       BottomBar (auto-expand)
+               └────────────────────┘
+                Mutually exclusive with $selectedAmmo
+                Cross-highlighting: selectAmmo/startAddingAmmo clear $selectedWeapon/$addingWeapon
 
                ┌────────────────────┐
                │  $selectedArmor  │─────────────────────▸ BottomBarArmor (detail view)

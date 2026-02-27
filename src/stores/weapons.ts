@@ -1,6 +1,7 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
 
+import type { LoadedAmmoInfo } from "@scripts/ammo/catalog";
 import { normalizeKey } from "@scripts/catalog-common";
 import type {
   Availability,
@@ -19,7 +20,7 @@ export interface WeaponInstance {
   id: string;
   templateId: string;
   currentAmmo: number;
-  currentAmmoType: string;
+  loadedAmmo: LoadedAmmoInfo | null;
   smartchipActive: boolean;
 }
 
@@ -47,7 +48,7 @@ export interface CustomWeaponDef {
 export interface WeaponPiece extends WeaponTemplate {
   id: string;
   currentAmmo: number;
-  currentAmmoType: string;
+  loadedAmmo: LoadedAmmoInfo | null;
   smartchipActive: boolean;
   custom?: boolean;
 }
@@ -103,7 +104,7 @@ export function acquireWeapon(templateId: string): string | null {
     id,
     templateId,
     currentAmmo: template.shots,
-    currentAmmoType: "std",
+    loadedAmmo: null,
     smartchipActive: false,
   };
   $ownedWeapons.set({ ...$ownedWeapons.get(), [id]: instance });
@@ -152,16 +153,6 @@ export function setCurrentAmmo(instanceId: string, ammo: number): void {
       ...instance,
       currentAmmo: Math.max(0, Math.min(max, ammo)),
     },
-  });
-}
-
-export function setAmmoType(instanceId: string, type: string): void {
-  const current = $ownedWeapons.get();
-  const instance = current[instanceId];
-  if (!instance) return;
-  $ownedWeapons.set({
-    ...current,
-    [instanceId]: { ...instance, currentAmmoType: type },
   });
 }
 
@@ -268,7 +259,7 @@ export const $allOwnedWeapons = computed(
         ...template,
         id: instance.id,
         currentAmmo: instance.currentAmmo,
-        currentAmmoType: instance.currentAmmoType,
+        loadedAmmo: instance.loadedAmmo ?? null,
         smartchipActive: instance.smartchipActive,
         custom: isCustomWeapon(instance.templateId) || undefined,
       });
