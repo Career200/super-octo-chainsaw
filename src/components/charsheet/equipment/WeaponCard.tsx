@@ -16,18 +16,31 @@ function isInstance(
 interface Props {
   weapon: WeaponTemplate | WeaponPiece;
   selected?: boolean;
+  highlighted?: boolean;
   custom?: boolean;
   onClick?: () => void;
 }
 
-export const WeaponCard = ({ weapon, selected, custom, onClick }: Props) => {
+export const WeaponCard = ({
+  weapon,
+  selected,
+  highlighted,
+  custom,
+  onClick,
+}: Props) => {
   const instance = isInstance(weapon);
 
+  const cls = [
+    "item-card weapon-card",
+    selected && "selected",
+    highlighted && "highlighted",
+    custom && "item-card-accent",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div
-      class={`item-card weapon-card${selected ? " selected" : ""}${custom ? " item-card-accent" : ""}`}
-      onClick={onClick}
-    >
+    <div class={cls} onClick={onClick}>
       <div class="flex-between gap-8">
         <h4>
           <span class="weapon-card-type">

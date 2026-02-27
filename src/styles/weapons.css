@@ -283,7 +283,26 @@
   cursor: not-allowed;
 }
 
-/* --- Ammo popover (repair-style stepper) --- */
+/* --- Ammo quantity stepper --- */
+.ammo-qty-btn {
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-4);
+  font-size: var(--font-ui);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.ammo-qty-btn:hover {
+  background: var(--accent-subtle);
+}
+
 .cc-ammo-stepper {
   margin-bottom: var(--space-12);
 }
@@ -291,5 +310,27 @@
 .cc-ammo-value {
   min-width: 48px;
   text-align: center;
+  color: var(--accent);
+}
+
+/* === Ammo Card (extends .item-card) === */
+.ammo-card-type {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ammo-card-effects {
+  font-size: var(--font-ui-sm);
+  margin-top: var(--space-2);
+}
+
+.ammo-card.highlighted {
+  border-color: var(--accent);
+}
+
+.gear-group-highlighted > .gear-group-label {
   color: var(--accent);
 }

@@ -22,6 +22,7 @@ const BottomBarEquipment = lazy(
   () => import("../../equipment/BottomBarEquipment"),
 );
 const BottomBarWeapon = lazy(() => import("../../equipment/BottomBarWeapon"));
+const BottomBarAmmo = lazy(() => import("../../equipment/BottomBarAmmo"));
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "combat"));
@@ -96,9 +97,14 @@ export const BottomBar = () => {
         {tab === "equipment" && equipSubTab === "gear" && (
           <BottomBarEquipment expanded={expanded} onToggle={toggle} />
         )}
-        {tab === "equipment" && equipSubTab === "weapons" && (
-          <BottomBarWeapon expanded={expanded} onToggle={toggle} />
-        )}
+        {tab === "equipment" &&
+          equipSubTab === "weapons" &&
+          (weaponAmmoFocus?.kind === "ammo" ||
+          weaponAmmoFocus?.kind === "adding-ammo" ? (
+            <BottomBarAmmo expanded={expanded} onToggle={toggle} />
+          ) : (
+            <BottomBarWeapon expanded={expanded} onToggle={toggle} />
+          ))}
         {tab === "equipment" && equipSubTab === "armor" && (
           <BottomBarArmor expanded={expanded} onToggle={toggle} />
         )}

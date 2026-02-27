@@ -32,9 +32,8 @@ export class ErrorBoundary extends Component<Props, State> {
           <h2>Something went wrong</h2>
           <p>Character data may be corrupted.</p>
           <p>
-            Try
-            <button onClick={this.handleReload}>reloading the page</button>
-            or
+            Try <button onClick={this.handleReload}>reloading the page</button>{" "}
+            or{" "}
             <button onClick={this.handleClear}>
               Clear localStorage and reload
             </button>
