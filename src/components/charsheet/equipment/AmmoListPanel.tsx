@@ -61,7 +61,7 @@ function CaliberGroup({
   const groupRef = useRef<HTMLDivElement>(null);
   const wasHighlighted = useRef(false);
   if (isHighlighted && !wasHighlighted.current && groupRef.current) {
-    groupRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    groupRef.current.scrollIntoView({ block: "nearest" });
   }
   wasHighlighted.current = isHighlighted;
   return (

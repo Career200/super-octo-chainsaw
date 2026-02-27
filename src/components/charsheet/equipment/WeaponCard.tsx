@@ -1,3 +1,5 @@
+import { useRef } from "preact/hooks";
+
 import type { WeaponTemplate } from "@scripts/weapons/catalog";
 import {
   CONCEALABILITY_LABELS,
@@ -29,6 +31,12 @@ export const WeaponCard = ({
   onClick,
 }: Props) => {
   const instance = isInstance(weapon);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const wasHighlighted = useRef(false);
+  if (highlighted && !wasHighlighted.current && cardRef.current) {
+    cardRef.current.scrollIntoView({ block: "nearest" });
+  }
+  wasHighlighted.current = !!highlighted;
 
   const cls = [
     "item-card weapon-card",
@@ -40,7 +48,7 @@ export const WeaponCard = ({
     .join(" ");
 
   return (
-    <div class={cls} onClick={onClick}>
+    <div ref={cardRef} class={cls} onClick={onClick}>
       <div class="flex-between gap-8">
         <h4>
           <span class="weapon-card-type">
