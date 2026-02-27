@@ -7,6 +7,7 @@ import { tabStore } from "@stores/ui";
 import { BodyInfo } from "./combat/BodyInfo";
 import { StatsStrip } from "./combat/StatsStrip";
 import { BottomBar } from "./common/bottombar/BottomBar";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { TabStrip } from "./shared/TabStrip";
 
 // Deferred
@@ -41,6 +42,7 @@ export const Charsheet = () => {
   const spaClass = `charsheet-spa ${tab}-section`;
 
   return (
+    <ErrorBoundary>
     <div class={spaClass}>
       <div class="fixed-bar">
         <div class="secondary-bar">
@@ -66,5 +68,6 @@ export const Charsheet = () => {
       </Suspense>
       <BottomBar />
     </div>
+    </ErrorBoundary>
   );
 };

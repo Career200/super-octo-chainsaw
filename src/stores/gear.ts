@@ -5,6 +5,8 @@ import { normalizeKey } from "@scripts/catalog-common";
 import type { Availability, GearTemplate } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
 
+import { decodeJson } from "./decode";
+
 // --- Money ---
 
 export const $eurodollars = persistentAtom<number>("character-eb", 0, {
@@ -33,75 +35,21 @@ export function isCustomGear(id: string): boolean {
   return !(id in GEAR_CATALOG);
 }
 
-// --- Persistence: quantities ---
+// --- Persistence ---
 
-/**
- * Sparse persistence: templateId/customName → quantity for all owned gear.
- * Catalog data comes from GEAR_CATALOG; custom definitions from $customGearItems.
- */
 export type GearState = Record<string, number>;
-
-function decodeGear(raw: string): GearState {
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
-      return {};
-    const result: GearState = {};
-    for (const [id, qty] of Object.entries(parsed)) {
-      if (typeof qty === "number" && qty > 0) {
-        result[id] = qty;
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
-}
+export type CustomGearState = Record<string, CustomGearDef>;
 
 export const $gear = persistentAtom<GearState>(
   "character-gear",
   {},
-  {
-    encode: JSON.stringify,
-    decode: decodeGear,
-  },
+  { encode: JSON.stringify, decode: decodeJson<GearState>({}) },
 );
-
-// --- Persistence: custom gear definitions ---
-
-export type CustomGearState = Record<string, CustomGearDef>;
-
-function decodeCustomGear(raw: string): CustomGearState {
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
-      return {};
-    const result: CustomGearState = {};
-    for (const [id, val] of Object.entries(parsed)) {
-      if (
-        val &&
-        typeof val === "object" &&
-        !Array.isArray(val) &&
-        typeof (val as Record<string, unknown>).name === "string" &&
-        typeof (val as Record<string, unknown>).description === "string" &&
-        typeof (val as Record<string, unknown>).type === "string"
-      ) {
-        result[id] = val as CustomGearDef;
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
-}
 
 export const $customGearItems = persistentAtom<CustomGearState>(
   "character-custom-gear",
   {},
-  {
-    encode: JSON.stringify,
-    decode: decodeCustomGear,
-  },
+  { encode: JSON.stringify, decode: decodeJson<CustomGearState>({}) },
 );
 
 // --- Actions ---

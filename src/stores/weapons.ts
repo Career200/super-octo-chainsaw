@@ -11,6 +11,8 @@ import type {
 } from "@scripts/weapons/catalog";
 import { WEAPON_CATALOG } from "@scripts/weapons/catalog";
 
+import { decodeJson } from "./decode";
+
 // --- Types ---
 
 export interface WeaponInstance {
@@ -74,78 +76,21 @@ export function resolveWeaponTemplate(
   return null;
 }
 
-// --- Persistence: owned weapon instances ---
+// --- Persistence ---
 
 export type WeaponsState = Record<string, WeaponInstance>;
-
-function decodeWeapons(raw: string): WeaponsState {
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
-      return {};
-    const result: WeaponsState = {};
-    for (const [id, val] of Object.entries(parsed)) {
-      if (
-        val &&
-        typeof val === "object" &&
-        !Array.isArray(val) &&
-        typeof (val as Record<string, unknown>).id === "string" &&
-        typeof (val as Record<string, unknown>).templateId === "string" &&
-        typeof (val as Record<string, unknown>).currentAmmo === "number"
-      ) {
-        result[id] = val as WeaponInstance;
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
-}
+export type CustomWeaponsState = Record<string, CustomWeaponDef>;
 
 export const $ownedWeapons = persistentAtom<WeaponsState>(
   "character-weapons",
   {},
-  {
-    encode: JSON.stringify,
-    decode: decodeWeapons,
-  },
+  { encode: JSON.stringify, decode: decodeJson<WeaponsState>({}) },
 );
-
-// --- Persistence: custom weapon templates ---
-
-export type CustomWeaponsState = Record<string, CustomWeaponDef>;
-
-function decodeCustomWeapons(raw: string): CustomWeaponsState {
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
-      return {};
-    const result: CustomWeaponsState = {};
-    for (const [id, val] of Object.entries(parsed)) {
-      if (
-        val &&
-        typeof val === "object" &&
-        !Array.isArray(val) &&
-        typeof (val as Record<string, unknown>).name === "string" &&
-        typeof (val as Record<string, unknown>).type === "string" &&
-        typeof (val as Record<string, unknown>).damage === "string"
-      ) {
-        result[id] = val as CustomWeaponDef;
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
-}
 
 export const $customWeaponTemplates = persistentAtom<CustomWeaponsState>(
   "character-custom-weapons",
   {},
-  {
-    encode: JSON.stringify,
-    decode: decodeCustomWeapons,
-  },
+  { encode: JSON.stringify, decode: decodeJson<CustomWeaponsState>({}) },
 );
 
 // --- Actions: owned weapons ---
