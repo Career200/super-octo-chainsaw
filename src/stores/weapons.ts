@@ -107,11 +107,38 @@ export function acquireWeapon(templateId: string): string | null {
   const template = resolveWeaponTemplate(templateId);
   if (!template) return null;
   const id = generateId(templateId.substring(0, 8));
+
+  // Pick initial ammo type for ranged weapons (selected, not loaded)
+  let loadedAmmo: LoadedAmmoInfo | null = null;
+  if (template.ammo) {
+    const caliberGroup = $ammoByCaliberLookup.get()[template.ammo];
+    if (caliberGroup?.length) {
+      const first = caliberGroup[0];
+      const resolved = resolveAmmoTemplate(first.templateId);
+      if (resolved) {
+        loadedAmmo = {
+          templateId: resolved.templateId,
+          type: resolved.type,
+          damage: resolved.damage,
+          effects: resolved.effects,
+        };
+      }
+    }
+    if (!loadedAmmo) {
+      loadedAmmo = {
+        templateId: `${template.ammo}_std`,
+        type: "std",
+        damage: template.damage,
+        effects: "",
+      };
+    }
+  }
+
   const instance: WeaponInstance = {
     id,
     templateId,
-    currentAmmo: template.shots,
-    loadedAmmo: null,
+    currentAmmo: template.ammo ? 0 : template.shots,
+    loadedAmmo,
     smartchipActive: false,
   };
   $ownedWeapons.set({ ...$ownedWeapons.get(), [id]: instance });
