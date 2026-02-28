@@ -37,22 +37,23 @@ export const $customAmmoItems = persistentAtom<CustomAmmoState>(
 
 // --- Helpers ---
 
+function hydrateCustom(id: string, def: CustomAmmoDef): AmmoTemplate {
+  return {
+    templateId: id,
+    caliber: def.caliber,
+    type: def.type,
+    damage: def.damage,
+    effects: def.effects,
+    description: def.description,
+    cost: def.cost ?? 0,
+    availability: def.availability ?? "C",
+  };
+}
+
 export function resolveAmmoTemplate(templateId: string): AmmoTemplate | null {
   if (templateId in AMMO_CATALOG) return AMMO_CATALOG[templateId];
   const custom = $customAmmoItems.get()[templateId];
-  if (custom) {
-    return {
-      templateId,
-      caliber: custom.caliber,
-      type: custom.type,
-      damage: custom.damage,
-      effects: custom.effects,
-      description: custom.description,
-      cost: custom.cost ?? 0,
-      availability: custom.availability ?? "C",
-    };
-  }
-  return null;
+  return custom ? hydrateCustom(templateId, custom) : null;
 }
 
 // --- Actions ---
@@ -145,14 +146,7 @@ export const $allOwnedAmmo = computed(
         const custom = customDefs[id];
         if (custom) {
           items.push({
-            templateId: id,
-            caliber: custom.caliber,
-            type: custom.type,
-            damage: custom.damage,
-            effects: custom.effects,
-            description: custom.description,
-            cost: custom.cost ?? 0,
-            availability: custom.availability ?? "C",
+            ...hydrateCustom(id, custom),
             quantity: qty,
             custom: true,
           });
@@ -180,14 +174,7 @@ export const $customAmmoList = computed(
   [$customAmmoItems, $ownedAmmo],
   (customDefs, quantities): OwnedAmmoItem[] => {
     return Object.entries(customDefs).map(([id, def]) => ({
-      templateId: id,
-      caliber: def.caliber,
-      type: def.type,
-      damage: def.damage,
-      effects: def.effects,
-      description: def.description,
-      cost: def.cost ?? 0,
-      availability: def.availability ?? "C",
+      ...hydrateCustom(id, def),
       quantity: quantities[id] ?? 0,
       custom: true,
     }));
