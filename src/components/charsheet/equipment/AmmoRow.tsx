@@ -2,8 +2,6 @@ import type { AmmoTemplate } from "@scripts/ammo/catalog";
 import { addAmmo, removeAmmo } from "@stores/ammo";
 import { selectAmmo } from "@stores/ui";
 
-import { ItemMeta } from "../shared/ItemMeta";
-
 interface Props {
   template: AmmoTemplate;
   quantity: number;
@@ -12,7 +10,7 @@ interface Props {
   highlighted?: boolean;
 }
 
-export function AmmoCard({
+export function AmmoRow({
   template,
   quantity,
   custom,
@@ -22,23 +20,15 @@ export function AmmoCard({
   const id = template.templateId;
   return (
     <div
-      class={`item-card ammo-card${selected ? " selected" : ""}${highlighted ? " highlighted" : ""}${custom ? " item-card-accent" : ""}`}
+      class={`ammo-row${selected ? " selected" : ""}${highlighted ? " highlighted" : ""}${custom ? " ammo-row-custom" : ""}`}
       onClick={() => selectAmmo(selected ? null : id)}
     >
-      <div class="flex-between gap-8">
-        <h4>
-          {template.caliber}{" "}
-          <span class="ammo-card-type">{template.type}</span>{" "}
-          {template.damage}
-        </h4>
-        <ItemMeta availability={template.availability} cost={template.cost} />
-      </div>
-      {template.effects && (
-        <div class="ammo-card-effects text-soft">{template.effects}</div>
-      )}
-      <div class="gear-actions">
+      <span class="ammo-row-type">{template.type}</span>
+      <span class="ammo-row-damage">{template.damage}</span>
+      <span class="ammo-row-effects text-soft">{template.effects}</span>
+      <span class="ammo-row-actions">
         {quantity > 0 ? (
-          <div class="gear-qty-controls ammo-qty-controls">
+          <span class="gear-qty-controls ammo-qty-controls">
             <button
               class="btn-sm ammo-qty-btn"
               onClick={(e) => {
@@ -76,7 +66,7 @@ export function AmmoCard({
             >
               +100
             </button>
-          </div>
+          </span>
         ) : (
           <button
             class="btn-sm gear-take-btn"
@@ -88,7 +78,7 @@ export function AmmoCard({
             Take
           </button>
         )}
-      </div>
+      </span>
     </div>
   );
 }

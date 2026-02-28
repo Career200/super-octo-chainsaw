@@ -243,7 +243,7 @@
 
                ┌────────────────────┐
                │  $selectedAmmo    │─────────────────────▸ BottomBarAmmo (detail view)
-               │      (atom)       │                       AmmoCard (highlight)
+               │      (atom)       │                       AmmoRow (highlight)
                └────────────────────┘
 
                ┌────────────────────┐

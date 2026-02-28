@@ -1,14 +1,11 @@
 import { useStore } from "@nanostores/preact";
+import type { RefObject } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 import type { AmmoTemplate } from "@scripts/ammo/catalog";
-import { AMMO_CATALOG } from "@scripts/ammo/catalog";
+import { AMMO_CATALOG, CALIBER_ORDER } from "@scripts/ammo/catalog";
 import { WEAPON_CATALOG } from "@scripts/weapons/catalog";
-import {
-  $allOwnedAmmo,
-  $customAmmoList,
-  $ownedAmmo,
-} from "@stores/ammo";
+import { $allOwnedAmmo, $customAmmoList, $ownedAmmo } from "@stores/ammo";
 import {
   $selectedAmmo,
   $selectedWeapon,
@@ -21,7 +18,7 @@ import { Chevron } from "../shared/Chevron";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 
-import { AmmoCard } from "./AmmoCard";
+import { AmmoRow } from "./AmmoRow";
 
 // --- Grouping by caliber ---
 
@@ -39,7 +36,12 @@ function groupByCaliber(items: AmmoItem[]): [string, AmmoItem[]][] {
     if (!grouped.has(cal)) grouped.set(cal, []);
     grouped.get(cal)!.push(item);
   }
-  return [...grouped.entries()];
+  // Sort groups by CALIBER_ORDER; unknown calibers go to the end
+  return [...grouped.entries()].sort((a, b) => {
+    const ai = CALIBER_ORDER.indexOf(a[0]);
+    const bi = CALIBER_ORDER.indexOf(b[0]);
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  });
 }
 
 function CaliberGroup({
@@ -68,6 +70,7 @@ function CaliberGroup({
     <div
       ref={groupRef}
       class={`gear-group${isHighlighted ? " gear-group-highlighted" : ""}`}
+      data-caliber={label}
     >
       <div class="gear-group-label" onClick={onToggle}>
         <span>
@@ -78,7 +81,7 @@ function CaliberGroup({
       </div>
       {collapsed ? (
         <>
-          <AmmoCard
+          <AmmoRow
             template={items[0].template}
             quantity={items[0].quantity}
             custom={items[0].custom}
@@ -93,7 +96,7 @@ function CaliberGroup({
         </>
       ) : (
         items.map((item) => (
-          <AmmoCard
+          <AmmoRow
             key={item.id}
             template={item.template}
             quantity={item.quantity}
@@ -103,6 +106,40 @@ function CaliberGroup({
           />
         ))
       )}
+    </div>
+  );
+}
+
+// --- Caliber badge bar ---
+
+function CaliberBadgeBar({
+  calibers,
+  activeCaliber,
+  gridRef,
+}: {
+  calibers: string[];
+  activeCaliber: string | null;
+  gridRef: RefObject<HTMLDivElement>;
+}) {
+  const handleClick = (caliber: string) => {
+    const safeCaliber = CSS.escape(caliber);
+    const group = gridRef.current?.querySelector(
+      `[data-caliber="${safeCaliber}"]`,
+    );
+    group?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+  if (calibers.length < 2) return null;
+  return (
+    <div class="caliber-badge-bar">
+      {calibers.map((cal) => (
+        <button
+          key={cal}
+          class={`caliber-badge${activeCaliber === cal ? " active" : ""}`}
+          onClick={() => handleClick(cal)}
+        >
+          {cal}
+        </button>
+      ))}
     </div>
   );
 }
@@ -125,6 +162,15 @@ export const AmmoListPanel = ({
   const tab = useStore(tabStore("ammo-tab", "catalog"));
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
+  const toggleGroup = (caliber: string) => {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(caliber)) next.delete(caliber);
+      else next.add(caliber);
+      return next;
+    });
+  };
+
   // Cross-highlighting: derive caliber from selected weapon (catalog or owned)
   const selectedWeaponId = useStore($selectedWeapon);
   const allWeapons = useStore($allOwnedWeapons);
@@ -135,14 +181,7 @@ export const AmmoListPanel = ({
         null)
       : null;
 
-  const toggleGroup = (caliber: string) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(caliber)) next.delete(caliber);
-      else next.add(caliber);
-      return next;
-    });
-  };
+  const gridRef = useRef<HTMLDivElement>(null);
 
   // Catalog view
   const catalogGroups = groupByCaliber(
@@ -172,6 +211,15 @@ export const AmmoListPanel = ({
       custom: true,
     })),
   );
+
+  const activeGroups =
+    tab === "catalog"
+      ? catalogGroups
+      : tab === "owned"
+        ? ownedGroups
+        : customGroups;
+
+  const activeCalibers = activeGroups.map(([cal]) => cal);
 
   return (
     <Panel
@@ -204,7 +252,13 @@ export const AmmoListPanel = ({
         </div>
       )}
 
-      <div class="gear-grid">
+      <CaliberBadgeBar
+        calibers={activeCalibers}
+        activeCaliber={highlightedCaliber}
+        gridRef={gridRef}
+      />
+
+      <div class="gear-grid" ref={gridRef}>
         {tab === "catalog" &&
           catalogGroups.map(([caliber, items]) => (
             <CaliberGroup

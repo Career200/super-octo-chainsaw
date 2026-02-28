@@ -34,7 +34,7 @@ export const WeaponCard = ({
   const cardRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (highlighted) {
-      cardRef.current?.scrollIntoView({ block: "nearest" });
+      cardRef.current?.scrollIntoView({ block: "center" });
     }
   }, [highlighted]);
 
