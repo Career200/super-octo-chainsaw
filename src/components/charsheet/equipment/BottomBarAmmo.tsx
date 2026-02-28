@@ -1,8 +1,9 @@
 import { useStore } from "@nanostores/preact";
-import { useState } from "preact/hooks";
+import { useCallback, useRef, useState } from "preact/hooks";
 
 import type { AmmoTemplate, Availability } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
+import { CALIBER_DAMAGE } from "@scripts/weapons/catalog";
 import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
 import {
   $customAmmoItems,
@@ -142,10 +143,11 @@ function AmmoForm({
     placeholder: string,
     title: string,
     className: string,
-    opts?: { type?: string; min?: string; autoFocus?: boolean },
+    opts?: { type?: string; min?: string; autoFocus?: boolean; list?: string },
   ) => (
     <input
       type={opts?.type ?? "text"}
+      list={opts?.list}
       class={`input item-form-input ${className}${errors?.has(field) ? " input-error" : ""}`}
       value={value}
       disabled={!onChange}
@@ -164,10 +166,16 @@ function AmmoForm({
   return (
     <div class="item-form">
       <div class="item-form-fields">
-        {inp("caliber", caliber, onCaliberChange, "Caliber", "Caliber (e.g. 9mm, .45)", "weapon-form-ammo", { autoFocus })}
+        <span class="weapon-form-ammo">
+          {inp("caliber", caliber, onCaliberChange, "Caliber", "Caliber (e.g. 9mm, .45)", "", { autoFocus, list: "caliber-suggestions" })}
+          <datalist id="caliber-suggestions">
+            {Object.keys(CALIBER_DAMAGE).map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+        </span>
         {inp("type", type, onTypeChange, "Type", "Ammo type (e.g. std, ap)", "weapon-form-type")}
         {inp("damage", damage, onDamageChange, "Damage", "Damage dice (e.g. 2D6+1)", "weapon-form-damage")}
-        {inp("effects", effects, onEffectsChange, "Effects", "Special effects", "weapon-form-rel")}
         <Tip label="Cost per box (eb)" class="item-form-cost">
           {inp("cost", cost, onCostChange, "Cost", "Cost per box in eurobucks", "", { type: "number", min: "0" })}
         </Tip>
@@ -195,19 +203,40 @@ function AmmoForm({
           </select>
         </Tip>
       </div>
-      <textarea
-        class="input item-form-description"
-        value={description}
-        disabled={!onDescriptionChange}
-        onInput={
-          onDescriptionChange
-            ? (e) =>
-                onDescriptionChange((e.target as HTMLTextAreaElement).value)
-            : undefined
-        }
-        placeholder="No description"
-        title="Description"
-      />
+      <div class="ammo-form-bottom">
+        <div class="ammo-form-half">
+          <span class="text-desc">Effects</span>
+          <textarea
+            class={`input ammo-form-effects${errors?.has("effects") ? " input-error" : ""}`}
+            value={effects}
+            disabled={!onEffectsChange}
+            onInput={
+              onEffectsChange
+                ? (e) =>
+                    onEffectsChange((e.target as HTMLTextAreaElement).value)
+                : undefined
+            }
+            placeholder="Effects"
+            title="Special effects"
+          />
+        </div>
+        <div class="ammo-form-half">
+          <span class="text-desc">Description</span>
+          <textarea
+            class="input item-form-description"
+            value={description}
+            disabled={!onDescriptionChange}
+            onInput={
+              onDescriptionChange
+                ? (e) =>
+                    onDescriptionChange((e.target as HTMLTextAreaElement).value)
+                : undefined
+            }
+            placeholder="No description"
+            title="Description"
+          />
+        </div>
+      </div>
     </div>
   );
 }
@@ -241,10 +270,27 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
   const isCustom = ammoId ? !!customDef : false;
   const quantity = ammoId ? quantities[ammoId] ?? 0 : 0;
 
+  // Edit toggle for custom ammo (view ↔ edit)
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const editing = isCustom && !!customDef && editingId === ammoId;
+
   // Add-mode form state
   const [newCaliber, setNewCaliber] = useState("");
   const [newType, setNewType] = useState("");
   const [newDamage, setNewDamage] = useState("");
+  const damageAutoFilled = useRef(false);
+  const handleCaliberChange = useCallback((cal: string) => {
+    setNewCaliber(cal);
+    const lookup = CALIBER_DAMAGE[cal] ?? CALIBER_DAMAGE[cal.toLowerCase()];
+    if (lookup && (!newDamage || damageAutoFilled.current)) {
+      setNewDamage(lookup);
+      damageAutoFilled.current = true;
+    }
+  }, [newDamage]);
+  const handleDamageChange = useCallback((v: string) => {
+    damageAutoFilled.current = false;
+    setNewDamage(v);
+  }, []);
   const [newEffects, setNewEffects] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newCost, setNewCost] = useState("");
@@ -262,16 +308,16 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
       return "Damage cannot be empty";
     }
     const cost = newCost ? Number(newCost) : undefined;
-    const ok = addCustomAmmo(cal, typ, {
+    const id = addCustomAmmo(cal, typ, {
       damage: dmg,
       effects: newEffects.trim(),
       description: newDescription.trim(),
       cost: cost != null && !isNaN(cost) ? cost : undefined,
       availability: (newAvailability as Availability) || undefined,
     });
-    if (ok) {
-      const id = `${cal}_${typ}`;
+    if (id) {
       setAddAttempted(false);
+      damageAutoFilled.current = false;
       setNewCaliber("");
       setNewType("");
       setNewDamage("");
@@ -307,11 +353,11 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
     bodyContent = (
       <AmmoForm
         caliber={newCaliber}
-        onCaliberChange={setNewCaliber}
+        onCaliberChange={handleCaliberChange}
         type={newType}
         onTypeChange={setNewType}
         damage={newDamage}
-        onDamageChange={setNewDamage}
+        onDamageChange={handleDamageChange}
         effects={newEffects}
         onEffectsChange={setNewEffects}
         description={newDescription}
@@ -324,7 +370,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
         autoFocus
       />
     );
-  } else if (isCustom && resolved) {
+  } else if (isCustom && editing && resolved) {
     bodyContent = (
       <AmmoForm
         caliber={resolved.caliber}
@@ -368,6 +414,19 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
       isCustom={isCustom}
       removeName={displayName}
       onRemove={handleRemove}
+      headerActions={
+        isCustom && !adding && customDef ? (
+          <button
+            class="bar-action"
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingId(editing ? null : ammoId);
+            }}
+          >
+            {editing ? "Done" : "Edit"}
+          </button>
+        ) : null
+      }
     >
       {bodyContent}
     </BottomBarItemShell>

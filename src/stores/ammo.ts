@@ -88,21 +88,20 @@ export function addCustomAmmo(
     cost?: number;
     availability?: Availability;
   },
-): boolean {
-  const templateId = `${caliber}_${type}`;
-  const key = normalizeKey(templateId);
+): string | null {
+  const templateId = normalizeKey(`${caliber}_${type}`);
   // Check against catalog
   for (const t of Object.values(AMMO_CATALOG)) {
-    if (normalizeKey(t.templateId) === key) return false;
+    if (normalizeKey(t.templateId) === templateId) return null;
   }
   // Check against existing custom
   for (const id of Object.keys($customAmmoItems.get())) {
-    if (normalizeKey(id) === key) return false;
+    if (normalizeKey(id) === templateId) return null;
   }
   const def: CustomAmmoDef = { caliber, type, ...fields };
   $customAmmoItems.set({ ...$customAmmoItems.get(), [templateId]: def });
   addAmmo(templateId);
-  return true;
+  return templateId;
 }
 
 export function updateCustomAmmo(

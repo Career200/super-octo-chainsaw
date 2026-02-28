@@ -3,13 +3,6 @@ import { computed } from "nanostores";
 
 import type { LoadedAmmoInfo } from "@scripts/ammo/catalog";
 import { normalizeKey } from "@scripts/catalog-common";
-import {
-  $ammoByCaliberLookup,
-  $ownedAmmo,
-  addAmmo,
-  removeAmmo,
-  resolveAmmoTemplate,
-} from "@stores/ammo";
 import type {
   Availability,
   Concealability,
@@ -18,6 +11,13 @@ import type {
   WeaponType,
 } from "@scripts/weapons/catalog";
 import { WEAPON_CATALOG } from "@scripts/weapons/catalog";
+import {
+  $ammoByCaliberLookup,
+  $ownedAmmo,
+  addAmmo,
+  removeAmmo,
+  resolveAmmoTemplate,
+} from "@stores/ammo";
 
 import { decodeJson } from "./decode";
 
@@ -147,7 +147,8 @@ export function reloadWeapon(
   if (!template) return false;
 
   // Determine target ammo type
-  const targetAmmoId = ammoTemplateId ?? instance.loadedAmmo?.templateId ?? null;
+  const targetAmmoId =
+    ammoTemplateId ?? instance.loadedAmmo?.templateId ?? null;
 
   // Check if any reserves exist for this weapon's caliber
   const caliberAmmo = template.ammo
@@ -159,7 +160,11 @@ export function reloadWeapon(
   if (!hasReserves) {
     $ownedWeapons.set({
       ...current,
-      [instanceId]: { ...instance, currentAmmo: template.shots, loadedAmmo: null },
+      [instanceId]: {
+        ...instance,
+        currentAmmo: template.shots,
+        loadedAmmo: null,
+      },
     });
     return true;
   }
@@ -175,17 +180,18 @@ export function reloadWeapon(
   const switching =
     instance.loadedAmmo != null &&
     instance.loadedAmmo.templateId !== targetAmmoId;
-  if (switching && instance.loadedAmmo && instance.currentAmmo > 0) {
-    addAmmo(instance.loadedAmmo.templateId, instance.currentAmmo);
-  }
 
   const currentInMag = switching ? 0 : instance.currentAmmo;
   const roundsNeeded = template.shots - currentInMag;
 
-  // Check available reserves (re-read after potential addAmmo above)
+  // Read reserves before any mutations — safe because switching only
+  // returns rounds of the OLD type, which is a different templateId.
   const reserves = $ownedAmmo.get()[targetAmmoId] ?? 0;
   const roundsToLoad = Math.min(roundsNeeded, reserves);
 
+  if (switching && instance.loadedAmmo && instance.currentAmmo > 0) {
+    addAmmo(instance.loadedAmmo.templateId, instance.currentAmmo);
+  }
   if (roundsToLoad > 0) {
     removeAmmo(targetAmmoId, roundsToLoad);
   }
@@ -198,7 +204,7 @@ export function reloadWeapon(
   };
 
   $ownedWeapons.set({
-    ...$ownedWeapons.get(), // re-read in case addAmmo triggered listeners
+    ...current,
     [instanceId]: {
       ...instance,
       currentAmmo: currentInMag + roundsToLoad,

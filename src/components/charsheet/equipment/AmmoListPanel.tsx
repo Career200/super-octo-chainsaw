@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 
 import type { AmmoTemplate } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
@@ -59,11 +59,11 @@ function CaliberGroup({
 }) {
   const isHighlighted = highlightedCaliber === label;
   const groupRef = useRef<HTMLDivElement>(null);
-  const wasHighlighted = useRef(false);
-  if (isHighlighted && !wasHighlighted.current && groupRef.current) {
-    groupRef.current.scrollIntoView({ block: "nearest" });
-  }
-  wasHighlighted.current = isHighlighted;
+  useEffect(() => {
+    if (isHighlighted) {
+      groupRef.current?.scrollIntoView({ block: "nearest" });
+    }
+  }, [isHighlighted]);
   return (
     <div
       ref={groupRef}

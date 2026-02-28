@@ -1,4 +1,4 @@
-import { useRef } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 
 import type { WeaponTemplate } from "@scripts/weapons/catalog";
 import {
@@ -32,11 +32,11 @@ export const WeaponCard = ({
 }: Props) => {
   const instance = isInstance(weapon);
   const cardRef = useRef<HTMLDivElement>(null);
-  const wasHighlighted = useRef(false);
-  if (highlighted && !wasHighlighted.current && cardRef.current) {
-    cardRef.current.scrollIntoView({ block: "nearest" });
-  }
-  wasHighlighted.current = !!highlighted;
+  useEffect(() => {
+    if (highlighted) {
+      cardRef.current?.scrollIntoView({ block: "nearest" });
+    }
+  }, [highlighted]);
 
   const cls = [
     "item-card weapon-card",
