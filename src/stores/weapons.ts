@@ -1,6 +1,7 @@
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
 
+import type { LoadedAmmoInfo } from "@scripts/ammo/catalog";
 import { normalizeKey } from "@scripts/catalog-common";
 import type {
   Availability,
@@ -10,6 +11,15 @@ import type {
   WeaponType,
 } from "@scripts/weapons/catalog";
 import { WEAPON_CATALOG } from "@scripts/weapons/catalog";
+import {
+  $ammoByCaliberLookup,
+  $ownedAmmo,
+  addAmmo,
+  removeAmmo,
+  resolveAmmoTemplate,
+} from "@stores/ammo";
+
+import { decodeJson } from "./decode";
 
 // --- Types ---
 
@@ -17,7 +27,7 @@ export interface WeaponInstance {
   id: string;
   templateId: string;
   currentAmmo: number;
-  currentAmmoType: string;
+  loadedAmmo: LoadedAmmoInfo | null;
   smartchipActive: boolean;
 }
 
@@ -45,7 +55,7 @@ export interface CustomWeaponDef {
 export interface WeaponPiece extends WeaponTemplate {
   id: string;
   currentAmmo: number;
-  currentAmmoType: string;
+  loadedAmmo: LoadedAmmoInfo | null;
   smartchipActive: boolean;
   custom?: boolean;
 }
@@ -74,78 +84,21 @@ export function resolveWeaponTemplate(
   return null;
 }
 
-// --- Persistence: owned weapon instances ---
+// --- Persistence ---
 
 export type WeaponsState = Record<string, WeaponInstance>;
-
-function decodeWeapons(raw: string): WeaponsState {
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
-      return {};
-    const result: WeaponsState = {};
-    for (const [id, val] of Object.entries(parsed)) {
-      if (
-        val &&
-        typeof val === "object" &&
-        !Array.isArray(val) &&
-        typeof (val as Record<string, unknown>).id === "string" &&
-        typeof (val as Record<string, unknown>).templateId === "string" &&
-        typeof (val as Record<string, unknown>).currentAmmo === "number"
-      ) {
-        result[id] = val as WeaponInstance;
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
-}
+export type CustomWeaponsState = Record<string, CustomWeaponDef>;
 
 export const $ownedWeapons = persistentAtom<WeaponsState>(
   "character-weapons",
   {},
-  {
-    encode: JSON.stringify,
-    decode: decodeWeapons,
-  },
+  { encode: JSON.stringify, decode: decodeJson<WeaponsState>({}) },
 );
-
-// --- Persistence: custom weapon templates ---
-
-export type CustomWeaponsState = Record<string, CustomWeaponDef>;
-
-function decodeCustomWeapons(raw: string): CustomWeaponsState {
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
-      return {};
-    const result: CustomWeaponsState = {};
-    for (const [id, val] of Object.entries(parsed)) {
-      if (
-        val &&
-        typeof val === "object" &&
-        !Array.isArray(val) &&
-        typeof (val as Record<string, unknown>).name === "string" &&
-        typeof (val as Record<string, unknown>).type === "string" &&
-        typeof (val as Record<string, unknown>).damage === "string"
-      ) {
-        result[id] = val as CustomWeaponDef;
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
-}
 
 export const $customWeaponTemplates = persistentAtom<CustomWeaponsState>(
   "character-custom-weapons",
   {},
-  {
-    encode: JSON.stringify,
-    decode: decodeCustomWeapons,
-  },
+  { encode: JSON.stringify, decode: decodeJson<CustomWeaponsState>({}) },
 );
 
 // --- Actions: owned weapons ---
@@ -154,11 +107,24 @@ export function acquireWeapon(templateId: string): string | null {
   const template = resolveWeaponTemplate(templateId);
   if (!template) return null;
   const id = generateId(templateId.substring(0, 8));
+
+  // Pick initial ammo type for ranged weapons (selected, not loaded)
+  let loadedAmmo: LoadedAmmoInfo | null = null;
+  if (template.ammo) {
+    const first = $ammoByCaliberLookup.get()[template.ammo]?.[0];
+    loadedAmmo = {
+      templateId: first?.templateId ?? `${template.ammo}_std`,
+      type: first?.type ?? "std",
+      damage: first?.damage ?? template.damage,
+      effects: first?.effects ?? "",
+    };
+  }
+
   const instance: WeaponInstance = {
     id,
     templateId,
-    currentAmmo: template.shots,
-    currentAmmoType: "std",
+    currentAmmo: template.ammo ? 0 : template.shots,
+    loadedAmmo,
     smartchipActive: false,
   };
   $ownedWeapons.set({ ...$ownedWeapons.get(), [id]: instance });
@@ -183,16 +149,82 @@ export function fireWeapon(instanceId: string, shots: number = 1): void {
   });
 }
 
-export function reloadWeapon(instanceId: string): void {
+export function reloadWeapon(
+  instanceId: string,
+  ammoTemplateId?: string,
+): boolean {
   const current = $ownedWeapons.get();
   const instance = current[instanceId];
-  if (!instance) return;
+  if (!instance) return false;
   const template = resolveWeaponTemplate(instance.templateId);
-  if (!template) return;
+  if (!template) return false;
+
+  // Determine target ammo type
+  const targetAmmoId =
+    ammoTemplateId ?? instance.loadedAmmo?.templateId ?? null;
+
+  // Check if any reserves exist for this weapon's caliber
+  const caliberAmmo = template.ammo
+    ? ($ammoByCaliberLookup.get()[template.ammo] ?? [])
+    : [];
+  const hasReserves = caliberAmmo.length > 0;
+
+  // No reserves for caliber → free reload (soft mode: warn but allow)
+  if (!hasReserves) {
+    $ownedWeapons.set({
+      ...current,
+      [instanceId]: {
+        ...instance,
+        currentAmmo: template.shots,
+        loadedAmmo: null,
+      },
+    });
+    return true;
+  }
+
+  // Reserves exist but no type selected → user must pick via popover
+  if (!targetAmmoId) return false;
+
+  // Resolve ammo template
+  const ammoTemplate = resolveAmmoTemplate(targetAmmoId);
+  if (!ammoTemplate) return false;
+
+  // Type switching: return current magazine rounds to reserves
+  const switching =
+    instance.loadedAmmo != null &&
+    instance.loadedAmmo.templateId !== targetAmmoId;
+
+  const currentInMag = switching ? 0 : instance.currentAmmo;
+  const roundsNeeded = template.shots - currentInMag;
+
+  // Read reserves before any mutations — safe because switching only
+  // returns rounds of the OLD type, which is a different templateId.
+  const reserves = $ownedAmmo.get()[targetAmmoId] ?? 0;
+  const roundsToLoad = Math.min(roundsNeeded, reserves);
+
+  if (switching && instance.loadedAmmo && instance.currentAmmo > 0) {
+    addAmmo(instance.loadedAmmo.templateId, instance.currentAmmo);
+  }
+  if (roundsToLoad > 0) {
+    removeAmmo(targetAmmoId, roundsToLoad);
+  }
+
+  const loadedAmmo: LoadedAmmoInfo = {
+    templateId: targetAmmoId,
+    type: ammoTemplate.type,
+    damage: ammoTemplate.damage,
+    effects: ammoTemplate.effects,
+  };
+
   $ownedWeapons.set({
     ...current,
-    [instanceId]: { ...instance, currentAmmo: template.shots },
+    [instanceId]: {
+      ...instance,
+      currentAmmo: currentInMag + roundsToLoad,
+      loadedAmmo,
+    },
   });
+  return true;
 }
 
 export function setCurrentAmmo(instanceId: string, ammo: number): void {
@@ -207,16 +239,6 @@ export function setCurrentAmmo(instanceId: string, ammo: number): void {
       ...instance,
       currentAmmo: Math.max(0, Math.min(max, ammo)),
     },
-  });
-}
-
-export function setAmmoType(instanceId: string, type: string): void {
-  const current = $ownedWeapons.get();
-  const instance = current[instanceId];
-  if (!instance) return;
-  $ownedWeapons.set({
-    ...current,
-    [instanceId]: { ...instance, currentAmmoType: type },
   });
 }
 
@@ -323,7 +345,7 @@ export const $allOwnedWeapons = computed(
         ...template,
         id: instance.id,
         currentAmmo: instance.currentAmmo,
-        currentAmmoType: instance.currentAmmoType,
+        loadedAmmo: instance.loadedAmmo ?? null,
         smartchipActive: instance.smartchipActive,
         custom: isCustomWeapon(instance.templateId) || undefined,
       });

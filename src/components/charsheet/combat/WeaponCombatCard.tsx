@@ -1,7 +1,9 @@
+import { useStore } from "@nanostores/preact";
 import { useRef, useState } from "preact/hooks";
 
 import { flashElement } from "@scripts/flash";
 import { WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
+import { $ammoByCaliberLookup, addAmmo, removeAmmo } from "@stores/ammo";
 import type { WeaponPiece } from "@stores/weapons";
 import { fireWeapon, reloadWeapon, setCurrentAmmo } from "@stores/weapons";
 
@@ -41,29 +43,56 @@ export const WeaponCombatCard = ({
   skillName,
 }: Props) => {
   const [ammoOpen, setAmmoOpen] = useState(false);
-  const [ammoVal, setAmmoVal] = useState(0);
   const ammoRef = useRef<HTMLButtonElement>(null);
+
+  const ammoLookup = useStore($ammoByCaliberLookup);
+  const caliberAmmo = weapon.ammo ? (ammoLookup[weapon.ammo] ?? []) : [];
+  const hasReserves = caliberAmmo.length > 0;
+  const loadedReserves = weapon.loadedAmmo
+    ? (caliberAmmo.find((a) => a.templateId === weapon.loadedAmmo!.templateId)
+        ?.quantity ?? 0)
+    : 0;
+  const stepperMax = weapon.loadedAmmo
+    ? Math.min(weapon.shots, weapon.currentAmmo + loadedReserves)
+    : weapon.shots;
 
   const total = refCurrent + skillLevel + weapon.wa;
 
-  const handleAmmoOpen = () => {
-    setAmmoVal(weapon.currentAmmo);
-    setAmmoOpen(true);
-  };
+  const handleAmmoOpen = () => setAmmoOpen(true);
 
-  const handleAmmoApply = () => {
-    setCurrentAmmo(weapon.id, ammoVal);
-    setAmmoOpen(false);
+  const adjustAmmo = (newVal: number) => {
+    const clamped = Math.max(0, Math.min(stepperMax, newVal));
+    if (clamped === weapon.currentAmmo) return;
+    if (weapon.loadedAmmo) {
+      const delta = clamped - weapon.currentAmmo;
+      if (delta > 0) {
+        removeAmmo(weapon.loadedAmmo.templateId, delta);
+      } else {
+        addAmmo(weapon.loadedAmmo.templateId, -delta);
+      }
+    }
+    setCurrentAmmo(weapon.id, clamped);
   };
 
   const cardRef = useRef<HTMLDivElement>(null);
 
   const flash = (cls: string) =>
-    flashElement(cardRef.current, cls, { color: "var(--warning-hot)", clearClasses: CC_FLASH });
+    flashElement(cardRef.current, cls, {
+      color: "var(--warning-hot)",
+      clearClasses: CC_FLASH,
+    });
+
+  const handleSelectAmmoType = (templateId: string) => {
+    const ok = reloadWeapon(weapon.id, templateId);
+    if (ok) flash("cc-flash-reload");
+  };
 
   const handleReload = () => {
-    reloadWeapon(weapon.id);
-    setAmmoOpen(false);
+    const ok = reloadWeapon(
+      weapon.id,
+      weapon.loadedAmmo?.templateId ?? undefined,
+    );
+    if (!ok) return;
     flash("cc-flash-reload");
   };
 
@@ -75,10 +104,7 @@ export const WeaponCombatCard = ({
   };
 
   return (
-    <div
-      ref={cardRef}
-      class="combat-card"
-    >
+    <div ref={cardRef} class="combat-card">
       {/* Header: name + ammo */}
       <div class="cc-header">
         <div class="cc-name">
@@ -92,6 +118,9 @@ export const WeaponCombatCard = ({
             class="btn-ghost cc-ammo-btn"
             onClick={handleAmmoOpen}
           >
+            {weapon.loadedAmmo && (
+              <span class="cc-ammo-type">{weapon.loadedAmmo.type}</span>
+            )}
             {weapon.currentAmmo}/{weapon.shots}
           </button>
         )}
@@ -100,7 +129,9 @@ export const WeaponCombatCard = ({
       {/* Hero row: damage | RoF | skill = total */}
       <div class="cc-hero">
         <div class="cc-hero-cell">
-          <span class="cc-hero-value">{weapon.damage}</span>
+          <span class="cc-hero-value">
+            {weapon.loadedAmmo?.damage ?? weapon.damage}
+          </span>
         </div>
         {!weapon.melee && (
           <div class="cc-hero-cell">
@@ -126,6 +157,11 @@ export const WeaponCombatCard = ({
           <span class="cc-hero-value">{weapon.reliability}</span>
         </div>
       </div>
+
+      {/* Effects row (loaded ammo only) */}
+      {weapon.loadedAmmo?.effects && (
+        <div class="cc-effect">{weapon.loadedAmmo.effects}</div>
+      )}
 
       {/* Range/DC table (ranged only) */}
       {!weapon.melee && weapon.range > 0 && (
@@ -184,39 +220,69 @@ export const WeaponCombatCard = ({
           open={ammoOpen}
           onClose={() => setAmmoOpen(false)}
         >
+          {weapon.loadedAmmo && (
+            <p class="cc-reload-loaded">
+              Loaded: {weapon.loadedAmmo.type} ({weapon.currentAmmo}/
+              {weapon.shots})
+            </p>
+          )}
           <div class="flex-center gap-12 cc-ammo-stepper">
             <button
               type="button"
               class="btn-ghost btn-icon"
-              onClick={() => setAmmoVal(0)}
+              disabled={weapon.currentAmmo <= 0}
+              onClick={() => adjustAmmo(0)}
             >
               0
             </button>
             <button
               type="button"
               class="btn-ghost btn-icon"
-              disabled={ammoVal <= 0}
-              onClick={() => setAmmoVal(ammoVal - 1)}
+              disabled={weapon.currentAmmo <= 0}
+              onClick={() => adjustAmmo(weapon.currentAmmo - 1)}
             >
               −
             </button>
-            <span class="text-value-2xl cc-ammo-value">{ammoVal}</span>
+            <span class="text-value-2xl cc-ammo-value">
+              {weapon.currentAmmo}
+            </span>
             <button
               type="button"
               class="btn-ghost btn-icon"
-              disabled={ammoVal >= weapon.shots}
-              onClick={() => setAmmoVal(ammoVal + 1)}
+              disabled={weapon.currentAmmo >= stepperMax}
+              onClick={() => adjustAmmo(weapon.currentAmmo + 1)}
             >
               +
             </button>
             <button
               type="button"
               class="btn-ghost btn-icon"
-              onClick={() => setAmmoVal(weapon.shots)}
+              disabled={weapon.currentAmmo >= stepperMax}
+              onClick={() => adjustAmmo(stepperMax)}
             >
-              {weapon.shots}
+              {stepperMax}
             </button>
           </div>
+          {hasReserves ? (
+            <>
+              <p class="cc-reload-label">Ammo type</p>
+              <div class="cc-reload-options">
+                {caliberAmmo.map((a) => (
+                  <button
+                    key={a.templateId}
+                    type="button"
+                    class={`cc-reload-option${weapon.loadedAmmo?.templateId === a.templateId ? " selected" : ""}`}
+                    onClick={() => handleSelectAmmoType(a.templateId)}
+                  >
+                    <span>{a.type}</span>
+                    <span class="cc-reload-option-qty">{a.quantity}</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p class="cc-reload-hint">No reserves — free reload</p>
+          )}
           <div class="popover-actions">
             <button
               class="popover-btn popover-btn-cancel"
@@ -227,14 +293,9 @@ export const WeaponCombatCard = ({
             <button
               class="popover-btn popover-btn-confirm"
               onClick={handleReload}
+              disabled={hasReserves && !weapon.loadedAmmo}
             >
               Reload
-            </button>
-            <button
-              class="popover-btn popover-btn-confirm"
-              onClick={handleAmmoApply}
-            >
-              Apply
             </button>
           </div>
         </Popover>

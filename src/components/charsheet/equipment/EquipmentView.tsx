@@ -14,6 +14,7 @@ import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 import { TwoPanelView } from "../shared/TwoPanelView";
 
+import { AmmoListPanel } from "./AmmoListPanel";
 import { ArmorListPanel } from "./ArmorListPanel";
 import { BodyPartGrid } from "./body/BodyPartGrid";
 import { GearPanel } from "./GearPanel";
@@ -90,9 +91,14 @@ export default function EquipmentView() {
           )}
         />
       ) : subTab === "weapons" ? (
-        <div class="container">
-          <WeaponListPanel />
-        </div>
+        <TwoPanelView
+          renderFirst={(expanded, onToggle) => (
+            <WeaponListPanel expanded={expanded} onToggle={onToggle} />
+          )}
+          renderSecond={(expanded, onToggle) => (
+            <AmmoListPanel expanded={expanded} onToggle={onToggle} />
+          )}
+        />
       ) : (
         <div class="container">
           <GearPanel />

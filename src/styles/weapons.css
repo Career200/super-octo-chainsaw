@@ -179,6 +179,14 @@
   color: var(--accent);
   border-color: var(--accent);
   flex-shrink: 0;
+  gap: var(--space-4);
+}
+
+.cc-ammo-type {
+  font-size: var(--font-ui-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
 }
 
 /* --- Hero row: damage | RoF | skill = total --- */
@@ -226,6 +234,14 @@
   font-size: var(--font-ui-xl);
   font-weight: bold;
   color: var(--fg);
+}
+
+/* --- Effects row below hero --- */
+.cc-effect {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-ui-sm);
+  color: var(--accent);
+  border-bottom: 1px solid var(--border-light);
 }
 
 /* --- Range/DC table --- */
@@ -283,7 +299,27 @@
   cursor: not-allowed;
 }
 
-/* --- Ammo popover (repair-style stepper) --- */
+/* --- Ammo quantity stepper --- */
+.ammo-qty-btn {
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-4);
+  font-family: inherit;
+  font-size: var(--font-ui);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.ammo-qty-btn:hover {
+  background: var(--accent-subtle);
+}
+
 .cc-ammo-stepper {
   margin-bottom: var(--space-12);
 }
@@ -292,4 +328,120 @@
   min-width: 48px;
   text-align: center;
   color: var(--accent);
+}
+
+/* --- Reload popover sections --- */
+.cc-reload-loaded {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  margin: 0 0 var(--space-8);
+}
+
+.cc-reload-label {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  margin: 0 0 var(--space-4);
+}
+
+.cc-reload-hint {
+  font-size: var(--font-ui);
+  text-decoration: underline;
+  color: var(--danger);
+  font-style: italic;
+  margin: 0;
+}
+
+.cc-reload-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.cc-reload-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-ui);
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.cc-reload-option.selected {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (hover: hover) {
+  .cc-reload-option:hover:not(.selected) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.cc-reload-option-qty {
+  font-size: var(--font-ui-sm);
+  opacity: 0.7;
+}
+
+/* === Ammo Card (extends .item-card) === */
+.ammo-card-type {
+  font-size: var(--font-ui-sm);
+  font-weight: bold;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ammo-card-effects {
+  font-size: var(--font-ui-sm);
+  margin-top: var(--space-2);
+}
+
+.ammo-card.highlighted {
+  border-color: var(--accent);
+}
+
+.gear-group-highlighted > .gear-group-label {
+  color: var(--accent);
+}
+
+/* --- Ammo form: effects + description side by side --- */
+.ammo-form-bottom {
+  display: flex;
+  gap: var(--space-8);
+  flex: 1;
+  min-height: 0;
+}
+
+.ammo-form-half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 0;
+}
+
+.ammo-form-half > .text-desc {
+  flex: none;
+}
+
+.ammo-form-effects {
+  flex: 1;
+  min-height: 60px;
+  resize: none;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  padding: var(--space-6) var(--space-8);
+}
+
+.ammo-form-half .item-form-description {
+  flex: 1;
 }

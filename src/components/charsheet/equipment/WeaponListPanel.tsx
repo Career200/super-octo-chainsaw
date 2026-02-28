@@ -3,7 +3,10 @@ import { useState } from "preact/hooks";
 
 import type { WeaponTemplate, WeaponType } from "@scripts/weapons/catalog";
 import { WEAPON_CATALOG, WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
+import { AMMO_CATALOG } from "@scripts/ammo/catalog";
+import { $customAmmoItems } from "@stores/ammo";
 import {
+  $selectedAmmo,
   $selectedWeapon,
   selectWeapon,
   startAddingWeapon,
@@ -14,6 +17,7 @@ import { $allOwnedWeapons, $customWeaponList } from "@stores/weapons";
 
 import { Chevron } from "../shared/Chevron";
 import { HelpPopover } from "../shared/HelpPopover";
+import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 
 import { WeaponHelpContent } from "./help/WeaponHelpContent";
@@ -56,6 +60,7 @@ function WeaponGroup({
   onToggle,
   items,
   selectedId,
+  highlightedCaliber,
 }: {
   label: string;
   count: number;
@@ -63,6 +68,7 @@ function WeaponGroup({
   onToggle: () => void;
   items: GroupItem[];
   selectedId: string | null;
+  highlightedCaliber: string | null;
 }) {
   return (
     <div class="gear-group">
@@ -79,6 +85,7 @@ function WeaponGroup({
             weapon={items[0].weapon}
             custom={items[0].custom}
             selected={selectedId === items[0].id}
+            highlighted={highlightedCaliber === items[0].weapon.ammo}
             onClick={() =>
               selectWeapon(selectedId === items[0].id ? null : items[0].id)
             }
@@ -96,6 +103,7 @@ function WeaponGroup({
             weapon={item.weapon}
             custom={item.custom}
             selected={selectedId === item.id}
+            highlighted={highlightedCaliber === item.weapon.ammo}
             onClick={() =>
               selectWeapon(selectedId === item.id ? null : item.id)
             }
@@ -108,12 +116,28 @@ function WeaponGroup({
 
 const catalogItems = Object.values(WEAPON_CATALOG);
 
-export const WeaponListPanel = () => {
+export const WeaponListPanel = ({
+  expanded,
+  onToggle,
+}: {
+  expanded: boolean;
+  onToggle: () => void;
+}) => {
   const ownedWeapons = useStore($allOwnedWeapons);
   const customTemplates = useStore($customWeaponList);
   const selectedId = useStore($selectedWeapon);
   const tab = useStore(tabStore("weapon-list-tab", "catalog"));
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+
+  // Cross-highlighting: derive caliber from selected ammo
+  const selectedAmmoId = useStore($selectedAmmo);
+  const customAmmoDefs = useStore($customAmmoItems);
+  const highlightedCaliber =
+    selectedAmmoId != null
+      ? (AMMO_CATALOG[selectedAmmoId]?.caliber ??
+        customAmmoDefs[selectedAmmoId]?.caliber ??
+        null)
+      : null;
 
   const toggleGroup = (type: string) => {
     setCollapsed((prev) => {
@@ -151,12 +175,17 @@ export const WeaponListPanel = () => {
   );
 
   return (
-    <div class="panel" id="weapon-panel">
-      <div class="panel-heading">
-        <h2 class="title text-sm">
+    <Panel
+      id="weapon-panel"
+      title={
+        <>
           Weapons{" "}
           <HelpPopover id="weapon-help" content={<WeaponHelpContent />} />
-        </h2>
+        </>
+      }
+      expanded={expanded}
+      onToggle={onToggle}
+      headerActions={
         <TabStrip
           persist="weapon-list-tab"
           tabs={[
@@ -171,8 +200,8 @@ export const WeaponListPanel = () => {
             },
           ]}
         />
-      </div>
-
+      }
+    >
       {tab === "custom" && (
         <div class="gear-toolbar">
           <button
@@ -195,6 +224,7 @@ export const WeaponListPanel = () => {
               onToggle={() => toggleGroup(type)}
               items={items}
               selectedId={selectedId}
+              highlightedCaliber={highlightedCaliber}
             />
           ))}
         {tab === "custom" &&
@@ -208,6 +238,7 @@ export const WeaponListPanel = () => {
                 onToggle={() => toggleGroup(type)}
                 items={items}
                 selectedId={selectedId}
+                highlightedCaliber={highlightedCaliber}
               />
             ))
           ) : (
@@ -224,12 +255,13 @@ export const WeaponListPanel = () => {
                 onToggle={() => toggleGroup(type)}
                 items={items}
                 selectedId={selectedId}
+                highlightedCaliber={highlightedCaliber}
               />
             ))
           ) : (
             <div class="empty-message">No weapons yet. Browse the Catalog to add some.</div>
           ))}
       </div>
-    </div>
+    </Panel>
   );
 };

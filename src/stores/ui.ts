@@ -1,6 +1,6 @@
 import { persistentAtom } from "@nanostores/persistent";
 import type { WritableAtom } from "nanostores";
-import { atom } from "nanostores";
+import { atom, computed } from "nanostores";
 
 import type { BodyPartName } from "@scripts/armor/core";
 
@@ -85,18 +85,45 @@ export function highlightPart(part: BodyPartName | null): void {
   $selectedArmor.set(null);
 }
 
-/** Currently selected weapon instance ID, or null. */
-export const $selectedWeapon = atom<string | null>(null);
+/** Weapon + ammo share a single focus atom — mutual exclusion is structural. */
+export type WeaponAmmoFocus =
+  | null
+  | { kind: "weapon"; id: string }
+  | { kind: "adding-weapon" }
+  | { kind: "ammo"; id: string }
+  | { kind: "adding-ammo" };
 
-/** Whether the add-custom-weapon form is open. Mutually exclusive with $selectedWeapon. */
-export const $addingWeapon = atom<boolean>(false);
+export const $weaponAmmoFocus = atom<WeaponAmmoFocus>(null);
+
+// Derived views — backward-compatible with existing consumers.
+// nanostores computed deduplicates: subscribers only fire when the derived value changes.
+export const $selectedWeapon = computed($weaponAmmoFocus, (f) =>
+  f?.kind === "weapon" ? f.id : null,
+);
+export const $addingWeapon = computed(
+  $weaponAmmoFocus,
+  (f): boolean => f?.kind === "adding-weapon",
+);
+export const $selectedAmmo = computed($weaponAmmoFocus, (f) =>
+  f?.kind === "ammo" ? f.id : null,
+);
+export const $addingAmmo = computed(
+  $weaponAmmoFocus,
+  (f): boolean => f?.kind === "adding-ammo",
+);
 
 export function selectWeapon(id: string | null): void {
-  $addingWeapon.set(false);
-  $selectedWeapon.set(id);
+  $weaponAmmoFocus.set(id ? { kind: "weapon", id } : null);
 }
 
 export function startAddingWeapon(): void {
-  $selectedWeapon.set(null);
-  $addingWeapon.set(true);
+  $weaponAmmoFocus.set({ kind: "adding-weapon" });
+}
+
+export function selectAmmo(id: string | null): void {
+  $weaponAmmoFocus.set(id ? { kind: "ammo", id } : null);
+}
+
+export function startAddingAmmo(): void {
+  $weaponAmmoFocus.set({ kind: "adding-ammo" });
 }
