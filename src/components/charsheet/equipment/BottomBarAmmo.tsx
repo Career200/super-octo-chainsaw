@@ -3,8 +3,8 @@ import { useCallback, useRef, useState } from "preact/hooks";
 
 import type { AmmoTemplate, Availability } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
-import { CALIBER_DAMAGE } from "@scripts/weapons/catalog";
 import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
+import { CALIBER_DAMAGE } from "@scripts/weapons/catalog";
 import {
   $customAmmoItems,
   $ownedAmmo,
@@ -54,13 +54,12 @@ function AmmoDetail({
             {template.cost}eb
           </span>
         )}
-        {template.availability && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Avail.</span>
-            {AVAILABILITY_LABELS[template.availability] ??
-              template.availability}
+        <span class="weapon-detail-stat">
+          <span class="weapon-detail-label">Avail.</span>
+          <span class={`avail-${template.availability ?? "C"}`}>
+            {AVAILABILITY_LABELS[template.availability ?? "C"]}
           </span>
-        )}
+        </span>
       </div>
       {template.effects && (
         <p class="text-desc" style="color: var(--accent)">
@@ -167,29 +166,57 @@ function AmmoForm({
     <div class="item-form">
       <div class="item-form-fields">
         <span class="weapon-form-ammo">
-          {inp("caliber", caliber, onCaliberChange, "Caliber", "Caliber (e.g. 9mm, .45)", "", { autoFocus, list: "caliber-suggestions" })}
+          {inp(
+            "caliber",
+            caliber,
+            onCaliberChange,
+            "Caliber",
+            "Caliber (e.g. 9mm, .45)",
+            "",
+            { autoFocus, list: "caliber-suggestions" },
+          )}
           <datalist id="caliber-suggestions">
             {Object.keys(CALIBER_DAMAGE).map((c) => (
               <option key={c} value={c} />
             ))}
           </datalist>
         </span>
-        {inp("type", type, onTypeChange, "Type", "Ammo type (e.g. std, ap)", "weapon-form-type")}
-        {inp("damage", damage, onDamageChange, "Damage", "Damage dice (e.g. 2D6+1)", "weapon-form-damage")}
+        {inp(
+          "type",
+          type,
+          onTypeChange,
+          "Type",
+          "Ammo type (e.g. std, ap)",
+          "weapon-form-type",
+        )}
+        {inp(
+          "damage",
+          damage,
+          onDamageChange,
+          "Damage",
+          "Damage dice (e.g. 2D6+1)",
+          "weapon-form-damage",
+        )}
         <Tip label="Cost per box (eb)" class="item-form-cost">
-          {inp("cost", cost, onCostChange, "Cost", "Cost per box in eurobucks", "", { type: "number", min: "0" })}
+          {inp(
+            "cost",
+            cost,
+            onCostChange,
+            "Cost",
+            "Cost per box in eurobucks",
+            "",
+            { type: "number", min: "0" },
+          )}
         </Tip>
         <Tip label="Street availability" class="item-form-availability">
           <select
-            class="input item-form-input"
+            class={`input item-form-input avail-${availability || "C"}`}
             value={availability}
             disabled={!onAvailabilityChange}
             onChange={
               onAvailabilityChange
                 ? (e) =>
-                    onAvailabilityChange(
-                      (e.target as HTMLSelectElement).value,
-                    )
+                    onAvailabilityChange((e.target as HTMLSelectElement).value)
                 : undefined
             }
             title="Street availability"
@@ -250,7 +277,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
   const customDefs = useStore($customAmmoItems);
 
   // Resolve: catalog or custom
-  const catalogTemplate = ammoId ? AMMO_CATALOG[ammoId] ?? null : null;
+  const catalogTemplate = ammoId ? (AMMO_CATALOG[ammoId] ?? null) : null;
   const customDef = ammoId && !catalogTemplate ? customDefs[ammoId] : null;
   const resolved: AmmoTemplate | null = catalogTemplate
     ? catalogTemplate
@@ -268,7 +295,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
       : null;
 
   const isCustom = ammoId ? !!customDef : false;
-  const quantity = ammoId ? quantities[ammoId] ?? 0 : 0;
+  const quantity = ammoId ? (quantities[ammoId] ?? 0) : 0;
 
   // Edit toggle for custom ammo (view ↔ edit)
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -279,14 +306,17 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
   const [newType, setNewType] = useState("");
   const [newDamage, setNewDamage] = useState("");
   const damageAutoFilled = useRef(false);
-  const handleCaliberChange = useCallback((cal: string) => {
-    setNewCaliber(cal);
-    const lookup = CALIBER_DAMAGE[cal] ?? CALIBER_DAMAGE[cal.toLowerCase()];
-    if (lookup && (!newDamage || damageAutoFilled.current)) {
-      setNewDamage(lookup);
-      damageAutoFilled.current = true;
-    }
-  }, [newDamage]);
+  const handleCaliberChange = useCallback(
+    (cal: string) => {
+      setNewCaliber(cal);
+      const lookup = CALIBER_DAMAGE[cal] ?? CALIBER_DAMAGE[cal.toLowerCase()];
+      if (lookup && (!newDamage || damageAutoFilled.current)) {
+        setNewDamage(lookup);
+        damageAutoFilled.current = true;
+      }
+    },
+    [newDamage],
+  );
   const handleDamageChange = useCallback((v: string) => {
     damageAutoFilled.current = false;
     setNewDamage(v);
@@ -336,9 +366,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
     selectAmmo(null);
   };
 
-  const displayName = resolved
-    ? `${resolved.caliber} ${resolved.type}`
-    : "";
+  const displayName = resolved ? `${resolved.caliber} ${resolved.type}` : "";
 
   // Body content
   let bodyContent = null;

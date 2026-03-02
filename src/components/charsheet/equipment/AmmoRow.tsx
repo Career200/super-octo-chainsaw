@@ -23,7 +23,9 @@ export function AmmoRow({
       class={`ammo-row${selected ? " selected" : ""}${highlighted ? " highlighted" : ""}${custom ? " ammo-row-custom" : ""}`}
       onClick={() => selectAmmo(selected ? null : id)}
     >
-      <span class="ammo-row-type">{template.type}</span>
+      <span class={`ammo-row-type avail-${template.availability ?? "C"}`}>
+        {template.type}
+      </span>
       <span class="ammo-row-damage">{template.damage}</span>
       <span class="ammo-row-effects text-soft">{template.effects}</span>
       <span class="ammo-row-actions">

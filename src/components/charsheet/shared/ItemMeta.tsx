@@ -5,13 +5,12 @@ interface Props {
   cost?: number;
 }
 
-export const ItemMeta = ({ availability, cost }: Props) => {
-  if (!availability && cost == null) return null;
+export const ItemMeta = ({ availability: av = "C", cost }: Props) => {
   return (
     <span class="item-meta">
-      {availability && (
-        <span class="item-avail">Av.{AVAILABILITY_LABELS[availability]}</span>
-      )}
+      <span class={`item-avail avail-${av}`}>
+        Av.{AVAILABILITY_LABELS[av]}
+      </span>
       {cost != null && (
         <span class="text-soft">
           <span class="cash">{"\u156E\u1572"}</span>

@@ -71,7 +71,7 @@ export function ItemForm({
         </Tip>
         <Tip label="Street availability" class="item-form-availability">
           <select
-            class="input item-form-input"
+            class={`input item-form-input avail-${availability || "C"}`}
             value={availability}
             disabled={!onAvailabilityChange}
             onChange={

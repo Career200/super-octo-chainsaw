@@ -45,6 +45,13 @@
   --status-mixed: #ffff00;
   --status-online: #00ff00;
 
+  /* Availability colors */
+  --avail-E: var(--accent);
+  --avail-C: #66cc77;
+  --avail-P: var(--warning);
+  --avail-R: var(--danger);
+  --avail-U: #d966ff;
+
   /* Misc */
   --selection-bg: #00ffcc44;
 

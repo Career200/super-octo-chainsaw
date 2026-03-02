@@ -20,12 +20,12 @@ export function GearDetail({ item }: Props) {
             {item.cost}eb
           </span>
         )}
-        {item.availability && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Avail.</span>
-            {AVAILABILITY_LABELS[item.availability] ?? item.availability}
+        <span class="weapon-detail-stat">
+          <span class="weapon-detail-label">Avail.</span>
+          <span class={`avail-${item.availability ?? "C"}`}>
+            {AVAILABILITY_LABELS[item.availability ?? "C"]}
           </span>
-        )}
+        </span>
       </div>
       {item.description && <p class="text-desc">{item.description}</p>}
     </div>
