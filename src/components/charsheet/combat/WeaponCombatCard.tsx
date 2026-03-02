@@ -158,9 +158,11 @@ export const WeaponCombatCard = ({
         </div>
       </div>
 
-      {/* Effects row (loaded ammo only) */}
-      {weapon.loadedAmmo?.effects && (
-        <div class="cc-effect">{weapon.loadedAmmo.effects}</div>
+      {/* Effects row (ammo effects, weapon effects, or both) */}
+      {(weapon.loadedAmmo?.effects || weapon.effects) && (
+        <div class="cc-effect">
+          {[weapon.loadedAmmo?.effects, weapon.effects].filter(Boolean).join(" \u00B7 ")}
+        </div>
       )}
 
       {/* Range/DC table (ranged only) */}

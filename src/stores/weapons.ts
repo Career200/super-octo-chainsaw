@@ -47,6 +47,7 @@ export interface CustomWeaponDef {
   range: number;
   cost: number;
   description: string;
+  effects: string;
   melee: boolean;
   smartchipped: boolean;
 }
@@ -79,7 +80,7 @@ export function resolveWeaponTemplate(
   if (templateId in WEAPON_CATALOG) return WEAPON_CATALOG[templateId];
   const custom = $customWeaponTemplates.get()[templateId];
   if (custom) {
-    return { templateId, ...custom };
+    return { templateId, ...custom, effects: custom.effects ?? "" };
   }
   return null;
 }

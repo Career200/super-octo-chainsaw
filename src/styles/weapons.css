@@ -84,6 +84,9 @@
 .weapon-form-range {
   flex: 0 1 70px;
 }
+.weapon-form-effects {
+  flex: 1 1 100%;
+}
 
 /* === Combat Card (combat panel) === */
 
@@ -528,4 +531,108 @@
 
 .ammo-form-half .item-form-description {
   flex: 1;
+}
+
+/* === Melee Panel === */
+
+.melee-formula {
+  padding: var(--space-6) var(--space-8);
+  font-size: var(--font-ui);
+  color: var(--fg-soft);
+  line-height: 1.6;
+}
+
+.melee-formula-vs {
+  padding-left: var(--space-12);
+  font-style: italic;
+}
+
+.melee-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-16);
+  padding: 0 var(--space-8) var(--space-8);
+  font-size: var(--font-ui);
+  color: var(--fg);
+}
+
+.melee-stats strong {
+  color: var(--accent);
+}
+
+.melee-stats-bt {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+}
+
+.melee-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding: 0 var(--space-8) var(--space-8);
+}
+
+.melee-skill-chip {
+  padding: var(--space-2) var(--space-8);
+  font-size: var(--font-ui-sm);
+  color: var(--fg);
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+}
+
+.melee-skill-chip strong {
+  color: var(--accent);
+}
+
+.melee-skill-defense {
+  border-style: dashed;
+}
+
+.melee-skill-sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border-light);
+  margin: 0 var(--space-4);
+}
+
+.cc-melee-wa {
+  font-size: var(--font-ui-sm);
+  font-weight: normal;
+  color: var(--fg-soft);
+  margin-left: var(--space-6);
+}
+
+.melee-unarmed .cc-hero-value {
+  font-size: var(--font-ui);
+}
+
+.melee-maneuvers {
+  display: flex;
+  flex-direction: column;
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.melee-maneuver-row {
+  display: flex;
+  gap: var(--space-12);
+  padding: var(--space-6) var(--space-8);
+  font-size: var(--font-ui);
+}
+
+.melee-maneuver-row + .melee-maneuver-row {
+  border-top: 1px solid var(--border-light);
+}
+
+.melee-maneuver-name {
+  flex-shrink: 0;
+  min-width: 80px;
+  font-weight: bold;
+  color: var(--fg);
+}
+
+.melee-maneuver-desc {
+  color: var(--fg-soft);
 }

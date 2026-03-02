@@ -44,6 +44,8 @@ interface Props {
   range: string;
   onRangeChange?: (v: string) => void;
   melee: boolean;
+  effects?: string;
+  onEffectsChange?: (v: string) => void;
   /** Field names that should show error styling */
   errors?: ReadonlySet<string>;
 }
@@ -70,6 +72,8 @@ export function WeaponFormFields({
   range,
   onRangeChange,
   melee,
+  effects,
+  onEffectsChange,
   errors,
 }: Props) {
   const allSkills = useStore($allSkills);
@@ -136,6 +140,7 @@ export function WeaponFormFields({
                 ? (e) => onSkillChange((e.target as HTMLInputElement).value)
                 : undefined
             }
+            list={skillCanEdit ? (melee ? "melee-skill-suggestions" : "exotic-skill-suggestions") : undefined}
             placeholder="Skill"
             title="Associated skill"
           />
@@ -151,6 +156,25 @@ export function WeaponFormFields({
               Skill "{displaySkill.trim()}" not found
             </p>
           </Popover>
+          {skillCanEdit && (
+            <datalist id={melee ? "melee-skill-suggestions" : "exotic-skill-suggestions"}>
+              {melee ? (
+                <>
+                  <option value="Brawling" />
+                  <option value="Melee" />
+                  <option value="Fencing" />
+                </>
+              ) : (
+                <>
+                  <option value="Archery" />
+                  <option value="Handgun" />
+                  <option value="Submachinegun" />
+                  <option value="Rifle" />
+                  <option value="Heavy Weapons" />
+                </>
+              )}
+            </datalist>
+          )}
         </div>
       </Tip>
       {!melee && (
@@ -305,6 +329,21 @@ export function WeaponFormFields({
           ))}
         </select>
       </Tip>
+      {effects != null && (
+        <input
+          type="text"
+          class="input item-form-input weapon-form-effects"
+          value={effects}
+          disabled={!onEffectsChange}
+          onInput={
+            onEffectsChange
+              ? (e) => onEffectsChange((e.target as HTMLInputElement).value)
+              : undefined
+          }
+          placeholder="Effects (e.g. Bladed: halves soft armor)"
+          title="Weapon effects"
+        />
+      )}
     </>
   );
 }

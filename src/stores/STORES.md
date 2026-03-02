@@ -60,6 +60,7 @@ Keys in use:
 - `weapon-list-tab` (default: `"catalog"`) — Catalog/Custom/Owned in WeaponListPanel
 - `skills-filter` (default: `"default"`) — Default/Custom/My in StatsSkillsPanel
 - `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
+- `offense-tab` (default: `"ranged"`) — Ranged/Melee in CombatView offense panel
 
 ### `$selectedSkill` (ui.ts)
 ```
@@ -118,7 +119,7 @@ Helper: `isCustomWeapon(id)` — true if not in `WEAPON_CATALOG`
 ### `$customWeaponTemplates` (weapons.ts)
 ```
 Record<string, CustomWeaponDef>
-CustomWeaponDef: { name, type, skill, wa, concealability, availability, damage, ammo, shots, rof, reliability, range, cost, description, melee, smartchipped }
+CustomWeaponDef: { name, type, skill, wa, concealability, availability, damage, ammo, shots, rof, reliability, range, cost, description, effects, melee, smartchipped }
 ```
 Custom weapon definitions — user-created extension to `WEAPON_CATALOG`. Persists independently of instances.
 
@@ -380,7 +381,7 @@ HitPopover reads $bodyType.btm, mutates $health via takeDamage
 
 $notes (standalone, no dependents)
 
-tabStore() ────▸ TabStrip (6 persisted keys, see factory docs above)
+tabStore() ────▸ TabStrip (8 persisted keys, see factory docs above)
 
 $gear ──────────┬──▸ $ownedGear ──▸ $ownedGearCount
 $customGearItems┼──▸ $customGear

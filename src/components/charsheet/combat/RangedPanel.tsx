@@ -6,22 +6,24 @@ import { $allOwnedWeapons } from "@stores/weapons";
 
 import { WeaponCombatCard } from "./WeaponCombatCard";
 
-export const CombatPanel = () => {
+export default function RangedPanel() {
   const weapons = useStore($allOwnedWeapons);
   const skills = useStore($allSkills);
   const ref = useStore($REF);
 
-  if (weapons.length === 0) {
+  const rangedWeapons = weapons.filter((w) => !w.melee);
+
+  if (rangedWeapons.length === 0) {
     return (
       <p class="combat-empty">
-        No weapons. Add some in the Equipment tab.
+        No ranged weapons. Add some in the Equipment tab.
       </p>
     );
   }
 
   return (
     <div class="combat-list">
-      {weapons.map((weapon) => {
+      {rangedWeapons.map((weapon) => {
         const skillEntry = skills[weapon.skill];
         return (
           <WeaponCombatCard
@@ -35,4 +37,4 @@ export const CombatPanel = () => {
       })}
     </div>
   );
-};
+}

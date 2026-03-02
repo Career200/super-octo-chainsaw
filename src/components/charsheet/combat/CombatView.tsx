@@ -1,10 +1,27 @@
+import { useStore } from "@nanostores/preact";
+import { lazy, Suspense } from "preact/compat";
+
+import { tabStore } from "@stores/ui";
+
 import { Panel } from "../shared";
+import { TabStrip } from "../shared/TabStrip";
 import { TwoPanelView } from "../shared/TwoPanelView";
 
-import { CombatPanel } from "./CombatPanel";
 import DefensePanel from "./DefensePanel";
 
+const RangedPanel = lazy(() => import("./RangedPanel"));
+const MeleePanel = lazy(() => import("./MeleePanel"));
+
+const $offenseTab = tabStore("offense-tab", "ranged");
+
+const OFFENSE_TABS = [
+  { id: "ranged", label: "Ranged" },
+  { id: "melee", label: "Melee" },
+];
+
 export default function CombatView() {
+  const offenseTab = useStore($offenseTab);
+
   return (
     <TwoPanelView
       renderFirst={(expanded, onToggle) => (
@@ -16,8 +33,11 @@ export default function CombatView() {
           title="Offense"
           expanded={expanded}
           onToggle={onToggle}
+          headerActions={<TabStrip tabs={OFFENSE_TABS} persist="offense-tab" />}
         >
-          <CombatPanel />
+          <Suspense fallback={null}>
+            {offenseTab === "melee" ? <MeleePanel /> : <RangedPanel />}
+          </Suspense>
         </Panel>
       )}
     />

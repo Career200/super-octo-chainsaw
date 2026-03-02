@@ -75,6 +75,7 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   const [newReliability, setNewReliability] = useState<Reliability>("ST");
   const [newRange, setNewRange] = useState("");
   const [newMelee, setNewMelee] = useState(false);
+  const [newEffects, setNewEffects] = useState("");
 
   // Validation: track whether user attempted to add
   const [addAttempted, setAddAttempted] = useState(false);
@@ -137,6 +138,7 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
       range: isMelee ? 1 : num(newRange, 50),
       cost: num(newCost, 0),
       description: newDescription.trim(),
+      effects: newEffects.trim(),
       melee: isMelee,
       smartchipped: false,
     });
@@ -157,6 +159,7 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
       setNewReliability("ST");
       setNewRange("");
       setNewMelee(false);
+      setNewEffects("");
       selectWeapon(trimmed);
       return null;
     }
@@ -264,6 +267,8 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           range={newRange}
           onRangeChange={setNewRange}
           melee={newMelee || newType === "melee"}
+          effects={newEffects}
+          onEffectsChange={setNewEffects}
           errors={addErrors}
         />
       </ItemForm>
@@ -344,6 +349,8 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
             })
           }
           melee={resolved.melee}
+          effects={resolved.effects}
+          onEffectsChange={(v) => updateCustomWeapon(weaponId!, { effects: v })}
         />
       </ItemForm>
     );
