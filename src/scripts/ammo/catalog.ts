@@ -95,7 +95,7 @@ function bulletSet(
       "SP halved, pen halved, +1d6 fire, 1d6/2 burn",
       costStd * 4,
       boxSize,
-      "P",
+      "R",
     ),
     a(
       caliber,
@@ -126,16 +126,16 @@ function buildCatalog(): Record<string, AmmoTemplate> {
   // Light pistol calibers (box of 100, 15eb std)
   entries.push(...bulletSet("5mm", "1D6", 15, 100));
   entries.push(...bulletSet("6mm", "1D6+1", 15, 100));
-  entries.push(...bulletSet(".22", "1D6", 15, 100));
+  entries.push(...bulletSet(".22", "1D6", 15, 100, "E"));
   entries.push(...bulletSet(".25", "1D6+1", 15, 100));
 
   // Medium pistol & SMG calibers (box of 50, 15eb std)
   entries.push(...bulletSet("7mm", "1D6+2", 15, 50));
-  entries.push(...bulletSet(".38", "1D6+2", 15, 50));
-  entries.push(...bulletSet("9mm", "2D6+1", 15, 50));
-  entries.push(...bulletSet("10mm", "2D6+3", 15, 50));
-  entries.push(...bulletSet(".45", "2D6+2", 15, 50));
-  entries.push(...bulletSet(".40", "2D6+3", 15, 50));
+  entries.push(...bulletSet(".38", "1D6+2", 15, 50, "E"));
+  entries.push(...bulletSet("9mm", "2D6+1", 15, 50, "E"));
+  entries.push(...bulletSet("10mm", "2D6+3", 15, 50, "E"));
+  entries.push(...bulletSet(".45", "2D6+2", 15, 50, "E"));
+  entries.push(...bulletSet(".40", "2D6+3", 15, 50, "E"));
 
   // Heavy pistol calibers (box of 50, 18eb std)
   entries.push(...bulletSet("11mm", "3D6", 18, 50));
@@ -144,18 +144,18 @@ function buildCatalog(): Record<string, AmmoTemplate> {
 
   // Very heavy pistol calibers (box of 50, 20eb std)
   entries.push(...bulletSet("12mm", "4D6+1", 20, 50));
-  entries.push(...bulletSet(".44", "4D6", 20, 50));
+  entries.push(...bulletSet(".44", "4D6", 20, 50, "E"));
 
   // Assault rifle calibers (box of 100, 40eb std)
-  entries.push(...bulletSet("5.56mm", "5D6", 40, 100));
-  entries.push(...bulletSet("7.62mm", "6D6+2", 40, 100));
+  entries.push(...bulletSet("5.56mm", "5D6", 40, 100, "E"));
+  entries.push(...bulletSet("7.62mm", "6D6+2", 40, 100, "E"));
   entries.push(...bulletSet("7.62x39", "5D6+2", 40, 100));
   entries.push(...bulletSet("30-06", "5D6+1", 40, 100));
 
   // Shotgun 00: box of 12
-  entries.push(a("00", "std", "4D6", "", 15, 12, "C", "Standard buckshot"));
+  entries.push(a("00", "std", "4D6", "", 15, 12, "E", "Standard buckshot"));
   entries.push(
-    a("00", "slug", "4D6", "SP halved", 15, 12, "C", "Solid slug round"),
+    a("00", "slug", "4D6", "SP halved", 15, 12, "E", "Solid slug round"),
   );
   entries.push(
     a(
@@ -170,7 +170,16 @@ function buildCatalog(): Record<string, AmmoTemplate> {
     ),
   );
   entries.push(
-    a("00", "gas", "—", "Tear gas cloud 3m radius", 50, 12, "P", "CS gas shell"),
+    a(
+      "00",
+      "gas",
+      "—",
+      "Tear gas cloud 3m radius",
+      50,
+      12,
+      "P",
+      "CS gas shell",
+    ),
   );
   entries.push(
     a(
@@ -180,7 +189,7 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "Illumination 50m radius, +1D6 fire",
       20,
       12,
-      "C",
+      "E",
       "Signal/illumination flare",
     ),
   );
@@ -192,7 +201,7 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "Smoke cloud 3m radius, 3 turns",
       30,
       12,
-      "C",
+      "P",
       "Smoke screening shell",
     ),
   );
@@ -232,12 +241,21 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "SP halved",
       12,
       12,
-      "C",
+      "E",
       "Lightweight training arrow",
     ),
   );
   entries.push(
-    a("arrow", "target", "4D6", "SP halved", 24, 12, "C", "Standard target arrow"),
+    a(
+      "arrow",
+      "target",
+      "4D6",
+      "SP halved",
+      24,
+      12,
+      "E",
+      "Standard target arrow",
+    ),
   );
   entries.push(
     a(
@@ -252,7 +270,16 @@ function buildCatalog(): Record<string, AmmoTemplate> {
     ),
   );
   entries.push(
-    a("arrow", "stun", "4D6", "Stun damage only", 24, 12, "C", "Blunt stun arrow"),
+    a(
+      "arrow",
+      "stun",
+      "4D6",
+      "Stun damage only",
+      24,
+      12,
+      "C",
+      "Blunt tip stun arrow",
+    ),
   );
   entries.push(
     a(
@@ -276,12 +303,21 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "SP halved",
       12,
       12,
-      "C",
+      "E",
       "Lightweight training bolt",
     ),
   );
   entries.push(
-    a("bolt", "target", "3D6+3", "SP halved", 30, 12, "C", "Standard target bolt"),
+    a(
+      "bolt",
+      "target",
+      "3D6+3",
+      "SP halved",
+      30,
+      12,
+      "E",
+      "Standard target bolt",
+    ),
   );
   entries.push(
     a(
@@ -296,7 +332,16 @@ function buildCatalog(): Record<string, AmmoTemplate> {
     ),
   );
   entries.push(
-    a("bolt", "stun", "3D6+3", "Stun damage only", 24, 12, "C", "Blunt stun bolt"),
+    a(
+      "bolt",
+      "stun",
+      "3D6+3",
+      "Stun damage only",
+      24,
+      12,
+      "C",
+      "Blunt stun bolt",
+    ),
   );
   entries.push(
     a(
@@ -377,7 +422,16 @@ function buildCatalog(): Record<string, AmmoTemplate> {
     ),
   );
   entries.push(
-    a("charge", "pack", "stun", "Taser charge", 10, 1, "C", "Taser charge pack"),
+    a(
+      "charge",
+      "pack",
+      "stun",
+      "Taser charge",
+      10,
+      1,
+      "C",
+      "Taser charge pack",
+    ),
   );
 
   const catalog: Record<string, AmmoTemplate> = {};

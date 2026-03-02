@@ -6,13 +6,14 @@ import type {
   Reliability,
   WeaponType,
 } from "@scripts/weapons/catalog";
+import { CALIBER_ORDER } from "@scripts/ammo/catalog";
 import {
-  CALIBER_DAMAGE,
   CONCEALABILITY_LABELS,
   RELIABILITY_LABELS,
   skillForType,
   WEAPON_TYPE_LABELS,
 } from "@scripts/weapons/catalog";
+import { $customAmmoItems } from "@stores/ammo";
 import { $allSkills } from "@stores/skills";
 
 import { cls, Popover, Tip } from "../shared";
@@ -77,8 +78,17 @@ export function WeaponFormFields({
   errors,
 }: Props) {
   const allSkills = useStore($allSkills);
+  const customAmmo = useStore($customAmmoItems);
   const skillCanEdit = isSkillEditable(type);
   const displaySkill = skillCanEdit ? skill : skillForType(type);
+
+  const caliberSuggestions = (() => {
+    const catalogSet = new Set(CALIBER_ORDER);
+    const custom = Object.values(customAmmo)
+      .map((d) => d.caliber)
+      .filter((c) => !catalogSet.has(c));
+    return custom.length ? [...CALIBER_ORDER, ...custom] : CALIBER_ORDER;
+  })();
 
   // Debounced skill-not-found check (500ms), case-insensitive
   const [skillWarning, setSkillWarning] = useState(false);
@@ -194,7 +204,7 @@ export function WeaponFormFields({
             title="Ammo caliber"
           />
           <datalist id="caliber-suggestions">
-            {Object.keys(CALIBER_DAMAGE).map((c) => (
+            {caliberSuggestions.map((c) => (
               <option key={c} value={c} />
             ))}
           </datalist>
