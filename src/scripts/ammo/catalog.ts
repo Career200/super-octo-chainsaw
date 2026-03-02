@@ -56,7 +56,7 @@ function a(
   };
 }
 
-/** Full bullet type set for a conventional caliber: std, ap, hp, api, rubber, et, dp. */
+/** Full bullet type set for a conventional caliber: std, ap, hp, api, rubber, dp. */
 function bulletSet(
   caliber: string,
   damage: string,
@@ -96,14 +96,6 @@ function bulletSet(
       "Stun beyond 3m; half real + half stun within 3m",
       Math.round(costStd / 3),
       availability,
-    ),
-    a(
-      caliber,
-      "et",
-      damage,
-      "Damage x1.5 (electrothermal ignition only)",
-      costStd * 2,
-      "P",
     ),
     a(
       caliber,
