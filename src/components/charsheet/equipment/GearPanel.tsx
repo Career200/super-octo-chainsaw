@@ -3,17 +3,8 @@ import { useState } from "preact/hooks";
 
 import type { GearTemplate } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
-import {
-  $customGear,
-  $gear,
-  $ownedGear,
-  $ownedGearCount,
-} from "@stores/gear";
-import {
-  $selectedGear,
-  startAddingGear,
-  tabStore,
-} from "@stores/ui";
+import { $customGear, $gear, $ownedGear, $ownedGearCount } from "@stores/gear";
+import { $selectedGear, startAddingGear, tabStore } from "@stores/ui";
 
 import { Chevron } from "../shared/Chevron";
 import { TabStrip } from "../shared/TabStrip";
@@ -104,7 +95,7 @@ function groupByType(
 
 const catalogItems = Object.values(GEAR_CATALOG);
 
-export const GearPanel = () => {
+export default function GearPanel() {
   const gearState = useStore($gear);
   const ownedCount = useStore($ownedGearCount);
   const customGear = useStore($customGear);
@@ -221,9 +212,11 @@ export const GearPanel = () => {
               />
             ))
           ) : (
-            <div class="empty-message">No gear yet. Browse the Catalog to add some.</div>
+            <div class="empty-message">
+              No gear yet. Browse the Catalog to add some.
+            </div>
           ))}
       </div>
     </div>
   );
-};
+}

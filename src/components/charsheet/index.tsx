@@ -35,6 +35,9 @@ export const Charsheet = () => {
       import("./combat/CombatView");
       import("./dossier/DossierView");
       import("./equipment/EquipmentView");
+      import("./equipment/ArmorSubView");
+      import("./equipment/WeaponsSubView");
+      import("./equipment/GearPanel");
     });
     return () => cancelIdleCallback(id);
   }, []);
@@ -43,31 +46,31 @@ export const Charsheet = () => {
 
   return (
     <ErrorBoundary>
-    <div class={spaClass}>
-      <div class="fixed-bar">
-        <div class="secondary-bar">
-          <BodyInfo />
-          {(tab === "combat" || idleReached) && (
+      <div class={spaClass}>
+        <div class="fixed-bar">
+          <div class="secondary-bar">
+            <BodyInfo />
+            {(tab === "combat" || idleReached) && (
+              <Suspense fallback={null}>
+                <WoundIndicator />
+              </Suspense>
+            )}
+            <StatsStrip />
+          </div>
+          <div class="tab-row">
+            <TabStrip tabs={SPA_TABS} persist="spa-tab" class="spa-tabs" />
             <Suspense fallback={null}>
-              <WoundIndicator />
+              <AwarenessLine />
             </Suspense>
-          )}
-          <StatsStrip />
+          </div>
         </div>
-        <div class="tab-row">
-          <TabStrip tabs={SPA_TABS} persist="spa-tab" class="spa-tabs" />
-          <Suspense fallback={null}>
-            <AwarenessLine />
-          </Suspense>
-        </div>
+        <Suspense fallback={<div class="loading-fallback">Loading</div>}>
+          {tab === "combat" && <CombatView />}
+          {tab === "dossier" && <DossierView />}
+          {tab === "equipment" && <EquipmentView />}
+        </Suspense>
+        <BottomBar />
       </div>
-      <Suspense fallback={<div class="loading-fallback">Loading</div>}>
-        {tab === "combat" && <CombatView />}
-        {tab === "dossier" && <DossierView />}
-        {tab === "equipment" && <EquipmentView />}
-      </Suspense>
-      <BottomBar />
-    </div>
     </ErrorBoundary>
   );
 };
