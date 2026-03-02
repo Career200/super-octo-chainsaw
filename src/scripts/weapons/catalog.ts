@@ -25,6 +25,7 @@ export interface WeaponTemplate {
   range: number;
   cost: number;
   description: string;
+  effects: string;
   melee: boolean;
   smartchipped: boolean;
 }
@@ -123,7 +124,7 @@ function w(
   range: number,
   cost: number,
   description: string,
-  opts?: { skill?: string },
+  opts?: { skill?: string; effects?: string },
 ): WeaponTemplate {
   return {
     templateId,
@@ -141,6 +142,7 @@ function w(
     range,
     cost,
     description,
+    effects: opts?.effects ?? "",
     melee: type === "melee",
     smartchipped: false,
   };
@@ -781,6 +783,7 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1,
     200,
     'Mono-sectional crystal blade. Incredibly sharp. In the Japanese "tanto" style.',
+    { effects: "Mono: 2\u00D7 dmg on nat 10, breaks on nat 1. 1/3 SP soft, 2/3 SP hard" },
   ),
   kendachi_monokatana: w(
     "kendachi_monokatana",
@@ -797,6 +800,7 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1,
     600,
     "Sword length version of monoblade. Resembles a hightech katana with a milky, nearly transparent blade.",
+    { effects: "Mono: 2\u00D7 dmg on nat 10, breaks on nat 1. 1/3 SP soft, 2/3 SP hard" },
   ),
   spm1_battleglove: w(
     "spm1_battleglove",
@@ -848,6 +852,7 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1,
     20,
     "Standard knife.",
+    { effects: "Bladed: halves soft armor SP" },
   ),
   sword: w(
     "sword",
@@ -864,6 +869,7 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1,
     200,
     "Standard sword.",
+    { effects: "Bladed: halves soft armor SP" },
   ),
   axe: w(
     "axe",
@@ -880,6 +886,7 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1,
     20,
     "Standard axe.",
+    { effects: "Bladed: halves soft armor SP" },
   ),
   nunchaku: w(
     "nunchaku",
@@ -912,6 +919,7 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     2,
     100,
     "Japanese polearm weapon.",
+    { effects: "Bladed: halves soft armor SP" },
   ),
   shuriken: w(
     "shuriken",
@@ -944,6 +952,7 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1,
     15,
     "Concealed spring-loaded blade.",
+    { effects: "Bladed: halves soft armor SP" },
   ),
   brass_knuckles: w(
     "brass_knuckles",

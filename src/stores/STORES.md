@@ -60,6 +60,7 @@ Keys in use:
 - `weapon-list-tab` (default: `"catalog"`) — Catalog/Custom/Owned in WeaponListPanel
 - `skills-filter` (default: `"default"`) — Default/Custom/My in StatsSkillsPanel
 - `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
+- `offense-tab` (default: `"ranged"`) — Ranged/Melee in CombatView offense panel
 
 ### `$selectedSkill` (ui.ts)
 ```
@@ -77,7 +78,7 @@ Mutually exclusive with `$selectedSkill` — use `startAddingSkill()` to set.
 
 ### `$skills` (skills.ts)
 ```
-Record<string, { stat: SkillStat, level: 0-10, combat: bool }>
+Record<string, { stat: SkillStat, level: 0-10, melee: bool }>
 ```
 **Sparse persistence**: only stores catalog skills with level > 0 and all custom skills. Catalog skills at level 0 are NOT stored — they come from `SKILL_CATALOG` via `$allSkills`.
 
@@ -106,11 +107,11 @@ Helper: `isCustomGear(id)` — true if not in `GEAR_CATALOG`
 
 ### `$ownedWeapons` (weapons.ts)
 ```
-Record<instanceId, { id, templateId, currentAmmo, loadedAmmo, smartchipActive }>
+Record<instanceId, { id, templateId, currentAmmo, loadedAmmo, smartchipActive, meleeSkill? }>
 ```
 Owned weapon instances. Each weapon tracks its own ammo state. `loadedAmmo` is a `LoadedAmmoInfo | null` snapshot (templateId, type, damage, effects) — `null` means manual mode (no ammo system, free reload).
 
-Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon(id, ammoTemplateId?)`, `setCurrentAmmo`, `setSmartchipActive`
+Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon(id, ammoTemplateId?)`, `setCurrentAmmo`, `setSmartchipActive`, `setMeleeSkill`
 Cross-store: `reloadWeapon` reads `$ammoByCaliberLookup` + `$ownedAmmo`, mutates `$ownedAmmo` via `addAmmo`/`removeAmmo`
 Template resolution: `resolveWeaponTemplate()` — checks `WEAPON_CATALOG` + `$customWeaponTemplates`
 Helper: `isCustomWeapon(id)` — true if not in `WEAPON_CATALOG`
@@ -118,7 +119,7 @@ Helper: `isCustomWeapon(id)` — true if not in `WEAPON_CATALOG`
 ### `$customWeaponTemplates` (weapons.ts)
 ```
 Record<string, CustomWeaponDef>
-CustomWeaponDef: { name, type, skill, wa, concealability, availability, damage, ammo, shots, rof, reliability, range, cost, description, melee, smartchipped }
+CustomWeaponDef: { name, type, skill, wa, concealability, availability, damage, ammo, shots, rof, reliability, range, cost, description, effects, melee, smartchipped }
 ```
 Custom weapon definitions — user-created extension to `WEAPON_CATALOG`. Persists independently of instances.
 
@@ -243,7 +244,7 @@ Depends on: `$health`
 
 ### `$allSkills` (skills.ts)
 ```
-Record<string, { stat: SkillStat, level: 0-10, combat: bool }>
+Record<string, { stat: SkillStat, level: 0-10, melee: bool }>
 ```
 Full view: all catalog skills (hydrated with stored levels) + all custom skills.
 Depends on: `$skills`
@@ -269,11 +270,11 @@ Record<SkillStat, [name, SkillEntry][]>
 Skills grouped by stat, sorted alphabetically within each group.
 Depends on: `$allSkills`
 
-### `$combatSkills` (skills.ts)
+### `$meleeSkills` (skills.ts)
 ```
 [name, SkillEntry][]
 ```
-Skills with `combat: true`, ordered by `COMBAT_SKILLS_ORDER` then alphabetically.
+Skills with `melee: true`, ordered by `MELEE_SKILLS_ORDER` then alphabetically.
 Depends on: `$allSkills`
 
 ### `$mySkills` (skills.ts)
@@ -380,7 +381,7 @@ HitPopover reads $bodyType.btm, mutates $health via takeDamage
 
 $notes (standalone, no dependents)
 
-tabStore() ────▸ TabStrip (6 persisted keys, see factory docs above)
+tabStore() ────▸ TabStrip (8 persisted keys, see factory docs above)
 
 $gear ──────────┬──▸ $ownedGear ──▸ $ownedGearCount
 $customGearItems┼──▸ $customGear
@@ -409,7 +410,7 @@ $selectedSkill ◂──▸ $addingSkill (mutually exclusive via selectSkill/sta
 $skills ──┬──▸ $allSkills ──┬──▸ $awareness (+ $INT)
           │                 ├──▸ $skillsByStat
           │                 ├──▸ $skillTotal
-          │                 ├──▸ $combatSkills
+          │                 ├──▸ $meleeSkills
           │                 └──▸ $mySkills ──▸ $mySkillsCount
           └──▸ $customSkills
 ```

@@ -6,7 +6,7 @@ import type { SkillStat } from "@scripts/skills/catalog";
 import {
   AWARENESS_SKILL,
   COMBAT_SENSE_SKILL,
-  COMBAT_SKILLS_ORDER,
+  MELEE_SKILLS_ORDER,
   SKILL_CATALOG,
 } from "@scripts/skills/catalog";
 
@@ -15,61 +15,18 @@ import { $INT } from "./stats";
 export interface SkillEntry {
   stat: SkillStat;
   level: number;
-  combat: boolean;
+  melee: boolean;
   description?: string;
 }
 
 export type SkillsState = Record<string, SkillEntry>;
 
-/**
- * Persistence model: only store what differs from catalog defaults.
- * - Default (catalog) skills: stored only when level > 0 (name + level; stat/combat come from catalog)
- * - Custom skills: always stored (name, stat, level, combat)
- * On load, if the stored shape looks like the old format (all catalog skills at level 0), drop it.
- */
-
-function isValidNewFormat(data: unknown): data is SkillsState {
-  if (!data || typeof data !== "object" || Array.isArray(data)) return false;
-  const entries = Object.entries(data as Record<string, unknown>);
-  // Old format: every catalog skill present at level 0 → invalid
-  if (entries.length >= Object.keys(SKILL_CATALOG).length) {
-    const allCatalogAtZero = Object.keys(SKILL_CATALOG).every((name) => {
-      const e = (data as Record<string, SkillEntry>)[name];
-      return e && e.level === 0;
-    });
-    if (allCatalogAtZero) return false;
-  }
-  // Validate shape of each entry
-  for (const [, entry] of entries) {
-    if (!entry || typeof entry !== "object") return false;
-    const e = entry as Record<string, unknown>;
-    if (
-      typeof e.stat !== "string" ||
-      typeof e.level !== "number" ||
-      typeof e.combat !== "boolean"
-    )
-      return false;
-  }
-  return true;
-}
-
-function decodeSkills(raw: string): SkillsState {
-  try {
-    const parsed = JSON.parse(raw);
-    if (isValidNewFormat(parsed)) return parsed;
-    return {};
-  } catch {
-    return {};
-  }
-}
+import { decodeJson } from "./decode";
 
 export const $skills = persistentAtom<SkillsState>(
   "character-skills",
   {},
-  {
-    encode: JSON.stringify,
-    decode: decodeSkills,
-  },
+  { encode: JSON.stringify, decode: decodeJson<SkillsState>({}) },
 );
 
 // --- Helpers ---
@@ -94,7 +51,7 @@ export function setSkillLevel(name: string, level: number): void {
         [name]: {
           stat: catalogDef.stat,
           level: clamped,
-          combat: catalogDef.combat,
+          melee: catalogDef.melee,
         },
       });
     } else {
@@ -117,7 +74,7 @@ export function setSkillLevel(name: string, level: number): void {
 export function addSkill(
   name: string,
   stat: SkillStat,
-  combat: boolean,
+  melee: boolean,
   description?: string,
 ): boolean {
   const current = $skills.get();
@@ -129,7 +86,7 @@ export function addSkill(
   for (const existing of Object.keys(SKILL_CATALOG)) {
     if (normalizeKey(existing) === key) return false;
   }
-  const entry: SkillEntry = { stat, level: 0, combat };
+  const entry: SkillEntry = { stat, level: 0, melee };
   if (description) entry.description = description;
   $skills.set({ ...current, [name]: entry });
   return true;
@@ -146,7 +103,7 @@ export function removeSkill(name: string): void {
 
 export function updateSkill(
   name: string,
-  updates: Partial<Pick<SkillEntry, "stat" | "combat" | "description">>,
+  updates: Partial<Pick<SkillEntry, "stat" | "melee" | "description">>,
 ): void {
   const current = $skills.get();
   if (!(name in current)) return;
@@ -167,7 +124,7 @@ export const $allSkills = computed($skills, (stored) => {
     result[name] = {
       stat: def.stat,
       level: override?.level ?? 0,
-      combat: def.combat,
+      melee: def.melee,
     };
   }
   // Custom skills: everything in store that's not in catalog
@@ -223,22 +180,22 @@ export const $skillsByStat = computed($allSkills, (skills) => {
   return grouped;
 });
 
-const combatOrderIndex = new Map(
-  COMBAT_SKILLS_ORDER.map((name, i) => [name, i]),
+const meleeOrderIndex = new Map(
+  MELEE_SKILLS_ORDER.map((name, i) => [name, i]),
 );
 
-export const $combatSkills = computed($allSkills, (skills) => {
-  const combat: [string, SkillEntry][] = [];
+export const $meleeSkills = computed($allSkills, (skills) => {
+  const melee: [string, SkillEntry][] = [];
   for (const [name, entry] of Object.entries(skills)) {
-    if (entry.combat) combat.push([name, entry]);
+    if (entry.melee) melee.push([name, entry]);
   }
-  combat.sort((a, b) => {
-    const ai = combatOrderIndex.get(a[0]) ?? Infinity;
-    const bi = combatOrderIndex.get(b[0]) ?? Infinity;
+  melee.sort((a, b) => {
+    const ai = meleeOrderIndex.get(a[0]) ?? Infinity;
+    const bi = meleeOrderIndex.get(b[0]) ?? Infinity;
     if (ai !== bi) return ai - bi;
     return a[0].localeCompare(b[0]);
   });
-  return combat;
+  return melee;
 });
 
 /** Skills for the "My" tab: all skills with level > 0 */

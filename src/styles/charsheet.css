@@ -167,9 +167,18 @@
 }
 
 @keyframes chevron-nudge {
-  0%, 80%, 100% { transform: translateY(0); }
-  85%, 95% { transform: translateY(-2px); }
-  90% { transform: translateY(0); }
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  85%,
+  95% {
+    transform: translateY(-2px);
+  }
+  90% {
+    transform: translateY(0);
+  }
 }
 
 /* Panel chevron: hidden on desktop, shown on mobile */
@@ -179,7 +188,6 @@
 
 /* === Buttons Base === */
 .container button {
-  padding: var(--space-6) var(--space-12);
   border-radius: var(--radius);
   cursor: pointer;
   font-size: var(--font-ui);

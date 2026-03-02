@@ -60,6 +60,17 @@ export function getBodyTypeName(bt: number): BodyTypeName {
   return "Superhuman";
 }
 
+export function getDamageModifier(bt: number): number {
+  if (bt <= 2) return -2;
+  if (bt <= 4) return -1;
+  if (bt <= 7) return 0;
+  if (bt <= 9) return 1;
+  if (bt === 10) return 2;
+  if (bt <= 12) return 4;
+  if (bt <= 14) return 6;
+  return 8;
+}
+
 export function getBTM(bt: number): number {
   if (bt <= 2) return 0;
   if (bt <= 4) return 1;

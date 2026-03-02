@@ -6,13 +6,14 @@ import type {
   Reliability,
   WeaponType,
 } from "@scripts/weapons/catalog";
+import { CALIBER_ORDER } from "@scripts/ammo/catalog";
 import {
-  CALIBER_DAMAGE,
   CONCEALABILITY_LABELS,
   RELIABILITY_LABELS,
   skillForType,
   WEAPON_TYPE_LABELS,
 } from "@scripts/weapons/catalog";
+import { $customAmmoItems } from "@stores/ammo";
 import { $allSkills } from "@stores/skills";
 
 import { cls, Popover, Tip } from "../shared";
@@ -44,6 +45,8 @@ interface Props {
   range: string;
   onRangeChange?: (v: string) => void;
   melee: boolean;
+  effects?: string;
+  onEffectsChange?: (v: string) => void;
   /** Field names that should show error styling */
   errors?: ReadonlySet<string>;
 }
@@ -70,11 +73,22 @@ export function WeaponFormFields({
   range,
   onRangeChange,
   melee,
+  effects,
+  onEffectsChange,
   errors,
 }: Props) {
   const allSkills = useStore($allSkills);
+  const customAmmo = useStore($customAmmoItems);
   const skillCanEdit = isSkillEditable(type);
   const displaySkill = skillCanEdit ? skill : skillForType(type);
+
+  const caliberSuggestions = (() => {
+    const catalogSet = new Set(CALIBER_ORDER);
+    const custom = Object.values(customAmmo)
+      .map((d) => d.caliber)
+      .filter((c) => !catalogSet.has(c));
+    return custom.length ? [...CALIBER_ORDER, ...custom] : CALIBER_ORDER;
+  })();
 
   // Debounced skill-not-found check (500ms), case-insensitive
   const [skillWarning, setSkillWarning] = useState(false);
@@ -136,6 +150,7 @@ export function WeaponFormFields({
                 ? (e) => onSkillChange((e.target as HTMLInputElement).value)
                 : undefined
             }
+            list={skillCanEdit ? (melee ? "melee-skill-suggestions" : "exotic-skill-suggestions") : undefined}
             placeholder="Skill"
             title="Associated skill"
           />
@@ -151,6 +166,25 @@ export function WeaponFormFields({
               Skill "{displaySkill.trim()}" not found
             </p>
           </Popover>
+          {skillCanEdit && (
+            <datalist id={melee ? "melee-skill-suggestions" : "exotic-skill-suggestions"}>
+              {melee ? (
+                <>
+                  <option value="Brawling" />
+                  <option value="Melee" />
+                  <option value="Fencing" />
+                </>
+              ) : (
+                <>
+                  <option value="Archery" />
+                  <option value="Handgun" />
+                  <option value="Submachinegun" />
+                  <option value="Rifle" />
+                  <option value="Heavy Weapons" />
+                </>
+              )}
+            </datalist>
+          )}
         </div>
       </Tip>
       {!melee && (
@@ -170,7 +204,7 @@ export function WeaponFormFields({
             title="Ammo caliber"
           />
           <datalist id="caliber-suggestions">
-            {Object.keys(CALIBER_DAMAGE).map((c) => (
+            {caliberSuggestions.map((c) => (
               <option key={c} value={c} />
             ))}
           </datalist>
@@ -305,6 +339,21 @@ export function WeaponFormFields({
           ))}
         </select>
       </Tip>
+      {effects != null && (
+        <input
+          type="text"
+          class="input item-form-input weapon-form-effects"
+          value={effects}
+          disabled={!onEffectsChange}
+          onInput={
+            onEffectsChange
+              ? (e) => onEffectsChange((e.target as HTMLInputElement).value)
+              : undefined
+          }
+          placeholder="Effects (e.g. Bladed: halves soft armor)"
+          title="Weapon effects"
+        />
+      )}
     </>
   );
 }
