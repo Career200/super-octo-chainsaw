@@ -157,6 +157,21 @@
   color: var(--accent);
 }
 
+.collapsed > .collapse-chevron {
+  color: var(--accent);
+}
+
+.gear-group-label:not(.collapsed) > .collapse-chevron,
+.skill-group-header:not(.collapsed) > .collapse-chevron {
+  animation: chevron-nudge 3s ease-in-out infinite;
+}
+
+@keyframes chevron-nudge {
+  0%, 80%, 100% { transform: translateY(0); }
+  85%, 95% { transform: translateY(-2px); }
+  90% { transform: translateY(0); }
+}
+
 /* Panel chevron: hidden on desktop, shown on mobile */
 .panel-chevron {
   display: none;

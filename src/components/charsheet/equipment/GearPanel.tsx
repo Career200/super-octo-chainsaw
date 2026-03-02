@@ -33,7 +33,7 @@ function GearGroup({
 }) {
   return (
     <div class="gear-group">
-      <div class="gear-group-label" onClick={onToggle}>
+      <div class={`gear-group-label${collapsed ? " collapsed" : ""}`} onClick={onToggle}>
         <span>
           {label}
           {count > 0 && <span class="gear-group-count">{count}</span>}

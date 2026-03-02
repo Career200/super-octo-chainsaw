@@ -72,7 +72,7 @@ function CaliberGroup({
       class={`gear-group${isHighlighted ? " gear-group-highlighted" : ""}`}
       data-caliber={label}
     >
-      <div class="gear-group-label" onClick={onToggle}>
+      <div class={`gear-group-label${collapsed ? " collapsed" : ""}`} onClick={onToggle}>
         <span>
           {label}
           <span class="gear-group-count">{items.length}</span>

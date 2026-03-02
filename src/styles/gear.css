@@ -61,6 +61,10 @@
   user-select: none;
 }
 
+.gear-group-label.collapsed {
+  border-bottom-style: dashed;
+}
+
 .gear-group-more {
   font-size: var(--font-ui-sm);
   color: var(--fg-soft);
