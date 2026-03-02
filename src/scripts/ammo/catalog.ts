@@ -201,7 +201,7 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "20mm",
       "ap",
       "4D10",
-      "SP halved, penetrating damage halved",
+      "SP halved, penetrating damage halved, armor damage x2",
       2500,
       "R",
       "20mm cannon round",
@@ -209,6 +209,17 @@ function buildCatalog(): Record<string, AmmoTemplate> {
   );
 
   // Arrows (bow, weapon base 4D6)
+  entries.push(
+    a(
+      "arrow",
+      "training",
+      "2D6",
+      "SP halved",
+      1,
+      "C",
+      "Lightweight training arrow",
+    ),
+  );
   entries.push(
     a("arrow", "target", "4D6", "SP halved", 2, "C", "Standard target arrow"),
   );
@@ -239,6 +250,17 @@ function buildCatalog(): Record<string, AmmoTemplate> {
   );
 
   // Crossbow bolts (weapon base 3D6+3)
+  entries.push(
+    a(
+      "bolt",
+      "training",
+      "1D6+1",
+      "SP halved",
+      1,
+      "C",
+      "Lightweight training bolt",
+    ),
+  );
   entries.push(
     a("bolt", "target", "3D6+3", "SP halved", 2, "C", "Standard target bolt"),
   );
@@ -276,7 +298,7 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "1D6/2",
       "Ignores soft armor",
       50,
-      "P",
+      "C",
       "Standard needle round",
     ),
   );
@@ -287,7 +309,7 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "drugs",
       "Ignores soft armor, delivers drug payload",
       250,
-      "R",
+      "C",
       "Drug-delivering needle",
     ),
   );

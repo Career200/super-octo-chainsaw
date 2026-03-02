@@ -160,7 +160,9 @@ export const AmmoListPanel = ({
   const customAmmo = useStore($customAmmoList);
   const selectedId = useStore($selectedAmmo);
   const tab = useStore(tabStore("ammo-tab", "catalog"));
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const [collapsed, setCollapsed] = useState<Set<string>>(
+    () => new Set(CALIBER_ORDER),
+  );
 
   const toggleGroup = (caliber: string) => {
     setCollapsed((prev) => {
