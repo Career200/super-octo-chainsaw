@@ -550,6 +550,7 @@
 .melee-stats {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-4) var(--space-16);
   padding: 0 var(--space-8) var(--space-8);
   font-size: var(--font-ui);
@@ -560,40 +561,29 @@
   color: var(--accent);
 }
 
-.melee-stats-bt {
-  font-size: var(--font-ui-sm);
-  color: var(--fg-soft);
+.melee-stats-spacer {
+  flex: 1;
 }
 
-.melee-skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  padding: 0 var(--space-8) var(--space-8);
+/* --- Selectable skill chips on melee weapon cards --- */
+
+.melee-skill-btn {
+  cursor: pointer;
 }
 
-.melee-skill-chip {
-  padding: var(--space-2) var(--space-8);
-  font-size: var(--font-ui-sm);
-  color: var(--fg);
-  background: var(--code-bg);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
+.melee-skill-btn.active {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
 }
 
-.melee-skill-chip strong {
+.melee-skill-btn.active .label-chip-value {
   color: var(--accent);
 }
 
-.melee-skill-defense {
-  border-style: dashed;
-}
-
-.melee-skill-sep {
-  width: 1px;
-  align-self: stretch;
-  background: var(--border-light);
-  margin: 0 var(--space-4);
+.melee-card-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }
 
 .cc-melee-wa {

@@ -31,8 +31,8 @@ interface SkillFormProps {
   onNameChange?: (v: string) => void;
   stat: SkillStat;
   onStatChange?: (v: SkillStat) => void;
-  combat: boolean;
-  onCombatChange?: (v: boolean) => void;
+  melee: boolean;
+  onMeleeChange?: (v: boolean) => void;
   description: string;
   onDescriptionChange?: (v: string) => void;
 }
@@ -43,8 +43,8 @@ function SkillForm({
   onNameChange,
   stat,
   onStatChange,
-  combat,
-  onCombatChange,
+  melee,
+  onMeleeChange,
   description,
   onDescriptionChange,
 }: SkillFormProps) {
@@ -90,14 +90,14 @@ function SkillForm({
           </select>
         </label>
         <label class="skill-form-field skill-form-combat">
-          <span class="skill-form-label">Combat</span>
+          <span class="skill-form-label">Melee</span>
           <input
             type="checkbox"
-            checked={combat}
+            checked={melee}
             disabled={disabled}
             onChange={
-              onCombatChange
-                ? (e) => onCombatChange((e.target as HTMLInputElement).checked)
+              onMeleeChange
+                ? (e) => onMeleeChange((e.target as HTMLInputElement).checked)
                 : undefined
             }
           />
@@ -128,7 +128,7 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
   // Add-mode form state
   const [newName, setNewName] = useState("");
   const [newStat, setNewStat] = useState<SkillStat>("ref");
-  const [newCombat, setNewCombat] = useState(false);
+  const [newMelee, setNewMelee] = useState(false);
   const [newDescription, setNewDescription] = useState("");
 
   const isCustom = skillName ? isCustomSkill(skillName) : false;
@@ -139,11 +139,11 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
     const trimmed = newName.trim();
     if (!trimmed) return "Name cannot be empty";
     if (
-      addSkill(trimmed, newStat, newCombat, newDescription.trim() || undefined)
+      addSkill(trimmed, newStat, newMelee, newDescription.trim() || undefined)
     ) {
       setNewName("");
       setNewStat("ref");
-      setNewCombat(false);
+      setNewMelee(false);
       setNewDescription("");
       selectSkill(trimmed);
       return null;
@@ -176,8 +176,8 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
           onNameChange={setNewName}
           stat={newStat}
           onStatChange={setNewStat}
-          combat={newCombat}
-          onCombatChange={setNewCombat}
+          melee={newMelee}
+          onMeleeChange={setNewMelee}
           description={newDescription}
           onDescriptionChange={setNewDescription}
         />
@@ -186,7 +186,7 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
           disabled
           name={skillName!}
           stat={entry.stat}
-          combat={entry.combat}
+          melee={entry.melee}
           description={description}
           onDescriptionChange={
             isCustom

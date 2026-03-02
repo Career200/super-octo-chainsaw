@@ -1,26 +1,28 @@
 import { useStore } from "@nanostores/preact";
 
-import { getBodyTypeName, getDamageModifier } from "@scripts/combat/body";
-import { $allSkills } from "@stores/skills";
+import { getDamageModifier } from "@scripts/combat/body";
+import { $allSkills, $meleeSkills } from "@stores/skills";
 import { $BT, $REF } from "@stores/stats";
 import { $allOwnedWeapons } from "@stores/weapons";
 
 import { ManeuverTable } from "./ManeuverTable";
 import { MeleeWeaponCard } from "./MeleeWeaponCard";
 
-const ATTACK_SKILLS = ["Brawling", "Melee", "Fencing"];
 const DEFENSE_SKILLS = ["Dodge & Escape", "Athletics"];
 
 export default function MeleePanel() {
   const weapons = useStore($allOwnedWeapons);
   const skills = useStore($allSkills);
+  const meleeSkills = useStore($meleeSkills);
   const ref = useStore($REF);
   const bt = useStore($BT);
 
   const meleeWeapons = weapons.filter((w) => w.melee);
   const dm = getDamageModifier(bt.current);
-  const btName = getBodyTypeName(bt.current);
   const dmSign = dm >= 0 ? `+${dm}` : `${dm}`;
+
+  const brawlingLevel = skills["Brawling"]?.level ?? 0;
+  const unarmedTotal = ref.current + brawlingLevel;
 
   return (
     <div class="combat-list">
@@ -35,29 +37,25 @@ export default function MeleePanel() {
           REF <strong>{ref.current}</strong>
         </span>
         <span>
-          Damage Mod <strong>{dmSign}</strong>{" "}
-          <span class="melee-stats-bt">
-            ({btName}, BT {bt.current})
-          </span>
+          Damage Mod <strong>{dmSign}</strong>
         </span>
-      </div>
-
-      <div class="melee-skills">
-        {ATTACK_SKILLS.map((name) => (
-          <span key={name} class="melee-skill-chip">
-            {name} <strong>{skills[name]?.level ?? 0}</strong>
-          </span>
-        ))}
-        <span class="melee-skill-sep" />
+        <span class="melee-stats-spacer" />
         {DEFENSE_SKILLS.map((name) => (
-          <span key={name} class="melee-skill-chip melee-skill-defense">
-            {name} <strong>{skills[name]?.level ?? 0}</strong>
-          </span>
+          <div key={name} class="label-chip">
+            <span class="label-chip-label">{name}</span>
+            <span class="label-chip-value">{skills[name]?.level ?? 0}</span>
+          </div>
         ))}
       </div>
 
       {meleeWeapons.map((weapon) => (
-        <MeleeWeaponCard key={weapon.id} weapon={weapon} dmSign={dmSign} />
+        <MeleeWeaponCard
+          key={weapon.id}
+          weapon={weapon}
+          dmSign={dmSign}
+          meleeSkills={meleeSkills}
+          refCurrent={ref.current}
+        />
       ))}
 
       <div class="combat-card melee-unarmed">
@@ -69,6 +67,14 @@ export default function MeleePanel() {
           </div>
           <div class="cc-hero-cell">
             <span class="cc-hero-value">Kick 1D6 ({dmSign})</span>
+          </div>
+        </div>
+        <div class="cc-hero">
+          <div class="cc-hero-cell cc-hero-skill">
+            <span class="cc-hero-total">+{unarmedTotal}</span>
+            <span class="cc-hero-formula">
+              REF {ref.current} + Brawling {brawlingLevel}
+            </span>
           </div>
         </div>
       </div>

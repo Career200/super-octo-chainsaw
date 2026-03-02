@@ -29,6 +29,8 @@ export interface WeaponInstance {
   currentAmmo: number;
   loadedAmmo: LoadedAmmoInfo | null;
   smartchipActive: boolean;
+  /** Override for melee skill selection (persisted per-instance). */
+  meleeSkill?: string;
 }
 
 /** Custom weapon definition — user-created extension to WEAPON_CATALOG. */
@@ -59,6 +61,7 @@ export interface WeaponPiece extends WeaponTemplate {
   loadedAmmo: LoadedAmmoInfo | null;
   smartchipActive: boolean;
   custom?: boolean;
+  meleeSkill?: string;
 }
 
 // --- Helpers ---
@@ -253,6 +256,16 @@ export function setSmartchipActive(instanceId: string, active: boolean): void {
   });
 }
 
+export function setMeleeSkill(instanceId: string, skill: string): void {
+  const current = $ownedWeapons.get();
+  const instance = current[instanceId];
+  if (!instance) return;
+  $ownedWeapons.set({
+    ...current,
+    [instanceId]: { ...instance, meleeSkill: skill },
+  });
+}
+
 // --- Actions: custom weapon templates ---
 
 export function addCustomWeapon(
@@ -349,6 +362,7 @@ export const $allOwnedWeapons = computed(
         loadedAmmo: instance.loadedAmmo ?? null,
         smartchipActive: instance.smartchipActive,
         custom: isCustomWeapon(instance.templateId) || undefined,
+        meleeSkill: instance.meleeSkill,
       });
     }
     return weapons;

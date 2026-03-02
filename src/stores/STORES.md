@@ -78,7 +78,7 @@ Mutually exclusive with `$selectedSkill` — use `startAddingSkill()` to set.
 
 ### `$skills` (skills.ts)
 ```
-Record<string, { stat: SkillStat, level: 0-10, combat: bool }>
+Record<string, { stat: SkillStat, level: 0-10, melee: bool }>
 ```
 **Sparse persistence**: only stores catalog skills with level > 0 and all custom skills. Catalog skills at level 0 are NOT stored — they come from `SKILL_CATALOG` via `$allSkills`.
 
@@ -107,11 +107,11 @@ Helper: `isCustomGear(id)` — true if not in `GEAR_CATALOG`
 
 ### `$ownedWeapons` (weapons.ts)
 ```
-Record<instanceId, { id, templateId, currentAmmo, loadedAmmo, smartchipActive }>
+Record<instanceId, { id, templateId, currentAmmo, loadedAmmo, smartchipActive, meleeSkill? }>
 ```
 Owned weapon instances. Each weapon tracks its own ammo state. `loadedAmmo` is a `LoadedAmmoInfo | null` snapshot (templateId, type, damage, effects) — `null` means manual mode (no ammo system, free reload).
 
-Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon(id, ammoTemplateId?)`, `setCurrentAmmo`, `setSmartchipActive`
+Actions: `acquireWeapon`, `discardWeapon`, `fireWeapon`, `reloadWeapon(id, ammoTemplateId?)`, `setCurrentAmmo`, `setSmartchipActive`, `setMeleeSkill`
 Cross-store: `reloadWeapon` reads `$ammoByCaliberLookup` + `$ownedAmmo`, mutates `$ownedAmmo` via `addAmmo`/`removeAmmo`
 Template resolution: `resolveWeaponTemplate()` — checks `WEAPON_CATALOG` + `$customWeaponTemplates`
 Helper: `isCustomWeapon(id)` — true if not in `WEAPON_CATALOG`
@@ -244,7 +244,7 @@ Depends on: `$health`
 
 ### `$allSkills` (skills.ts)
 ```
-Record<string, { stat: SkillStat, level: 0-10, combat: bool }>
+Record<string, { stat: SkillStat, level: 0-10, melee: bool }>
 ```
 Full view: all catalog skills (hydrated with stored levels) + all custom skills.
 Depends on: `$skills`
@@ -270,11 +270,11 @@ Record<SkillStat, [name, SkillEntry][]>
 Skills grouped by stat, sorted alphabetically within each group.
 Depends on: `$allSkills`
 
-### `$combatSkills` (skills.ts)
+### `$meleeSkills` (skills.ts)
 ```
 [name, SkillEntry][]
 ```
-Skills with `combat: true`, ordered by `COMBAT_SKILLS_ORDER` then alphabetically.
+Skills with `melee: true`, ordered by `MELEE_SKILLS_ORDER` then alphabetically.
 Depends on: `$allSkills`
 
 ### `$mySkills` (skills.ts)
@@ -410,7 +410,7 @@ $selectedSkill ◂──▸ $addingSkill (mutually exclusive via selectSkill/sta
 $skills ──┬──▸ $allSkills ──┬──▸ $awareness (+ $INT)
           │                 ├──▸ $skillsByStat
           │                 ├──▸ $skillTotal
-          │                 ├──▸ $combatSkills
+          │                 ├──▸ $meleeSkills
           │                 └──▸ $mySkills ──▸ $mySkillsCount
           └──▸ $customSkills
 ```
