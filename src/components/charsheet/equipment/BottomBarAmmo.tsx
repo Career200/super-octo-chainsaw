@@ -51,7 +51,7 @@ function AmmoDetail({
         {template.cost != null && (
           <span class="weapon-detail-stat">
             <span class="weapon-detail-label">Cost</span>
-            {template.cost}eb
+            {template.cost}eb / {template.boxSize}
           </span>
         )}
         <span class="weapon-detail-stat">
@@ -69,10 +69,10 @@ function AmmoDetail({
       {template.description && <p class="text-desc">{template.description}</p>}
       <div class="gear-qty-controls cc-ammo-stepper">
         <button
-          class="btn-sm ammo-qty-btn"
-          onClick={() => removeAmmo(template.templateId, 100)}
+          class="btn-sm ammo-qty-btn ammo-qty-btn-box"
+          onClick={() => removeAmmo(template.templateId, template.boxSize)}
         >
-          −100
+          −{template.boxSize}
         </button>
         <button
           class="btn-sm ammo-qty-btn"
@@ -88,10 +88,10 @@ function AmmoDetail({
           +
         </button>
         <button
-          class="btn-sm ammo-qty-btn"
-          onClick={() => addAmmo(template.templateId, 100)}
+          class="btn-sm ammo-qty-btn ammo-qty-btn-box"
+          onClick={() => addAmmo(template.templateId, template.boxSize)}
         >
-          +100
+          +{template.boxSize}
         </button>
       </div>
     </div>
@@ -113,6 +113,8 @@ function AmmoForm({
   onDescriptionChange,
   cost,
   onCostChange,
+  boxSize,
+  onBoxSizeChange,
   availability,
   onAvailabilityChange,
   errors,
@@ -130,6 +132,8 @@ function AmmoForm({
   onDescriptionChange?: (v: string) => void;
   cost: string;
   onCostChange?: (v: string) => void;
+  boxSize: string;
+  onBoxSizeChange?: (v: string) => void;
   availability: string;
   onAvailabilityChange?: (v: string) => void;
   errors?: ReadonlySet<string>;
@@ -206,6 +210,17 @@ function AmmoForm({
             "Cost per box in eurobucks",
             "",
             { type: "number", min: "0" },
+          )}
+        </Tip>
+        <Tip label="Box size" class="item-form-box-size">
+          {inp(
+            "boxSize",
+            boxSize,
+            onBoxSizeChange,
+            "Box",
+            "Rounds per box",
+            "",
+            { type: "number", min: "1" },
           )}
         </Tip>
         <Tip label="Street availability" class="item-form-availability">
@@ -290,6 +305,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
           effects: customDef.effects,
           description: customDef.description,
           cost: customDef.cost ?? 0,
+          boxSize: customDef.boxSize ?? 50,
           availability: customDef.availability ?? "C",
         }
       : null;
@@ -324,6 +340,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
   const [newEffects, setNewEffects] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newCost, setNewCost] = useState("");
+  const [newBoxSize, setNewBoxSize] = useState("50");
   const [newAvailability, setNewAvailability] = useState<Availability | "">("");
   const [addAttempted, setAddAttempted] = useState(false);
 
@@ -338,11 +355,13 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
       return "Damage cannot be empty";
     }
     const cost = newCost ? Number(newCost) : undefined;
+    const bs = newBoxSize ? Number(newBoxSize) : undefined;
     const id = addCustomAmmo(cal, typ, {
       damage: dmg,
       effects: newEffects.trim(),
       description: newDescription.trim(),
       cost: cost != null && !isNaN(cost) ? cost : undefined,
+      boxSize: bs != null && !isNaN(bs) && bs > 0 ? bs : undefined,
       availability: (newAvailability as Availability) || undefined,
     });
     if (id) {
@@ -354,6 +373,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
       setNewEffects("");
       setNewDescription("");
       setNewCost("");
+      setNewBoxSize("50");
       setNewAvailability("");
       selectAmmo(id);
       return null;
@@ -392,6 +412,8 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
         onDescriptionChange={setNewDescription}
         cost={newCost}
         onCostChange={setNewCost}
+        boxSize={newBoxSize}
+        onBoxSizeChange={setNewBoxSize}
         availability={newAvailability}
         onAvailabilityChange={(v) => setNewAvailability(v as Availability | "")}
         errors={addErrors}
@@ -416,6 +438,13 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
           const n = v ? Number(v) : undefined;
           updateCustomAmmo(ammoId!, {
             cost: n != null && !isNaN(n) ? n : 0,
+          });
+        }}
+        boxSize={String(resolved.boxSize)}
+        onBoxSizeChange={(v) => {
+          const n = v ? Number(v) : undefined;
+          updateCustomAmmo(ammoId!, {
+            boxSize: n != null && !isNaN(n) && n > 0 ? n : 50,
           });
         }}
         availability={resolved.availability ?? ""}

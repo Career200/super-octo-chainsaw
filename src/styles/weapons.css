@@ -316,6 +316,10 @@
   cursor: pointer;
 }
 
+.ammo-qty-btn-box {
+  min-width: 48px;
+}
+
 .ammo-qty-btn:hover {
   background: var(--accent-subtle);
 }
@@ -425,11 +429,10 @@
   letter-spacing: 0.5px;
 }
 
-.ammo-row-damage {
+.ammo-row-price {
   flex-shrink: 0;
   min-width: 52px;
   font-size: var(--font-ui);
-  font-weight: bold;
 }
 
 .ammo-row-effects {

@@ -46,6 +46,7 @@ function hydrateCustom(id: string, def: CustomAmmoDef): AmmoTemplate {
     effects: def.effects,
     description: def.description,
     cost: def.cost ?? 0,
+    boxSize: def.boxSize ?? 50,
     availability: def.availability ?? "C",
   };
 }
@@ -58,7 +59,7 @@ export function resolveAmmoTemplate(templateId: string): AmmoTemplate | null {
 
 // --- Actions ---
 
-export function addAmmo(templateId: string, qty: number = 100): void {
+export function addAmmo(templateId: string, qty: number = 1): void {
   if (!resolveAmmoTemplate(templateId)) return;
   const current = $ownedAmmo.get();
   $ownedAmmo.set({
@@ -87,6 +88,7 @@ export function addCustomAmmo(
     effects: string;
     description: string;
     cost?: number;
+    boxSize?: number;
     availability?: Availability;
   },
 ): string | null {
@@ -101,7 +103,7 @@ export function addCustomAmmo(
   }
   const def: CustomAmmoDef = { caliber, type, ...fields };
   $customAmmoItems.set({ ...$customAmmoItems.get(), [templateId]: def });
-  addAmmo(templateId);
+  addAmmo(templateId, def.boxSize ?? 50);
   return templateId;
 }
 

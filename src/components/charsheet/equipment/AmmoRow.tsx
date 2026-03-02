@@ -18,6 +18,7 @@ export function AmmoRow({
   highlighted,
 }: Props) {
   const id = template.templateId;
+  const box = template.boxSize;
   return (
     <div
       class={`ammo-row${selected ? " selected" : ""}${highlighted ? " highlighted" : ""}${custom ? " ammo-row-custom" : ""}`}
@@ -26,19 +27,22 @@ export function AmmoRow({
       <span class={`ammo-row-type avail-${template.availability ?? "C"}`}>
         {template.type}
       </span>
-      <span class="ammo-row-damage">{template.damage}</span>
+      <span class="ammo-row-price">
+        <span class="cash">{"\u156E\u1572"}</span>
+        {template.cost}
+      </span>
       <span class="ammo-row-effects text-soft">{template.effects}</span>
       <span class="ammo-row-actions">
         {quantity > 0 ? (
           <span class="gear-qty-controls ammo-qty-controls">
             <button
-              class="btn-sm ammo-qty-btn"
+              class="btn-sm ammo-qty-btn ammo-qty-btn-box"
               onClick={(e) => {
                 e.stopPropagation();
-                removeAmmo(id, 100);
+                removeAmmo(id, box);
               }}
             >
-              −100
+              −{box}
             </button>
             <button
               class="btn-sm ammo-qty-btn"
@@ -60,13 +64,13 @@ export function AmmoRow({
               +
             </button>
             <button
-              class="btn-sm ammo-qty-btn"
+              class="btn-sm ammo-qty-btn ammo-qty-btn-box"
               onClick={(e) => {
                 e.stopPropagation();
-                addAmmo(id, 100);
+                addAmmo(id, box);
               }}
             >
-              +100
+              +{box}
             </button>
           </span>
         ) : (
@@ -74,7 +78,7 @@ export function AmmoRow({
             class="btn-sm gear-take-btn"
             onClick={(e) => {
               e.stopPropagation();
-              addAmmo(id);
+              addAmmo(id, box);
             }}
           >
             Take

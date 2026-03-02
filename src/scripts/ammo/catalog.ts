@@ -10,7 +10,8 @@ export interface AmmoTemplate {
   damage: string; // dice expression, overrides weapon damage when loaded
   effects: string; // compact plain text — informational, player applies manually
   description: string; // longer plain text shown in catalog.
-  cost: number; // eb per box (see pricing section in plan). Custom form should note that cost is per box and not per round.
+  cost: number; // eb per box
+  boxSize: number; // rounds per box (corebook varies by caliber category)
   availability: Availability;
 }
 
@@ -22,6 +23,7 @@ export interface CustomAmmoDef {
   effects: string;
   description: string;
   cost?: number;
+  boxSize?: number;
   availability?: Availability;
 }
 
@@ -41,6 +43,7 @@ function a(
   damage: string,
   effects: string,
   cost: number,
+  boxSize: number,
   availability: Availability,
   description: string = "",
 ): AmmoTemplate {
@@ -52,6 +55,7 @@ function a(
     effects,
     description,
     cost,
+    boxSize,
     availability,
   };
 }
@@ -61,16 +65,18 @@ function bulletSet(
   caliber: string,
   damage: string,
   costStd: number,
+  boxSize: number,
   availability: Availability = "C",
 ): AmmoTemplate[] {
   return [
-    a(caliber, "std", damage, "", costStd, availability),
+    a(caliber, "std", damage, "", costStd, boxSize, availability),
     a(
       caliber,
       "ap",
       damage,
       "SP halved, pen halved",
       costStd * 3,
+      boxSize,
       availability,
     ),
     a(
@@ -79,6 +85,7 @@ function bulletSet(
       damage,
       "SP x2, pen x1.5",
       Math.round(costStd * 1.125),
+      boxSize,
       availability,
     ),
     a(
@@ -87,6 +94,7 @@ function bulletSet(
       damage,
       "SP halved, pen halved, +1d6 fire, 1d6/2 burn",
       costStd * 4,
+      boxSize,
       "P",
     ),
     a(
@@ -95,6 +103,7 @@ function bulletSet(
       damage,
       "Stun beyond 3m; half real + half stun within 3m",
       Math.round(costStd / 3),
+      boxSize,
       availability,
     ),
     a(
@@ -103,6 +112,7 @@ function bulletSet(
       damage,
       "SP halved OR pen x1.5 if unarmored",
       costStd * 4,
+      boxSize,
       "P",
     ),
   ];
@@ -113,39 +123,39 @@ function bulletSet(
 function buildCatalog(): Record<string, AmmoTemplate> {
   const entries: AmmoTemplate[] = [];
 
-  // Light pistol calibers (15eb/100 std)
-  entries.push(...bulletSet("5mm", "1D6", 15));
-  entries.push(...bulletSet("6mm", "1D6+1", 15));
-  entries.push(...bulletSet(".22", "1D6", 15));
-  entries.push(...bulletSet(".25", "1D6+1", 15));
+  // Light pistol calibers (box of 100, 15eb std)
+  entries.push(...bulletSet("5mm", "1D6", 15, 100));
+  entries.push(...bulletSet("6mm", "1D6+1", 15, 100));
+  entries.push(...bulletSet(".22", "1D6", 15, 100));
+  entries.push(...bulletSet(".25", "1D6+1", 15, 100));
 
-  // Medium pistol & SMG calibers (30eb/100 std)
-  entries.push(...bulletSet("7mm", "1D6+2", 30));
-  entries.push(...bulletSet(".38", "1D6+2", 30));
-  entries.push(...bulletSet("9mm", "2D6+1", 30));
-  entries.push(...bulletSet("10mm", "2D6+3", 30));
-  entries.push(...bulletSet(".45", "2D6+2", 30));
-  entries.push(...bulletSet(".40", "2D6+3", 30));
+  // Medium pistol & SMG calibers (box of 50, 15eb std)
+  entries.push(...bulletSet("7mm", "1D6+2", 15, 50));
+  entries.push(...bulletSet(".38", "1D6+2", 15, 50));
+  entries.push(...bulletSet("9mm", "2D6+1", 15, 50));
+  entries.push(...bulletSet("10mm", "2D6+3", 15, 50));
+  entries.push(...bulletSet(".45", "2D6+2", 15, 50));
+  entries.push(...bulletSet(".40", "2D6+3", 15, 50));
 
-  // Heavy pistol calibers (36eb/100 std)
-  entries.push(...bulletSet("11mm", "3D6", 36));
-  entries.push(...bulletSet(".357", "3D6+1", 36));
-  entries.push(...bulletSet("5.7mm", "3D6", 36));
+  // Heavy pistol calibers (box of 50, 18eb std)
+  entries.push(...bulletSet("11mm", "3D6", 18, 50));
+  entries.push(...bulletSet(".357", "3D6+1", 18, 50));
+  entries.push(...bulletSet("5.7mm", "3D6", 18, 50));
 
-  // Very heavy pistol calibers (40eb/100 std)
-  entries.push(...bulletSet("12mm", "4D6+1", 40));
-  entries.push(...bulletSet(".44", "4D6", 40));
+  // Very heavy pistol calibers (box of 50, 20eb std)
+  entries.push(...bulletSet("12mm", "4D6+1", 20, 50));
+  entries.push(...bulletSet(".44", "4D6", 20, 50));
 
-  // Assault rifle calibers (40eb/100 std)
-  entries.push(...bulletSet("5.56mm", "5D6", 40));
-  entries.push(...bulletSet("7.62mm", "6D6+2", 40));
-  entries.push(...bulletSet("7.62x39", "5D6+2", 40));
-  entries.push(...bulletSet("30-06", "5D6+1", 40));
+  // Assault rifle calibers (box of 100, 40eb std)
+  entries.push(...bulletSet("5.56mm", "5D6", 40, 100));
+  entries.push(...bulletSet("7.62mm", "6D6+2", 40, 100));
+  entries.push(...bulletSet("7.62x39", "5D6+2", 40, 100));
+  entries.push(...bulletSet("30-06", "5D6+1", 40, 100));
 
-  // Shotgun 00: std, slug + specialty shells
-  entries.push(a("00", "std", "4D6", "", 30, "C", "Standard buckshot"));
+  // Shotgun 00: box of 12
+  entries.push(a("00", "std", "4D6", "", 15, 12, "C", "Standard buckshot"));
   entries.push(
-    a("00", "slug", "4D6", "SP halved", 30, "C", "Solid slug round"),
+    a("00", "slug", "4D6", "SP halved", 15, 12, "C", "Solid slug round"),
   );
   entries.push(
     a(
@@ -154,12 +164,13 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "2D6",
       "Stun damage, 3m spread",
       40,
+      12,
       "C",
       "Non-lethal stinger round",
     ),
   );
   entries.push(
-    a("00", "gas", "—", "Tear gas cloud 3m radius", 50, "P", "CS gas shell"),
+    a("00", "gas", "—", "Tear gas cloud 3m radius", 50, 12, "P", "CS gas shell"),
   );
   entries.push(
     a(
@@ -168,6 +179,7 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "1D6",
       "Illumination 50m radius, +1D6 fire",
       20,
+      12,
       "C",
       "Signal/illumination flare",
     ),
@@ -179,6 +191,7 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "—",
       "Smoke cloud 3m radius, 3 turns",
       30,
+      12,
       "C",
       "Smoke screening shell",
     ),
@@ -190,38 +203,41 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "—",
       "Flashbang effect 3m radius",
       50,
+      12,
       "P",
       "Disorientation shell",
     ),
   );
 
-  // 20mm — already AP by default
+  // 20mm — sold individually
   entries.push(
     a(
       "20mm",
       "ap",
       "4D10",
       "SP halved, penetrating damage halved, armor damage x2",
-      2500,
+      25,
+      1,
       "R",
       "20mm cannon round",
     ),
   );
 
-  // Arrows (bow, weapon base 4D6)
+  // Arrows (box of 12)
   entries.push(
     a(
       "arrow",
       "training",
       "2D6",
       "SP halved",
-      1,
+      12,
+      12,
       "C",
       "Lightweight training arrow",
     ),
   );
   entries.push(
-    a("arrow", "target", "4D6", "SP halved", 2, "C", "Standard target arrow"),
+    a("arrow", "target", "4D6", "SP halved", 24, 12, "C", "Standard target arrow"),
   );
   entries.push(
     a(
@@ -229,13 +245,14 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "broadhead",
       "4D6",
       "Soft SP halved, pen x2",
-      5,
+      60,
+      12,
       "C",
       "Broadhead hunting arrow",
     ),
   );
   entries.push(
-    a("arrow", "stun", "4D6", "Stun damage only", 2, "C", "Blunt stun arrow"),
+    a("arrow", "stun", "4D6", "Stun damage only", 24, 12, "C", "Blunt stun arrow"),
   );
   entries.push(
     a(
@@ -243,26 +260,28 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "spinner",
       "4D6",
       "Soft SP halved, pen x3",
-      7,
+      84,
+      12,
       "P",
       "Armor-defeating spinner arrow",
     ),
   );
 
-  // Crossbow bolts (weapon base 3D6+3)
+  // Crossbow bolts (box of 12)
   entries.push(
     a(
       "bolt",
       "training",
       "1D6+1",
       "SP halved",
-      1,
+      12,
+      12,
       "C",
       "Lightweight training bolt",
     ),
   );
   entries.push(
-    a("bolt", "target", "3D6+3", "SP halved", 2, "C", "Standard target bolt"),
+    a("bolt", "target", "3D6+3", "SP halved", 30, 12, "C", "Standard target bolt"),
   );
   entries.push(
     a(
@@ -270,13 +289,14 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "broadhead",
       "3D6+3",
       "Soft SP halved, pen x2",
-      5,
+      60,
+      12,
       "C",
       "Broadhead hunting bolt",
     ),
   );
   entries.push(
-    a("bolt", "stun", "3D6+3", "Stun damage only", 2, "C", "Blunt stun bolt"),
+    a("bolt", "stun", "3D6+3", "Stun damage only", 24, 12, "C", "Blunt stun bolt"),
   );
   entries.push(
     a(
@@ -284,19 +304,21 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "spinner",
       "3D6+3",
       "Soft SP halved, pen x3",
-      7,
+      84,
+      12,
       "P",
       "Armor-defeating spinner bolt",
     ),
   );
 
-  // Needlegun
+  // Needlegun (box of 50)
   entries.push(
     a(
       "needle",
       "normal",
       "1D6/2",
       "Ignores soft armor",
+      25,
       50,
       "C",
       "Standard needle round",
@@ -308,26 +330,28 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "drugged",
       "drugs",
       "Ignores soft armor, delivers drug payload",
-      250,
+      125,
+      50,
       "C",
       "Drug-delivering needle",
     ),
   );
 
-  // Paint caliber
+  // Airgun / paint (box of 100)
   entries.push(
     a(
       "paint",
       "paintball",
       "1",
       "Different colors, glowing, IR/UV paint available",
-      10,
+      6,
+      100,
       "C",
       "Paintball round",
     ),
   );
 
-  // Single-type exotics
+  // Single-unit exotics
   entries.push(
     a(
       "napalm",
@@ -335,6 +359,7 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "2D10",
       "+2D10/turn burn (3 turns)",
       50,
+      1,
       "R",
       "Napalm canister",
     ),
@@ -346,12 +371,13 @@ function buildCatalog(): Record<string, AmmoTemplate> {
       "1-5D6",
       "Variable power setting",
       100,
+      1,
       "P",
       "Energy cell",
     ),
   );
   entries.push(
-    a("charge", "pack", "stun", "Taser charge", 10, "C", "Taser charge pack"),
+    a("charge", "pack", "stun", "Taser charge", 10, 1, "C", "Taser charge pack"),
   );
 
   const catalog: Record<string, AmmoTemplate> = {};
