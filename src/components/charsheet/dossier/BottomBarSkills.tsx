@@ -2,8 +2,12 @@ import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
 import { STAT_LABELS, STAT_NAMES } from "@scripts/combat/types";
-import type { SkillStat } from "@scripts/skills/catalog";
-import { SKILL_CATALOG } from "@scripts/skills/catalog";
+import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
+import {
+  MANEUVER_LABELS,
+  MANEUVER_NAMES,
+  SKILL_CATALOG,
+} from "@scripts/skills/catalog";
 import {
   $allSkills,
   addSkill,
@@ -20,6 +24,15 @@ const SKILL_STAT_OPTIONS: { value: SkillStat; label: string }[] = [
   { value: "special", label: "SPECIAL" },
 ];
 
+const KEY_ATTACK_OPTIONS = [
+  { value: "0", label: "\u2014" },
+  { value: "1", label: "+1" },
+  { value: "2", label: "+2" },
+  { value: "3", label: "+3" },
+  { value: "4", label: "+4" },
+  { value: "5", label: "+5" },
+];
+
 interface Props {
   expanded: boolean;
   onToggle: () => void;
@@ -31,8 +44,14 @@ interface SkillFormProps {
   onNameChange?: (v: string) => void;
   stat: SkillStat;
   onStatChange?: (v: SkillStat) => void;
+  diffMod: number;
+  onDiffModChange?: (v: number) => void;
   melee: boolean;
   onMeleeChange?: (v: boolean) => void;
+  martialArt: boolean;
+  onMartialArtChange?: (v: boolean) => void;
+  keyAttacks: Partial<Record<Maneuver, number>>;
+  onKeyAttacksChange?: (v: Partial<Record<Maneuver, number>>) => void;
   description: string;
   onDescriptionChange?: (v: string) => void;
 }
@@ -43,8 +62,14 @@ function SkillForm({
   onNameChange,
   stat,
   onStatChange,
+  diffMod,
+  onDiffModChange,
   melee,
   onMeleeChange,
+  martialArt,
+  onMartialArtChange,
+  keyAttacks,
+  onKeyAttacksChange,
   description,
   onDescriptionChange,
 }: SkillFormProps) {
@@ -89,6 +114,28 @@ function SkillForm({
             ))}
           </select>
         </label>
+        <label class="skill-form-field skill-form-diff">
+          <span class="skill-form-label">Diff</span>
+          <input
+            type="number"
+            class="input skill-form-input"
+            value={diffMod}
+            disabled={!onDiffModChange}
+            min={1}
+            max={10}
+            onInput={
+              onDiffModChange
+                ? (e) => {
+                    const v = parseInt(
+                      (e.target as HTMLInputElement).value,
+                      10,
+                    );
+                    if (v >= 1 && v <= 10) onDiffModChange(v);
+                  }
+                : undefined
+            }
+          />
+        </label>
         <label class="skill-form-field skill-form-combat">
           <span class="skill-form-label">Melee</span>
           <input
@@ -102,7 +149,60 @@ function SkillForm({
             }
           />
         </label>
+        <label class="skill-form-field skill-form-combat">
+          <span class="skill-form-label">MA</span>
+          <input
+            type="checkbox"
+            checked={martialArt}
+            disabled={disabled}
+            onChange={
+              onMartialArtChange
+                ? (e) =>
+                    onMartialArtChange((e.target as HTMLInputElement).checked)
+                : undefined
+            }
+          />
+        </label>
       </div>
+      {martialArt && (
+        <div class="skill-form-key-attacks">
+          {MANEUVER_NAMES.map((m) => (
+            <label key={m} class="skill-form-maneuver">
+              <span class="skill-form-maneuver-label">
+                {MANEUVER_LABELS[m]}
+              </span>
+              <select
+                class="input skill-form-maneuver-input"
+                value={String(keyAttacks[m] ?? 0)}
+                disabled={!onKeyAttacksChange}
+                onChange={
+                  onKeyAttacksChange
+                    ? (e) => {
+                        const v = parseInt(
+                          (e.target as HTMLSelectElement).value,
+                          10,
+                        );
+                        const next = { ...keyAttacks };
+                        if (v > 0) {
+                          next[m] = v;
+                        } else {
+                          delete next[m];
+                        }
+                        onKeyAttacksChange(next);
+                      }
+                    : undefined
+                }
+              >
+                {KEY_ATTACK_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
+        </div>
+      )}
       <textarea
         class="input skill-form-description"
         value={description}
@@ -129,21 +229,40 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
   const [newName, setNewName] = useState("");
   const [newStat, setNewStat] = useState<SkillStat>("ref");
   const [newMelee, setNewMelee] = useState(false);
+  const [newMartialArt, setNewMartialArt] = useState(false);
+  const [newKeyAttacks, setNewKeyAttacks] = useState<
+    Partial<Record<Maneuver, number>>
+  >({});
+  const [newDiffMod, setNewDiffMod] = useState(1);
   const [newDescription, setNewDescription] = useState("");
 
   const isCustom = skillName ? isCustomSkill(skillName) : false;
   const catalogDef = skillName && !isCustom ? SKILL_CATALOG[skillName] : null;
   const description = catalogDef?.description ?? entry?.description ?? "";
+  const diffMod = catalogDef?.diffMod ?? entry?.diffMod ?? 1;
+  const martialArt = catalogDef?.martialArt ?? entry?.martialArt ?? false;
+  const keyAttacks = catalogDef?.keyAttacks ?? entry?.keyAttacks ?? {};
 
   const handleAdd = (): string | null => {
     const trimmed = newName.trim();
     if (!trimmed) return "Name cannot be empty";
     if (
-      addSkill(trimmed, newStat, newMelee, newDescription.trim() || undefined)
+      addSkill(trimmed, newStat, newMelee, {
+        description: newDescription.trim() || undefined,
+        martialArt: newMartialArt || undefined,
+        keyAttacks:
+          newMartialArt && Object.keys(newKeyAttacks).length > 0
+            ? newKeyAttacks
+            : undefined,
+        diffMod: newDiffMod !== 1 ? newDiffMod : undefined,
+      })
     ) {
       setNewName("");
       setNewStat("ref");
       setNewMelee(false);
+      setNewMartialArt(false);
+      setNewKeyAttacks({});
+      setNewDiffMod(1);
       setNewDescription("");
       selectSkill(trimmed);
       return null;
@@ -176,8 +295,14 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
           onNameChange={setNewName}
           stat={newStat}
           onStatChange={setNewStat}
+          diffMod={newDiffMod}
+          onDiffModChange={setNewDiffMod}
           melee={newMelee}
           onMeleeChange={setNewMelee}
+          martialArt={newMartialArt}
+          onMartialArtChange={setNewMartialArt}
+          keyAttacks={newKeyAttacks}
+          onKeyAttacksChange={setNewKeyAttacks}
           description={newDescription}
           onDescriptionChange={setNewDescription}
         />
@@ -186,7 +311,20 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
           disabled
           name={skillName!}
           stat={entry.stat}
+          diffMod={diffMod}
+          onDiffModChange={
+            isCustom
+              ? (v) => updateSkill(skillName!, { diffMod: v })
+              : undefined
+          }
           melee={entry.melee}
+          martialArt={martialArt}
+          keyAttacks={keyAttacks}
+          onKeyAttacksChange={
+            isCustom
+              ? (v) => updateSkill(skillName!, { keyAttacks: v })
+              : undefined
+          }
           description={description}
           onDescriptionChange={
             isCustom

@@ -231,6 +231,7 @@
 .cc-hero-formula {
   font-size: var(--font-ui-sm);
   color: var(--fg-soft);
+  margin-left: var(--space-4);
 }
 
 .cc-hero-total {
@@ -538,7 +539,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-4) var(--space-16);
+  gap: var(--space-4);
   padding: 0 var(--space-8) var(--space-8);
   font-size: var(--font-ui);
   color: var(--fg);
@@ -550,6 +551,21 @@
 
 .melee-stats-spacer {
   flex: 1;
+}
+
+.melee-dodge-bonuses {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  padding: 0 var(--space-8);
+  margin-top: calc(-1 * var(--space-4));
+}
+
+.melee-dodge-bonuses strong {
+  color: var(--accent);
+}
+
+.melee-dodge-label {
+  margin-right: var(--space-4);
 }
 
 /* --- Selectable skill chips on melee weapon cards --- */
@@ -569,8 +585,12 @@
 
 .melee-card-skills {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  flex: 1;
+  min-width: 0;
 }
 
 .cc-melee-wa {
@@ -612,4 +632,24 @@
 
 .melee-maneuver-desc {
   color: var(--fg-soft);
+  flex: 1;
+  min-width: 0;
+}
+
+.melee-maneuver-bonuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.melee-maneuver-bonus {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+.melee-maneuver-bonus strong {
+  color: var(--accent);
 }

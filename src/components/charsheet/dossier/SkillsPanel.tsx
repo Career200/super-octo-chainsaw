@@ -107,19 +107,23 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
 }
 
 function SkillGroup({
-  stat,
+  groupKey,
+  label,
   entries,
   collapsed,
   onToggle,
   stablePicks,
 }: {
-  stat: SkillStat;
+  groupKey: string;
+  label?: string;
   entries: [string, SkillEntry][];
   collapsed: boolean;
   onToggle: () => void;
   stablePicks: Map<string, string>;
 }) {
-  const topSkill = collapsed ? pickTopSkill(entries, stablePicks, stat) : null;
+  const topSkill = collapsed
+    ? pickTopSkill(entries, stablePicks, groupKey)
+    : null;
 
   return (
     <div class="skill-group">
@@ -128,8 +132,10 @@ function SkillGroup({
         onClick={onToggle}
       >
         <span>
-          {GROUP_LABELS[stat]}
-          {stat !== "special" && <StatLabel stat={stat} />}
+          {label ?? GROUP_LABELS[groupKey as SkillStat]}
+          {!label && groupKey !== "special" && (
+            <StatLabel stat={groupKey as StatName} />
+          )}
         </span>
         <Chevron expanded={!collapsed} />
       </div>
@@ -179,16 +185,14 @@ export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
   const grouped = useStore($skillsByStat);
   const customSkills = useStore($customSkills);
   const mySkills = useStore($mySkills);
-  const [collapsed, setCollapsed] = useState<Set<SkillStat>>(
-    new Set(["special"]),
-  );
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set(["special"]));
   const stablePicks = useRef(new Map<string, string>());
 
-  const toggle = (stat: SkillStat) => {
+  const toggle = (key: string) => {
     setCollapsed((prev) => {
       const next = new Set(prev);
-      if (next.has(stat)) next.delete(stat);
-      else next.add(stat);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
       return next;
     });
   };
@@ -219,16 +223,29 @@ export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
   }
 
   // Default tab: grouped by stat, showing all catalog skills
+  // Separate martial arts from the REF group into their own category at the end
+  const martialArts: [string, SkillEntry][] = [];
+  const refEntries = grouped.ref ?? [];
+  const refNormal: [string, SkillEntry][] = [];
+  for (const pair of refEntries) {
+    if (pair[1].martialArt) martialArts.push(pair);
+    else refNormal.push(pair);
+  }
+  const groupedFiltered: Record<SkillStat, [string, SkillEntry][]> = {
+    ...grouped,
+    ref: refNormal,
+  };
+
   return (
     <div class="skills-list">
       {STAT_GROUP_ORDER.map((stat) => {
-        const entries = grouped[stat];
+        const entries = groupedFiltered[stat];
         if (!entries || entries.length === 0) return null;
 
         return (
           <SkillGroup
             key={stat}
-            stat={stat}
+            groupKey={stat}
             entries={entries}
             collapsed={collapsed.has(stat)}
             onToggle={() => toggle(stat)}
@@ -236,6 +253,16 @@ export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
           />
         );
       })}
+      {martialArts.length > 0 && (
+        <SkillGroup
+          groupKey="ma-group"
+          label="MARTIAL ARTS"
+          entries={martialArts}
+          collapsed={collapsed.has("ma-group")}
+          onToggle={() => toggle("ma-group")}
+          stablePicks={stablePicks.current}
+        />
+      )}
     </div>
   );
 };

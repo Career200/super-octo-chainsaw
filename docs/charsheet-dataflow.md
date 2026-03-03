@@ -94,6 +94,10 @@
                └──────┘ │ │  (computed)  │
                          │ └──────────────┘
                          │ ┌──────────────┐
+                         │ │$myMartialArts│  (martialArt: true, level > 0)
+                         │ │  (computed)  │──────────────────────▸ MeleePanel (unarmed card,
+                         │ └──────────────┘                        dodge bonuses, ManeuverTable)
+                         │ ┌──────────────┐
                          │ │ $skillTotal  │─────────────────────▸ StatsSkillsPanel (header)
                          │ │  (computed)  │
                          │ └──────────────┘
@@ -113,6 +117,12 @@
                │    (computed)      │
                └────────────────────┘
                 Depends on: $INT, $allSkills
+
+               ┌──────────────────────────┐
+               │ $resolvedUnarmedSkill   │───────────▸ MeleePanel (unarmed card)
+               │       (computed)         │
+               └──────────────────────────┘
+                Depends on: $unarmedSkill (persist), $allSkills
 
                                     StatsStrip ──▸ reads all 9 computed stat stores (incl. BT)
                                     (compact strip in header, chips only)
@@ -276,10 +286,10 @@
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`) own the data, persist to localStorage
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`, `$unarmedSkill`) own the data, persist to localStorage
 - **Tab stores** via `tabStore()` factory — 8 keys (`spa-tab`, `equipment-sub-tab`, `armor-list-tab`, `weapon-list-tab`, `gear-tab`, `skills-filter`, `notes-tab`, `offense-tab`) each persist to localStorage, cached by key so all subscribers share one atom
 - **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only id → quantity. Full objects come from static catalogs at read time. Custom skills are stored as full objects in `$skills`; custom gear definitions live in a separate `$customGearItems` store (persists independently of quantity).
-- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$meleeSkills`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`) derive from persistent stores
+- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$meleeSkills`, `$myMartialArts`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
 - **UI atoms**: `$selectedSkill`/`$addingSkill`, `$selectedGear`/`$addingGear`, `$selectedArmor`/`$addingArmor`, and `$selectedWeapon`/`$addingWeapon` are each mutually exclusive pairs — setting one clears the other via helper functions. `$highlightedPart` is an independent atom for body part highlighting on the inventory grid.

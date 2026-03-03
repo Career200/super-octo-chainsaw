@@ -16,22 +16,20 @@ export const MeleeWeaponCard = ({
   refCurrent,
 }: Props) => {
   const selected = weapon.meleeSkill ?? weapon.skill;
-  const skillLevel =
-    meleeSkills.find(([name]) => name === selected)?.[1]?.level ?? 0;
+  const selectedEntry = meleeSkills.find(([name]) => name === selected)?.[1];
+  const skillLevel = selectedEntry?.level ?? 0;
+  const isMa = selectedEntry?.martialArt ?? false;
   const total = refCurrent + skillLevel + weapon.wa;
+
+  // MA damage bonus: add skill level to damage display
+  const dmgExtra = isMa ? ` +${skillLevel} ${selected}` : "";
 
   return (
     <div class="combat-card">
       <div class="cc-header">
         <div class="cc-name">
           {weapon.name}
-          {weapon.wa !== 0 && (
-            <span class="cc-melee-wa">
-              {" "}
-              WA {weapon.wa >= 0 ? "+" : ""}
-              {weapon.wa}
-            </span>
-          )}
+          <span class="cc-hero-label"> {weapon.reliability}</span>
         </div>
         <div class="melee-card-skills">
           {meleeSkills.map(([name, entry]) => (
@@ -45,12 +43,11 @@ export const MeleeWeaponCard = ({
             </button>
           ))}
         </div>
-        <span class="cc-hero-label">{weapon.reliability}</span>
       </div>
       <div class="cc-hero">
         <div class="cc-hero-cell">
           <span class="cc-hero-value">
-            {weapon.damage} ({dmSign})
+            {weapon.damage} ({dmSign}{dmgExtra})
           </span>
         </div>
         <div class="cc-hero-cell cc-hero-skill">

@@ -248,7 +248,7 @@
 
 .bottom-bar.expanded {
   height: auto;
-  max-height: 360px;
+  max-height: 414px;
   border-top: 1px solid var(--accent);
 }
 
@@ -277,7 +277,7 @@
 
 /* Forms need a definite height for textarea flex:1 to expand into */
 .bottom-bar-body:has(.item-form) {
-  min-height: 316px;
+  min-height: 370px;
   padding-bottom: var(--space-8);
 }
 
