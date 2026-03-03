@@ -20,6 +20,65 @@ import { $addingSkill, $selectedSkill, selectSkill } from "@stores/ui";
 
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
 
+/** Read-only detail view for catalog skills */
+function SkillDetail({
+  stat,
+  diffMod,
+  melee,
+  martialArt,
+  keyAttacks,
+  description,
+}: {
+  stat: SkillStat;
+  diffMod: number;
+  melee: boolean;
+  martialArt: boolean;
+  keyAttacks: Partial<Record<Maneuver, number>>;
+  description: string;
+}) {
+  const activeAttacks = martialArt
+    ? MANEUVER_NAMES.filter((m) => keyAttacks[m])
+    : [];
+
+  return (
+    <div class="skill-detail">
+      <div class="weapon-detail-stats">
+        <span class="weapon-detail-stat">
+          <span class="weapon-detail-label">Stat</span>
+          {STAT_LABELS[stat as keyof typeof STAT_LABELS] ?? "SPECIAL"}
+        </span>
+        <span class="weapon-detail-stat">
+          <span class="weapon-detail-label">Diff</span>
+          x{diffMod}
+        </span>
+        {melee && (
+          <span class="weapon-detail-stat">
+            <span class="weapon-detail-label">Melee</span>
+            Yes
+          </span>
+        )}
+        {martialArt && (
+          <span class="weapon-detail-stat">
+            <span class="weapon-detail-label">MA</span>
+            Yes
+          </span>
+        )}
+      </div>
+      {activeAttacks.length > 0 && (
+        <div class="skill-detail-attacks">
+          {activeAttacks.map((m) => (
+            <span key={m} class="skill-detail-attack">
+              <span class="weapon-detail-label">{MANEUVER_LABELS[m]}</span>
+              +{keyAttacks[m]}
+            </span>
+          ))}
+        </div>
+      )}
+      {description && <p class="text-desc">{description}</p>}
+    </div>
+  );
+}
+
 const SKILL_STAT_OPTIONS: { value: SkillStat; label: string }[] = [
   ...STAT_NAMES.map((s) => ({ value: s as SkillStat, label: STAT_LABELS[s] })),
   { value: "special", label: "SPECIAL" },
@@ -332,38 +391,33 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
           description={newDescription}
           onDescriptionChange={setNewDescription}
         />
-      ) : entry ? (
+      ) : entry && isCustom ? (
         <SkillForm
           disabled
           name={skillName!}
-          onNameChange={
-            isCustom
-              ? (v) => {
-                  if (renameSkill(skillName!, v)) selectSkill(v);
-                }
-              : undefined
-          }
+          onNameChange={(v) => {
+            if (renameSkill(skillName!, v)) selectSkill(v);
+          }}
           stat={entry.stat}
           diffMod={diffMod}
-          onDiffModChange={
-            isCustom
-              ? (v) => updateSkill(skillName!, { diffMod: v })
-              : undefined
-          }
+          onDiffModChange={(v) => updateSkill(skillName!, { diffMod: v })}
           melee={entry.melee}
           martialArt={martialArt}
           keyAttacks={keyAttacks}
-          onKeyAttacksChange={
-            isCustom
-              ? (v) => updateSkill(skillName!, { keyAttacks: v })
-              : undefined
-          }
+          onKeyAttacksChange={(v) => updateSkill(skillName!, { keyAttacks: v })}
           description={description}
-          onDescriptionChange={
-            isCustom
-              ? (v) => updateSkill(skillName!, { description: v || undefined })
-              : undefined
+          onDescriptionChange={(v) =>
+            updateSkill(skillName!, { description: v || undefined })
           }
+        />
+      ) : entry ? (
+        <SkillDetail
+          stat={entry.stat}
+          diffMod={diffMod}
+          melee={entry.melee}
+          martialArt={martialArt}
+          keyAttacks={keyAttacks}
+          description={description}
         />
       ) : null}
     </BottomBarItemShell>

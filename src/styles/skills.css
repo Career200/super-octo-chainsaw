@@ -219,3 +219,20 @@
   color: var(--fg-soft);
   cursor: default;
 }
+
+/* --- Skill detail (read-only catalog view) --- */
+.skill-detail .text-desc {
+  white-space: pre-line;
+}
+.skill-detail-attacks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6) var(--space-12);
+  margin-bottom: var(--space-8);
+}
+
+.skill-detail-attack {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-ui);
+}
