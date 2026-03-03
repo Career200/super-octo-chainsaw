@@ -45,6 +45,13 @@
                └────────────────────┘                       (record entries)
 
                ┌────────────────────┐
+               │    $homerules     │─────────────────────────▸ applyHit() (degradation mode)
+               │     (persist)      │                          RepairPopover (hide part selector)
+               │ locationalDeg,    │                          ArmorHelpContent ×2 (conditional text)
+               │ scaledDeg         │  Mutated by vanilla JS dialog (localStorage + StorageEvent)
+               └────────────────────┘
+
+               ┌────────────────────┐
                │    $character      │  Aggregator: re-exports $health + $encumbrance
                │    (computed)      │  Not directly subscribed by components
                └────────────────────┘
@@ -286,7 +293,7 @@
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`, `$unarmedSkill`) own the data, persist to localStorage
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$homerules`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`, `$unarmedSkill`) own the data, persist to localStorage
 - **Tab stores** via `tabStore()` factory — 8 keys (`spa-tab`, `equipment-sub-tab`, `armor-list-tab`, `weapon-list-tab`, `gear-tab`, `skills-filter`, `notes-tab`, `offense-tab`) each persist to localStorage, cached by key so all subscribers share one atom
 - **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only id → quantity. Full objects come from static catalogs at read time. Custom skills are stored as full objects in `$skills`; custom gear definitions live in a separate `$customGearItems` store (persists independently of quantity).
 - **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$meleeSkills`, `$myMartialArts`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`) derive from persistent stores

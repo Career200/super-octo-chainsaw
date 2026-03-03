@@ -1,0 +1,62 @@
+---
+import Sidebar from './sidebar.astro';
+
+const KEY = "homerules";
+const DEFAULTS = { locationalDegradation: true, scaledDegradation: true };
+
+const rules = [
+  { id: "hr-locational", field: "locationalDegradation", label: "Locational degradation", desc: "leg hit only degrades leg SP" },
+  { id: "hr-scaled", field: "scaledDegradation", label: "Scaled degradation", desc: "SP loss is increased per penetrating damage instead of flat 1 SP per hit" },
+];
+---
+
+<Sidebar id="homerules" buttonClass="homerules-toggle" buttonText="⚙" innerClass="homerules-content">
+  <h3 style="margin:0 0 1rem">House Rules</h3>
+  <fieldset>
+    <legend>Armor Degradation</legend>
+    {rules.map((r) => (
+      <>
+        <label>
+          <input type="checkbox" id={r.id} data-field={r.field} />
+          {r.label}
+        </label>
+        <p class="text-desc"><i>{r.desc}</i></p>
+      </>
+    ))}
+    <p class="homerules-note">Turn both off for RAW armor degradation.</p>
+  </fieldset>
+</Sidebar>
+
+<script define:vars={{ KEY, DEFAULTS }}>
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      return raw ? { ...DEFAULTS, ...JSON.parse(raw) } : { ...DEFAULTS };
+    } catch {
+      return { ...DEFAULTS };
+    }
+  }
+
+  function persist(state) {
+    const json = JSON.stringify(state);
+    localStorage.setItem(KEY, json);
+    window.dispatchEvent(
+      new StorageEvent("storage", {
+        key: KEY,
+        newValue: json,
+        storageArea: localStorage,
+      }),
+    );
+  }
+
+  const state = load();
+  document.querySelectorAll("#homerules input[data-field]").forEach((el) => {
+    const field = el.dataset.field;
+    el.checked = state[field] ?? DEFAULTS[field];
+    el.addEventListener("change", () => {
+      const s = load();
+      s[field] = el.checked;
+      persist(s);
+    });
+  });
+</script>

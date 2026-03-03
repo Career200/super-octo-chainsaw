@@ -1,4 +1,10 @@
+import { useStore } from "@nanostores/preact";
+
+import { $homerules } from "@stores/homerules";
+
 export const ArmorHelpContent = () => {
+  const { scaledDegradation } = useStore($homerules);
+
   return (
     <>
       <h3>Body Armor</h3>
@@ -8,6 +14,8 @@ export const ArmorHelpContent = () => {
           Each body part shows its total <strong>SP</strong>. When hit, SP
           absorbs damage — any excess penetrates and becomes a wound. Armor
           loses 1 SP per penetrating hit.
+          {scaledDegradation &&
+            " The top layer takes extra degradation: +1 per 3 over (soft) or +1 per 4 over (hard)."}
         </p>
       </section>
       <section>
@@ -21,9 +29,10 @@ export const ArmorHelpContent = () => {
       <section>
         <h4>Layers</h4>
         <p>
-          Armor can stack in layers. Only the highest SP layer stops damage, but
-          the second-highest adds +5 to the total. Manage layers in the
-          Equipment tab.
+          Armor can stack up to 3 layers per body part. The strongest layer
+          provides base SP; each additional layer adds a bonus (0-5) based on
+          the SP gap — layers that are closer in SP give a bigger bonus. See
+          Equipment tab for details.
         </p>
       </section>
     </>

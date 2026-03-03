@@ -2,6 +2,14 @@
 
 ## Persistent Atoms
 
+### `$homerules` (homerules.ts)
+```
+{ locationalDegradation: boolean, scaledDegradation: boolean }
+```
+Both default `true`. Read by `applyHit()` to pick degradation mode, and by RepairPopover / help balloons for conditional UI.
+
+No actions — mutated by vanilla JS in Astro layout dialog via localStorage + synthetic `StorageEvent` bridge.
+
 ### `$health` (health.ts)
 ```
 { physical: 0-40, stun: 0-40, stabilized: bool }
@@ -398,6 +406,9 @@ $customArmorTemplates ──▸ $customArmorList
 $ownedArmor ──▸ $encumbrance ──▸ $REF, $character
 
 $damageHistory (standalone, no dependents)
+
+$homerules ──▸ applyHit() (locational/scaled degradation mode)
+             ──▸ RepairPopover, ArmorHelpContent ×2 (conditional UI)
 
 HitPopover reads $bodyType.btm, mutates $health via takeDamage
 

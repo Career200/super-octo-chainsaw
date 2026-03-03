@@ -4,6 +4,7 @@ export {
   addCustomArmor,
   checkLayerConstraints,
   damageArmor,
+  damageArmorGlobal,
   discardArmor,
   removeCustomArmor,
   renameCustomArmor,

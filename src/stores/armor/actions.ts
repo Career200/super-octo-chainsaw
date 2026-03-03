@@ -160,6 +160,21 @@ export function damageArmor(
   updateInstance(instanceId, { spByPart: newSpByPart });
 }
 
+export function damageArmorGlobal(
+  instanceId: string,
+  amount: number = 1,
+): void {
+  const instance = $ownedArmor.get()[instanceId];
+  if (!instance) return;
+
+  const newSpByPart = { ...instance.spByPart };
+  for (const part of Object.keys(newSpByPart) as BodyPartName[]) {
+    newSpByPart[part] = Math.max(0, (newSpByPart[part] ?? 0) - amount);
+  }
+
+  updateInstance(instanceId, { spByPart: newSpByPart });
+}
+
 export function setArmorSP(
   instanceId: string,
   sp: number,

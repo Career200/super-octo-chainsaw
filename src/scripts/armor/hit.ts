@@ -1,11 +1,13 @@
 import {
   damageArmor,
+  damageArmorGlobal,
   getArmorPiece,
   getBodyPartLayers,
   getImplantsForPart,
 } from "@stores/armor";
 import { type ArmorDamageEntry, recordDamage } from "@stores/damage-history";
 import { takeDamage } from "@stores/health";
+import { $homerules } from "@stores/homerules";
 import { $bodyType } from "@stores/stats";
 
 import {
@@ -25,7 +27,7 @@ export interface DamageResult {
 
 export interface DamageOptions {
   /** Scale degradation by damage over threshold. Default: true
-   *  - true: soft loses 1 + floor(over/5), hard loses 1 + floor(over/6)
+   *  - true: soft loses 1 + floor(over/3), hard loses 1 + floor(over/4)
    *  - false: all layers lose exactly 1 SP (vanilla staged penetration) */
   scaledDegradation?: boolean;
   implants?: ArmorPiece[];
@@ -43,7 +45,7 @@ export interface DamageOptions {
  * DEGRADATION (when penetrated):
  * - All layers: base 1 SP loss
  * - scaledDegradation: true (default)
- *   - Top layer only: additional floor(over / 5) for soft, floor(over / 6) for hard
+ *   - Top layer only: additional floor(over / 3) for soft, floor(over / 4) for hard
  *   - If top layer reduced to 0, excess cascades to next layer
  * - scaledDegradation: false (vanilla)
  *   - All layers lose exactly 1 SP
@@ -83,7 +85,7 @@ export function calculateDamage(
   // Top layer gets additional scaled degradation, with cascade on overflow
   if (scaledDegradation && activeLayers.length > 0) {
     const topLayer = activeLayers[0];
-    const divisor = topLayer.type === "soft" ? 5 : 6;
+    const divisor = topLayer.type === "soft" ? 3 : 4;
     const totalTopDeg = 1 + Math.floor(over / divisor);
 
     if (totalTopDeg <= topLayer.spCurrent) {
@@ -108,19 +110,25 @@ export function calculateDamage(
 }
 
 export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
+  const { locationalDegradation, scaledDegradation } = $homerules.get();
   const layers = getBodyPartLayers(bodyPart);
   // getBodyPartLayers already returns only worn armor, just filter for active SP
   const activeBefore = sortByLayerOrder(layers.filter((l) => l.spCurrent > 0));
   const implants = getImplantsForPart(bodyPart);
 
   const result = calculateDamage(activeBefore, damage, {
+    scaledDegradation,
     implants,
     part: bodyPart,
   });
 
-  // Apply degradation to each armor piece at this specific body part
+  // Apply degradation: locational (hit part only) or global (all parts)
+  const degrade = locationalDegradation
+    ? (id: string, amount: number) => damageArmor(id, bodyPart, amount)
+    : (id: string, amount: number) => damageArmorGlobal(id, amount);
+
   for (const [armorId, amount] of result.degradation) {
-    damageArmor(armorId, bodyPart, amount);
+    degrade(armorId, amount);
   }
 
   // When penetrated, damage all implant layers (plating, skinweave, subdermal)
@@ -128,7 +136,7 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   if (result.penetrating > 0) {
     for (const impl of implants) {
       if (getImplantSP(impl, bodyPart) > 0) {
-        damageArmor(impl.id, bodyPart, 1);
+        degrade(impl.id, 1);
       }
     }
   }
