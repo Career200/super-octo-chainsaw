@@ -1,3 +1,4 @@
+import { useStore } from "@nanostores/preact";
 import type { RefObject } from "preact";
 import { useState } from "preact/hooks";
 
@@ -9,6 +10,7 @@ import {
 } from "@scripts/armor/core";
 import { getArmorPiece, setArmorSP } from "@stores/armor";
 import { recordManipulation } from "@stores/damage-history";
+import { $homerules } from "@stores/homerules";
 
 import { Popover } from "../shared/Popover";
 
@@ -48,13 +50,17 @@ export const RepairPopover = ({
   bodyParts,
   spByPart,
 }: Props) => {
+  const { locationalDegradation } = useStore($homerules);
   const [selected, setSelected] = useState<BodyPartName | "all">("all");
   const [sp, setSP] = useState(() =>
     getLowestRatioSP(template, bodyParts, spByPart),
   );
 
+  const effectiveSelected = locationalDegradation ? selected : "all";
   const maxSP =
-    selected === "all" ? template.spMax : getPartSpMax(template, selected);
+    effectiveSelected === "all"
+      ? template.spMax
+      : getPartSpMax(template, effectiveSelected);
 
   const selectPart = (part: BodyPartName | "all") => {
     setSelected(part);
@@ -67,7 +73,7 @@ export const RepairPopover = ({
 
   const handleApply = () => {
     const armor = getArmorPiece(armorId);
-    const partsArray = selected === "all" ? bodyParts : [selected];
+    const partsArray = effectiveSelected === "all" ? bodyParts : [effectiveSelected];
     const oldSP = spByPart[partsArray[0]] ?? maxSP;
 
     if (oldSP !== sp && armor) {
@@ -93,26 +99,28 @@ export const RepairPopover = ({
       onClose={onClose}
       className={`popover-repair popover-repair-${conditionClass}`}
     >
-      <div class="flex-center gap-4 repair-part-selector">
-        {bodyParts.map((part) => (
+      {locationalDegradation && (
+        <div class="flex-center gap-4 repair-part-selector">
+          {bodyParts.map((part) => (
+            <button
+              key={part}
+              type="button"
+              class={`coverage-badge repair-selectable${selected === part ? " selected" : ""}`}
+              title={part.replace("_", " ")}
+              onClick={() => selectPart(part)}
+            >
+              {PART_ABBREV[part]}
+            </button>
+          ))}
           <button
-            key={part}
             type="button"
-            class={`coverage-badge repair-selectable${selected === part ? " selected" : ""}`}
-            title={part.replace("_", " ")}
-            onClick={() => selectPart(part)}
+            class={`coverage-badge repair-selectable${selected === "all" ? " selected" : ""}`}
+            onClick={() => selectPart("all")}
           >
-            {PART_ABBREV[part]}
+            All
           </button>
-        ))}
-        <button
-          type="button"
-          class={`coverage-badge repair-selectable${selected === "all" ? " selected" : ""}`}
-          onClick={() => selectPart("all")}
-        >
-          All
-        </button>
-      </div>
+        </div>
+      )}
       <div class="flex-center gap-12 repair-sp-row">
         <button
           type="button"

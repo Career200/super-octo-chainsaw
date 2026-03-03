@@ -44,6 +44,18 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
+.charsheet-page .homerules-toggle {
+  display: flex;
+}
+
+.charsheet-page footer .homerules-toggle {
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
 /* === Container Base === */
 /* Flex-wrap layout: panels fill width, wrap when they can't fit side-by-side.
    Panels get default sizing via flex:1; override per-panel for uneven layouts. */
