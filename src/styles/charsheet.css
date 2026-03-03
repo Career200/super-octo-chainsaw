@@ -248,7 +248,7 @@
 
 .bottom-bar.expanded {
   height: auto;
-  max-height: 414px;
+  max-height: 400px;
   border-top: 1px solid var(--accent);
 }
 

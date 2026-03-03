@@ -134,7 +134,7 @@
 .skill-form-fields {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: baseline;
   gap: var(--space-8);
 }
 
@@ -205,7 +205,7 @@
 
 .skill-form-description {
   flex: 1;
-  min-height: 0;
+  min-height: 152px;
   resize: none;
   font-family: inherit;
   font-size: var(--text-sm);

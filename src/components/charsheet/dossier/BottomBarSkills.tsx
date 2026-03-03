@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import { useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 
 import { STAT_LABELS, STAT_NAMES } from "@scripts/combat/types";
 import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
@@ -13,6 +13,7 @@ import {
   addSkill,
   isCustomSkill,
   removeSkill,
+  renameSkill,
   updateSkill,
 } from "@stores/skills";
 import { $addingSkill, $selectedSkill, selectSkill } from "@stores/ui";
@@ -73,25 +74,50 @@ function SkillForm({
   description,
   onDescriptionChange,
 }: SkillFormProps) {
+  // Rename mode: local state + commit on blur/Enter
+  const isRename = disabled && !!onNameChange;
+  const [localName, setLocalName] = useState(name);
+  const prevName = useRef(name);
+  if (name !== prevName.current) {
+    prevName.current = name;
+    setLocalName(name);
+  }
+
+  const commitName = () => {
+    const trimmed = localName.trim();
+    if (trimmed && trimmed !== name) onNameChange!(trimmed);
+    else setLocalName(name);
+  };
+
   return (
     <div class="skill-form">
       <div class="skill-form-fields">
-        <label class="skill-form-field skill-form-name">
-          <span class="skill-form-label">Name</span>
-          <input
-            type="text"
-            class="input skill-form-input"
-            value={name}
-            disabled={disabled}
-            onInput={
-              onNameChange
-                ? (e) => onNameChange((e.target as HTMLInputElement).value)
-                : undefined
-            }
-            placeholder="Skill name"
-            autoFocus={!disabled}
-          />
-        </label>
+        {onNameChange && (
+          <label class="skill-form-field skill-form-name">
+            <span class="skill-form-label">Name</span>
+            <input
+              type="text"
+              class="input skill-form-input"
+              value={isRename ? localName : name}
+              onInput={(e) => {
+                const v = (e.target as HTMLInputElement).value;
+                if (isRename) setLocalName(v);
+                else onNameChange(v);
+              }}
+              onBlur={isRename ? commitName : undefined}
+              onKeyDown={
+                isRename
+                  ? (e) => {
+                      if (e.key === "Enter")
+                        (e.target as HTMLInputElement).blur();
+                    }
+                  : undefined
+              }
+              placeholder="Skill name"
+              autoFocus={!disabled}
+            />
+          </label>
+        )}
         <label class="skill-form-field skill-form-stat">
           <span class="skill-form-label">Stat</span>
           <select
@@ -310,6 +336,13 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
         <SkillForm
           disabled
           name={skillName!}
+          onNameChange={
+            isCustom
+              ? (v) => {
+                  if (renameSkill(skillName!, v)) selectSkill(v);
+                }
+              : undefined
+          }
           stat={entry.stat}
           diffMod={diffMod}
           onDiffModChange={

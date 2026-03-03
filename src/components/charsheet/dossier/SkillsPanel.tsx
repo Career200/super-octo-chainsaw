@@ -6,9 +6,9 @@ import { STAT_LABELS } from "@scripts/combat/types";
 import type { SkillStat } from "@scripts/skills/catalog";
 import type { SkillEntry } from "@stores/skills";
 import {
+  $allSkills,
   $customSkills,
   $mySkills,
-  $skillsByStat,
   setSkillLevel,
 } from "@stores/skills";
 import { STAT_STORES } from "@stores/stats";
@@ -157,22 +157,65 @@ function SkillGroup({
   );
 }
 
-/** Flat list for custom/my tabs (no stat grouping needed) */
-function FlatSkillsList({
+/** Group a flat skill list by stat, separating martial arts into their own group */
+function groupSkills(skills: [string, SkillEntry][]) {
+  const byStat: Partial<Record<SkillStat, [string, SkillEntry][]>> = {};
+  const ma: [string, SkillEntry][] = [];
+  for (const pair of skills) {
+    if (pair[1].martialArt) ma.push(pair);
+    else (byStat[pair[1].stat] ??= []).push(pair);
+  }
+  for (const entries of Object.values(byStat))
+    entries.sort((a, b) => a[0].localeCompare(b[0]));
+  ma.sort((a, b) => a[0].localeCompare(b[0]));
+  return { byStat, ma };
+}
+
+function GroupedSkillsList({
   skills,
-  emptyMessage = "No skills yet",
+  collapsed,
+  onToggle,
+  stablePicks,
+  emptyMessage,
 }: {
   skills: [string, SkillEntry][];
+  collapsed: Set<string>;
+  onToggle: (key: string) => void;
+  stablePicks: Map<string, string>;
   emptyMessage?: string;
 }) {
   if (skills.length === 0) {
-    return <div class="empty-message">{emptyMessage}</div>;
+    return (
+      <div class="empty-message">{emptyMessage ?? "No skills yet"}</div>
+    );
   }
+  const { byStat, ma } = groupSkills(skills);
   return (
     <div class="skills-list">
-      {skills.map(([name, entry]) => (
-        <SkillRow key={name} name={name} entry={entry} />
-      ))}
+      {STAT_GROUP_ORDER.map((stat) => {
+        const entries = byStat[stat];
+        if (!entries || entries.length === 0) return null;
+        return (
+          <SkillGroup
+            key={stat}
+            groupKey={stat}
+            entries={entries}
+            collapsed={collapsed.has(stat)}
+            onToggle={() => onToggle(stat)}
+            stablePicks={stablePicks}
+          />
+        );
+      })}
+      {ma.length > 0 && (
+        <SkillGroup
+          groupKey="ma-group"
+          label="MARTIAL ARTS"
+          entries={ma}
+          collapsed={collapsed.has("ma-group")}
+          onToggle={() => onToggle("ma-group")}
+          stablePicks={stablePicks}
+        />
+      )}
     </div>
   );
 }
@@ -182,7 +225,7 @@ interface SkillsListProps {
 }
 
 export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
-  const grouped = useStore($skillsByStat);
+  const allSkills = useStore($allSkills);
   const customSkills = useStore($customSkills);
   const mySkills = useStore($mySkills);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set(["special"]));
@@ -197,9 +240,16 @@ export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
     });
   };
 
-  if (filter === "custom") {
-    return (
-      <div>
+  const skills =
+    filter === "custom"
+      ? customSkills
+      : filter === "my"
+        ? mySkills
+        : Object.entries(allSkills);
+
+  return (
+    <div>
+      {filter === "custom" && (
         <div class="skills-list-toolbar">
           <button
             class="btn-sm add-skill-btn"
@@ -208,61 +258,18 @@ export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
             + Add Skill
           </button>
         </div>
-        <FlatSkillsList skills={customSkills} />
-      </div>
-    );
-  }
-
-  if (filter === "my") {
-    return (
-      <FlatSkillsList
-        skills={mySkills}
-        emptyMessage="Set skill levels in the Catalog tab to see them here."
-      />
-    );
-  }
-
-  // Default tab: grouped by stat, showing all catalog skills
-  // Separate martial arts from the REF group into their own category at the end
-  const martialArts: [string, SkillEntry][] = [];
-  const refEntries = grouped.ref ?? [];
-  const refNormal: [string, SkillEntry][] = [];
-  for (const pair of refEntries) {
-    if (pair[1].martialArt) martialArts.push(pair);
-    else refNormal.push(pair);
-  }
-  const groupedFiltered: Record<SkillStat, [string, SkillEntry][]> = {
-    ...grouped,
-    ref: refNormal,
-  };
-
-  return (
-    <div class="skills-list">
-      {STAT_GROUP_ORDER.map((stat) => {
-        const entries = groupedFiltered[stat];
-        if (!entries || entries.length === 0) return null;
-
-        return (
-          <SkillGroup
-            key={stat}
-            groupKey={stat}
-            entries={entries}
-            collapsed={collapsed.has(stat)}
-            onToggle={() => toggle(stat)}
-            stablePicks={stablePicks.current}
-          />
-        );
-      })}
-      {martialArts.length > 0 && (
-        <SkillGroup
-          groupKey="ma-group"
-          label="MARTIAL ARTS"
-          entries={martialArts}
-          collapsed={collapsed.has("ma-group")}
-          onToggle={() => toggle("ma-group")}
-          stablePicks={stablePicks.current}
-        />
       )}
+      <GroupedSkillsList
+        skills={skills}
+        collapsed={collapsed}
+        onToggle={toggle}
+        stablePicks={stablePicks.current}
+        emptyMessage={
+          filter === "my"
+            ? "Set skill levels in the Catalog tab to see them here."
+            : undefined
+        }
+      />
     </div>
   );
 };

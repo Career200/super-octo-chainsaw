@@ -113,6 +113,25 @@ export function removeSkill(name: string): void {
   $skills.set(rest);
 }
 
+export function renameSkill(oldName: string, newName: string): boolean {
+  if (oldName in SKILL_CATALOG) return false;
+  const trimmed = newName.trim();
+  if (!trimmed || trimmed === oldName) return false;
+  const key = normalizeKey(trimmed);
+  // Check for conflicts
+  for (const existing of Object.keys(SKILL_CATALOG)) {
+    if (normalizeKey(existing) === key) return false;
+  }
+  const current = $skills.get();
+  if (!(oldName in current)) return false;
+  for (const existing of Object.keys(current)) {
+    if (existing !== oldName && normalizeKey(existing) === key) return false;
+  }
+  const { [oldName]: entry, ...rest } = current;
+  $skills.set({ ...rest, [trimmed]: entry });
+  return true;
+}
+
 export function updateSkill(
   name: string,
   updates: Partial<
