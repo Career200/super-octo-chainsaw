@@ -534,19 +534,6 @@
 }
 
 /* === Melee Panel === */
-
-.melee-formula {
-  padding: var(--space-6) var(--space-8);
-  font-size: var(--font-ui);
-  color: var(--fg-soft);
-  line-height: 1.6;
-}
-
-.melee-formula-vs {
-  padding-left: var(--space-12);
-  font-style: italic;
-}
-
 .melee-stats {
   display: flex;
   flex-wrap: wrap;

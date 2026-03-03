@@ -26,12 +26,6 @@ export default function MeleePanel() {
 
   return (
     <div class="combat-list">
-      <div class="melee-formula">
-        <div>Attacker: REF + Skill + WA + 1d10</div>
-        <div class="melee-formula-vs">vs.</div>
-        <div>Defender: REF + Skill + 1d10</div>
-      </div>
-
       <div class="melee-stats">
         <span>
           REF <strong>{ref.current}</strong>
