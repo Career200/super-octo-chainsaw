@@ -1,25 +1,42 @@
-/**
- * HOUSERULES (future: settings tab to toggle these)
- *
- * - Wound penalties: currently NOT per-rulebook; using custom lighter penalties.
- *   See wounds.ts / WoundHelpContent for the actual values.
- *
- * - Melee damage bonus: Melee skill adds floor(skill/2) to melee damage,
- *   so Martial Arts (which adds full skill) stays strictly better.
- *
- * - Dodge bullets: with REF and/or Dodge & Escape over 8, characters can
- *   attempt to dodge gunfire (not RAW).
- */
-
 import type { StatName } from "@scripts/combat/types";
 
 export type SkillStat = StatName | "special";
+
+export const MANEUVER_NAMES = [
+  "strike",
+  "kick",
+  "block",
+  "dodge",
+  "throw",
+  "hold",
+  "escape",
+  "choke",
+  "sweep",
+  "grapple",
+] as const;
+
+export type Maneuver = (typeof MANEUVER_NAMES)[number];
+
+export const MANEUVER_LABELS: Record<Maneuver, string> = {
+  strike: "Strike",
+  kick: "Kick",
+  block: "Block",
+  dodge: "Dodge",
+  throw: "Throw",
+  hold: "Hold",
+  escape: "Escape",
+  choke: "Choke",
+  sweep: "Sweep",
+  grapple: "Grapple",
+};
 
 export interface SkillDefinition {
   stat: SkillStat;
   melee: boolean;
   /** IP multiplier */
   diffMod: number;
+  martialArt?: boolean;
+  keyAttacks?: Partial<Record<Maneuver, number>>;
   description?: string;
 }
 
@@ -462,11 +479,128 @@ export const SKILL_CATALOG: Record<string, SkillDefinition> = {
     description:
       "Grenade launchers, autocannon, mortars, heavy MGs, missiles, and rocket launchers.\n2 — you can fire without hurting yourself.\n6 — equivalent to military Heavy Weapons training.\n9 — you place rounds exactly where you want them, every time.",
   },
-  "Martial Arts": {
+  // Martial arts — each style is a separate skill with key attacks and difficulty level
+  Aikido: {
     stat: "ref",
     melee: false,
+    martialArt: true,
+    diffMod: 3,
+    keyAttacks: {
+      block: 4,
+      dodge: 3,
+      throw: 3,
+      hold: 3,
+      escape: 3,
+      choke: 1,
+      sweep: 3,
+      grapple: 2,
+    },
+    description:
+      "The way of harmony — redirect an attacker's force against them. Defensive art focused on locks, throws, and joint control.\n2 — you can take a fall safely and perform basic wrist locks.\n6 — you blend with incoming attacks and throw opponents effortlessly.\n9 — grandmaster; attackers crumple the moment they touch you.",
+  },
+  "Animal Kung Fu": {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 3,
+    keyAttacks: { strike: 2, kick: 2, block: 2, sweep: 1 },
+    description:
+      "Traditional Chinese martial arts mimicking animal movements — tiger, crane, snake, mantis, dragon.\n2 — you know the basic forms and stances.\n6 — you flow between animal styles in combat.\n9 — master of the five animals; your strikes are legend.",
+  },
+  Boxing: {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
     diffMod: 1,
-    description: `Trained fighting style using hands, feet, or martial arts weapons. Each style is a separate skill with unique key attacks - use "Add custom skill" to add specific martial art. This value is added to damage from Martial Art attacks. \n2 — white belt; you know the basics.\n6 — black belt; competition-level practitioner.\n9 — grandmaster; your name is known in dojos worldwide.`,
+    keyAttacks: { strike: 3, block: 3, dodge: 1 },
+    description:
+      "The sweet science — footwork, jabs, hooks, and combinations.\n2 — you keep your hands up and throw a decent jab.\n6 — Golden Gloves competitor; you work the ring.\n9 — heavyweight contender; your punch is a registered weapon.",
+  },
+  Capoeira: {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 3,
+    keyAttacks: { strike: 1, kick: 2, block: 2, dodge: 2, sweep: 3 },
+    description:
+      "Afro-Brazilian dance-fighting — acrobatic kicks, sweeps, and constant fluid motion.\n2 — you play the ginga and throw basic kicks.\n6 — you cartwheel through fights and sweep legs from handstands.\n9 — mestre; your fighting looks like impossible choreography.",
+  },
+  "Choi Li Fut": {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 3,
+    keyAttacks: { strike: 2, kick: 2, block: 2, dodge: 1, throw: 1, sweep: 2 },
+    description:
+      "Southern Chinese style combining long and short range techniques with powerful circular strikes.\n2 — you know the basic hand and kick forms.\n6 — your circular strikes generate devastating power.\n9 — sifu; you command a school and your students fear sparring day.",
+  },
+  Judo: {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 1,
+    keyAttacks: {
+      dodge: 1,
+      throw: 3,
+      hold: 2,
+      escape: 2,
+      sweep: 2,
+      grapple: 2,
+    },
+    description:
+      "The gentle way — throws, pins, and groundwork. Maximum efficiency, minimum effort.\n2 — you can execute a basic hip throw.\n6 — black belt competitor; you throw people twice your size.\n9 — Olympic-level judoka; touching you means hitting the mat.",
+  },
+  Karate: {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 2,
+    keyAttacks: { strike: 2, kick: 2, block: 2 },
+    description:
+      "The way of the empty hand — powerful strikes, blocks, and kata.\n2 — white belt; you know the basic blocks and punches.\n6 — black belt; your strikes break boards and bones.\n9 — grandmaster; your name is known in dojos worldwide.",
+  },
+  Savate: {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 2,
+    keyAttacks: { kick: 4, block: 1, dodge: 1 },
+    description:
+      "French kickboxing — elegant, devastating footwork and precision kicks.\n2 — you throw basic chassé and fouetté kicks.\n6 — your kicks are surgical; you hit what you aim at.\n9 — master of la boxe française; your feet are faster than most hands.",
+  },
+  "Tae Kwon Do": {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 4,
+    keyAttacks: { strike: 3, kick: 3, block: 2, dodge: 1, sweep: 2 },
+    description:
+      "Korean art of foot and fist — explosive kicks and powerful strikes.\n2 — you can throw a roundhouse without falling over.\n6 — your spinning kicks connect reliably; tournament competitor.\n9 — master; your kicks are almost too fast to see.",
+  },
+  "Thai Boxing": {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 4,
+    keyAttacks: { strike: 3, kick: 3, block: 2, grapple: 1 },
+    description:
+      "Muay Thai — the art of eight limbs. Punches, kicks, elbows, and knees.\n2 — you throw basic combos in the clinch.\n6 — you fight in the ring; your shins are like iron.\n9 — champion nak muay; your elbows end fights.",
+  },
+  Wrestling: {
+    stat: "ref",
+    melee: false,
+    martialArt: true,
+    diffMod: 1,
+    keyAttacks: {
+      throw: 3,
+      hold: 4,
+      escape: 4,
+      choke: 2,
+      sweep: 2,
+      grapple: 4,
+    },
+    description:
+      "Grappling and ground control — takedowns, pins, and submissions.\n2 — you can shoot a basic double-leg.\n6 — collegiate-level wrestler; nobody wants to go to the ground with you.\n9 — world-class; once you grab someone, the fight is over.",
   },
   Melee: {
     stat: "ref",
@@ -683,11 +817,7 @@ export const SKILL_CATALOG: Record<string, SkillDefinition> = {
 };
 
 /** Display order for melee attack skill chips on weapon cards */
-export const MELEE_SKILLS_ORDER: string[] = [
-  "Melee",
-  "Brawling",
-  "Fencing",
-];
+export const MELEE_SKILLS_ORDER: string[] = ["Melee", "Brawling", "Fencing"];
 
 /** Name constants for computed stores */
 export const AWARENESS_SKILL = "Awareness/Notice";

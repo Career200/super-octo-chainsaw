@@ -2,7 +2,7 @@ import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
 
 import { normalizeKey } from "@scripts/catalog-common";
-import type { SkillStat } from "@scripts/skills/catalog";
+import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
 import {
   AWARENESS_SKILL,
   COMBAT_SENSE_SKILL,
@@ -16,6 +16,9 @@ export interface SkillEntry {
   stat: SkillStat;
   level: number;
   melee: boolean;
+  martialArt?: boolean;
+  keyAttacks?: Partial<Record<Maneuver, number>>;
+  diffMod?: number;
   description?: string;
 }
 
@@ -75,7 +78,12 @@ export function addSkill(
   name: string,
   stat: SkillStat,
   melee: boolean,
-  description?: string,
+  opts?: {
+    description?: string;
+    martialArt?: boolean;
+    keyAttacks?: Partial<Record<Maneuver, number>>;
+    diffMod?: number;
+  },
 ): boolean {
   const current = $skills.get();
   const key = normalizeKey(name);
@@ -87,7 +95,11 @@ export function addSkill(
     if (normalizeKey(existing) === key) return false;
   }
   const entry: SkillEntry = { stat, level: 0, melee };
-  if (description) entry.description = description;
+  if (opts?.description) entry.description = opts.description;
+  if (opts?.martialArt) entry.martialArt = true;
+  if (opts?.keyAttacks && Object.keys(opts.keyAttacks).length > 0)
+    entry.keyAttacks = opts.keyAttacks;
+  if (opts?.diffMod && opts.diffMod !== 1) entry.diffMod = opts.diffMod;
   $skills.set({ ...current, [name]: entry });
   return true;
 }
@@ -101,9 +113,33 @@ export function removeSkill(name: string): void {
   $skills.set(rest);
 }
 
+export function renameSkill(oldName: string, newName: string): boolean {
+  if (oldName in SKILL_CATALOG) return false;
+  const trimmed = newName.trim();
+  if (!trimmed || trimmed === oldName) return false;
+  const key = normalizeKey(trimmed);
+  // Check for conflicts
+  for (const existing of Object.keys(SKILL_CATALOG)) {
+    if (normalizeKey(existing) === key) return false;
+  }
+  const current = $skills.get();
+  if (!(oldName in current)) return false;
+  for (const existing of Object.keys(current)) {
+    if (existing !== oldName && normalizeKey(existing) === key) return false;
+  }
+  const { [oldName]: entry, ...rest } = current;
+  $skills.set({ ...rest, [trimmed]: entry });
+  return true;
+}
+
 export function updateSkill(
   name: string,
-  updates: Partial<Pick<SkillEntry, "stat" | "melee" | "description">>,
+  updates: Partial<
+    Pick<
+      SkillEntry,
+      "stat" | "melee" | "description" | "martialArt" | "keyAttacks" | "diffMod"
+    >
+  >,
 ): void {
   const current = $skills.get();
   if (!(name in current)) return;
@@ -121,11 +157,14 @@ export const $allSkills = computed($skills, (stored) => {
   // Catalog skills: use stored level if present, else level 0
   for (const [name, def] of Object.entries(SKILL_CATALOG)) {
     const override = stored[name];
-    result[name] = {
+    const entry: SkillEntry = {
       stat: def.stat,
       level: override?.level ?? 0,
       melee: def.melee,
     };
+    if (def.martialArt) entry.martialArt = true;
+    if (def.keyAttacks) entry.keyAttacks = def.keyAttacks;
+    result[name] = entry;
   }
   // Custom skills: everything in store that's not in catalog
   for (const [name, entry] of Object.entries(stored)) {
@@ -180,9 +219,7 @@ export const $skillsByStat = computed($allSkills, (skills) => {
   return grouped;
 });
 
-const meleeOrderIndex = new Map(
-  MELEE_SKILLS_ORDER.map((name, i) => [name, i]),
-);
+const meleeOrderIndex = new Map(MELEE_SKILLS_ORDER.map((name, i) => [name, i]));
 
 export const $meleeSkills = computed($allSkills, (skills) => {
   const melee: [string, SkillEntry][] = [];
@@ -218,3 +255,39 @@ export const $customSkills = computed($skills, (stored) => {
   }
   return result;
 });
+
+/** Martial arts with level > 0 (for unarmed card + maneuver table) */
+export const $myMartialArts = computed($allSkills, (skills) => {
+  const result: [string, SkillEntry][] = [];
+  for (const [name, entry] of Object.entries(skills)) {
+    if (entry.martialArt && entry.level > 0) result.push([name, entry]);
+  }
+  return result;
+});
+
+/** Which skill is selected for unarmed attacks (Brawling or a martial art) */
+export const $unarmedSkill = persistentAtom<string>(
+  "unarmed-skill",
+  "Brawling",
+);
+
+export function setUnarmedSkill(name: string): void {
+  $unarmedSkill.set(name);
+}
+
+/** Resolved unarmed skill: validates persisted pick, falls back to Brawling */
+export const $resolvedUnarmedSkill = computed(
+  [$unarmedSkill, $allSkills],
+  (name, skills) => {
+    if (name !== "Brawling") {
+      const entry = skills[name];
+      if (entry?.martialArt && entry.level > 0)
+        return { name, entry, isMa: true as const };
+    }
+    return {
+      name: "Brawling",
+      entry: skills["Brawling"],
+      isMa: false as const,
+    };
+  },
+);

@@ -78,14 +78,22 @@ Mutually exclusive with `$selectedSkill` — use `startAddingSkill()` to set.
 
 ### `$skills` (skills.ts)
 ```
-Record<string, { stat: SkillStat, level: 0-10, melee: bool }>
+Record<string, { stat: SkillStat, level: 0-10, melee: bool, martialArt?: bool, keyAttacks?: Partial<Record<Maneuver, number>>, diffMod?: number }>
 ```
-**Sparse persistence**: only stores catalog skills with level > 0 and all custom skills. Catalog skills at level 0 are NOT stored — they come from `SKILL_CATALOG` via `$allSkills`.
+**Sparse persistence**: only stores catalog skills with level > 0 and all custom skills. Catalog skills at level 0 are NOT stored — they come from `SKILL_CATALOG` via `$allSkills`. `martialArt` and `keyAttacks` are stored for custom martial arts; catalog martial arts get these from `SKILL_CATALOG`.
 
 Old format (all catalog skills at level 0) is dropped on load — no migration.
 
 Actions: `setSkillLevel`, `addSkill`, `removeSkill`, `updateSkill`
 Helper: `isCustomSkill(name)` — true if not in `SKILL_CATALOG`
+
+### `$unarmedSkill` (skills.ts)
+```
+string (default: "Brawling")
+```
+Which skill is selected for unarmed attacks (Brawling or a martial art name). Persists to localStorage.
+
+Actions: `setUnarmedSkill`
 
 ### `$gear` (gear.ts)
 ```
@@ -244,9 +252,9 @@ Depends on: `$health`
 
 ### `$allSkills` (skills.ts)
 ```
-Record<string, { stat: SkillStat, level: 0-10, melee: bool }>
+Record<string, { stat: SkillStat, level: 0-10, melee: bool, martialArt?: bool, keyAttacks?: Partial<Record<Maneuver, number>> }>
 ```
-Full view: all catalog skills (hydrated with stored levels) + all custom skills.
+Full view: all catalog skills (hydrated with stored levels, propagates `martialArt` and `keyAttacks` from catalog) + all custom skills.
 Depends on: `$skills`
 
 ### `$skillTotal` (skills.ts)
@@ -276,6 +284,20 @@ Depends on: `$allSkills`
 ```
 Skills with `melee: true`, ordered by `MELEE_SKILLS_ORDER` then alphabetically.
 Depends on: `$allSkills`
+
+### `$myMartialArts` (skills.ts)
+```
+[name, SkillEntry][]
+```
+Martial arts with `martialArt: true` AND `level > 0`. Used by MeleePanel (unarmed card, dodge bonuses, ManeuverTable).
+Depends on: `$allSkills`
+
+### `$resolvedUnarmedSkill` (skills.ts)
+```
+{ name: string, entry: SkillEntry | undefined, isMa: boolean }
+```
+Validates `$unarmedSkill` against current skills — falls back to Brawling if the stored MA is missing or at level 0.
+Depends on: `$unarmedSkill`, `$allSkills`
 
 ### `$mySkills` (skills.ts)
 ```
@@ -411,6 +433,8 @@ $skills ──┬──▸ $allSkills ──┬──▸ $awareness (+ $INT)
           │                 ├──▸ $skillsByStat
           │                 ├──▸ $skillTotal
           │                 ├──▸ $meleeSkills
+          │                 ├──▸ $myMartialArts
+          │                 ├──▸ $resolvedUnarmedSkill (+ $unarmedSkill)
           │                 └──▸ $mySkills ──▸ $mySkillsCount
           └──▸ $customSkills
 ```
