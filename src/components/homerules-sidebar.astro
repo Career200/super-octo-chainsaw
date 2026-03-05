@@ -25,6 +25,19 @@ const rules = [
     ))}
     <p class="homerules-note">Turn both off for RAW armor degradation.</p>
   </fieldset>
+
+  <fieldset class="clear-data">
+    <legend>Danger Zone</legend>
+    <label>
+      <input type="checkbox" id="clear-confirm-1" />
+      I want to erase all saved data
+    </label>
+    <label>
+      <input type="checkbox" id="clear-confirm-2" />
+      I understand this cannot be undone
+    </label>
+    <button id="clear-data-btn" disabled>Clear all data</button>
+  </fieldset>
 </Sidebar>
 
 <script define:vars={{ KEY, DEFAULTS }}>
@@ -58,5 +71,21 @@ const rules = [
       s[field] = el.checked;
       persist(s);
     });
+  });
+
+  // Clear all data
+  const c1 = document.getElementById("clear-confirm-1");
+  const c2 = document.getElementById("clear-confirm-2");
+  const btn = document.getElementById("clear-data-btn");
+
+  function updateBtn() {
+    btn.disabled = !(c1.checked && c2.checked);
+  }
+  c1.addEventListener("change", updateBtn);
+  c2.addEventListener("change", updateBtn);
+
+  btn.addEventListener("click", () => {
+    localStorage.clear();
+    location.reload();
   });
 </script>
