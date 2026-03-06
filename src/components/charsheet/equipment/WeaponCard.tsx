@@ -5,8 +5,8 @@ import {
 } from "@scripts/weapons/catalog";
 import type { WeaponPiece } from "@stores/weapons";
 
+import { ItemCard } from "../shared/ItemCard";
 import { ItemMeta } from "../shared/ItemMeta";
-import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 function isInstance(
   weapon: WeaponTemplate | WeaponPiece,
@@ -30,28 +30,24 @@ export const WeaponCard = ({
   onClick,
 }: Props) => {
   const instance = isInstance(weapon);
-  const cardRef = useScrollOnSelect<HTMLDivElement>(!!highlighted, "center");
-
-  const cls = [
-    "item-card weapon-card",
-    selected && "selected",
-    highlighted && "highlighted",
-    custom && "item-card-accent",
-  ]
-    .filter(Boolean)
-    .join(" ");
 
   return (
-    <div ref={cardRef} class={cls} onClick={onClick}>
-      <div class="flex-between gap-8">
-        <h4>
+    <ItemCard
+      class="weapon-card"
+      selected={selected}
+      highlighted={highlighted}
+      accent={custom}
+      onClick={onClick}
+      name={
+        <>
           <span class="weapon-card-type">
             {WEAPON_TYPE_LABELS[weapon.type]}
           </span>
           {weapon.name}
-        </h4>
-        <ItemMeta availability={weapon.availability} cost={weapon.cost} />
-      </div>
+        </>
+      }
+      meta={<ItemMeta availability={weapon.availability} cost={weapon.cost} />}
+    >
       <div class="weapon-card-details">
         <span class="weapon-card-stat">{weapon.damage}</span>
         {!weapon.melee && <span class="weapon-card-stat">{weapon.range}m</span>}
@@ -68,6 +64,6 @@ export const WeaponCard = ({
           </span>
         )}
       </div>
-    </div>
+    </ItemCard>
   );
 };

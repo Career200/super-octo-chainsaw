@@ -1,7 +1,7 @@
 import type { ArmorPiece, ArmorTemplate } from "@scripts/armor/core";
 
+import { ItemCard } from "../shared/ItemCard";
 import { ItemMeta } from "../shared/ItemMeta";
-import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { getConditionClassFromSP } from "./utils";
@@ -26,26 +26,23 @@ export const ArmorCard = ({
   onClick,
 }: Props) => {
   const owned = isInstance(armor);
-  const cardRef = useScrollOnSelect<HTMLDivElement>(!!highlighted);
-
-  const cls = [
-    "item-card armor-card",
-    ((owned && armor.worn) || custom) && "item-card-accent",
-    selected && "selected",
-    highlighted && "highlighted",
-  ]
-    .filter(Boolean)
-    .join(" ");
 
   return (
-    <div ref={cardRef} class={cls} onClick={onClick}>
-      <div class="flex-between gap-8">
-        <h4>
+    <ItemCard
+      class="armor-card"
+      selected={selected}
+      highlighted={highlighted}
+      accent={(owned && armor.worn) || custom}
+      onClick={onClick}
+      name={
+        <>
           <span class="armor-type-icon">
             {armor.type === "hard" ? "\u2B21" : "\u2248"}
           </span>
           {armor.name}
-        </h4>
+        </>
+      }
+      meta={
         <span class="armor-card-sp">
           {owned ? (
             <>
@@ -60,7 +57,8 @@ export const ArmorCard = ({
             <>{armor.spMax}</>
           )}
         </span>
-      </div>
+      }
+    >
       <div class="armor-card-details">
         <BodyPartsCoverage
           bodyParts={armor.bodyParts}
@@ -77,6 +75,6 @@ export const ArmorCard = ({
           />
         </span>
       </div>
-    </div>
+    </ItemCard>
   );
 };

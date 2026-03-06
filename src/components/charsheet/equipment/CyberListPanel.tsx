@@ -2,10 +2,10 @@ import { useStore } from "@nanostores/preact";
 
 import { tabStore } from "@stores/ui";
 
+import { ItemCard } from "../shared/ItemCard";
 import { ItemMeta } from "../shared/ItemMeta";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
-import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 import type { CyberCategory, CyberItem, CyberlimbCell } from "./cyberMockData";
 import {
@@ -32,25 +32,24 @@ function CyberItemCard({
   catalog: boolean;
   onSelect: () => void;
 }) {
-  const ref = useScrollOnSelect<HTMLDivElement>(selected);
   return (
-    <div
-      ref={ref}
-      class={`item-card${accent ? " item-card-accent" : ""}${selected ? " selected" : ""}`}
+    <ItemCard
+      selected={selected}
+      accent={accent}
       onClick={onSelect}
-    >
-      <div class="flex-between gap-8">
-        <h4>{item.name}</h4>
-        {catalog && item.availability ? (
+      name={item.name}
+      meta={
+        catalog && item.availability ? (
           <ItemMeta availability={item.availability} cost={item.cost} />
         ) : (
           <span class="item-meta">
             <span class="text-soft">HC {item.hc}</span>
           </span>
-        )}
-      </div>
+        )
+      }
+    >
       <p class="text-desc">{item.description}</p>
-    </div>
+    </ItemCard>
   );
 }
 

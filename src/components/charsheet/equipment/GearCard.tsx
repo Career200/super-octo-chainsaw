@@ -2,8 +2,8 @@ import type { GearTemplate } from "@scripts/gear/catalog";
 import { addGear, removeGear } from "@stores/gear";
 import { selectGear } from "@stores/ui";
 
+import { ItemCard } from "../shared/ItemCard";
 import { ItemMeta } from "../shared/ItemMeta";
-import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 interface Props {
   id: string;
@@ -20,17 +20,15 @@ export function GearCard({
   custom,
   selected,
 }: Props) {
-  const ref = useScrollOnSelect<HTMLDivElement>(!!selected);
   return (
-    <div
-      ref={ref}
-      class={`item-card gear-card${selected ? " selected" : ""}${custom ? " item-card-accent" : ""}`}
+    <ItemCard
+      class="gear-card"
+      selected={selected}
+      accent={custom}
       onClick={() => selectGear(selected ? null : id)}
+      name={template.name}
+      meta={<ItemMeta availability={template.availability} cost={template.cost} />}
     >
-      <div class="flex-between gap-8">
-        <h4>{template.name}</h4>
-        <ItemMeta availability={template.availability} cost={template.cost} />
-      </div>
       <div class="gear-actions">
         {quantity > 0 ? (
           <div class="gear-qty-controls">
@@ -66,6 +64,6 @@ export function GearCard({
           </button>
         )}
       </div>
-    </div>
+    </ItemCard>
   );
 }
