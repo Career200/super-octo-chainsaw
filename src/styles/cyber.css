@@ -85,6 +85,13 @@
   font-size: var(--font-ui-sm);
 }
 
+/* === Base Group === */
+.cyber-base-group {
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--accent);
+}
+
+
 /* === Right Panel Item List === */
 .cyber-item-list {
   flex: 1;
@@ -102,13 +109,6 @@
 
 .cyber-item-hc {
   color: var(--fg-soft);
-}
-
-/* === Base/option separator === */
-.cyber-base-sep {
-  border: none;
-  border-top: 1px solid var(--border-light);
-  margin: var(--space-8) 0;
 }
 
 /* === Bottom Bar Detail === */

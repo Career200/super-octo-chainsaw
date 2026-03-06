@@ -65,6 +65,10 @@
   border-bottom-style: dashed;
 }
 
+.gear-group-label.no-expand {
+  cursor: default;
+}
+
 .gear-group-more {
   font-size: var(--font-ui-sm);
   color: var(--fg-soft);

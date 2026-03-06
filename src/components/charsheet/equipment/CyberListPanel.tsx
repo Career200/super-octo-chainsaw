@@ -1,19 +1,20 @@
 import { useStore } from "@nanostores/preact";
+import { useState } from "preact/hooks";
 
 import { tabStore } from "@stores/ui";
 
+import { CollapsibleGroup } from "../shared/CollapsibleGroup";
 import { ItemCard } from "../shared/ItemCard";
 import { ItemMeta } from "../shared/ItemMeta";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 
-import type { CyberCategory, CyberItem, CyberlimbCell } from "./cyberMockData";
+import type { CyberCategory, CyberItem, CyberlimbCell, LimbOption } from "./cyberMockData";
 import {
   CATEGORY_LABELS,
   CATEGORY_ORDER,
   MOCK_CYBER_REPLACEMENTS,
   MOCK_LIMB_OPTION_CATALOG,
-  MOCK_LIMB_OPTIONS,
   MOCK_MEAT_REPLACEMENTS,
 } from "./cyberMockData";
 
@@ -53,9 +54,9 @@ function CyberItemCard({
   );
 }
 
-// --- Item list with base/option separator ---
+// --- Collapsible base group ---
 
-function ItemListWithSep({
+function BaseGroup({
   items,
   selectedId,
   catalog,
@@ -66,23 +67,73 @@ function ItemListWithSep({
   catalog: boolean;
   onSelect: (id: string) => void;
 }) {
-  const hasBase = items.some((i) => i.isBase);
-  const baseItems = hasBase ? items.filter((i) => i.isBase) : [];
-  const optionItems = hasBase ? items.filter((i) => !i.isBase) : items;
+  const [collapsed, setCollapsed] = useState(true);
+  // Installed item first, then the rest
+  const sorted = [...items].sort((a, b) =>
+    a.installed === b.installed ? 0 : a.installed ? -1 : 1,
+  );
+  const first = sorted[0];
+  const rest = sorted.slice(1);
+
+  return (
+    <CollapsibleGroup
+      label="Base"
+      count={items.length}
+      collapsed={collapsed}
+      onToggle={rest.length > 0 ? () => setCollapsed(!collapsed) : undefined}
+      class="cyber-base-group"
+      restCount={rest.length}
+    >
+      {first && (
+        <CyberItemCard
+          item={first}
+          selected={selectedId === first.id}
+          accent={first.installed}
+          catalog={catalog}
+          onSelect={() => onSelect(first.id)}
+        />
+      )}
+      {!collapsed &&
+        rest.map((item) => (
+          <CyberItemCard
+            key={item.id}
+            item={item}
+            selected={selectedId === item.id}
+            accent={item.installed}
+            catalog={catalog}
+            onSelect={() => onSelect(item.id)}
+          />
+        ))}
+    </CollapsibleGroup>
+  );
+}
+
+// --- Combined list: base group + flat options ---
+
+function CyberItemList({
+  items,
+  selectedId,
+  catalog,
+  onSelect,
+}: {
+  items: CyberItem[];
+  selectedId: string | null;
+  catalog: boolean;
+  onSelect: (id: string) => void;
+}) {
+  const baseItems = items.filter((i) => i.isBase);
+  const optionItems = items.filter((i) => !i.isBase);
 
   return (
     <>
-      {baseItems.map((item) => (
-        <CyberItemCard
-          key={item.id}
-          item={item}
-          selected={selectedId === item.id}
-          accent={item.installed}
+      {baseItems.length > 0 && (
+        <BaseGroup
+          items={baseItems}
+          selectedId={selectedId}
           catalog={catalog}
-          onSelect={() => onSelect(item.id)}
+          onSelect={onSelect}
         />
-      ))}
-      {hasBase && optionItems.length > 0 && <hr class="cyber-base-sep" />}
+      )}
       {optionItems.map((item) => (
         <CyberItemCard
           key={item.id}
@@ -103,13 +154,16 @@ function getLimbType(slot: CyberlimbCell["slot"]): "arm" | "leg" {
   return slot[1] === "a" ? "arm" : "leg";
 }
 
+const LIMB_OPTION_SLOTS = 3; // 4 total minus preinstalled hand/foot
+
 function buildLimbItems(
   limb: CyberlimbCell,
   slot: CyberlimbCell["slot"],
   catalog: boolean,
+  installedLimbOptions: Record<CyberlimbCell["slot"], LimbOption[]>,
 ): CyberItem[] {
   const limbType = getLimbType(slot);
-  const installedOptions = MOCK_LIMB_OPTIONS[slot];
+  const installedOptions = installedLimbOptions[slot];
   const installedNames = new Set(installedOptions.map((o) => o.name));
 
   const currentBase: CyberItem = {
@@ -170,6 +224,7 @@ interface CyberListPanelProps {
   activeSlot: CyberlimbCell["slot"];
   onSlotChange: (slot: CyberlimbCell["slot"]) => void;
   limbs: CyberlimbCell[];
+  limbOptions: Record<CyberlimbCell["slot"], LimbOption[]>;
   catalog: Record<CyberCategory, CyberItem[]>;
   installed: CyberItem[];
   selectedId: string | null;
@@ -184,6 +239,7 @@ export function CyberListPanel({
   activeSlot,
   onSlotChange,
   limbs,
+  limbOptions,
   catalog,
   installed,
   selectedId,
@@ -205,14 +261,14 @@ export function CyberListPanel({
 
   const currentItems =
     isLimbs && activeLimb
-      ? buildLimbItems(activeLimb, activeSlot, isCatalog)
+      ? buildLimbItems(activeLimb, activeSlot, isCatalog, limbOptions)
       : isCatalog
         ? (catalog[activeCategory] ?? [])
         : installed.filter((i) => i.category === activeCategory);
 
   const ownedCount = isLimbs
     ? limbs.filter((l) => l.isCyber).length +
-      Object.values(MOCK_LIMB_OPTIONS).flat().length
+      Object.values(limbOptions).flat().length
     : installed.filter((i) => i.category === activeCategory).length;
 
   return (
@@ -248,15 +304,21 @@ export function CyberListPanel({
 
       {isLimbs && (
         <div class="caliber-badge-bar">
-          {limbs.map((limb) => (
-            <button
-              key={limb.slot}
-              class={`caliber-badge${activeSlot === limb.slot ? " active" : ""}`}
-              onClick={() => onSlotChange(limb.slot)}
-            >
-              {limb.label}
-            </button>
-          ))}
+          {limbs.map((limb) => {
+            const used = limbOptions[limb.slot]?.length ?? 0;
+            return (
+              <button
+                key={limb.slot}
+                class={`caliber-badge${activeSlot === limb.slot ? " active" : ""}`}
+                onClick={() => onSlotChange(limb.slot)}
+              >
+                {limb.label}
+                {limb.isCyber && (
+                  <span class="text-soft"> {used}/{LIMB_OPTION_SLOTS}</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -266,7 +328,7 @@ export function CyberListPanel({
             {isCatalog ? "No items in catalog." : "Nothing installed."}
           </div>
         ) : (
-          <ItemListWithSep
+          <CyberItemList
             items={currentItems}
             selectedId={selectedId}
             catalog={isCatalog}

@@ -14,7 +14,7 @@ import {
 } from "@stores/ui";
 import { $allOwnedWeapons } from "@stores/weapons";
 
-import { Chevron } from "../shared/Chevron";
+import { CollapsibleGroup } from "../shared/CollapsibleGroup";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 import { useScrollOnSelect } from "../shared/useScrollOnSelect";
@@ -63,33 +63,24 @@ function CaliberGroup({
   const isHighlighted = highlightedCaliber === label;
   const groupRef = useScrollOnSelect<HTMLDivElement>(isHighlighted);
   return (
-    <div
-      ref={groupRef}
-      class={`gear-group${isHighlighted ? " gear-group-highlighted" : ""}`}
-      data-caliber={label}
+    <CollapsibleGroup
+      label={label}
+      count={items.length}
+      collapsed={collapsed}
+      onToggle={onToggle}
+      class={isHighlighted ? "gear-group-highlighted" : undefined}
+      rootRef={groupRef}
+      rootProps={{ "data-caliber": label }}
+      restCount={items.length - 1}
     >
-      <div class={`gear-group-label${collapsed ? " collapsed" : ""}`} onClick={onToggle}>
-        <span>
-          {label}
-          <span class="gear-group-count">{items.length}</span>
-        </span>
-        <Chevron expanded={!collapsed} />
-      </div>
       {collapsed ? (
-        <>
-          <AmmoRow
-            template={items[0].template}
-            quantity={items[0].quantity}
-            custom={items[0].custom}
-            selected={selectedId === items[0].id}
-            highlighted={isHighlighted}
-          />
-          {items.length > 1 && (
-            <div class="gear-group-more" onClick={onToggle}>
-              +{items.length - 1} more
-            </div>
-          )}
-        </>
+        <AmmoRow
+          template={items[0].template}
+          quantity={items[0].quantity}
+          custom={items[0].custom}
+          selected={selectedId === items[0].id}
+          highlighted={isHighlighted}
+        />
       ) : (
         items.map((item) => (
           <AmmoRow
@@ -102,7 +93,7 @@ function CaliberGroup({
           />
         ))
       )}
-    </div>
+    </CollapsibleGroup>
   );
 }
 

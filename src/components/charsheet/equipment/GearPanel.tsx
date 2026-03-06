@@ -6,7 +6,7 @@ import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import { $customGear, $gear, $ownedGear, $ownedGearCount } from "@stores/gear";
 import { $selectedGear, startAddingGear, tabStore } from "@stores/ui";
 
-import { Chevron } from "../shared/Chevron";
+import { CollapsibleGroup } from "../shared/CollapsibleGroup";
 import { TabStrip } from "../shared/TabStrip";
 
 import { GearCard } from "./GearCard";
@@ -32,29 +32,21 @@ function GearGroup({
   selectedId: string | null;
 }) {
   return (
-    <div class="gear-group">
-      <div class={`gear-group-label${collapsed ? " collapsed" : ""}`} onClick={onToggle}>
-        <span>
-          {label}
-          {count > 0 && <span class="gear-group-count">{count}</span>}
-        </span>
-        <Chevron expanded={!collapsed} />
-      </div>
+    <CollapsibleGroup
+      label={label}
+      count={count || undefined}
+      collapsed={collapsed}
+      onToggle={onToggle}
+      restCount={items.length - 1}
+    >
       {collapsed ? (
-        <>
-          <GearCard
-            id={items[0].id}
-            template={items[0].template}
-            quantity={items[0].quantity}
-            custom={items[0].custom}
-            selected={selectedId === items[0].id}
-          />
-          {items.length > 1 && (
-            <div class="gear-group-more" onClick={onToggle}>
-              +{items.length - 1} more
-            </div>
-          )}
-        </>
+        <GearCard
+          id={items[0].id}
+          template={items[0].template}
+          quantity={items[0].quantity}
+          custom={items[0].custom}
+          selected={selectedId === items[0].id}
+        />
       ) : (
         items.map((item) => (
           <GearCard
@@ -67,7 +59,7 @@ function GearGroup({
           />
         ))
       )}
-    </div>
+    </CollapsibleGroup>
   );
 }
 

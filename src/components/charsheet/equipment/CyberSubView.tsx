@@ -14,6 +14,7 @@ import {
   MOCK_CATALOG,
   MOCK_HC,
   MOCK_INSTALLED,
+  MOCK_LIMB_OPTIONS,
   MOCK_LIMBS,
 } from "./cyberMockData";
 
@@ -80,6 +81,7 @@ export default function CyberSubView() {
           activeSlot={activeSlot}
           onSlotChange={setActiveSlot}
           limbs={MOCK_LIMBS}
+          limbOptions={MOCK_LIMB_OPTIONS}
           catalog={MOCK_CATALOG}
           installed={MOCK_INSTALLED}
           selectedId={selectedId}

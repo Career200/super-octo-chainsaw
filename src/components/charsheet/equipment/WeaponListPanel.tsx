@@ -15,7 +15,7 @@ import {
 import type { WeaponPiece } from "@stores/weapons";
 import { $allOwnedWeapons, $customWeaponList } from "@stores/weapons";
 
-import { Chevron } from "../shared/Chevron";
+import { CollapsibleGroup } from "../shared/CollapsibleGroup";
 import { HelpPopover } from "../shared/HelpPopover";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
@@ -71,31 +71,23 @@ function WeaponGroup({
   highlightedCaliber: string | null;
 }) {
   return (
-    <div class="gear-group">
-      <div class={`gear-group-label${collapsed ? " collapsed" : ""}`} onClick={onToggle}>
-        <span>
-          {label}
-          {count > 0 && <span class="gear-group-count">{count}</span>}
-        </span>
-        <Chevron expanded={!collapsed} />
-      </div>
+    <CollapsibleGroup
+      label={label}
+      count={count || undefined}
+      collapsed={collapsed}
+      onToggle={onToggle}
+      restCount={items.length - 1}
+    >
       {collapsed ? (
-        <>
-          <WeaponCard
-            weapon={items[0].weapon}
-            custom={items[0].custom}
-            selected={selectedId === items[0].id}
-            highlighted={highlightedCaliber === items[0].weapon.ammo}
-            onClick={() =>
-              selectWeapon(selectedId === items[0].id ? null : items[0].id)
-            }
-          />
-          {items.length > 1 && (
-            <div class="gear-group-more" onClick={onToggle}>
-              +{items.length - 1} more
-            </div>
-          )}
-        </>
+        <WeaponCard
+          weapon={items[0].weapon}
+          custom={items[0].custom}
+          selected={selectedId === items[0].id}
+          highlighted={highlightedCaliber === items[0].weapon.ammo}
+          onClick={() =>
+            selectWeapon(selectedId === items[0].id ? null : items[0].id)
+          }
+        />
       ) : (
         items.map((item) => (
           <WeaponCard
@@ -110,7 +102,7 @@ function WeaponGroup({
           />
         ))
       )}
-    </div>
+    </CollapsibleGroup>
   );
 }
 
