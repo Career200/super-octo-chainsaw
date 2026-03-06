@@ -2,6 +2,8 @@ import { useRef, useState } from "preact/hooks";
 
 import type { ArmorPiece } from "@scripts/armor/core";
 
+import { ItemCard } from "../shared/ItemCard";
+
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { RepairPopover } from "./RepairPopover";
 import { getConditionClassFromSP } from "./utils";
@@ -17,9 +19,10 @@ export const ImplantCard = ({ implant }: Props) => {
   const damaged = implant.spCurrent < implant.spMax;
 
   return (
-    <div class="item-card item-card-accent">
-      <div class="flex-between gap-8">
-        <h4>{implant.name}</h4>
+    <ItemCard
+      accent
+      name={implant.name}
+      meta={
         <span class="armor-card-sp">
           <span
             class={getConditionClassFromSP(implant.spCurrent, implant.spMax)}
@@ -28,7 +31,8 @@ export const ImplantCard = ({ implant }: Props) => {
           </span>
           /{implant.spMax}
         </span>
-      </div>
+      }
+    >
       <div class="armor-card-details">
         <BodyPartsCoverage
           bodyParts={implant.bodyParts}
@@ -62,6 +66,6 @@ export const ImplantCard = ({ implant }: Props) => {
           </span>
         )}
       </div>
-    </div>
+    </ItemCard>
   );
 };
