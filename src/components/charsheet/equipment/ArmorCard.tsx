@@ -1,6 +1,7 @@
 import type { ArmorPiece, ArmorTemplate } from "@scripts/armor/core";
 
 import { ItemMeta } from "../shared/ItemMeta";
+import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { getConditionClassFromSP } from "./utils";
@@ -25,6 +26,7 @@ export const ArmorCard = ({
   onClick,
 }: Props) => {
   const owned = isInstance(armor);
+  const cardRef = useScrollOnSelect<HTMLDivElement>(!!highlighted);
 
   const cls = [
     "item-card armor-card",
@@ -36,7 +38,7 @@ export const ArmorCard = ({
     .join(" ");
 
   return (
-    <div class={cls} onClick={onClick}>
+    <div ref={cardRef} class={cls} onClick={onClick}>
       <div class="flex-between gap-8">
         <h4>
           <span class="armor-type-icon">

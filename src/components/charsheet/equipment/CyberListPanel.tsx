@@ -5,6 +5,7 @@ import { tabStore } from "@stores/ui";
 import { ItemMeta } from "../shared/ItemMeta";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
+import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 import type { CyberCategory, CyberItem, CyberlimbCell } from "./cyberMockData";
 import {
@@ -31,8 +32,10 @@ function CyberItemCard({
   catalog: boolean;
   onSelect: () => void;
 }) {
+  const ref = useScrollOnSelect<HTMLDivElement>(selected);
   return (
     <div
+      ref={ref}
       class={`item-card${accent ? " item-card-accent" : ""}${selected ? " selected" : ""}`}
       onClick={onSelect}
     >

@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "preact/hooks";
-
 import type { WeaponTemplate } from "@scripts/weapons/catalog";
 import {
   CONCEALABILITY_LABELS,
@@ -8,6 +6,7 @@ import {
 import type { WeaponPiece } from "@stores/weapons";
 
 import { ItemMeta } from "../shared/ItemMeta";
+import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 function isInstance(
   weapon: WeaponTemplate | WeaponPiece,
@@ -31,12 +30,7 @@ export const WeaponCard = ({
   onClick,
 }: Props) => {
   const instance = isInstance(weapon);
-  const cardRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (highlighted) {
-      cardRef.current?.scrollIntoView({ block: "center" });
-    }
-  }, [highlighted]);
+  const cardRef = useScrollOnSelect<HTMLDivElement>(!!highlighted, "center");
 
   const cls = [
     "item-card weapon-card",

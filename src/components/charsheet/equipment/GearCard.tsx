@@ -3,6 +3,7 @@ import { addGear, removeGear } from "@stores/gear";
 import { selectGear } from "@stores/ui";
 
 import { ItemMeta } from "../shared/ItemMeta";
+import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 interface Props {
   id: string;
@@ -19,8 +20,10 @@ export function GearCard({
   custom,
   selected,
 }: Props) {
+  const ref = useScrollOnSelect<HTMLDivElement>(!!selected);
   return (
     <div
+      ref={ref}
       class={`item-card gear-card${selected ? " selected" : ""}${custom ? " item-card-accent" : ""}`}
       onClick={() => selectGear(selected ? null : id)}
     >

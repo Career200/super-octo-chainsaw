@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import type { RefObject } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 
 import type { AmmoTemplate } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG, CALIBER_ORDER } from "@scripts/ammo/catalog";
@@ -17,6 +17,7 @@ import { $allOwnedWeapons } from "@stores/weapons";
 import { Chevron } from "../shared/Chevron";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
+import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 
 import { AmmoRow } from "./AmmoRow";
 
@@ -60,12 +61,7 @@ function CaliberGroup({
   highlightedCaliber: string | null;
 }) {
   const isHighlighted = highlightedCaliber === label;
-  const groupRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (isHighlighted) {
-      groupRef.current?.scrollIntoView({ block: "nearest" });
-    }
-  }, [isHighlighted]);
+  const groupRef = useScrollOnSelect<HTMLDivElement>(isHighlighted);
   return (
     <div
       ref={groupRef}
