@@ -1,0 +1,127 @@
+/* === HC/EMP Summary Row (in panel heading) === */
+.cyber-hc-row {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  font-size: var(--font-ui);
+  color: var(--fg-soft);
+}
+
+.cyber-hc-row strong {
+  color: var(--accent);
+}
+
+.cyber-hc-sep {
+  color: var(--border-light);
+}
+
+/* === Two-Column Category Grid === */
+.cyber-category-grid {
+  display: flex;
+  gap: var(--space-8);
+  align-items: flex-start;
+}
+
+.cyber-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+/* === Cyberlimbs 2x2 Grid === */
+.cyber-limbs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.cyber-limb-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-6);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-ui);
+}
+
+.cyber-limb-cell[class*="condition-"] {
+  border-color: var(--condition-color);
+}
+
+.cyber-limb-cell:hover {
+  border-color: var(--accent);
+}
+
+.cyber-limb-selected {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.cyber-limb-meat {
+  opacity: 0.4;
+}
+
+.cyber-limb-label {
+  font-weight: bold;
+  color: var(--accent);
+  font-size: var(--font-ui-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cyber-limb-sdp {
+  color: var(--condition-color);
+  font-size: var(--font-ui-sm);
+}
+
+.cyber-limb-meat-label {
+  color: var(--fg-soft);
+  font-style: italic;
+  font-size: var(--font-ui-sm);
+}
+
+/* === Right Panel Item List === */
+.cyber-item-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.cyber-item-meta {
+  display: flex;
+  gap: var(--space-8);
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  margin-top: var(--space-4);
+}
+
+.cyber-item-hc {
+  color: var(--fg-soft);
+}
+
+/* === Base/option separator === */
+.cyber-base-sep {
+  border: none;
+  border-top: 1px solid var(--border-light);
+  margin: var(--space-8) 0;
+}
+
+/* === Bottom Bar Detail === */
+.cyber-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.cyber-detail-meta {
+  display: flex;
+  gap: var(--space-8);
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+}
+
