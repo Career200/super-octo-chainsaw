@@ -1,7 +1,12 @@
-import type { ComponentChildren } from "preact";
 import { useStore } from "@nanostores/preact";
+import type { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
 
+import {
+  CATEGORY_LABELS,
+  CATEGORY_ORDER,
+  type CyberCategory,
+} from "@scripts/cyber/catalog";
 import { tabStore } from "@stores/ui";
 
 import { CollapsibleGroup } from "../shared/CollapsibleGroup";
@@ -10,14 +15,7 @@ import { ItemMeta } from "../shared/ItemMeta";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 
-import type { CyberCategory, CyberItem, CyberlimbCell, LimbOption } from "./cyberMockData";
-import {
-  CATEGORY_LABELS,
-  CATEGORY_ORDER,
-  MOCK_CYBER_REPLACEMENTS,
-  MOCK_LIMB_OPTION_CATALOG,
-  MOCK_MEAT_REPLACEMENTS,
-} from "./cyberMockData";
+import type { CyberItem, CyberlimbCell, LimbOption } from "./cyberViewTypes";
 
 // --- Shared card rendering ---
 
@@ -179,28 +177,19 @@ function CyberItemList({
 
 // --- Limb slot: assemble CyberItem[] from limb data ---
 
-function getLimbType(slot: CyberlimbCell["slot"]): "arm" | "leg" {
-  return slot[1] === "a" ? "arm" : "leg";
-}
-
-const LIMB_OPTION_SLOTS = 3; // 4 total minus preinstalled hand/foot
-
 function buildLimbItems(
   limb: CyberlimbCell,
   slot: CyberlimbCell["slot"],
-  catalog: boolean,
   installedLimbOptions: Record<CyberlimbCell["slot"], LimbOption[]>,
 ): CyberItem[] {
-  const limbType = getLimbType(slot);
   const installedOptions = installedLimbOptions[slot];
-  const installedNames = new Set(installedOptions.map((o) => o.name));
 
   const currentBase: CyberItem = {
     id: `limb-${slot}`,
     name: limb.name,
     category: "cyberlimbs",
     description: limb.isCyber
-      ? `SDP ${limb.sdpCurrent}/${limb.sdpMax} \u00B7 Options ${installedOptions.length}/${LIMB_OPTION_SLOTS}`
+      ? `SDP ${limb.sdpCurrent}/${limb.sdpMax}`
       : "Natural limb",
     hc: limb.hc ?? 0,
     installed: true,
@@ -212,40 +201,8 @@ function buildLimbItems(
       : undefined,
   };
 
-  const altBase = limb.isCyber
-    ? MOCK_MEAT_REPLACEMENTS[limbType]
-    : MOCK_CYBER_REPLACEMENTS[limbType];
-
-  const altBaseItem: CyberItem = {
-    id: altBase.id,
-    name: altBase.name,
-    category: "cyberlimbs",
-    description: altBase.description,
-    hc: altBase.hc,
-    installed: false,
-    isBase: true,
-    availability: altBase.availability,
-    cost: altBase.cost,
-  };
-
-  const optionSource = limb.isCyber
-    ? catalog
-      ? MOCK_LIMB_OPTION_CATALOG
-      : installedOptions
-    : [];
-
-  const options: CyberItem[] = optionSource.map((opt) => ({
-    id: opt.id,
-    name: opt.name,
-    category: "cyberlimbs" as CyberCategory,
-    description: opt.description,
-    hc: opt.hc,
-    installed: installedNames.has(opt.name),
-    availability: opt.availability,
-    cost: opt.cost,
-  }));
-
-  return [currentBase, ...(catalog ? [altBaseItem] : []), ...options];
+  // Limb options and replacement catalog will be added with cyberlimb templates
+  return [currentBase];
 }
 
 interface CyberListPanelProps {
@@ -295,7 +252,7 @@ export function CyberListPanel({
 
   const currentItems =
     isLimbs && activeLimb
-      ? buildLimbItems(activeLimb, activeSlot, isCatalog, limbOptions)
+      ? buildLimbItems(activeLimb, activeSlot, limbOptions)
       : isCatalog
         ? (catalog[activeCategory] ?? [])
         : installed.filter((i) => i.category === activeCategory);

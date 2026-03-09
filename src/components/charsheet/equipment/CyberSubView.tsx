@@ -1,6 +1,12 @@
 import { useStore } from "@nanostores/preact";
-import { useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 
+import {
+  CATEGORY_ORDER,
+  CYBER_CATALOG,
+  type CyberCategory,
+} from "@scripts/cyber/catalog";
+import { $hcData, $hydratedCyber, $installedByCategory } from "@stores/cyber";
 import { $selectedCyber, selectCyber } from "@stores/ui";
 
 import { Panel } from "../shared/Panel";
@@ -8,28 +14,66 @@ import { TwoPanelView } from "../shared/TwoPanelView";
 
 import { CyberGridPanel, HcRow } from "./CyberGridPanel";
 import { CyberListPanel } from "./CyberListPanel";
-import type { CyberCategory, CyberlimbCell } from "./cyberMockData";
-import {
-  CATEGORY_ORDER,
-  MOCK_CATALOG,
-  MOCK_HC,
-  MOCK_INSTALLED,
-  MOCK_LIMB_OPTIONS,
-  MOCK_LIMBS,
-} from "./cyberMockData";
+import type { CyberItem, CyberlimbCell } from "./cyberViewTypes";
+import { DEFAULT_LIMBS, hydratedToCyberItem } from "./cyberViewTypes";
 
-const installedByCategory = CATEGORY_ORDER.map((cat) => ({
-  category: cat,
-  items: MOCK_INSTALLED.filter((i) => i.category === cat),
-})).filter(
-  ({ category, items }) => category === "cyberlimbs" || items.length > 0,
-);
+const EMPTY_LIMB_OPTIONS: Record<CyberlimbCell["slot"], never[]> = {
+  la: [],
+  ra: [],
+  ll: [],
+  rl: [],
+};
 
 export default function CyberSubView() {
   const selectedId = useStore($selectedCyber);
+  const hydrated = useStore($hydratedCyber);
+  const installedByCategory = useStore($installedByCategory);
+  const hcData = useStore($hcData);
   const [activeCategory, setActiveCategory] =
-    useState<CyberCategory>("neuralware");
+    useState<CyberCategory>("fashionware");
   const [activeSlot, setActiveSlot] = useState<CyberlimbCell["slot"]>("ra");
+
+  // Build catalog view: all templates grouped by category, marking installed ones
+  const installedTemplateIds = useMemo(
+    () => new Set(hydrated.map((i) => i.templateId)),
+    [hydrated],
+  );
+
+  const catalog = useMemo(() => {
+    const result = {} as Record<CyberCategory, CyberItem[]>;
+    for (const cat of CATEGORY_ORDER) {
+      result[cat] = [];
+    }
+    for (const t of Object.values(CYBER_CATALOG)) {
+      const item: CyberItem = {
+        id: t.id,
+        name: t.name,
+        category: t.category,
+        description: t.description,
+        hc: t.hcDice,
+        installed: installedTemplateIds.has(t.id),
+        availability: t.availability,
+        cost: t.cost,
+        isBase: t.role === "container",
+      };
+      result[t.category].push(item);
+    }
+    return result;
+  }, [installedTemplateIds]);
+
+  const installed = useMemo(
+    () => hydrated.map(hydratedToCyberItem),
+    [hydrated],
+  );
+
+  const gridCategories = useMemo(
+    () =>
+      installedByCategory.map(({ category, items }) => ({
+        category,
+        items: items.map(hydratedToCyberItem),
+      })),
+    [installedByCategory],
+  );
 
   const handleItemClick = (item: { id: string; category: CyberCategory }) => {
     selectCyber(selectedId === item.id ? null : item.id);
@@ -39,16 +83,14 @@ export default function CyberSubView() {
   const handleLimbClick = (limbId: string) => {
     selectCyber(selectedId === limbId ? null : limbId);
     setActiveCategory("cyberlimbs");
-    // Extract slot from "limb-ra" → "ra"
     const slot = limbId.replace("limb-", "") as CyberlimbCell["slot"];
     setActiveSlot(slot);
   };
 
   const handleCategoryChange = (cat: CyberCategory) => {
     setActiveCategory(cat);
-    // Pre-select first cyber limb when switching to cyberlimbs
     if (cat === "cyberlimbs") {
-      const firstCyber = MOCK_LIMBS.find((l) => l.isCyber);
+      const firstCyber = DEFAULT_LIMBS.find((l) => l.isCyber);
       if (firstCyber) setActiveSlot(firstCyber.slot);
     }
   };
@@ -57,17 +99,17 @@ export default function CyberSubView() {
     <TwoPanelView
       renderFirst={(expanded, onToggle) => (
         <CyberListPanel
-          title={<HcRow hcData={MOCK_HC} />}
+          title={<HcRow hcData={hcData} />}
           expanded={expanded}
           onToggle={onToggle}
           activeCategory={activeCategory}
           onCategoryChange={handleCategoryChange}
           activeSlot={activeSlot}
           onSlotChange={setActiveSlot}
-          limbs={MOCK_LIMBS}
-          limbOptions={MOCK_LIMB_OPTIONS}
-          catalog={MOCK_CATALOG}
-          installed={MOCK_INSTALLED}
+          limbs={DEFAULT_LIMBS}
+          limbOptions={EMPTY_LIMB_OPTIONS}
+          catalog={catalog}
+          installed={installed}
           selectedId={selectedId}
           onSelect={(id) => selectCyber(selectedId === id ? null : id)}
         />
@@ -80,8 +122,8 @@ export default function CyberSubView() {
           onToggle={onToggle}
         >
           <CyberGridPanel
-            categories={installedByCategory}
-            limbs={MOCK_LIMBS}
+            categories={gridCategories}
+            limbs={DEFAULT_LIMBS}
             selectedId={selectedId}
             onItemClick={handleItemClick}
             onLimbClick={handleLimbClick}

@@ -70,6 +70,27 @@ Keys in use:
 - `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
 - `offense-tab` (default: `"ranged"`) — Ranged/Melee in CombatView offense panel
 
+### `$installedCyber` (cyber.ts)
+```
+InstalledItem[] (each: { templateId, instanceId, parentId?, slot?, hc, sdpCurrent? })
+```
+Installed cyberware instances. Template data comes from `CYBER_CATALOG` at read time (sparse persistence — only instance overrides stored).
+
+Actions: `installCyber(templateId, opts?)`, `uninstallCyber(instanceId)`, `setItemHc(instanceId, hc)`
+Listener: re-derives `$cyberEffects` on every change (sums HC → humanityLoss).
+
+### `$cyberEffects` (cyber-effects.ts)
+```
+{ humanityLoss, statBonuses, statOverrides, skillBonuses, skillOverrides, initiativeBonus, majorEffects, minorEffects }
+```
+Catalog-free summary of all active cyberware effects. Safe to import from eagerly-loaded stores. Step 1: only `humanityLoss` is populated; other fields default to empty.
+
+### `$selectedCyber` (ui.ts)
+```
+string | null (default: null)
+```
+Currently selected cyber item ID (instanceId for installed, templateId for catalog). Non-persistent.
+
 ### `$selectedSkill` (ui.ts)
 ```
 string | null (default: null)
@@ -391,6 +412,27 @@ ArmorTemplate[]
 All custom armor definitions as full `ArmorTemplate` objects.
 Depends on: `$customArmorTemplates`
 
+### `$hydratedCyber` (cyber.ts)
+```
+HydratedCyberItem[] (each: InstalledItem & { template: CyberTemplate })
+```
+Installed items joined with their catalog templates. Filters out items with missing templates.
+Depends on: `$installedCyber`
+
+### `$installedByCategory` (cyber.ts)
+```
+{ category: CyberCategory, items: HydratedCyberItem[] }[]
+```
+Hydrated items grouped by category. Filters out empty categories (except cyberlimbs, always shown).
+Depends on: `$hydratedCyber`
+
+### `$hcData` (cyber.ts)
+```
+{ humanity, hcTotal, empBase, empCurrent }
+```
+HC/Humanity/EMP display data. `humanity = empBase*10 - hcTotal`, `empCurrent = ceil(humanity/10)`.
+Depends on: `$cyberEffects`, `$EMP`
+
 ## Dependency Graph (compact)
 ```
 $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
@@ -427,6 +469,11 @@ $customWeaponTemplates─┼──▸ $customWeaponList
 $ownedAmmo ─────────┬──▸ $allOwnedAmmo ──▸ $ammoByCaliberLookup
 $customAmmoItems────┼──▸ $customAmmoList
                     └──▸ resolveAmmoTemplate() (used by addAmmo)
+
+$installedCyber ──┬──▸ listener ──▸ $cyberEffects ──▸ $hcData (+ $EMP)
+                  └──▸ $hydratedCyber ──▸ $installedByCategory
+
+$selectedCyber ──▸ CyberSubView, BottomBarCyber
 
 $selectedAmmo ◂──▸ $addingAmmo (mutually exclusive via selectAmmo/startAddingAmmo)
   ◂──▸ $selectedWeapon (cross-highlighting: selecting one clears the other)

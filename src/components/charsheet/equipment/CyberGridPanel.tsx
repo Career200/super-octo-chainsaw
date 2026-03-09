@@ -1,9 +1,6 @@
-import type {
-  CyberCategory,
-  CyberItem,
-  CyberlimbCell,
-} from "./cyberMockData";
-import { CATEGORY_LABELS } from "./cyberMockData";
+import { CATEGORY_LABELS, type CyberCategory } from "@scripts/cyber/catalog";
+
+import type { CyberItem, CyberlimbCell } from "./cyberViewTypes";
 import { getConditionClassFromSP } from "./utils";
 
 // --- CategoryCard ---
@@ -160,8 +157,7 @@ export function HcRow({
       <span class="cyber-hc-sep">{"\u00B7"}</span>
       HC: <strong>{hcData.hcTotal}</strong>
       <span class="cyber-hc-sep">{"\u00B7"}</span>
-      EMP: {hcData.empBase} {"\u2192"}{" "}
-      <strong>{hcData.empCurrent}</strong>
+      EMP: {hcData.empBase} {"\u2192"} <strong>{hcData.empCurrent}</strong>
     </span>
   );
 }
