@@ -22,8 +22,16 @@
   border-color: var(--accent);
 }
 
-.item-card.item-card-accent {
-  border-left: 3px solid var(--accent);
+.item-card.item-card-custom {
+  border-right: 1px solid var(--accent);
+}
+
+.item-card.item-card-owned {
+  border-left: 2px solid var(--border-owned);
+}
+
+.item-card.item-card-equipped {
+  border-left: 4px solid var(--accent);
 }
 
 .item-card h4 {

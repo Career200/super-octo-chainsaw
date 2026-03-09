@@ -23,13 +23,15 @@ import {
 function CyberItemCard({
   item,
   selected,
-  accent,
+  owned,
+  equipped,
   catalog,
   onSelect,
 }: {
   item: CyberItem;
   selected: boolean;
-  accent: boolean;
+  owned: boolean;
+  equipped: boolean;
   catalog: boolean;
   onSelect: () => void;
 }) {
@@ -37,7 +39,8 @@ function CyberItemCard({
   return (
     <ItemCard
       selected={selected}
-      accent={accent}
+      owned={owned}
+      equipped={equipped}
       onClick={onSelect}
       name={item.name}
       meta={
@@ -100,7 +103,8 @@ function BaseGroup({
         <CyberItemCard
           item={first}
           selected={selectedId === first.id}
-          accent={first.installed}
+          owned={first.installed}
+          equipped={first.installed}
           catalog={catalog}
           onSelect={() => onSelect(first.id)}
         />
@@ -111,7 +115,8 @@ function BaseGroup({
             key={item.id}
             item={item}
             selected={selectedId === item.id}
-            accent={item.installed}
+            owned={item.installed}
+            equipped={item.installed}
             catalog={catalog}
             onSelect={() => onSelect(item.id)}
           />
@@ -161,7 +166,8 @@ function CyberItemList({
           key={item.id}
           item={item}
           selected={selectedId === item.id}
-          accent={item.installed}
+          owned={item.installed}
+          equipped={item.installed}
           catalog={catalog}
           onSelect={() => onSelect(item.id)}
         />

@@ -37,6 +37,7 @@ const TYPE_ORDER: WeaponType[] = [
 type GroupItem = {
   id: string;
   weapon: WeaponTemplate | WeaponPiece;
+  owned?: boolean;
   custom?: boolean;
 };
 
@@ -81,6 +82,7 @@ function WeaponGroup({
       {collapsed ? (
         <WeaponCard
           weapon={items[0].weapon}
+          owned={items[0].owned}
           custom={items[0].custom}
           selected={selectedId === items[0].id}
           highlighted={highlightedCaliber === items[0].weapon.ammo}
@@ -93,6 +95,7 @@ function WeaponGroup({
           <WeaponCard
             key={item.id}
             weapon={item.weapon}
+            owned={item.owned}
             custom={item.custom}
             selected={selectedId === item.id}
             highlighted={highlightedCaliber === item.weapon.ammo}
@@ -140,11 +143,15 @@ export const WeaponListPanel = ({
     });
   };
 
+  // Ownership lookup for catalog/custom tabs
+  const ownedTemplateIds = new Set(ownedWeapons.map((w) => w.templateId));
+
   // Catalog view
   const catalogGroups = groupByType(
     catalogItems.map((t) => ({
       id: t.templateId,
       weapon: t,
+      owned: ownedTemplateIds.has(t.templateId),
     })),
   );
 
@@ -153,6 +160,7 @@ export const WeaponListPanel = ({
     ownedWeapons.map((w) => ({
       id: w.id,
       weapon: w,
+      owned: true,
       custom: w.custom,
     })),
   );
@@ -162,6 +170,7 @@ export const WeaponListPanel = ({
     customTemplates.map((t) => ({
       id: t.templateId,
       weapon: t,
+      owned: ownedTemplateIds.has(t.templateId),
       custom: true,
     })),
   );

@@ -18,6 +18,7 @@ interface Props {
   weapon: WeaponTemplate | WeaponPiece;
   selected?: boolean;
   highlighted?: boolean;
+  owned?: boolean;
   custom?: boolean;
   onClick?: () => void;
 }
@@ -26,6 +27,7 @@ export const WeaponCard = ({
   weapon,
   selected,
   highlighted,
+  owned,
   custom,
   onClick,
 }: Props) => {
@@ -36,7 +38,8 @@ export const WeaponCard = ({
       class="weapon-card"
       selected={selected}
       highlighted={highlighted}
-      accent={custom}
+      owned={owned}
+      custom={custom}
       onClick={onClick}
       name={
         <>

@@ -42,13 +42,19 @@ export const ArmorListPanel = ({
   const highlightedPart = useStore($highlightedPart);
   const customTemplates = useStore($customArmorList);
 
-  const owned = getAllOwnedArmor().filter((a) => !isImplant(a));
-  const sorted = sortArmor(owned);
+  const allOwned = getAllOwnedArmor().filter((a) => !isImplant(a));
+  const sorted = sortArmor(allOwned);
   const implants = getInstalledImplants();
+
+  // Ownership lookup: which templates are owned / equipped
+  const ownedTemplateIds = new Set(allOwned.map((a) => a.templateId));
+  const equippedTemplateIds = new Set(
+    allOwned.filter((a) => a.worn).map((a) => a.templateId),
+  );
 
   const highlightedIds = highlightedPart
     ? new Set(
-        owned
+        allOwned
           .filter((a) => a.bodyParts.includes(highlightedPart))
           .map((a) => a.id),
       )
@@ -79,7 +85,7 @@ export const ArmorListPanel = ({
             },
             {
               id: "owned",
-              label: `Owned${owned.length > 0 ? ` ${owned.length}` : ""}`,
+              label: `Owned${allOwned.length > 0 ? ` ${allOwned.length}` : ""}`,
             },
           ]}
         />
@@ -107,6 +113,8 @@ export const ArmorListPanel = ({
                   <ArmorCard
                     key={armor.id}
                     armor={armor}
+                    owned
+                    equipped={armor.worn}
                     selected={selectedId === armor.id}
                     highlighted={highlightedIds?.has(armor.id)}
                     onClick={() =>
@@ -134,6 +142,8 @@ export const ArmorListPanel = ({
                 key={tmpl.templateId}
                 armor={tmpl}
                 custom
+                owned={ownedTemplateIds.has(tmpl.templateId)}
+                equipped={equippedTemplateIds.has(tmpl.templateId)}
                 selected={selectedId === tmpl.templateId}
                 highlighted={
                   highlightedPart
@@ -156,6 +166,8 @@ export const ArmorListPanel = ({
             <ArmorCard
               key={tmpl.templateId}
               armor={tmpl}
+              owned={ownedTemplateIds.has(tmpl.templateId)}
+              equipped={equippedTemplateIds.has(tmpl.templateId)}
               selected={selectedId === tmpl.templateId}
               highlighted={
                 highlightedPart

@@ -24,7 +24,8 @@ export function GearCard({
     <ItemCard
       class="gear-card"
       selected={selected}
-      accent={custom}
+      owned={quantity > 0}
+      custom={custom}
       onClick={() => selectGear(selected ? null : id)}
       name={template.name}
       meta={<ItemMeta availability={template.availability} cost={template.cost} />}

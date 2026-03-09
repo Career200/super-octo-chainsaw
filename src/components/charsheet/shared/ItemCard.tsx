@@ -7,7 +7,12 @@ interface Props {
   class?: string;
   selected?: boolean;
   highlighted?: boolean;
-  accent?: boolean;
+  /** User owns this item — thin pale left border */
+  owned?: boolean;
+  /** Item is equipped/worn/installed — thick accent left border (overrides owned) */
+  equipped?: boolean;
+  /** Custom-created item — subtle accent right border */
+  custom?: boolean;
   onClick?: () => void;
   /** Card title — usually just a string, but can include an icon span */
   name: ComponentChildren;
@@ -20,7 +25,9 @@ export function ItemCard({
   class: extraClass,
   selected,
   highlighted,
-  accent,
+  owned,
+  equipped,
+  custom,
   onClick,
   name,
   meta,
@@ -32,7 +39,9 @@ export function ItemCard({
   const cls = [
     "item-card",
     extraClass,
-    accent && "item-card-accent",
+    custom && "item-card-custom",
+    owned && "item-card-owned",
+    equipped && "item-card-equipped",
     selected && "selected",
     highlighted && "highlighted",
   ]

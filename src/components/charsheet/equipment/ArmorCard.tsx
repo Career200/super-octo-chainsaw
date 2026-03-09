@@ -10,6 +10,8 @@ interface Props {
   armor: ArmorPiece | ArmorTemplate;
   selected?: boolean;
   highlighted?: boolean;
+  owned?: boolean;
+  equipped?: boolean;
   custom?: boolean;
   onClick?: () => void;
 }
@@ -22,17 +24,21 @@ export const ArmorCard = ({
   armor,
   selected,
   highlighted,
+  owned,
+  equipped,
   custom,
   onClick,
 }: Props) => {
-  const owned = isInstance(armor);
+  const instance = isInstance(armor);
 
   return (
     <ItemCard
       class="armor-card"
       selected={selected}
       highlighted={highlighted}
-      accent={(owned && armor.worn) || custom}
+      owned={owned}
+      equipped={equipped}
+      custom={custom}
       onClick={onClick}
       name={
         <>
@@ -44,7 +50,7 @@ export const ArmorCard = ({
       }
       meta={
         <span class="armor-card-sp">
-          {owned ? (
+          {instance ? (
             <>
               <span
                 class={getConditionClassFromSP(armor.spCurrent, armor.spMax)}
@@ -62,7 +68,7 @@ export const ArmorCard = ({
       <div class="armor-card-details">
         <BodyPartsCoverage
           bodyParts={armor.bodyParts}
-          spByPart={owned ? armor.spByPart : undefined}
+          spByPart={instance ? armor.spByPart : undefined}
           template={armor}
         />
         {armor.ev != null && armor.ev > 0 && (
@@ -71,7 +77,7 @@ export const ArmorCard = ({
         <span class="armor-card-right">
           <ItemMeta
             availability={armor.availability}
-            cost={!owned ? armor.cost : undefined}
+            cost={!instance ? armor.cost : undefined}
           />
         </span>
       </div>

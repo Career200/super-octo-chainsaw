@@ -20,7 +20,8 @@ export const ImplantCard = ({ implant }: Props) => {
 
   return (
     <ItemCard
-      accent
+      owned
+      equipped
       name={implant.name}
       meta={
         <span class="armor-card-sp">
