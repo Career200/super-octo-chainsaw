@@ -457,11 +457,11 @@
   color: var(--accent);
 }
 
-/* === Caliber Badge Bar === */
-.caliber-badge-bar {
+/* === Filter Badge Bar === */
+.filter-badge-bar {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   gap: var(--space-4);
   padding: var(--space-4) var(--content-inset) var(--space-8);
@@ -471,7 +471,7 @@
   background: var(--code-bg);
 }
 
-.caliber-badge {
+.filter-badge {
   flex-shrink: 0;
   padding: var(--space-2) var(--space-8);
   font-size: var(--font-ui-sm);
@@ -485,11 +485,11 @@
   font-family: inherit;
 }
 
-.caliber-badge:hover {
+.filter-badge:hover {
   color: var(--accent);
   border-color: var(--accent);
 }
-.caliber-badge.active {
+.filter-badge.active {
   color: var(--accent);
   border-color: var(--accent);
   background: var(--accent-subtle);

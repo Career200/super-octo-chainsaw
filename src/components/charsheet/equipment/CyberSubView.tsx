@@ -56,24 +56,8 @@ export default function CyberSubView() {
   return (
     <TwoPanelView
       renderFirst={(expanded, onToggle) => (
-        <Panel
-          id="cyber-grid-panel"
-          title={<HcRow hcData={MOCK_HC} />}
-          expanded={expanded}
-          onToggle={onToggle}
-        >
-          <CyberGridPanel
-            categories={installedByCategory}
-            limbs={MOCK_LIMBS}
-            selectedId={selectedId}
-            onItemClick={handleItemClick}
-            onLimbClick={handleLimbClick}
-            onCategoryClick={handleCategoryChange}
-          />
-        </Panel>
-      )}
-      renderSecond={(expanded, onToggle) => (
         <CyberListPanel
+          title={<HcRow hcData={MOCK_HC} />}
           expanded={expanded}
           onToggle={onToggle}
           activeCategory={activeCategory}
@@ -87,6 +71,23 @@ export default function CyberSubView() {
           selectedId={selectedId}
           onSelect={(id) => selectCyber(selectedId === id ? null : id)}
         />
+      )}
+      renderSecond={(expanded, onToggle) => (
+        <Panel
+          id="cyber-grid-panel"
+          title="Installed"
+          expanded={expanded}
+          onToggle={onToggle}
+        >
+          <CyberGridPanel
+            categories={installedByCategory}
+            limbs={MOCK_LIMBS}
+            selectedId={selectedId}
+            onItemClick={handleItemClick}
+            onLimbClick={handleLimbClick}
+            onCategoryClick={handleCategoryChange}
+          />
+        </Panel>
       )}
     />
   );

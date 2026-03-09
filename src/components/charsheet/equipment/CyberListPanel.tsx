@@ -1,3 +1,4 @@
+import type { ComponentChildren } from "preact";
 import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
@@ -199,7 +200,7 @@ function buildLimbItems(
     name: limb.name,
     category: "cyberlimbs",
     description: limb.isCyber
-      ? `SDP ${limb.sdpCurrent}/${limb.sdpMax}`
+      ? `SDP ${limb.sdpCurrent}/${limb.sdpMax} \u00B7 Options ${installedOptions.length}/${LIMB_OPTION_SLOTS}`
       : "Natural limb",
     hc: limb.hc ?? 0,
     installed: true,
@@ -248,6 +249,7 @@ function buildLimbItems(
 }
 
 interface CyberListPanelProps {
+  title: ComponentChildren;
   expanded: boolean;
   onToggle: () => void;
   activeCategory: CyberCategory;
@@ -263,6 +265,7 @@ interface CyberListPanelProps {
 }
 
 export function CyberListPanel({
+  title,
   expanded,
   onToggle,
   activeCategory,
@@ -305,7 +308,7 @@ export function CyberListPanel({
   return (
     <Panel
       id="cyber-list-panel"
-      title="Subsystems"
+      title={title}
       expanded={expanded}
       onToggle={onToggle}
       headerActions={
@@ -321,11 +324,11 @@ export function CyberListPanel({
         />
       }
     >
-      <div class="caliber-badge-bar">
+      <div class="filter-badge-bar">
         {badgeCategories.map((cat) => (
           <button
             key={cat}
-            class={`caliber-badge${activeCategory === cat ? " active" : ""}`}
+            class={`filter-badge${activeCategory === cat ? " active" : ""}`}
             onClick={() => onCategoryChange(cat)}
           >
             {CATEGORY_LABELS[cat]}
@@ -334,22 +337,16 @@ export function CyberListPanel({
       </div>
 
       {isLimbs && (
-        <div class="caliber-badge-bar">
-          {limbs.map((limb) => {
-            const used = limbOptions[limb.slot]?.length ?? 0;
-            return (
-              <button
-                key={limb.slot}
-                class={`caliber-badge${activeSlot === limb.slot ? " active" : ""}`}
-                onClick={() => onSlotChange(limb.slot)}
-              >
-                {limb.label}
-                {limb.isCyber && (
-                  <span class="text-soft"> {used}/{LIMB_OPTION_SLOTS}</span>
-                )}
-              </button>
-            );
-          })}
+        <div class="filter-badge-bar">
+          {limbs.map((limb) => (
+            <button
+              key={limb.slot}
+              class={`filter-badge${activeSlot === limb.slot ? " active" : ""}`}
+              onClick={() => onSlotChange(limb.slot)}
+            >
+              {limb.label}
+            </button>
+          ))}
         </div>
       )}
 

@@ -117,11 +117,11 @@ function CaliberBadgeBar({
   };
   if (calibers.length < 2) return null;
   return (
-    <div class="caliber-badge-bar">
+    <div class="filter-badge-bar">
       {calibers.map((cal) => (
         <button
           key={cal}
-          class={`caliber-badge${activeCaliber === cal ? " active" : ""}`}
+          class={`filter-badge${activeCaliber === cal ? " active" : ""}`}
           onClick={() => handleClick(cal)}
         >
           {cal}

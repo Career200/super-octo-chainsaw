@@ -24,6 +24,14 @@ export default function ArmorSubView() {
   return (
     <TwoPanelView
       renderFirst={(expanded, onToggle) => (
+        <ArmorListPanel
+          expanded={expanded}
+          onToggle={onToggle}
+          selectedId={selectedArmorId}
+          onSelect={(id) => selectArmor(id)}
+        />
+      )}
+      renderSecond={(expanded, onToggle) => (
         <Panel
           id="armor-grid-panel"
           title={
@@ -44,14 +52,6 @@ export default function ArmorSubView() {
         >
           <BodyPartGrid mode="inventory" />
         </Panel>
-      )}
-      renderSecond={(expanded, onToggle) => (
-        <ArmorListPanel
-          expanded={expanded}
-          onToggle={onToggle}
-          selectedId={selectedArmorId}
-          onSelect={(id) => selectArmor(id)}
-        />
       )}
     />
   );
