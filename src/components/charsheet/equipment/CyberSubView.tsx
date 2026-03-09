@@ -61,8 +61,13 @@ export default function CyberSubView() {
     return result;
   }, [installedTemplateIds]);
 
+  // Sort by templateId so duplicate instances group together.
+  // TODO: revisit sort order when container→option parenting is wired up
   const installed = useMemo(
-    () => hydrated.map(hydratedToCyberItem),
+    () =>
+      hydrated
+        .map(hydratedToCyberItem)
+        .sort((a, b) => a.name.localeCompare(b.name)),
     [hydrated],
   );
 
