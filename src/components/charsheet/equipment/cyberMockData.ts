@@ -19,6 +19,7 @@ export interface CyberItem {
   availability?: string;
   cost?: number;
   isBase?: boolean;
+  installedOptions?: string[];
 }
 
 export interface CyberlimbCell {
@@ -216,7 +217,8 @@ export const MOCK_LIMB_OPTION_CATALOG: LimbOption[] = [
   {
     id: "cat-hydraulic",
     name: "Hydraulic Rams",
-    description: "+3 crushing damage. Mutually exclusive with Thickened Myomar.",
+    description:
+      "+3 crushing damage. Mutually exclusive with Thickened Myomar.",
     hc: 3,
     availability: "P",
     cost: 600,

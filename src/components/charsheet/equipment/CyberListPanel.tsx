@@ -33,6 +33,7 @@ function CyberItemCard({
   catalog: boolean;
   onSelect: () => void;
 }) {
+  const opts = item.installedOptions;
   return (
     <ItemCard
       selected={selected}
@@ -50,6 +51,17 @@ function CyberItemCard({
       }
     >
       <p class="text-desc">{item.description}</p>
+      {opts && opts.length > 0 && (
+        <div class="layer-list">
+          {opts.map((name) => (
+            <div class="layer" key={name}>
+              <span class="layer-name">
+                <span class="layer-label">{name}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </ItemCard>
   );
 }
@@ -124,11 +136,21 @@ function CyberItemList({
   const baseItems = items.filter((i) => i.isBase);
   const optionItems = items.filter((i) => !i.isBase);
 
+  // Enrich installed bases with their installed option names
+  const installedOptionNames = optionItems
+    .filter((i) => i.installed)
+    .map((i) => i.name);
+  const enrichedBases = baseItems.map((item) =>
+    item.installed && installedOptionNames.length > 0
+      ? { ...item, installedOptions: installedOptionNames }
+      : item,
+  );
+
   return (
     <>
-      {baseItems.length > 0 && (
+      {enrichedBases.length > 0 && (
         <BaseGroup
-          items={baseItems}
+          items={enrichedBases}
           selectedId={selectedId}
           catalog={catalog}
           onSelect={onSelect}
@@ -178,6 +200,9 @@ function buildLimbItems(
     isBase: true,
     availability: limb.availability,
     cost: limb.cost,
+    installedOptions: limb.isCyber
+      ? installedOptions.map((o) => o.name)
+      : undefined,
   };
 
   const altBase = limb.isCyber
