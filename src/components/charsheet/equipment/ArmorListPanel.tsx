@@ -65,7 +65,6 @@ export const ArmorListPanel = ({
       id="armor-list-panel"
       title={
         <>
-          Armor{" "}
           <span class="armor-legend">
             <span class="armor-type-icon">{"\u2248"}</span>Soft{" "}
             <span class="armor-type-icon">{"\u2B21"}</span>Hard
@@ -102,7 +101,9 @@ export const ArmorListPanel = ({
             </>
           )}
           {sorted.length === 0 && implants.length === 0 ? (
-            <div class="empty-message">No armor yet. Browse the Catalog to add some.</div>
+            <div class="empty-message">
+              No armor yet. Browse the Catalog to add some.
+            </div>
           ) : (
             sorted.length > 0 && (
               <>

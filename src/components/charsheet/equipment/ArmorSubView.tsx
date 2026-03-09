@@ -36,7 +36,7 @@ export default function ArmorSubView() {
           id="armor-grid-panel"
           title={
             <>
-              Body Armor{" "}
+              WORN ARMOR{" "}
               <HelpPopover id="armor-help-eq" content={<ArmorHelpContent />} />
             </>
           }
