@@ -194,6 +194,19 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "Cybernetic eye replacement. Add up to 4 options per eye.",
     { cost: 500, availability: "C", maxSlots: 4 },
   ),
+  // TODO: add with effects/skills cyber integration
+  // Major effect: 180deg. vision, 220deg. peripheral,
+  // +1 to initiative in ambushes
+  // skill bonus: +1 Awareness/Notice
+  "kiroshi-monovision": c(
+    "kiroshi-monovision",
+    "Kiroshi Monovision",
+    "optics",
+    "container",
+    "3d6",
+    "Dual-lens cybereye implant covering both eye slots. 6 option slots.",
+    { cost: 650, availability: "P", maxSlots: 6, instanceCost: 2 },
+  ),
   "color-shift": c(
     "color-shift",
     "Color Shift",

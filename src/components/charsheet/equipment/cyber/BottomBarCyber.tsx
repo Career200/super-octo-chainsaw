@@ -73,6 +73,7 @@ function CyberHeaderActions({
             onClose={() => setPopoverOpen(false)}
             containers={install.containers}
             noContainerHint={install.noContainerHint}
+            blockedHint={install.blockedHint}
             hcRowDefs={install.hcRowDefs}
             onConfirm={(containerId, hcMap) => {
               install.onConfirm(containerId, hcMap);

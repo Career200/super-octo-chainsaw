@@ -140,6 +140,7 @@ export function InstallPopover({
   onClose,
   containers,
   noContainerHint,
+  blockedHint,
   hcRowDefs,
   onConfirm,
   confirmLabel,
@@ -149,6 +150,7 @@ export function InstallPopover({
   onClose: () => void;
   containers?: ContainerChoice[];
   noContainerHint?: string;
+  blockedHint?: string;
   hcRowDefs: { key: string; name: string; notation: string }[];
   onConfirm: (
     containerId: string | null,
@@ -197,7 +199,8 @@ export function InstallPopover({
 
   return (
     <Popover anchorRef={anchorRef} open={open} onClose={onClose}>
-      {containers && (
+      {blockedHint && <p class="text-soft text-sm">{blockedHint}</p>}
+      {!blockedHint && containers && (
         <ContainerPicker
           containers={containers}
           selected={selectedContainer}
@@ -205,8 +208,10 @@ export function InstallPopover({
           noContainerHint={noContainerHint}
         />
       )}
-      {showHcRows && <HcRowInputs rows={hcRows} onChange={updateHc} />}
-      {!showHcRows && hasContainer && containers && (
+      {!blockedHint && showHcRows && (
+        <HcRowInputs rows={hcRows} onChange={updateHc} />
+      )}
+      {!blockedHint && !showHcRows && hasContainer && containers && (
         <p class="text-soft text-sm">
           No HC cost until the container is installed.
         </p>
@@ -217,7 +222,7 @@ export function InstallPopover({
         </button>
         <button
           class="popover-btn popover-btn-confirm"
-          disabled={!hasContainer || noContainers}
+          disabled={!!blockedHint || !hasContainer || noContainers}
           onClick={() => onConfirm(selectedContainer, buildHcMap())}
         >
           {confirmLabel ?? "Install"}
