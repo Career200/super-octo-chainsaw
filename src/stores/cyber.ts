@@ -41,7 +41,7 @@ export const $installedCyber = persistentAtom<InstalledItem[]>(
 
 export function installCyber(
   templateId: string,
-  opts?: { slot?: string; parentId?: string },
+  opts?: { slot?: string; parentId?: string; hc?: number },
 ): InstalledItem | null {
   const template = CYBER_CATALOG[templateId];
   if (!template) return null;
@@ -49,7 +49,7 @@ export function installCyber(
   const item: InstalledItem = {
     templateId,
     instanceId: crypto.randomUUID(),
-    hc: rollHcDice(template.hcDice),
+    hc: opts?.hc ?? rollHcDice(template.hc),
     parentId: opts?.parentId,
     slot: opts?.slot,
   };
@@ -71,9 +71,7 @@ export function setItemHc(instanceId: string, hc: number): void {
   const items = $installedCyber.get();
   $installedCyber.set(
     items.map((i) =>
-      i.instanceId === instanceId
-        ? { ...i, hc: Math.max(0, Math.round(hc)) }
-        : i,
+      i.instanceId === instanceId ? { ...i, hc: Math.max(0, hc) } : i,
     ),
   );
 }

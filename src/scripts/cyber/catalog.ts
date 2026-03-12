@@ -45,9 +45,13 @@ export interface CyberTemplate {
   containerCategory?: string;
   slotCost?: number;
   maxSlots?: number;
-  hcDice: string;
+  hc: string;
   cost?: number;
   availability?: Availability;
+}
+
+export function isDiceNotation(notation: string): boolean {
+  return /\d+d\d+/.test(notation);
 }
 
 /** Parse and roll dice notation: "2", "0.5", "0", "2d6", "1d6", "1d6/2". */
@@ -67,9 +71,8 @@ export function rollHcDice(notation: string): number {
     return Math.max(1, Math.round(total / divisor));
   }
 
-  // flat value: "2", "0.5", "0"
   const flat = parseFloat(trimmed);
-  if (!isNaN(flat)) return Math.max(0, Math.round(flat));
+  if (!isNaN(flat)) return Math.max(0, flat);
 
   return 0;
 }
@@ -79,7 +82,7 @@ function c(
   name: string,
   category: CyberCategory,
   role: CyberTemplate["role"],
-  hcDice: string,
+  hc: string,
   description: string,
   opts?: {
     cost?: number;
@@ -95,7 +98,7 @@ function c(
     category,
     description,
     role,
-    hcDice,
+    hc,
     cost: opts?.cost,
     availability: opts?.availability,
     containerCategory: opts?.containerCategory,

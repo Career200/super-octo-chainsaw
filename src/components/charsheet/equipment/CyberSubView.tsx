@@ -46,14 +46,8 @@ export default function CyberSubView() {
     }
     for (const t of Object.values(CYBER_CATALOG)) {
       const item: CyberItem = {
-        id: t.id,
-        name: t.name,
-        category: t.category,
-        description: t.description,
-        hc: t.hcDice,
+        ...t,
         installed: installedTemplateIds.has(t.id),
-        availability: t.availability,
-        cost: t.cost,
         isBase: t.role === "container",
       };
       result[t.category].push(item);
