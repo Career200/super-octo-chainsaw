@@ -82,7 +82,6 @@ function BaseGroup({
   onSelect: (id: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(true);
-  // Installed item first, then the rest
   const sorted = [...items].sort((a, b) =>
     a.installed === b.installed ? 0 : a.installed ? -1 : 1,
   );
@@ -102,7 +101,7 @@ function BaseGroup({
         <CyberItemCard
           item={first}
           selected={selectedId === first.id}
-          owned={first.installed}
+          owned={first.owned}
           equipped={first.installed}
           catalog={catalog}
           onSelect={() => onSelect(first.id)}
@@ -114,7 +113,7 @@ function BaseGroup({
             key={item.id}
             item={item}
             selected={selectedId === item.id}
-            owned={item.installed}
+            owned={item.owned}
             equipped={item.installed}
             catalog={catalog}
             onSelect={() => onSelect(item.id)}
@@ -165,7 +164,7 @@ function CyberItemList({
           key={item.id}
           item={item}
           selected={selectedId === item.id}
-          owned={item.installed}
+          owned={item.owned}
           equipped={item.installed}
           catalog={catalog}
           onSelect={() => onSelect(item.id)}
@@ -192,7 +191,8 @@ function buildLimbItems(
       ? `SDP ${limb.sdpCurrent}/${limb.sdpMax}`
       : "Natural limb",
     hc: limb.hc ?? 0,
-    installed: true,
+    owned: limb.isCyber,
+    installed: limb.isCyber,
     isBase: true,
     availability: limb.availability,
     cost: limb.cost,
@@ -216,7 +216,7 @@ interface CyberListPanelProps {
   limbs: CyberlimbCell[];
   limbOptions: Record<CyberlimbCell["slot"], LimbOption[]>;
   catalog: Record<CyberCategory, CyberItem[]>;
-  installed: CyberItem[];
+  owned: CyberItem[];
   selectedId: string | null;
   onSelect: (id: string) => void;
 }
@@ -232,7 +232,7 @@ export function CyberListPanel({
   limbs,
   limbOptions,
   catalog,
-  installed,
+  owned,
   selectedId,
   onSelect,
 }: CyberListPanelProps) {
@@ -244,7 +244,7 @@ export function CyberListPanel({
     (cat) =>
       cat === "cyberlimbs" ||
       (catalog[cat]?.length ?? 0) > 0 ||
-      installed.some((i) => i.category === cat),
+      owned.some((i) => i.category === cat),
   );
 
   const isLimbs = activeCategory === "cyberlimbs";
@@ -255,12 +255,12 @@ export function CyberListPanel({
       ? buildLimbItems(activeLimb, activeSlot, limbOptions)
       : isCatalog
         ? (catalog[activeCategory] ?? [])
-        : installed.filter((i) => i.category === activeCategory);
+        : owned.filter((i) => i.category === activeCategory);
 
   const ownedCount = isLimbs
     ? limbs.filter((l) => l.isCyber).length +
       Object.values(limbOptions).flat().length
-    : installed.filter((i) => i.category === activeCategory).length;
+    : owned.filter((i) => i.category === activeCategory).length;
 
   return (
     <Panel
@@ -310,7 +310,7 @@ export function CyberListPanel({
       <div class="cyber-item-list">
         {currentItems.length === 0 ? (
           <div class="empty-message">
-            {isCatalog ? "No items in catalog." : "Nothing installed."}
+            {isCatalog ? "No items in catalog." : "Nothing owned."}
           </div>
         ) : (
           <CyberItemList

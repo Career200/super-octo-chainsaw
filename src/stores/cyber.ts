@@ -12,64 +12,109 @@ import { $cyberEffects, DEFAULT_EFFECTS } from "./cyber-effects";
 import { decodeJson } from "./decode";
 import { $EMP } from "./stats";
 
-// --- Installed item shape ---
+// --- Owned item shape ---
 
-export interface InstalledItem {
+export interface OwnedItem {
   templateId: string;
   instanceId: string;
   parentId?: string;
   slot?: string;
   hc: number;
+  installed: boolean;
   sdpCurrent?: number;
 }
 
-export type HydratedCyberItem = InstalledItem & { template: CyberTemplate };
+export type HydratedCyberItem = OwnedItem & { template: CyberTemplate };
 
 // --- Persistent atom ---
 
-export const $installedCyber = persistentAtom<InstalledItem[]>(
-  "installed-cyber",
+export const $ownedCyber = persistentAtom<OwnedItem[]>(
+  "owned-cyber",
   [],
   {
     encode: JSON.stringify,
-    decode: decodeJson<InstalledItem[]>([]),
+    decode: decodeJson<OwnedItem[]>([]),
   },
 );
 
 // --- Actions ---
 
-export function installCyber(
-  templateId: string,
-  opts?: { slot?: string; parentId?: string; hc?: number },
-): InstalledItem | null {
+/** Own without installing. No HC cost, no surgery. */
+export function takeCyber(templateId: string): OwnedItem | null {
   const template = CYBER_CATALOG[templateId];
   if (!template) return null;
 
-  const item: InstalledItem = {
+  const item: OwnedItem = {
+    templateId,
+    instanceId: crypto.randomUUID(),
+    hc: 0,
+    installed: false,
+  };
+
+  $ownedCyber.set([...$ownedCyber.get(), item]);
+  return item;
+}
+
+/** Own + install in one step (from catalog). Rolls HC. */
+export function installCyber(
+  templateId: string,
+  opts?: { slot?: string; parentId?: string; hc?: number },
+): OwnedItem | null {
+  const template = CYBER_CATALOG[templateId];
+  if (!template) return null;
+
+  const item: OwnedItem = {
     templateId,
     instanceId: crypto.randomUUID(),
     hc: opts?.hc ?? rollHcDice(template.hc),
+    installed: true,
     parentId: opts?.parentId,
     slot: opts?.slot,
   };
 
-  $installedCyber.set([...$installedCyber.get(), item]);
+  $ownedCyber.set([...$ownedCyber.get(), item]);
   return item;
 }
 
+/** Install an already-owned item. Uses provided HC or rolls from template. */
+export function installOwned(instanceId: string, hc?: number): void {
+  const items = $ownedCyber.get();
+  const item = items.find((i) => i.instanceId === instanceId);
+  if (!item || item.installed) return;
+
+  const template = CYBER_CATALOG[item.templateId];
+  const finalHc = hc ?? (template ? rollHcDice(template.hc) : 0);
+
+  $ownedCyber.set(
+    items.map((i) =>
+      i.instanceId === instanceId ? { ...i, installed: true, hc: finalHc } : i,
+    ),
+  );
+}
+
+/** Uninstall — item stays owned, HC zeroed. */
 export function uninstallCyber(instanceId: string): void {
-  const items = $installedCyber.get();
-  $installedCyber.set(
-    items.filter(
+  $ownedCyber.set(
+    $ownedCyber.get().map((i) =>
+      i.instanceId === instanceId || i.parentId === instanceId
+        ? { ...i, installed: false, hc: 0 }
+        : i,
+    ),
+  );
+}
+
+/** Remove item + children from store entirely. */
+export function discardCyber(instanceId: string): void {
+  $ownedCyber.set(
+    $ownedCyber.get().filter(
       (i) => i.instanceId !== instanceId && i.parentId !== instanceId,
     ),
   );
 }
 
 export function setItemHc(instanceId: string, hc: number): void {
-  const items = $installedCyber.get();
-  $installedCyber.set(
-    items.map((i) =>
+  $ownedCyber.set(
+    $ownedCyber.get().map((i) =>
       i.instanceId === instanceId ? { ...i, hc: Math.max(0, hc) } : i,
     ),
   );
@@ -77,20 +122,23 @@ export function setItemHc(instanceId: string, hc: number): void {
 
 // --- Derive effects from installed items ---
 
-function deriveEffects(items: readonly InstalledItem[]): void {
-  const humanityLoss = items.reduce((sum, i) => sum + i.hc, 0);
+function deriveEffects(items: readonly OwnedItem[]): void {
+  const humanityLoss = items.reduce(
+    (sum, i) => (i.installed ? sum + i.hc : sum),
+    0,
+  );
   $cyberEffects.set({ ...DEFAULT_EFFECTS, humanityLoss });
 }
 
 // Derive on load (in case $cyberEffects localStorage is stale/cleared)
-deriveEffects($installedCyber.get());
+deriveEffects($ownedCyber.get());
 // Re-derive whenever installed list changes
-$installedCyber.listen((items) => deriveEffects(items));
+$ownedCyber.listen((items) => deriveEffects(items));
 
 // --- Computed stores ---
 
 export const $hydratedCyber = computed(
-  [$installedCyber],
+  [$ownedCyber],
   (items): HydratedCyberItem[] =>
     items.flatMap((item) => {
       const template = CYBER_CATALOG[item.templateId];
@@ -99,14 +147,15 @@ export const $hydratedCyber = computed(
     }),
 );
 
-export const $installedByCategory = computed([$hydratedCyber], (hydrated) =>
-  CATEGORY_ORDER.map((cat) => ({
+export const $installedByCategory = computed([$hydratedCyber], (hydrated) => {
+  const installed = hydrated.filter((i) => i.installed);
+  return CATEGORY_ORDER.map((cat) => ({
     category: cat,
-    items: hydrated.filter((i) => i.template.category === cat),
+    items: installed.filter((i) => i.template.category === cat),
   })).filter(
     ({ category, items }) => category === "cyberlimbs" || items.length > 0,
-  ),
-);
+  );
+});
 
 export const $hcData = computed([$cyberEffects, $EMP], (effects, emp) => ({
   humanity: Math.max(0, emp.inherent * 10 - effects.humanityLoss),

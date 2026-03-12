@@ -8,8 +8,11 @@ import {
 } from "@scripts/cyber/catalog";
 import {
   $hydratedCyber,
+  discardCyber,
   installCyber,
+  installOwned,
   setItemHc,
+  takeCyber,
   uninstallCyber,
 } from "@stores/cyber";
 import { $selectedCyber, selectCyber } from "@stores/ui";
@@ -24,18 +27,84 @@ interface Props {
   onToggle: () => void;
 }
 
-export default function BottomBarCyber({ expanded, onToggle }: Props) {
-  const selectedId = useStore($selectedCyber);
-  const hydrated = useStore($hydratedCyber);
+// --- HC roll popover (shared between catalog Install and owned Install) ---
 
-  // Install popover state
-  const takeBtnRef = useRef<HTMLButtonElement>(null);
-  const [installOpen, setInstallOpen] = useState(false);
+function InstallPopover({
+  anchorRef,
+  open,
+  hcNotation,
+  onConfirm,
+  onClose,
+}: {
+  anchorRef: preact.RefObject<HTMLButtonElement>;
+  open: boolean;
+  hcNotation: string;
+  onConfirm: (hc: number) => void;
+  onClose: () => void;
+}) {
+  const needsRoll = isDiceNotation(hcNotation);
   const [pendingHc, setPendingHc] = useState(0);
   const [rolledValue, setRolledValue] = useState(0);
   const [edited, setEdited] = useState(false);
 
-  // Discard popover state
+  // Roll fresh whenever the popover opens
+  useEffect(() => {
+    if (!open) return;
+    const hc = needsRoll ? rollHcDice(hcNotation) : parseFloat(hcNotation);
+    setRolledValue(hc);
+    setPendingHc(hc);
+    setEdited(false);
+  }, [open, hcNotation, needsRoll]);
+
+  return (
+    <Popover anchorRef={anchorRef} open={open} onClose={onClose}>
+      <p class="popover-message">
+        Humanity Cost: <strong>{hcNotation}</strong>
+      </p>
+      <div class="cyber-hc-edit">
+        <label class="text-soft">HC</label>
+        <input
+          type="number"
+          step="any"
+          value={pendingHc}
+          onInput={(e) => {
+            const val = parseFloat((e.target as HTMLInputElement).value);
+            if (!isNaN(val)) {
+              setPendingHc(val);
+              setEdited(true);
+            }
+          }}
+          min={0}
+        />
+      </div>
+      {needsRoll && !edited && (
+        <p class="text-soft text-sm">
+          We rolled {rolledValue} for this implant
+        </p>
+      )}
+      <div class="popover-actions">
+        <button class="popover-btn popover-btn-cancel" onClick={onClose}>
+          Cancel
+        </button>
+        <button
+          class="popover-btn popover-btn-confirm"
+          onClick={() => onConfirm(pendingHc)}
+        >
+          Install
+        </button>
+      </div>
+    </Popover>
+  );
+}
+
+// --- Main component ---
+
+export default function BottomBarCyber({ expanded, onToggle }: Props) {
+  const selectedId = useStore($selectedCyber);
+  const hydrated = useStore($hydratedCyber);
+
+  const installBtnRef = useRef<HTMLButtonElement>(null);
+  const [installOpen, setInstallOpen] = useState(false);
   const discardBtnRef = useRef<HTMLButtonElement>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -45,93 +114,80 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
     setConfirmOpen(false);
   }, [selectedId]);
 
-  // Resolve: installed instance (by instanceId) or catalog template (by templateId)
-  const installedItem = selectedId
+  // Resolve selection: owned instance or catalog template
+  const ownedItem = selectedId
     ? hydrated.find((i) => i.instanceId === selectedId)
     : null;
   const catalogTemplate =
-    !installedItem && selectedId ? CYBER_CATALOG[selectedId] : null;
+    !ownedItem && selectedId ? CYBER_CATALOG[selectedId] : null;
 
-  const name = installedItem?.template.name ?? catalogTemplate?.name ?? "";
-  const hasContent = !!(installedItem || catalogTemplate);
+  const name = ownedItem?.template.name ?? catalogTemplate?.name ?? "";
+  const hasContent = !!(ownedItem || catalogTemplate);
 
   // --- Header actions ---
   let headerActions = null;
 
   if (catalogTemplate) {
-    const needsRoll = isDiceNotation(catalogTemplate.hc);
-    const handleTakeClick = (e: MouseEvent) => {
+    // Catalog item: [Take] [Install]
+    const handleTake = (e: MouseEvent) => {
       e.stopPropagation();
-      let hc;
-      if (needsRoll) {
-        hc = rollHcDice(catalogTemplate.hc);
-      } else {
-        hc = parseFloat(catalogTemplate.hc);
-      }
-      setRolledValue(hc);
-      setPendingHc(hc);
-      setEdited(false);
-      setInstallOpen(true);
+      const result = takeCyber(catalogTemplate.id);
+      if (result) selectCyber(result.instanceId);
     };
-    const handleConfirmInstall = () => {
-      const result = installCyber(catalogTemplate.id, { hc: pendingHc });
+    const handleInstall = (hc: number) => {
+      const result = installCyber(catalogTemplate.id, { hc });
       if (result) selectCyber(result.instanceId);
       setInstallOpen(false);
     };
     headerActions = (
       <>
-        <button ref={takeBtnRef} class="bar-action" onClick={handleTakeClick}>
+        <button class="bar-action" onClick={handleTake}>
           Take
         </button>
-        <Popover
-          anchorRef={takeBtnRef}
-          open={installOpen}
-          onClose={() => setInstallOpen(false)}
+        <button
+          ref={installBtnRef}
+          class="bar-action"
+          onClick={(e) => {
+            e.stopPropagation();
+            setInstallOpen(true);
+          }}
         >
-          <p class="popover-message">
-            Humanity Cost: <strong>{catalogTemplate.hc}</strong>
-          </p>
-          <div class="cyber-hc-edit">
-            <label class="text-soft">HC</label>
-            <input
-              type="number"
-              step="any"
-              value={pendingHc}
-              onInput={(e) => {
-                const val = parseFloat((e.target as HTMLInputElement).value);
-                if (!isNaN(val)) {
-                  setPendingHc(val);
-                  setEdited(true);
-                }
-              }}
-              min={0}
-            />
-          </div>
-          {needsRoll && !edited && (
-            <p class="text-soft text-sm">
-              We rolled {rolledValue} for this implant
-            </p>
-          )}
-          <div class="popover-actions">
-            <button
-              class="popover-btn popover-btn-cancel"
-              onClick={() => setInstallOpen(false)}
-            >
-              Cancel
-            </button>
-            <button
-              class="popover-btn popover-btn-confirm"
-              onClick={handleConfirmInstall}
-            >
-              Install
-            </button>
-          </div>
-        </Popover>
+          Install
+        </button>
+        <InstallPopover
+          anchorRef={installBtnRef}
+          open={installOpen}
+          hcNotation={catalogTemplate.hc}
+          onConfirm={handleInstall}
+          onClose={() => setInstallOpen(false)}
+        />
       </>
     );
-  } else if (installedItem) {
+  } else if (ownedItem && !ownedItem.installed) {
+    // Owned, not installed: [Install] [Discard]
+    const handleInstall = (hc: number) => {
+      installOwned(ownedItem.instanceId, hc);
+      setInstallOpen(false);
+    };
     headerActions = (
       <>
+        <button
+          ref={installBtnRef}
+          class="bar-action"
+          onClick={(e) => {
+            e.stopPropagation();
+            setInstallOpen(true);
+          }}
+        >
+          Install
+        </button>
+        <InstallPopover
+          anchorRef={installBtnRef}
+          open={installOpen}
+          hcNotation={ownedItem.template.hc}
+          onConfirm={handleInstall}
+          onClose={() => setInstallOpen(false)}
+        />
         <button
           ref={discardBtnRef}
           class="bar-action bar-remove"
@@ -145,12 +201,51 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
         <ConfirmPopover
           anchorRef={discardBtnRef}
           open={confirmOpen}
-          message={`Discard ${installedItem.template.name}?`}
+          message={`Discard ${ownedItem.template.name}?`}
           confirmText="Discard"
           cancelText="Keep"
           type="danger"
           onConfirm={() => {
-            uninstallCyber(installedItem.instanceId);
+            discardCyber(ownedItem.instanceId);
+            selectCyber(null);
+            setConfirmOpen(false);
+          }}
+          onCancel={() => setConfirmOpen(false)}
+        />
+      </>
+    );
+  } else if (ownedItem && ownedItem.installed) {
+    // Installed: [Uninstall] [Discard]
+    headerActions = (
+      <>
+        <button
+          class="bar-action"
+          onClick={(e) => {
+            e.stopPropagation();
+            uninstallCyber(ownedItem.instanceId);
+          }}
+        >
+          Uninstall
+        </button>
+        <button
+          ref={discardBtnRef}
+          class="bar-action bar-remove"
+          onClick={(e) => {
+            e.stopPropagation();
+            setConfirmOpen(true);
+          }}
+        >
+          Discard
+        </button>
+        <ConfirmPopover
+          anchorRef={discardBtnRef}
+          open={confirmOpen}
+          message={`Discard ${ownedItem.template.name}?`}
+          confirmText="Discard"
+          cancelText="Keep"
+          type="danger"
+          onConfirm={() => {
+            discardCyber(ownedItem.instanceId);
             selectCyber(null);
             setConfirmOpen(false);
           }}
@@ -163,11 +258,7 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
   // --- Body content ---
   let bodyContent = null;
 
-  if (installedItem) {
-    const handleHcChange = (e: Event) => {
-      const val = parseFloat((e.target as HTMLInputElement).value);
-      if (!isNaN(val)) setItemHc(installedItem.instanceId, val);
-    };
+  if (ownedItem?.installed) {
     bodyContent = (
       <>
         <div class="cyber-hc-edit">
@@ -175,13 +266,29 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
           <input
             type="number"
             step="any"
-            value={installedItem.hc}
-            onChange={handleHcChange}
+            value={ownedItem.hc}
+            onChange={(e) => {
+              const val = parseFloat((e.target as HTMLInputElement).value);
+              if (!isNaN(val)) setItemHc(ownedItem.instanceId, val);
+            }}
             min={0}
           />
-          <span class="text-soft">({installedItem.template.hc})</span>
+          <span class="text-soft">({ownedItem.template.hc})</span>
         </div>
-        <p class="text-desc">{installedItem.template.description}</p>
+        <p class="text-desc">{ownedItem.template.description}</p>
+      </>
+    );
+  } else if (ownedItem) {
+    bodyContent = (
+      <>
+        <div class="cyber-detail-meta">
+          <span class="cyber-item-hc">HC {ownedItem.template.hc}</span>
+          <ItemMeta
+            availability={ownedItem.template.availability}
+            cost={ownedItem.template.cost}
+          />
+        </div>
+        <p class="text-desc">{ownedItem.template.description}</p>
       </>
     );
   } else if (catalogTemplate) {

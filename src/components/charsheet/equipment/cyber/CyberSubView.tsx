@@ -33,9 +33,13 @@ export default function CyberSubView() {
     useState<CyberCategory>("fashionware");
   const [activeSlot, setActiveSlot] = useState<CyberlimbCell["slot"]>("ra");
 
-  // Build catalog view: all templates grouped by category, marking installed ones
-  const installedTemplateIds = useMemo(
+  // Build catalog view: mark which templates are owned/installed
+  const ownedTemplateIds = useMemo(
     () => new Set(hydrated.map((i) => i.templateId)),
+    [hydrated],
+  );
+  const installedTemplateIds = useMemo(
+    () => new Set(hydrated.filter((i) => i.installed).map((i) => i.templateId)),
     [hydrated],
   );
 
@@ -47,17 +51,17 @@ export default function CyberSubView() {
     for (const t of Object.values(CYBER_CATALOG)) {
       const item: CyberItem = {
         ...t,
+        owned: ownedTemplateIds.has(t.id),
         installed: installedTemplateIds.has(t.id),
         isBase: t.role === "container",
       };
       result[t.category].push(item);
     }
     return result;
-  }, [installedTemplateIds]);
+  }, [ownedTemplateIds, installedTemplateIds]);
 
-  // Sort by templateId so duplicate instances group together.
-  // TODO: revisit sort order when container→option parenting is wired up
-  const installed = useMemo(
+  // All owned items for the "Owned" tab
+  const owned = useMemo(
     () =>
       hydrated
         .map(hydratedToCyberItem)
@@ -108,7 +112,7 @@ export default function CyberSubView() {
           limbs={DEFAULT_LIMBS}
           limbOptions={EMPTY_LIMB_OPTIONS}
           catalog={catalog}
-          installed={installed}
+          owned={owned}
           selectedId={selectedId}
           onSelect={(id) => selectCyber(selectedId === id ? null : id)}
         />

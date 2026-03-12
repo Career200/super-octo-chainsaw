@@ -7,6 +7,7 @@ export interface CyberItem {
   category: CyberCategory;
   description: string;
   hc: number | string;
+  owned: boolean;
   installed: boolean;
   availability?: string;
   cost?: number;
@@ -21,7 +22,8 @@ export function hydratedToCyberItem(h: HydratedCyberItem): CyberItem {
     category: h.template.category,
     description: h.template.description,
     hc: h.hc,
-    installed: true,
+    owned: true,
+    installed: h.installed,
     availability: h.template.availability,
     cost: h.template.cost,
     isBase: h.template.role === "container",

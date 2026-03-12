@@ -70,14 +70,14 @@ Keys in use:
 - `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
 - `offense-tab` (default: `"ranged"`) — Ranged/Melee in CombatView offense panel
 
-### `$installedCyber` (cyber.ts)
+### `$ownedCyber` (cyber.ts)
 ```
-InstalledItem[] (each: { templateId, instanceId, parentId?, slot?, hc, sdpCurrent? })
+OwnedItem[] (each: { templateId, instanceId, parentId?, slot?, hc, installed, sdpCurrent? })
 ```
-Installed cyberware instances. Template data comes from `CYBER_CATALOG` at read time (sparse persistence — only instance overrides stored).
+All owned cyberware instances (both installed and not). `installed: true` means active (HC counts, shows on grid). Template data comes from `CYBER_CATALOG` at read time (sparse persistence).
 
 Actions: `installCyber(templateId, opts?)`, `uninstallCyber(instanceId)`, `setItemHc(instanceId, hc)`
-Listener: re-derives `$cyberEffects` on every change (sums HC → humanityLoss).
+Listener: re-derives `$cyberEffects` on every change (sums HC of `installed: true` items → humanityLoss).
 
 ### `$cyberEffects` (cyber-effects.ts)
 ```
@@ -414,16 +414,16 @@ Depends on: `$customArmorTemplates`
 
 ### `$hydratedCyber` (cyber.ts)
 ```
-HydratedCyberItem[] (each: InstalledItem & { template: CyberTemplate })
+HydratedCyberItem[] (each: OwnedItem & { template: CyberTemplate })
 ```
-Installed items joined with their catalog templates. Filters out items with missing templates.
-Depends on: `$installedCyber`
+All owned items joined with their catalog templates. Filters out items with missing templates.
+Depends on: `$ownedCyber`
 
 ### `$installedByCategory` (cyber.ts)
 ```
 { category: CyberCategory, items: HydratedCyberItem[] }[]
 ```
-Hydrated items grouped by category. Filters out empty categories (except cyberlimbs, always shown).
+Installed items (`installed: true`) grouped by category. Filters out empty categories (except cyberlimbs, always shown).
 Depends on: `$hydratedCyber`
 
 ### `$hcData` (cyber.ts)
@@ -470,8 +470,8 @@ $ownedAmmo ─────────┬──▸ $allOwnedAmmo ──▸ $ammo
 $customAmmoItems────┼──▸ $customAmmoList
                     └──▸ resolveAmmoTemplate() (used by addAmmo)
 
-$installedCyber ──┬──▸ listener ──▸ $cyberEffects ──▸ $hcData (+ $EMP)
-                  └──▸ $hydratedCyber ──▸ $installedByCategory
+$ownedCyber ──┬──▸ listener ──▸ $cyberEffects (installed only) ──▸ $hcData (+ $EMP)
+              └──▸ $hydratedCyber (all owned) ──▸ $installedByCategory (installed only)
 
 $selectedCyber ──▸ CyberSubView, BottomBarCyber
 
