@@ -119,6 +119,17 @@ footer {
   cursor: pointer;
 }
 
+.homerules-content select {
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0 0.2rem;
+  cursor: pointer;
+}
+
 .homerules-content .homerules-note {
   font-size: 0.7rem;
   color: var(--fg-soft);

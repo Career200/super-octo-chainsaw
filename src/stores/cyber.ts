@@ -10,6 +10,7 @@ import {
 
 import { $cyberEffects, DEFAULT_EFFECTS } from "./cyber-effects";
 import { decodeJson } from "./decode";
+import { $homerules } from "./homerules";
 import { $EMP } from "./stats";
 
 // --- Owned item shape ---
@@ -36,6 +37,30 @@ export const $ownedCyber = persistentAtom<OwnedItem[]>(
     decode: decodeJson<OwnedItem[]>([]),
   },
 );
+
+// --- Houserule helpers ---
+
+/** If the template is a cyber eye and the preinstalled rule is on, push a TSM item. */
+function appendPreinstalled(
+  template: CyberTemplate,
+  parentInstanceId: string,
+  out: OwnedItem[],
+): void {
+  if (template.id !== "basic-eye") return;
+  const rules = $homerules.get();
+  if (!rules.cyberEyePreinstalled) return;
+
+  const tsmTemplate = CYBER_CATALOG[rules.cyberEyePreinstalledOption];
+  if (!tsmTemplate) return;
+
+  out.push({
+    templateId: tsmTemplate.id,
+    instanceId: crypto.randomUUID(),
+    hc: rules.tsmFreeHc ? 0 : rollHcDice(tsmTemplate.hc),
+    installed: true,
+    parentId: parentInstanceId,
+  });
+}
 
 // --- Actions ---
 
@@ -72,7 +97,10 @@ export function installCyber(
     slot: opts?.slot,
   };
 
-  $ownedCyber.set([...$ownedCyber.get(), item]);
+  const newItems: OwnedItem[] = [item];
+  appendPreinstalled(template, item.instanceId, newItems);
+
+  $ownedCyber.set([...$ownedCyber.get(), ...newItems]);
   return item;
 }
 
@@ -85,11 +113,13 @@ export function installOwned(instanceId: string, hc?: number): void {
   const template = CYBER_CATALOG[item.templateId];
   const finalHc = hc ?? (template ? rollHcDice(template.hc) : 0);
 
-  $ownedCyber.set(
-    items.map((i) =>
-      i.instanceId === instanceId ? { ...i, installed: true, hc: finalHc } : i,
-    ),
+  const updated = items.map((i) =>
+    i.instanceId === instanceId ? { ...i, installed: true, hc: finalHc } : i,
   );
+
+  if (template) appendPreinstalled(template, instanceId, updated);
+
+  $ownedCyber.set(updated);
 }
 
 /** Uninstall — item stays owned, HC zeroed. */

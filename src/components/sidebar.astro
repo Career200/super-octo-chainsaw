@@ -68,7 +68,7 @@ const { id, buttonText, buttonClass, innerClass } = Astro.props;
 >
 
 <dialog id={id} onclick={`if(event.target===this)this.close()`}>
-  <div class={innerClass} style="min-height:100%">
+  <div class={innerClass} style="height:100%;overflow-y:auto">
     <slot />
   </div>
 </dialog>

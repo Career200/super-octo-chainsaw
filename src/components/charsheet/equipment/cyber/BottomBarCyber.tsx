@@ -15,6 +15,7 @@ import {
   takeCyber,
   uninstallCyber,
 } from "@stores/cyber";
+import { $homerules } from "@stores/homerules";
 import { $selectedCyber, selectCyber } from "@stores/ui";
 
 import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
@@ -124,6 +125,16 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
   const name = ownedItem?.template.name ?? catalogTemplate?.name ?? "";
   const hasContent = !!(ownedItem || catalogTemplate);
 
+  // Free HC houserule: TSM/TSM+ default to 0
+  const rules = useStore($homerules);
+  const TSM_IDS = ["tsm", "tsm-plus"];
+  const templateId = ownedItem?.templateId ?? catalogTemplate?.id;
+  const rawHc = ownedItem?.template.hc ?? catalogTemplate?.hc ?? "0";
+  const effectiveHc =
+    rules.tsmFreeHc && templateId && TSM_IDS.includes(templateId)
+      ? "0"
+      : rawHc;
+
   // --- Header actions ---
   let headerActions = null;
 
@@ -157,7 +168,7 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
         <InstallPopover
           anchorRef={installBtnRef}
           open={installOpen}
-          hcNotation={catalogTemplate.hc}
+          hcNotation={effectiveHc}
           onConfirm={handleInstall}
           onClose={() => setInstallOpen(false)}
         />
@@ -184,7 +195,7 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
         <InstallPopover
           anchorRef={installBtnRef}
           open={installOpen}
-          hcNotation={ownedItem.template.hc}
+          hcNotation={effectiveHc}
           onConfirm={handleInstall}
           onClose={() => setInstallOpen(false)}
         />

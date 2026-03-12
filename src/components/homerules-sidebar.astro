@@ -2,7 +2,13 @@
 import Sidebar from './sidebar.astro';
 
 const KEY = "homerules";
-const DEFAULTS = { locationalDegradation: true, scaledDegradation: true };
+const DEFAULTS = {
+  locationalDegradation: true,
+  scaledDegradation: true,
+  cyberEyePreinstalled: true,
+  cyberEyePreinstalledOption: "tsm-plus",
+  tsmFreeHc: true,
+};
 
 const rules = [
   { id: "hr-locational", field: "locationalDegradation", label: "Locational degradation", desc: "leg hit only degrades leg SP" },
@@ -24,6 +30,22 @@ const rules = [
       </>
     ))}
     <p class="homerules-note">Turn both off for RAW armor degradation.</p>
+  </fieldset>
+  <hr/>
+  <fieldset>
+    <legend>Cybernetics</legend>
+    <label>
+      <input type="checkbox" id="hr-eye-preinstalled" data-field="cyberEyePreinstalled" />
+      CyberEyes preinstalled with:
+      <select id="hr-eye-option" data-field="cyberEyePreinstalledOption">
+        <option value="tsm">TSM</option>
+        <option value="tsm-plus">TSM+</option>
+      </select>
+    </label>
+    <label>
+      <input type="checkbox" id="hr-tsm-free-hc" data-field="tsmFreeHc" />
+      TSM/TSM+ Humanity Cost 0
+    </label>
   </fieldset>
 
   <fieldset class="clear-data">
@@ -69,6 +91,16 @@ const rules = [
     el.addEventListener("change", () => {
       const s = load();
       s[field] = el.checked;
+      persist(s);
+    });
+  });
+
+  document.querySelectorAll("#homerules select[data-field]").forEach((el) => {
+    const field = el.dataset.field;
+    el.value = state[field] ?? DEFAULTS[field];
+    el.addEventListener("change", () => {
+      const s = load();
+      s[field] = el.value;
       persist(s);
     });
   });
