@@ -45,10 +45,17 @@ export interface CyberTemplate {
   containerCategory?: string;
   slotCost?: number;
   maxSlots?: number;
+  instanceCost?: number;
   hc: string;
   cost?: number;
   availability?: Availability;
 }
+
+/** Per-category limit on how many container instance-slots can be owned. */
+export const CATEGORY_MAX_INSTANCES: Partial<Record<CyberCategory, number>> = {
+  optics: 2,
+  audio: 1,
+};
 
 export function isDiceNotation(notation: string): boolean {
   return /\d+d\d+/.test(notation);
@@ -90,6 +97,7 @@ function c(
     containerCategory?: string;
     maxSlots?: number;
     slotCost?: number;
+    instanceCost?: number;
   },
 ): CyberTemplate {
   return {
@@ -104,6 +112,7 @@ function c(
     containerCategory: opts?.containerCategory,
     maxSlots: opts?.maxSlots,
     slotCost: opts?.slotCost,
+    instanceCost: opts?.instanceCost,
   };
 }
 

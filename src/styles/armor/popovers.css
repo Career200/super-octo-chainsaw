@@ -35,16 +35,16 @@
   margin-bottom: var(--space-12);
 }
 
-.repair-selectable {
+.badge-selectable {
   cursor: pointer;
 }
 
-.repair-selectable:hover {
+.badge-selectable:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.repair-selectable.selected {
+.badge-selectable.selected {
   background: var(--accent);
   border-color: var(--accent);
   color: #000;

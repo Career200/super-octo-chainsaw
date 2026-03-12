@@ -20,7 +20,7 @@ export const BodyPartsCoverage = ({ bodyParts, spByPart, template }: Props) => {
   if (isFullBody && !spByPart) {
     return (
       <div class="flex-end gap-4 body-parts-coverage">
-        <span class="coverage-badge coverage-full">Full</span>
+        <span class="badge badge-full">Full</span>
       </div>
     );
   }
@@ -28,7 +28,7 @@ export const BodyPartsCoverage = ({ bodyParts, spByPart, template }: Props) => {
   return (
     <div class="flex-end gap-4 body-parts-coverage">
       {bodyParts.map((part) => {
-        let cls = "coverage-badge";
+        let cls = "badge";
         if (spByPart && template) {
           const partMax = getPartSpMax(template, part);
           const condCls = getConditionClassFromSP(

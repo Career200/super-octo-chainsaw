@@ -2,8 +2,10 @@ import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
 
 import {
+  CATEGORY_MAX_INSTANCES,
   CATEGORY_ORDER,
   CYBER_CATALOG,
+  type CyberCategory,
   type CyberTemplate,
   rollHcDice,
 } from "@scripts/cyber/catalog";
@@ -62,6 +64,74 @@ function appendPreinstalled(
   });
 }
 
+// --- Helpers ---
+
+/** Count options slotted into a container vs its maxSlots. */
+export function getSlotUsage(containerInstanceId: string): {
+  used: number;
+  max: number | null;
+} {
+  const items = $ownedCyber.get();
+  const container = items.find((i) => i.instanceId === containerInstanceId);
+  if (!container) return { used: 0, max: null };
+
+  const template = CYBER_CATALOG[container.templateId];
+  const children = items.filter((i) => i.parentId === containerInstanceId);
+  const used = children.reduce((sum, child) => {
+    const ct = CYBER_CATALOG[child.templateId];
+    return sum + (ct?.slotCost ?? 1);
+  }, 0);
+
+  return { used, max: template?.maxSlots ?? null };
+}
+
+/** Find owned containers that can accept an option, with slot availability. */
+export function getContainersForOption(
+  templateId: string,
+): { container: HydratedCyberItem; used: number; max: number | null }[] {
+  const template = CYBER_CATALOG[templateId];
+  if (!template || template.role !== "option" || !template.containerCategory)
+    return [];
+
+  const items = $ownedCyber.get();
+  const optSlotCost = template.slotCost ?? 1;
+  const results: {
+    container: HydratedCyberItem;
+    used: number;
+    max: number | null;
+  }[] = [];
+
+  for (const item of items) {
+    const ct = CYBER_CATALOG[item.templateId];
+    if (!ct || ct.role !== "container" || ct.category !== template.containerCategory)
+      continue;
+    const { used, max } = getSlotUsage(item.instanceId);
+    if (max != null && used + optSlotCost > max) continue;
+    results.push({ container: { ...item, template: ct }, used, max });
+  }
+
+  return results;
+}
+
+/** Check whether the category has room for another container (body limit, not inventory). */
+export function canInstallContainer(
+  category: CyberCategory,
+  instanceCost = 1,
+): boolean {
+  const limit = CATEGORY_MAX_INSTANCES[category];
+  if (limit == null) return true;
+
+  const items = $ownedCyber.get();
+  const usedSlots = items.reduce((sum, i) => {
+    if (!i.installed) return sum;
+    const ct = CYBER_CATALOG[i.templateId];
+    if (!ct || ct.role !== "container" || ct.category !== category) return sum;
+    return sum + (ct.instanceCost ?? 1);
+  }, 0);
+
+  return usedSlots + instanceCost <= limit;
+}
+
 // --- Actions ---
 
 /** Own without installing. No HC cost, no surgery. */
@@ -80,7 +150,9 @@ export function takeCyber(templateId: string): OwnedItem | null {
   return item;
 }
 
-/** Own + install in one step (from catalog). Rolls HC. */
+/** Own + install in one step (from catalog). Rolls HC.
+ *  Containers: checks category maxInstances.
+ *  Options: requires parentId; installed state mirrors the container. */
 export function installCyber(
   templateId: string,
   opts?: { slot?: string; parentId?: string; hc?: number },
@@ -88,6 +160,31 @@ export function installCyber(
   const template = CYBER_CATALOG[templateId];
   if (!template) return null;
 
+  if (template.role === "container") {
+    if (!canInstallContainer(template.category, template.instanceCost ?? 1))
+      return null;
+  }
+
+  // Options must target a container
+  if (template.role === "option") {
+    if (!opts?.parentId) return null;
+    const items = $ownedCyber.get();
+    const parent = items.find((i) => i.instanceId === opts.parentId);
+    if (!parent) return null;
+    // Option's installed state mirrors its container
+    const item: OwnedItem = {
+      templateId,
+      instanceId: crypto.randomUUID(),
+      hc: parent.installed ? (opts.hc ?? rollHcDice(template.hc)) : 0,
+      installed: parent.installed,
+      parentId: opts.parentId,
+      slot: opts.slot,
+    };
+    $ownedCyber.set([...items, item]);
+    return item;
+  }
+
+  // Container or standalone
   const item: OwnedItem = {
     templateId,
     instanceId: crypto.randomUUID(),
@@ -104,18 +201,46 @@ export function installCyber(
   return item;
 }
 
-/** Install an already-owned item. Uses provided HC or rolls from template. */
-export function installOwned(instanceId: string, hc?: number): void {
+/** Install an already-owned item.
+ *  hcMap: { instanceId: hc } for each item to install. If omitted, rolls from template.
+ *  Containers cascade: install all slotted children too.
+ *  Options without parentId are rejected (must be slotted first). */
+export function installOwned(
+  instanceId: string,
+  hcMap?: Record<string, number>,
+): void {
   const items = $ownedCyber.get();
   const item = items.find((i) => i.instanceId === instanceId);
   if (!item || item.installed) return;
 
   const template = CYBER_CATALOG[item.templateId];
-  const finalHc = hc ?? (template ? rollHcDice(template.hc) : 0);
 
-  const updated = items.map((i) =>
-    i.instanceId === instanceId ? { ...i, installed: true, hc: finalHc } : i,
-  );
+  // Options must be slotted into a container
+  if (template?.role === "option" && !item.parentId) return;
+
+  // Containers: check category limit
+  if (
+    template?.role === "container" &&
+    !canInstallContainer(template.category, template.instanceCost ?? 1)
+  )
+    return;
+
+  const resolveHc = (i: OwnedItem) => {
+    if (hcMap && i.instanceId in hcMap) return hcMap[i.instanceId];
+    const t = CYBER_CATALOG[i.templateId];
+    return t ? rollHcDice(t.hc) : 0;
+  };
+
+  const isChild = (i: OwnedItem) => i.parentId === instanceId;
+
+  const updated = items.map((i) => {
+    if (i.instanceId === instanceId)
+      return { ...i, installed: true, hc: resolveHc(i) };
+    // Cascade: install slotted children of a container
+    if (template?.role === "container" && isChild(i) && !i.installed)
+      return { ...i, installed: true, hc: resolveHc(i) };
+    return i;
+  });
 
   if (template) appendPreinstalled(template, instanceId, updated);
 
@@ -138,6 +263,49 @@ export function discardCyber(instanceId: string): void {
   $ownedCyber.set(
     $ownedCyber.get().filter(
       (i) => i.instanceId !== instanceId && i.parentId !== instanceId,
+    ),
+  );
+}
+
+/** Slot an option into a container. If container is installed, option is installed too. */
+export function slotOption(
+  optionInstanceId: string,
+  containerInstanceId: string,
+  hc?: number,
+): void {
+  const items = $ownedCyber.get();
+  const option = items.find((i) => i.instanceId === optionInstanceId);
+  const container = items.find((i) => i.instanceId === containerInstanceId);
+  if (!option || !container || option.parentId) return;
+
+  const template = CYBER_CATALOG[option.templateId];
+  if (!template || template.role !== "option") return;
+
+  // Check slot availability
+  const { used, max } = getSlotUsage(containerInstanceId);
+  const slotCost = template.slotCost ?? 1;
+  if (max != null && used + slotCost > max) return;
+
+  const finalHc = container.installed
+    ? (hc ?? rollHcDice(template.hc))
+    : 0;
+
+  $ownedCyber.set(
+    items.map((i) =>
+      i.instanceId === optionInstanceId
+        ? { ...i, parentId: containerInstanceId, installed: container.installed, hc: finalHc }
+        : i,
+    ),
+  );
+}
+
+/** Unslot an option from its container. Uninstalls if installed. */
+export function unslotOption(optionInstanceId: string): void {
+  $ownedCyber.set(
+    $ownedCyber.get().map((i) =>
+      i.instanceId === optionInstanceId
+        ? { ...i, parentId: undefined, installed: false, hc: 0 }
+        : i,
     ),
   );
 }

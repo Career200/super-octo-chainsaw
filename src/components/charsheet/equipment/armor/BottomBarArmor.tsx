@@ -303,7 +303,7 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
         <div class="armor-detail-grid">
           {template.bodyParts.map((part) => (
             <div key={part} class="armor-detail-part">
-              <span class="coverage-badge">{PART_ABBREV[part]}</span>
+              <span class="badge">{PART_ABBREV[part]}</span>
               <span>{template.spMax}</span>
             </div>
           ))}
@@ -322,7 +322,7 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
             const max = getPartSpMax(ownedPiece, part);
             return (
               <div key={part} class="armor-detail-part">
-                <span class="coverage-badge">{PART_ABBREV[part]}</span>
+                <span class="badge">{PART_ABBREV[part]}</span>
                 <span class={getConditionClassFromSP(sp, max)}>
                   {sp}/{max}
                 </span>

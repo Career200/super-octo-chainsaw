@@ -26,6 +26,7 @@ function CyberItemCard({
   equipped,
   catalog,
   onSelect,
+  badge,
 }: {
   item: CyberItem;
   selected: boolean;
@@ -33,6 +34,7 @@ function CyberItemCard({
   equipped: boolean;
   catalog: boolean;
   onSelect: () => void;
+  badge?: string;
 }) {
   const opts = item.installedOptions;
   return (
@@ -41,7 +43,16 @@ function CyberItemCard({
       owned={owned}
       equipped={equipped}
       onClick={onSelect}
-      name={item.name}
+      name={
+        badge ? (
+          <>
+            {item.name}
+            <span class="cyber-slot-badge">{badge}</span>
+          </>
+        ) : (
+          item.name
+        )
+      }
       meta={
         catalog && item.availability ? (
           <ItemMeta availability={item.availability} cost={item.cost} />
@@ -123,17 +134,15 @@ function BaseGroup({
   );
 }
 
-// --- Combined list: base group + flat options ---
+// --- Catalog list: base group + flat options ---
 
-function CyberItemList({
+function CatalogItemList({
   items,
   selectedId,
-  catalog,
   onSelect,
 }: {
   items: CyberItem[];
   selectedId: string | null;
-  catalog: boolean;
   onSelect: (id: string) => void;
 }) {
   const baseItems = items.filter((i) => i.isBase);
@@ -155,7 +164,7 @@ function CyberItemList({
         <BaseGroup
           items={enrichedBases}
           selectedId={selectedId}
-          catalog={catalog}
+          catalog={true}
           onSelect={onSelect}
         />
       )}
@@ -166,7 +175,92 @@ function CyberItemList({
           selected={selectedId === item.id}
           owned={item.owned}
           equipped={item.installed}
-          catalog={catalog}
+          catalog={true}
+          onSelect={() => onSelect(item.id)}
+        />
+      ))}
+    </>
+  );
+}
+
+// --- Owned list: grouped by container ---
+
+function OwnedItemList({
+  items,
+  selectedId,
+  onSelect,
+}: {
+  items: CyberItem[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+}) {
+  const containers = items.filter((i) => i.role === "container");
+  const slottedOptions = items.filter(
+    (i) => i.role === "option" && i.parentId,
+  );
+  const unslottedOptions = items.filter(
+    (i) => i.role === "option" && !i.parentId,
+  );
+  const standalone = items.filter(
+    (i) => i.role === "standalone" || (!i.role && !i.isBase),
+  );
+
+  return (
+    <>
+      {containers.map((container) => {
+        const children = slottedOptions.filter(
+          (o) => o.parentId === container.id,
+        );
+        const { used, max } = container.slotUsage ?? { used: 0, max: null };
+        const slotLabel = max != null ? `${used}/${max}` : `${used}`;
+        return (
+          <div key={container.id} class="cyber-container-group">
+            <CyberItemCard
+              item={container}
+              selected={selectedId === container.id}
+              owned={container.owned}
+              equipped={container.installed}
+              catalog={false}
+              onSelect={() => onSelect(container.id)}
+              badge={slotLabel}
+            />
+            {children.length > 0 && (
+              <div class="cyber-container-children">
+                {children.map((child) => (
+                  <CyberItemCard
+                    key={child.id}
+                    item={child}
+                    selected={selectedId === child.id}
+                    owned={child.owned}
+                    equipped={child.installed}
+                    catalog={false}
+                    onSelect={() => onSelect(child.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {unslottedOptions.map((item) => (
+        <CyberItemCard
+          key={item.id}
+          item={item}
+          selected={selectedId === item.id}
+          owned={item.owned}
+          equipped={item.installed}
+          catalog={false}
+          onSelect={() => onSelect(item.id)}
+        />
+      ))}
+      {standalone.map((item) => (
+        <CyberItemCard
+          key={item.id}
+          item={item}
+          selected={selectedId === item.id}
+          owned={item.owned}
+          equipped={item.installed}
+          catalog={false}
           onSelect={() => onSelect(item.id)}
         />
       ))}
@@ -312,11 +406,16 @@ export function CyberListPanel({
           <div class="empty-message">
             {isCatalog ? "No items in catalog." : "Nothing owned."}
           </div>
-        ) : (
-          <CyberItemList
+        ) : isCatalog ? (
+          <CatalogItemList
             items={currentItems}
             selectedId={selectedId}
-            catalog={isCatalog}
+            onSelect={onSelect}
+          />
+        ) : (
+          <OwnedItemList
+            items={currentItems}
+            selectedId={selectedId}
             onSelect={onSelect}
           />
         )}

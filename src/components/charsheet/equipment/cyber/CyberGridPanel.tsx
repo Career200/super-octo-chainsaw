@@ -19,26 +19,55 @@ function CategoryCard({
   onItemClick: (item: CyberItem) => void;
   onHeaderClick: () => void;
 }) {
+  // Group: containers with nested children, plus top-level items
+  const containers = items.filter((i) => i.role === "container");
+  const childrenByParent = new Map<string, CyberItem[]>();
+  for (const item of items) {
+    if (item.parentId) {
+      const arr = childrenByParent.get(item.parentId) ?? [];
+      arr.push(item);
+      childrenByParent.set(item.parentId, arr);
+    }
+  }
+  const topLevel = items.filter(
+    (i) => i.role !== "container" && !i.parentId,
+  );
+
+  const renderLayer = (item: CyberItem) => (
+    <div
+      key={item.id}
+      class={`layer layer-clickable${selectedId === item.id ? " layer-active" : ""}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        onItemClick(item);
+      }}
+    >
+      <span class="layer-name">
+        <span class="layer-label">{item.name}</span>
+      </span>
+    </div>
+  );
+
   return (
     <div class="body-part body-part-clickable">
       <div class="body-part-header" onClick={onHeaderClick}>
         <h3>{CATEGORY_LABELS[category]}</h3>
       </div>
       <div class="layer-list">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            class={`layer layer-clickable${selectedId === item.id ? " layer-active" : ""}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onItemClick(item);
-            }}
-          >
-            <span class="layer-name">
-              <span class="layer-label">{item.name}</span>
-            </span>
-          </div>
-        ))}
+        {containers.map((container) => {
+          const children = childrenByParent.get(container.id) ?? [];
+          return (
+            <div key={container.id}>
+              {renderLayer(container)}
+              {children.length > 0 && (
+                <div class="layer-children">
+                  {children.map(renderLayer)}
+                </div>
+              )}
+            </div>
+          );
+        })}
+        {topLevel.map(renderLayer)}
       </div>
     </div>
   );

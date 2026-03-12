@@ -6,7 +6,12 @@ import {
   CYBER_CATALOG,
   type CyberCategory,
 } from "@scripts/cyber/catalog";
-import { $hcData, $hydratedCyber, $installedByCategory } from "@stores/cyber";
+import {
+  $hcData,
+  $hydratedCyber,
+  $installedByCategory,
+  getSlotUsage,
+} from "@stores/cyber";
 import { $selectedCyber, selectCyber } from "@stores/ui";
 
 import { Panel } from "../../shared/Panel";
@@ -60,14 +65,32 @@ export default function CyberSubView() {
     return result;
   }, [ownedTemplateIds, installedTemplateIds]);
 
-  // All owned items for the "Owned" tab
-  const owned = useMemo(
-    () =>
-      hydrated
-        .map(hydratedToCyberItem)
-        .sort((a, b) => a.name.localeCompare(b.name)),
-    [hydrated],
-  );
+  // All owned items for the "Owned" tab — with slotUsage and auto-numbering
+  const owned = useMemo(() => {
+    // Count containers per template for "#1", "#2" labels
+    const containerCounts: Record<string, number> = {};
+    for (const h of hydrated) {
+      if (h.template.role === "container") {
+        containerCounts[h.templateId] = (containerCounts[h.templateId] ?? 0) + 1;
+      }
+    }
+    const containerIndex: Record<string, number> = {};
+
+    return hydrated
+      .map((h) => {
+        const item = hydratedToCyberItem(h);
+        if (h.template.role === "container") {
+          item.slotUsage = getSlotUsage(h.instanceId);
+          if (containerCounts[h.templateId] > 1) {
+            containerIndex[h.templateId] =
+              (containerIndex[h.templateId] ?? 0) + 1;
+            item.name = `${h.template.name} #${containerIndex[h.templateId]}`;
+          }
+        }
+        return item;
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [hydrated]);
 
   const gridCategories = useMemo(
     () =>

@@ -69,6 +69,7 @@ Keys in use:
 - `skills-filter` (default: `"default"`) — Default/Custom/My in StatsSkillsPanel
 - `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
 - `offense-tab` (default: `"ranged"`) — Ranged/Melee in CombatView offense panel
+- `cyber-list-tab` (default: `"catalog"`) — Catalog/Owned in CyberListPanel
 
 ### `$ownedCyber` (cyber.ts)
 ```
@@ -76,7 +77,20 @@ OwnedItem[] (each: { templateId, instanceId, parentId?, slot?, hc, installed, sd
 ```
 All owned cyberware instances (both installed and not). `installed: true` means active (HC counts, shows on grid). Template data comes from `CYBER_CATALOG` at read time (sparse persistence).
 
-Actions: `installCyber(templateId, opts?)`, `uninstallCyber(instanceId)`, `setItemHc(instanceId, hc)`
+Container/option model: containers have `maxSlots`, options have `containerCategory` + `slotCost`. Options are linked to containers via `parentId`. Per-category body limits via `CATEGORY_MAX_INSTANCES` (e.g., optics: 2 eyes, audio: 1). Containers have `instanceCost` (default 1; a dual-eye implant would cost 2).
+
+Actions:
+- `takeCyber(templateId)` — own without installing (HC 0)
+- `installCyber(templateId, opts?)` — own + install from catalog. Containers check `canInstallContainer`. Options require `parentId`, mirror container's installed state
+- `installOwned(instanceId, hcMap?)` — install owned item. Containers cascade to children. `hcMap: Record<string, number>` provides pre-rolled HC per item
+- `uninstallCyber(instanceId)` — uninstall, cascade children, zero HC
+- `discardCyber(instanceId)` — remove item + children entirely
+- `slotOption(optionInstanceId, containerInstanceId, hc?)` — slot option into container. If container installed, option installed + HC applied
+- `unslotOption(optionInstanceId)` — unslot from container, uninstall, zero HC
+- `setItemHc(instanceId, hc)` — update HC on existing item
+
+Helpers: `getSlotUsage(containerInstanceId)`, `getContainersForOption(templateId)`, `canInstallContainer(category, instanceCost?)`
+
 Listener: re-derives `$cyberEffects` on every change (sums HC of `installed: true` items → humanityLoss).
 
 ### `$cyberEffects` (cyber-effects.ts)

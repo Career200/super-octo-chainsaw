@@ -105,7 +105,7 @@ export const RepairPopover = ({
             <button
               key={part}
               type="button"
-              class={`coverage-badge repair-selectable${selected === part ? " selected" : ""}`}
+              class={`badge badge-selectable${selected === part ? " selected" : ""}`}
               title={part.replace("_", " ")}
               onClick={() => selectPart(part)}
             >
@@ -114,7 +114,7 @@ export const RepairPopover = ({
           ))}
           <button
             type="button"
-            class={`coverage-badge repair-selectable${selected === "all" ? " selected" : ""}`}
+            class={`badge badge-selectable${selected === "all" ? " selected" : ""}`}
             onClick={() => selectPart("all")}
           >
             All

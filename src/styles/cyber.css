@@ -111,6 +111,48 @@
   color: var(--fg-soft);
 }
 
+/* === Grid Panel: Nested Options Under Containers === */
+.layer-children {
+  padding-left: var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.layer-children .layer {
+  font-size: var(--font-ui-sm);
+  padding: var(--space-2) var(--space-6);
+  background: var(--code-bg);
+}
+
+/* === Owned Tab: Container Grouping === */
+.cyber-container-group {
+  margin-bottom: var(--space-4);
+}
+
+.cyber-container-children {
+  margin-left: var(--space-16);
+  padding-left: var(--space-8);
+  border-left: 2px solid var(--border-light);
+}
+
+.cyber-container-children .item-card {
+  margin-bottom: var(--space-4);
+}
+
+.cyber-slot-badge {
+  display: inline-block;
+  margin-left: var(--space-8);
+  padding: 0 var(--space-4);
+  font-size: var(--font-ui-sm);
+  font-weight: normal;
+  color: var(--fg-soft);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  vertical-align: middle;
+}
+
 /* === Bottom Bar Detail === */
 .cyber-detail {
   display: flex;

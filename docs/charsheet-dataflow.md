@@ -71,7 +71,8 @@
                │  gear-tab,        │                       CombatView (offense-tab)
                │  skills-filter,   │
                │  notes-tab,       │
-               │  offense-tab      │
+               │  offense-tab,     │
+               │  cyber-list-tab  │
                └────────────────────┘
 
                ┌────────────────────┐
@@ -278,7 +279,8 @@
                │   $ownedCyber   │─────────────────────▸ CyberSubView ◂──▸
                │     (persist)    │                       BottomBarCyber ◂──▸
                │  OwnedItem[]    │                       (takeCyber, installCyber, installOwned,
-               └──┬──┬───────────┘                        uninstallCyber, discardCyber, setItemHc)
+               └──┬──┬───────────┘                        uninstallCyber, discardCyber, slotOption,
+                  │  │                                     unslotOption, setItemHc)
                   │  │
                   │  ▾
                   │ ┌──────────────┐

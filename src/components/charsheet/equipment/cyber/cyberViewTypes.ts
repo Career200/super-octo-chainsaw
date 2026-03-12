@@ -12,6 +12,9 @@ export interface CyberItem {
   availability?: string;
   cost?: number;
   isBase?: boolean;
+  role?: "container" | "option" | "standalone";
+  parentId?: string;
+  slotUsage?: { used: number; max: number | null };
   installedOptions?: string[];
 }
 
@@ -27,6 +30,8 @@ export function hydratedToCyberItem(h: HydratedCyberItem): CyberItem {
     availability: h.template.availability,
     cost: h.template.cost,
     isBase: h.template.role === "container",
+    role: h.template.role,
+    parentId: h.parentId,
   };
 }
 

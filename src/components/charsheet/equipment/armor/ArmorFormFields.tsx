@@ -50,7 +50,7 @@ export function ArmorFormFields({
           <button
             key={part}
             type="button"
-            class={`coverage-badge coverage-badge-toggle${active ? " active" : ""}`}
+            class={`badge badge-toggle${active ? " active" : ""}`}
             disabled={!onBodyPartsChange}
             onClick={() => togglePart(part)}
           >
