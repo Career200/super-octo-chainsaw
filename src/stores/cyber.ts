@@ -84,7 +84,7 @@ export function getSlotUsage(containerInstanceId: string): {
 /** Find owned containers that can accept an option, with slot availability. */
 export function getContainersForOption(
   templateId: string,
-): { container: HydratedCyberItem; used: number; max: number | null }[] {
+): { container: HydratedCyberItem; used: number; max: number | null; full: boolean }[] {
   const template = CYBER_CATALOG[templateId];
   if (!template || template.role !== "option" || !template.containerCategory)
     return [];
@@ -95,6 +95,7 @@ export function getContainersForOption(
     container: HydratedCyberItem;
     used: number;
     max: number | null;
+    full: boolean;
   }[] = [];
 
   for (const item of items) {
@@ -106,8 +107,8 @@ export function getContainersForOption(
     )
       continue;
     const { used, max } = getSlotUsage(item.instanceId);
-    if (max != null && used + optSlotCost > max) continue;
-    results.push({ container: { ...item, template: ct }, used, max });
+    const full = max != null && used + optSlotCost > max;
+    results.push({ container: { ...item, template: ct }, used, max, full });
   }
 
   return results;

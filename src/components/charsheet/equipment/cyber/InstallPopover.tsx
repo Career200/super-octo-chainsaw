@@ -85,6 +85,7 @@ export interface ContainerChoice {
   instanceId: string;
   label: string;
   installed: boolean;
+  full: boolean;
 }
 
 function ContainerPicker({
@@ -116,10 +117,12 @@ function ContainerPicker({
             key={c.instanceId}
             type="button"
             class={`badge badge-selectable${selected === c.instanceId ? " selected" : ""}`}
+            disabled={c.full}
             onClick={() => onSelect(c.instanceId)}
           >
             {c.label}
-            {!c.installed && (
+            {c.full && <span class="text-soft text-xs"> (full)</span>}
+            {!c.full && !c.installed && (
               <span class="text-soft text-xs"> (not installed)</span>
             )}
           </button>
@@ -162,9 +165,10 @@ export function InstallPopover({
   useEffect(() => {
     if (!open) return;
     setHcRows(initHcRows(hcRowDefs));
-    // Auto-select if exactly one container
-    if (containers && containers.length === 1) {
-      setSelectedContainer(containers[0].instanceId);
+    // Auto-select if exactly one non-full container
+    const selectable = containers?.filter((c) => !c.full);
+    if (selectable && selectable.length === 1) {
+      setSelectedContainer(selectable[0].instanceId);
     } else {
       setSelectedContainer(null);
     }
@@ -175,7 +179,8 @@ export function InstallPopover({
   };
 
   const hasContainer = !containers || selectedContainer != null;
-  const noContainers = containers && containers.length === 0;
+  const noContainers =
+    containers != null && containers.every((c) => c.full);
 
   // When container is uninstalled, option gets no HC (slotted but not installed)
   const selectedIsInstalled =
@@ -237,7 +242,7 @@ export function useContainerChoices(
     for (const { container } of available) {
       total[container.templateId] = (total[container.templateId] ?? 0) + 1;
     }
-    return available.map(({ container }) => {
+    return available.map(({ container, full }) => {
       const n = (counts[container.templateId] =
         (counts[container.templateId] ?? 0) + 1);
       const needsNumber = total[container.templateId] > 1;
@@ -245,6 +250,7 @@ export function useContainerChoices(
         instanceId: container.instanceId,
         label: container.template.name + (needsNumber ? ` #${n}` : ""),
         installed: container.installed,
+        full,
       };
     });
   }, [templateId, hydrated]);
