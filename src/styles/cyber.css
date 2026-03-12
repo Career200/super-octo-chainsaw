@@ -122,7 +122,11 @@
 .layer-children .layer {
   font-size: var(--font-ui-sm);
   padding: var(--space-2) var(--space-6);
-  background: var(--code-bg);
+  background: var(--bg-alt);
+}
+
+.layer-children .layer.layer-clickable:hover {
+  background: var(--accent-subtle);
 }
 
 /* === Owned Tab: Container Grouping === */

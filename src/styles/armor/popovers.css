@@ -73,7 +73,6 @@
   color: var(--fg-soft);
 }
 
-
 .popover-hit {
   width: min(360px, var(--popover-max-width));
 }
