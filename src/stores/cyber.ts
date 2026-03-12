@@ -4,7 +4,6 @@ import { computed } from "nanostores";
 import {
   CATEGORY_ORDER,
   CYBER_CATALOG,
-  type CyberCategory,
   type CyberTemplate,
   rollHcDice,
 } from "@scripts/cyber/catalog";
