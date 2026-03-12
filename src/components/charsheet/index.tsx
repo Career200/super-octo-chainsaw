@@ -35,9 +35,9 @@ export const Charsheet = () => {
       import("./combat/CombatView");
       import("./dossier/DossierView");
       import("./equipment/EquipmentView");
-      import("./equipment/ArmorSubView");
-      import("./equipment/WeaponsSubView");
-      import("./equipment/GearPanel");
+      import("./equipment/armor/ArmorSubView");
+      import("./equipment/weapons/WeaponsSubView");
+      import("./equipment/gear/GearPanel");
     });
     return () => cancelIdleCallback(id);
   }, []);

@@ -2,8 +2,8 @@ import type { GearTemplate } from "@scripts/gear/catalog";
 import { addGear, removeGear } from "@stores/gear";
 import { selectGear } from "@stores/ui";
 
-import { ItemCard } from "../shared/ItemCard";
-import { ItemMeta } from "../shared/ItemMeta";
+import { ItemCard } from "../../shared/ItemCard";
+import { ItemMeta } from "../../shared/ItemMeta";
 
 interface Props {
   id: string;

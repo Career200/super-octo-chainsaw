@@ -21,7 +21,7 @@ import {
   selectArmor,
 } from "@stores/ui";
 
-import { HitPopover } from "../HitPopover";
+import { HitPopover } from "../armor/HitPopover";
 
 import { LayerBar } from "./LayerBar";
 

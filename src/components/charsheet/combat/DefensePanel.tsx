@@ -1,5 +1,5 @@
 import { BodyPartGrid } from "../equipment/body/BodyPartGrid";
-import { HitPopover } from "../equipment/HitPopover";
+import { HitPopover } from "../equipment/armor/HitPopover";
 import { HelpPopover } from "../shared/HelpPopover";
 import { Panel } from "../shared/Panel";
 

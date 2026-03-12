@@ -6,10 +6,10 @@ import { tabStore } from "@stores/ui";
 
 import { TabStrip } from "../shared/TabStrip";
 
-const ArmorSubView = lazy(() => import("./ArmorSubView"));
-const WeaponsSubView = lazy(() => import("./WeaponsSubView"));
-const GearPanel = lazy(() => import("./GearPanel"));
-const CyberSubView = lazy(() => import("./CyberSubView"));
+const ArmorSubView = lazy(() => import("./armor/ArmorSubView"));
+const WeaponsSubView = lazy(() => import("./weapons/WeaponsSubView"));
+const GearPanel = lazy(() => import("./gear/GearPanel"));
+const CyberSubView = lazy(() => import("./cyber/CyberSubView"));
 
 const EQUIPMENT_TABS = [
   { id: "gear", label: "Gear" },

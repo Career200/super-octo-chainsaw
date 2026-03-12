@@ -11,8 +11,8 @@ import {
 import { startAddingArmor } from "@stores/ui";
 import { $highlightedPart, tabStore } from "@stores/ui";
 
-import { Panel } from "../shared/Panel";
-import { TabStrip } from "../shared/TabStrip";
+import { Panel } from "../../shared/Panel";
+import { TabStrip } from "../../shared/TabStrip";
 
 import { ArmorCard } from "./ArmorCard";
 import { ImplantCard } from "./ImplantCard";

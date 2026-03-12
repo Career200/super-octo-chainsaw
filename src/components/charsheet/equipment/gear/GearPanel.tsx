@@ -6,8 +6,8 @@ import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import { $customGear, $gear, $ownedGear, $ownedGearCount } from "@stores/gear";
 import { $selectedGear, startAddingGear, tabStore } from "@stores/ui";
 
-import { CollapsibleGroup } from "../shared/CollapsibleGroup";
-import { TabStrip } from "../shared/TabStrip";
+import { CollapsibleGroup } from "../../shared/CollapsibleGroup";
+import { TabStrip } from "../../shared/TabStrip";
 
 import { GearCard } from "./GearCard";
 

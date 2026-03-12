@@ -4,7 +4,7 @@ import {
   PART_ABBREV,
 } from "@scripts/armor/core";
 
-import { Tip } from "../shared";
+import { Tip } from "../../shared";
 
 interface Props {
   bodyParts: BodyPartName[];

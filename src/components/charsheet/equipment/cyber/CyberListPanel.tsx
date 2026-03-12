@@ -9,11 +9,11 @@ import {
 } from "@scripts/cyber/catalog";
 import { tabStore } from "@stores/ui";
 
-import { CollapsibleGroup } from "../shared/CollapsibleGroup";
-import { ItemCard } from "../shared/ItemCard";
-import { ItemMeta } from "../shared/ItemMeta";
-import { Panel } from "../shared/Panel";
-import { TabStrip } from "../shared/TabStrip";
+import { CollapsibleGroup } from "../../shared/CollapsibleGroup";
+import { ItemCard } from "../../shared/ItemCard";
+import { ItemMeta } from "../../shared/ItemMeta";
+import { Panel } from "../../shared/Panel";
+import { TabStrip } from "../../shared/TabStrip";
 
 import type { CyberItem, CyberlimbCell, LimbOption } from "./cyberViewTypes";
 

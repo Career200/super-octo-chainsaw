@@ -6,7 +6,7 @@ import {
   PART_ABBREV,
 } from "@scripts/armor/core";
 
-import { getConditionClassFromSP } from "./utils";
+import { getConditionClassFromSP } from "../utils";
 
 interface Props {
   bodyParts: BodyPartName[];

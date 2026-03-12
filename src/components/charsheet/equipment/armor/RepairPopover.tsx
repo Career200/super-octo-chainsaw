@@ -12,9 +12,9 @@ import { getArmorPiece, setArmorSP } from "@stores/armor";
 import { recordManipulation } from "@stores/damage-history";
 import { $homerules } from "@stores/homerules";
 
-import { Popover } from "../shared/Popover";
+import { Popover } from "../../shared/Popover";
 
-import { getConditionClassFromSP } from "./utils";
+import { getConditionClassFromSP } from "../utils";
 
 // Face at its half-max reads as "full"
 function getLowestRatioSP(

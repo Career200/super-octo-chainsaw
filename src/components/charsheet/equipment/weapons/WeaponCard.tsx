@@ -5,8 +5,8 @@ import {
 } from "@scripts/weapons/catalog";
 import type { WeaponPiece } from "@stores/weapons";
 
-import { ItemCard } from "../shared/ItemCard";
-import { ItemMeta } from "../shared/ItemMeta";
+import { ItemCard } from "../../shared/ItemCard";
+import { ItemMeta } from "../../shared/ItemMeta";
 
 function isInstance(
   weapon: WeaponTemplate | WeaponPiece,

@@ -13,7 +13,7 @@ import {
 } from "@scripts/armor/hit";
 import { flashElement } from "@scripts/flash";
 
-import { Popover } from "../shared/Popover";
+import { Popover } from "../../shared/Popover";
 
 let lastInputs = {
   damageType: "normal" as DamageType,

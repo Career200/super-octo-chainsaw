@@ -15,9 +15,9 @@ import {
 } from "@stores/gear";
 import { $addingGear, $selectedGear, selectGear } from "@stores/ui";
 
-import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { Tip } from "../shared";
-import { ItemForm } from "../shared/ItemForm";
+import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
+import { Tip } from "../../shared";
+import { ItemForm } from "../../shared/ItemForm";
 
 import { GearDetail } from "./GearDetail";
 

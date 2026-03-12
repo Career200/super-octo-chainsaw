@@ -14,10 +14,10 @@ import {
 } from "@stores/cyber";
 import { $selectedCyber, selectCyber } from "@stores/ui";
 
-import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "../shared/ConfirmPopover";
-import { ItemMeta } from "../shared/ItemMeta";
-import { Popover } from "../shared/Popover";
+import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
+import { ConfirmPopover } from "../../shared/ConfirmPopover";
+import { ItemMeta } from "../../shared/ItemMeta";
+import { Popover } from "../../shared/Popover";
 
 interface Props {
   expanded: boolean;

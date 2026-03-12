@@ -2,11 +2,11 @@ import { useRef, useState } from "preact/hooks";
 
 import type { ArmorPiece } from "@scripts/armor/core";
 
-import { ItemCard } from "../shared/ItemCard";
+import { ItemCard } from "../../shared/ItemCard";
 
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { RepairPopover } from "./RepairPopover";
-import { getConditionClassFromSP } from "./utils";
+import { getConditionClassFromSP } from "../utils";
 
 interface Props {
   implant: ArmorPiece;

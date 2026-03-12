@@ -16,7 +16,7 @@ import {
 import { $customAmmoItems } from "@stores/ammo";
 import { $allSkills } from "@stores/skills";
 
-import { cls, Popover, Tip } from "../shared";
+import { cls, Popover, Tip } from "../../shared";
 
 /** Types where the user can pick a custom skill name. Others auto-derive from type. */
 function isSkillEditable(type: WeaponType): boolean {

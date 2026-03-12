@@ -1,10 +1,10 @@
 import type { ArmorPiece, ArmorTemplate } from "@scripts/armor/core";
 
-import { ItemCard } from "../shared/ItemCard";
-import { ItemMeta } from "../shared/ItemMeta";
+import { ItemCard } from "../../shared/ItemCard";
+import { ItemMeta } from "../../shared/ItemMeta";
 
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
-import { getConditionClassFromSP } from "./utils";
+import { getConditionClassFromSP } from "../utils";
 
 interface Props {
   armor: ArmorPiece | ArmorTemplate;

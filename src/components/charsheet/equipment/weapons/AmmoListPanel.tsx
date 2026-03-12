@@ -14,10 +14,10 @@ import {
 } from "@stores/ui";
 import { $allOwnedWeapons } from "@stores/weapons";
 
-import { CollapsibleGroup } from "../shared/CollapsibleGroup";
-import { Panel } from "../shared/Panel";
-import { TabStrip } from "../shared/TabStrip";
-import { useScrollOnSelect } from "../shared/useScrollOnSelect";
+import { CollapsibleGroup } from "../../shared/CollapsibleGroup";
+import { Panel } from "../../shared/Panel";
+import { TabStrip } from "../../shared/TabStrip";
+import { useScrollOnSelect } from "../../shared/useScrollOnSelect";
 
 import { AmmoRow } from "./AmmoRow";
 

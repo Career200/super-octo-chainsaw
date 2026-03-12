@@ -8,13 +8,13 @@ import {
 } from "@stores/armor";
 import { $selectedArmor, selectArmor } from "@stores/ui";
 
-import { HelpPopover } from "../shared/HelpPopover";
-import { Panel } from "../shared/Panel";
-import { TwoPanelView } from "../shared/TwoPanelView";
+import { HelpPopover } from "../../shared/HelpPopover";
+import { Panel } from "../../shared/Panel";
+import { TwoPanelView } from "../../shared/TwoPanelView";
 
 import { ArmorListPanel } from "./ArmorListPanel";
-import { BodyPartGrid } from "./body/BodyPartGrid";
-import { ArmorHelpContent } from "./help/ArmorHelpContent";
+import { BodyPartGrid } from "../body/BodyPartGrid";
+import { ArmorHelpContent } from "./ArmorHelpContent";
 
 export default function ArmorSubView() {
   const selectedArmorId = useStore($selectedArmor);

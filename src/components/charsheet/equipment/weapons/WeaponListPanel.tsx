@@ -15,12 +15,12 @@ import {
 import type { WeaponPiece } from "@stores/weapons";
 import { $allOwnedWeapons, $customWeaponList } from "@stores/weapons";
 
-import { CollapsibleGroup } from "../shared/CollapsibleGroup";
-import { HelpPopover } from "../shared/HelpPopover";
-import { Panel } from "../shared/Panel";
-import { TabStrip } from "../shared/TabStrip";
+import { CollapsibleGroup } from "../../shared/CollapsibleGroup";
+import { HelpPopover } from "../../shared/HelpPopover";
+import { Panel } from "../../shared/Panel";
+import { TabStrip } from "../../shared/TabStrip";
 
-import { WeaponHelpContent } from "./help/WeaponHelpContent";
+import { WeaponHelpContent } from "./WeaponHelpContent";
 import { WeaponCard } from "./WeaponCard";
 
 // Weapon type display order

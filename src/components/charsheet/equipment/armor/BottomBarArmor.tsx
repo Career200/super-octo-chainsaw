@@ -23,13 +23,13 @@ import {
 } from "@stores/armor";
 import { $addingArmor, $selectedArmor, selectArmor } from "@stores/ui";
 
-import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "../shared/ConfirmPopover";
-import { ItemForm } from "../shared/ItemForm";
+import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
+import { ConfirmPopover } from "../../shared/ConfirmPopover";
+import { ItemForm } from "../../shared/ItemForm";
 
 import { ArmorFormFields } from "./ArmorFormFields";
 import { RepairPopover } from "./RepairPopover";
-import { getConditionClassFromSP } from "./utils";
+import { getConditionClassFromSP } from "../utils";
 
 interface Props {
   expanded: boolean;

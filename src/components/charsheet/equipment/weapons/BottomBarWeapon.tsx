@@ -25,9 +25,9 @@ import {
   updateCustomWeapon,
 } from "@stores/weapons";
 
-import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "../shared/ConfirmPopover";
-import { ItemForm } from "../shared/ItemForm";
+import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
+import { ConfirmPopover } from "../../shared/ConfirmPopover";
+import { ItemForm } from "../../shared/ItemForm";
 
 import { WeaponDetail } from "./WeaponDetail";
 import { WeaponFormFields } from "./WeaponFormFields";

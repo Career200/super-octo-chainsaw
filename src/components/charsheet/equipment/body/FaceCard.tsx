@@ -23,7 +23,7 @@ import {
 
 import { HelpPopover } from "../../shared/HelpPopover";
 
-import { HitPopover } from "../HitPopover";
+import { HitPopover } from "../armor/HitPopover";
 
 import { LayerBar } from "./LayerBar";
 

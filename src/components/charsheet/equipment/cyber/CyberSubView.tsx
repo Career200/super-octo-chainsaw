@@ -9,8 +9,8 @@ import {
 import { $hcData, $hydratedCyber, $installedByCategory } from "@stores/cyber";
 import { $selectedCyber, selectCyber } from "@stores/ui";
 
-import { Panel } from "../shared/Panel";
-import { TwoPanelView } from "../shared/TwoPanelView";
+import { Panel } from "../../shared/Panel";
+import { TwoPanelView } from "../../shared/TwoPanelView";
 
 import { CyberGridPanel, HcRow } from "./CyberGridPanel";
 import { CyberListPanel } from "./CyberListPanel";

@@ -16,8 +16,8 @@ import {
 } from "@stores/ammo";
 import { $addingAmmo, $selectedAmmo, selectAmmo } from "@stores/ui";
 
-import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
-import { Tip } from "../shared";
+import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
+import { Tip } from "../../shared";
 
 interface Props {
   expanded: boolean;
