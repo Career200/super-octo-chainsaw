@@ -12,8 +12,8 @@ export const StatsSkillsHelpContent = () => {
         <p>
           <strong>Inherent</strong> is your natural value.{" "}
           <strong>Cyber</strong> adds bonuses from cyberware.{" "}
-          <strong>Current</strong> reflects active penalties (wounds,
-          drugs, etc.).
+          <strong>Current</strong> reflects active penalties (wounds, drugs,
+          etc.).
         </p>
       </section>
       <section>

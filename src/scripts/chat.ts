@@ -84,28 +84,37 @@ function addChatMessage(user?: string, message?: string) {
   chatBox.scrollTop = chatBox.scrollHeight;
   // sometimes a message follows immediately after another
   if (Math.random() < 0.2) {
-    setTimeout(() => {
-      addChatMessage();
-    }, Math.random() * 1000 + 1000);
+    setTimeout(
+      () => {
+        addChatMessage();
+      },
+      Math.random() * 1000 + 1000,
+    );
   }
   trimOverflowingMessages(chatBox);
 }
 
-const chatFeedInterval = setInterval(() => {
-  addChatMessage();
-}, Math.random() * 10000 + 30000);
+const chatFeedInterval = setInterval(
+  () => {
+    addChatMessage();
+  },
+  Math.random() * 10000 + 30000,
+);
 
 function startChatFeed() {
   addChatMessage();
-  setTimeout(() => {
-    addChatMessage();
-  }, Math.random() * 1000 + 2000);
+  setTimeout(
+    () => {
+      addChatMessage();
+    },
+    Math.random() * 1000 + 2000,
+  );
 }
 
 const fixedUsername = "YOU";
 const formEl = document.getElementById("chat-form");
 const inputEl = document.getElementById(
-  "chat-input"
+  "chat-input",
 ) as HTMLInputElement | null;
 
 formEl?.addEventListener("submit", (e) => {

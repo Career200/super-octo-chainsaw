@@ -1,6 +1,9 @@
 import { useStore } from "@nanostores/preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
+import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
+import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
+import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
 import { CYBER_CATALOG, type CyberTemplate } from "@scripts/cyber/catalog";
 import {
   $hydratedCyber,
@@ -8,10 +11,6 @@ import {
   setItemHc,
 } from "@stores/cyber";
 import { $selectedCyber } from "@stores/ui";
-
-import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "../../shared/ConfirmPopover";
-import { ItemMeta } from "../../shared/ItemMeta";
 
 import { InstallPopover } from "./InstallPopover";
 import { useCyberActions } from "./useCyberActions";

@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/preact";
 
+import { HelpPopover } from "@components/charsheet/shared/HelpPopover";
 import {
   getEffectiveSP,
   getImplantSP,
@@ -20,8 +21,6 @@ import {
   highlightPart,
   selectArmor,
 } from "@stores/ui";
-
-import { HelpPopover } from "../../shared/HelpPopover";
 
 import { HitPopover } from "../armor/HitPopover";
 

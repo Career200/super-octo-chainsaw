@@ -40,7 +40,10 @@ export function ItemForm({
       <div class="item-form-fields">
         <input
           type="text"
-          class={cls("input item-form-input item-form-name", errors?.has("name") && "input-error")}
+          class={cls(
+            "input item-form-input item-form-name",
+            errors?.has("name") && "input-error",
+          )}
           value={name}
           disabled={!onNameChange}
           onInput={

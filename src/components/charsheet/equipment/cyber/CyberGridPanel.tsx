@@ -29,9 +29,7 @@ function CategoryCard({
       childrenByParent.set(item.parentId, arr);
     }
   }
-  const topLevel = items.filter(
-    (i) => i.role !== "container" && !i.parentId,
-  );
+  const topLevel = items.filter((i) => i.role !== "container" && !i.parentId);
 
   const renderLayer = (item: CyberItem) => (
     <div
@@ -60,9 +58,7 @@ function CategoryCard({
             <div key={container.id}>
               {renderLayer(container)}
               {children.length > 0 && (
-                <div class="layer-children">
-                  {children.map(renderLayer)}
-                </div>
+                <div class="layer-children">{children.map(renderLayer)}</div>
               )}
             </div>
           );

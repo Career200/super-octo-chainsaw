@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/preact";
 import { useRef, useState } from "preact/hooks";
 
+import { Popover } from "@components/charsheet/shared/Popover";
 import {
   $ownedArmor,
   getImplantTemplates,
@@ -10,8 +11,6 @@ import {
   isSkinweave,
   uninstallImplant,
 } from "@stores/armor";
-
-import { Popover } from "../../shared/Popover";
 
 import { getConditionClassFromSP } from "../utils";
 

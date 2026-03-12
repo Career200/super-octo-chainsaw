@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
+import { cls, Popover, Tip } from "@components/charsheet/shared";
 import { CALIBER_ORDER } from "@scripts/ammo/catalog";
 import type {
   Concealability,
@@ -15,8 +16,6 @@ import {
 } from "@scripts/weapons/catalog";
 import { $customAmmoItems } from "@stores/ammo";
 import { $allSkills } from "@stores/skills";
-
-import { cls, Popover, Tip } from "../../shared";
 
 /** Types where the user can pick a custom skill name. Others auto-derive from type. */
 function isSkillEditable(type: WeaponType): boolean {
@@ -150,7 +149,13 @@ export function WeaponFormFields({
                 ? (e) => onSkillChange((e.target as HTMLInputElement).value)
                 : undefined
             }
-            list={skillCanEdit ? (melee ? "melee-skill-suggestions" : "exotic-skill-suggestions") : undefined}
+            list={
+              skillCanEdit
+                ? melee
+                  ? "melee-skill-suggestions"
+                  : "exotic-skill-suggestions"
+                : undefined
+            }
             placeholder="Skill"
             title="Associated skill"
           />
@@ -167,7 +172,11 @@ export function WeaponFormFields({
             </p>
           </Popover>
           {skillCanEdit && (
-            <datalist id={melee ? "melee-skill-suggestions" : "exotic-skill-suggestions"}>
+            <datalist
+              id={
+                melee ? "melee-skill-suggestions" : "exotic-skill-suggestions"
+              }
+            >
               {melee ? (
                 <>
                   <option value="Brawling" />

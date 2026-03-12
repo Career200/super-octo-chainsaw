@@ -1,9 +1,8 @@
+import { ItemCard } from "@components/charsheet/shared/ItemCard";
+import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
 import type { GearTemplate } from "@scripts/gear/catalog";
 import { addGear, removeGear } from "@stores/gear";
 import { selectGear } from "@stores/ui";
-
-import { ItemCard } from "../../shared/ItemCard";
-import { ItemMeta } from "../../shared/ItemMeta";
 
 interface Props {
   id: string;
@@ -13,13 +12,7 @@ interface Props {
   selected?: boolean;
 }
 
-export function GearCard({
-  id,
-  template,
-  quantity,
-  custom,
-  selected,
-}: Props) {
+export function GearCard({ id, template, quantity, custom, selected }: Props) {
   return (
     <ItemCard
       class="gear-card"
@@ -28,7 +21,9 @@ export function GearCard({
       custom={custom}
       onClick={() => selectGear(selected ? null : id)}
       name={template.name}
-      meta={<ItemMeta availability={template.availability} cost={template.cost} />}
+      meta={
+        <ItemMeta availability={template.availability} cost={template.cost} />
+      }
     >
       <div class="gear-actions">
         {quantity > 0 ? (

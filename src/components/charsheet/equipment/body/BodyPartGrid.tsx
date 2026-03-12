@@ -22,9 +22,7 @@ export const BodyPartGrid = ({ mode = "combat" }: Props) => {
     return (
       <div class="body-grid-combat">
         {!hasRegularArmor && (
-          <p class="combat-empty">
-            No armor. Add some in the Equipment tab.
-          </p>
+          <p class="combat-empty">No armor. Add some in the Equipment tab.</p>
         )}
         {hasRegularArmor && !hasWorn && (
           <p class="combat-empty">

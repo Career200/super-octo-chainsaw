@@ -1,7 +1,10 @@
 import { useStore } from "@nanostores/preact";
 
 import type { WeaponTemplate } from "@scripts/weapons/catalog";
-import { RELIABILITY_LABELS, WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
+import {
+  RELIABILITY_LABELS,
+  WEAPON_TYPE_LABELS,
+} from "@scripts/weapons/catalog";
 import { $allSkills } from "@stores/skills";
 
 interface Props {

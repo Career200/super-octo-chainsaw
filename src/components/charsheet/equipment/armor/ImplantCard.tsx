@@ -1,8 +1,7 @@
 import { useRef, useState } from "preact/hooks";
 
+import { ItemCard } from "@components/charsheet/shared/ItemCard";
 import type { ArmorPiece } from "@scripts/armor/core";
-
-import { ItemCard } from "../../shared/ItemCard";
 
 import { getConditionClassFromSP } from "../utils";
 

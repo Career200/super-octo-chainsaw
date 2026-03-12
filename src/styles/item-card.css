@@ -52,11 +52,21 @@
   font-weight: bold;
 }
 
-.avail-E { color: var(--avail-E); }
-.avail-C { color: var(--avail-C); }
-.avail-P { color: var(--avail-P); }
-.avail-R { color: var(--avail-R); }
-.avail-U { color: var(--avail-U); }
+.avail-E {
+  color: var(--avail-E);
+}
+.avail-C {
+  color: var(--avail-C);
+}
+.avail-P {
+  color: var(--avail-P);
+}
+.avail-R {
+  color: var(--avail-R);
+}
+.avail-U {
+  color: var(--avail-U);
+}
 
 /* === Shared Item Form (gear, armor, etc.) === */
 .item-form {

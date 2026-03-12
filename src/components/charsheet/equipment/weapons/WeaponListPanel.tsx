@@ -1,6 +1,10 @@
 import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
+import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
+import { HelpPopover } from "@components/charsheet/shared/HelpPopover";
+import { Panel } from "@components/charsheet/shared/Panel";
+import { TabStrip } from "@components/charsheet/shared/TabStrip";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
 import type { WeaponTemplate, WeaponType } from "@scripts/weapons/catalog";
 import { WEAPON_CATALOG, WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
@@ -14,11 +18,6 @@ import {
 } from "@stores/ui";
 import type { WeaponPiece } from "@stores/weapons";
 import { $allOwnedWeapons, $customWeaponList } from "@stores/weapons";
-
-import { CollapsibleGroup } from "../../shared/CollapsibleGroup";
-import { HelpPopover } from "../../shared/HelpPopover";
-import { Panel } from "../../shared/Panel";
-import { TabStrip } from "../../shared/TabStrip";
 
 import { WeaponCard } from "./WeaponCard";
 import { WeaponHelpContent } from "./WeaponHelpContent";
@@ -260,7 +259,9 @@ export const WeaponListPanel = ({
               />
             ))
           ) : (
-            <div class="empty-message">No weapons yet. Browse the Catalog to add some.</div>
+            <div class="empty-message">
+              No weapons yet. Browse the Catalog to add some.
+            </div>
           ))}
       </div>
     </Panel>

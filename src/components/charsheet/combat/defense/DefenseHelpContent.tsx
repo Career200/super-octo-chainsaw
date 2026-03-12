@@ -37,16 +37,16 @@ export const DefenseHelpContent = () => {
         <h4>Stun/Shock Save</h4>
         <p>
           On taking damage, roll <strong>1d10 ≤ BT - wound penalty</strong> to
-          stay conscious. Penalties: Light 0, Serious -1, Critical -2, Mortal
-          -3 to -9.
+          stay conscious. Penalties: Light 0, Serious -1, Critical -2, Mortal -3
+          to -9.
         </p>
       </section>
       <section>
         <h4>Death Saves</h4>
         <p>
           At <strong>Mortal</strong> wounds, roll{" "}
-          <strong>1d10 ≤ BT - mortal level</strong> each turn or go into DEATH state. Only
-          stabilization stops the clock.
+          <strong>1d10 ≤ BT - mortal level</strong> each turn or go into DEATH
+          state. Only stabilization stops the clock.
         </p>
       </section>
     </>

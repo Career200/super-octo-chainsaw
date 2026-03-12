@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
 
+import { Popover } from "@components/charsheet/shared/Popover";
 import {
   CYBER_CATALOG,
   isDiceNotation,
@@ -12,8 +13,6 @@ import {
   getContainersForOption,
 } from "@stores/cyber";
 import { $homerules } from "@stores/homerules";
-
-import { Popover } from "../../shared/Popover";
 
 // --- Resolve effective HC notation (respects tsmFreeHc houserule) ---
 

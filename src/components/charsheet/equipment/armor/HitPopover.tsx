@@ -1,6 +1,7 @@
 import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
+import { Popover } from "@components/charsheet/shared/Popover";
 import type { BodyPartName } from "@scripts/armor/core";
 import {
   DAMAGE_TYPE_OPTIONS,
@@ -12,8 +13,6 @@ import {
   rollHitLocation,
 } from "@scripts/armor/hit";
 import { flashElement } from "@scripts/flash";
-
-import { Popover } from "../../shared/Popover";
 
 let lastInputs = {
   damageType: "normal" as DamageType,

@@ -1,12 +1,11 @@
+import { ItemCard } from "@components/charsheet/shared/ItemCard";
+import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
 import type { WeaponTemplate } from "@scripts/weapons/catalog";
 import {
   CONCEALABILITY_LABELS,
   WEAPON_TYPE_LABELS,
 } from "@scripts/weapons/catalog";
 import type { WeaponPiece } from "@stores/weapons";
-
-import { ItemCard } from "../../shared/ItemCard";
-import { ItemMeta } from "../../shared/ItemMeta";
 
 function isInstance(
   weapon: WeaponTemplate | WeaponPiece,

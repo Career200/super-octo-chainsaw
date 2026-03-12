@@ -39,7 +39,11 @@
   padding: 0.5rem 1rem;
   border-left: 4px solid var(--message-border);
   padding-left: 0.5rem;
-  transition: border-color var(--transition-speed), background-color var(--transition-speed), box-shadow var(--transition-speed), transform var(--transition-speed);
+  transition:
+    border-color var(--transition-speed),
+    background-color var(--transition-speed),
+    box-shadow var(--transition-speed),
+    transform var(--transition-speed);
   &:hover {
     border-left: 4px solid var(--accent);
     background: var(--accent-subtle);
@@ -66,7 +70,9 @@
     align-items: center;
     justify-content: center;
     margin-right: 0.5rem;
-    transition: background-color var(--transition-speed), color var(--transition-speed);
+    transition:
+      background-color var(--transition-speed),
+      color var(--transition-speed);
   }
 }
 .message-read {

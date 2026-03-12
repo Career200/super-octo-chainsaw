@@ -1,6 +1,9 @@
 import { useStore } from "@nanostores/preact";
 import { useRef, useState } from "preact/hooks";
 
+import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
+import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
+import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import {
   type BodyPartName,
   getPartSpMax,
@@ -22,10 +25,6 @@ import {
   updateCustomArmor,
 } from "@stores/armor";
 import { $addingArmor, $selectedArmor, selectArmor } from "@stores/ui";
-
-import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "../../shared/ConfirmPopover";
-import { ItemForm } from "../../shared/ItemForm";
 
 import { getConditionClassFromSP } from "../utils";
 

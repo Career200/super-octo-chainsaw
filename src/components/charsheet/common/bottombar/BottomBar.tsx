@@ -18,13 +18,21 @@ import { useAutoExpand } from "./useAutoExpand";
 
 const BottomBarHistory = lazy(() => import("../../combat/BottomBarHistory"));
 const BottomBarSkills = lazy(() => import("../../dossier/BottomBarSkills"));
-const BottomBarArmor = lazy(() => import("../../equipment/armor/BottomBarArmor"));
+const BottomBarArmor = lazy(
+  () => import("../../equipment/armor/BottomBarArmor"),
+);
 const BottomBarEquipment = lazy(
   () => import("../../equipment/gear/BottomBarEquipment"),
 );
-const BottomBarWeapon = lazy(() => import("../../equipment/weapons/BottomBarWeapon"));
-const BottomBarAmmo = lazy(() => import("../../equipment/weapons/BottomBarAmmo"));
-const BottomBarCyber = lazy(() => import("../../equipment/cyber/BottomBarCyber"));
+const BottomBarWeapon = lazy(
+  () => import("../../equipment/weapons/BottomBarWeapon"),
+);
+const BottomBarAmmo = lazy(
+  () => import("../../equipment/weapons/BottomBarAmmo"),
+);
+const BottomBarCyber = lazy(
+  () => import("../../equipment/cyber/BottomBarCyber"),
+);
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "combat"));

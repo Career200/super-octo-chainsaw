@@ -1,6 +1,8 @@
 import { useStore } from "@nanostores/preact";
 import { useMemo, useState } from "preact/hooks";
 
+import { Panel } from "@components/charsheet/shared/Panel";
+import { TwoPanelView } from "@components/charsheet/shared/TwoPanelView";
 import {
   CATEGORY_ORDER,
   CYBER_CATALOG,
@@ -13,9 +15,6 @@ import {
   getSlotUsage,
 } from "@stores/cyber";
 import { $selectedCyber, selectCyber } from "@stores/ui";
-
-import { Panel } from "../../shared/Panel";
-import { TwoPanelView } from "../../shared/TwoPanelView";
 
 import { CyberGridPanel, HcRow } from "./CyberGridPanel";
 import { CyberListPanel } from "./CyberListPanel";
@@ -71,7 +70,8 @@ export default function CyberSubView() {
     const containerCounts: Record<string, number> = {};
     for (const h of hydrated) {
       if (h.template.role === "container") {
-        containerCounts[h.templateId] = (containerCounts[h.templateId] ?? 0) + 1;
+        containerCounts[h.templateId] =
+          (containerCounts[h.templateId] ?? 0) + 1;
       }
     }
     const containerIndex: Record<string, number> = {};

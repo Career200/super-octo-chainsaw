@@ -9,7 +9,14 @@ interface Props {
   onClick?: () => void;
 }
 
-export const LayerBar = ({ name, currentSP, maxSP, className = "", active, onClick }: Props) => {
+export const LayerBar = ({
+  name,
+  currentSP,
+  maxSP,
+  className = "",
+  active,
+  onClick,
+}: Props) => {
   const conditionPercent = (currentSP / maxSP) * 100;
   const conditionClass = getConditionClassFromSP(currentSP, maxSP);
 

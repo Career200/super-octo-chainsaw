@@ -1,6 +1,9 @@
 import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
+import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
+import { Tip } from "@components/charsheet/shared";
+import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import type { Availability } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import {
@@ -14,10 +17,6 @@ import {
   updateCustomGear,
 } from "@stores/gear";
 import { $addingGear, $selectedGear, selectGear } from "@stores/ui";
-
-import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
-import { Tip } from "../../shared";
-import { ItemForm } from "../../shared/ItemForm";
 
 import { GearDetail } from "./GearDetail";
 

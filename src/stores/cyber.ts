@@ -31,14 +31,10 @@ export type HydratedCyberItem = OwnedItem & { template: CyberTemplate };
 
 // --- Persistent atom ---
 
-export const $ownedCyber = persistentAtom<OwnedItem[]>(
-  "owned-cyber",
-  [],
-  {
-    encode: JSON.stringify,
-    decode: decodeJson<OwnedItem[]>([]),
-  },
-);
+export const $ownedCyber = persistentAtom<OwnedItem[]>("owned-cyber", [], {
+  encode: JSON.stringify,
+  decode: decodeJson<OwnedItem[]>([]),
+});
 
 // --- Houserule helpers ---
 
@@ -103,7 +99,11 @@ export function getContainersForOption(
 
   for (const item of items) {
     const ct = CYBER_CATALOG[item.templateId];
-    if (!ct || ct.role !== "container" || ct.category !== template.containerCategory)
+    if (
+      !ct ||
+      ct.role !== "container" ||
+      ct.category !== template.containerCategory
+    )
       continue;
     const { used, max } = getSlotUsage(item.instanceId);
     if (max != null && used + optSlotCost > max) continue;
@@ -250,20 +250,22 @@ export function installOwned(
 /** Uninstall — item stays owned, HC zeroed. */
 export function uninstallCyber(instanceId: string): void {
   $ownedCyber.set(
-    $ownedCyber.get().map((i) =>
-      i.instanceId === instanceId || i.parentId === instanceId
-        ? { ...i, installed: false, hc: 0 }
-        : i,
-    ),
+    $ownedCyber
+      .get()
+      .map((i) =>
+        i.instanceId === instanceId || i.parentId === instanceId
+          ? { ...i, installed: false, hc: 0 }
+          : i,
+      ),
   );
 }
 
 /** Remove item + children from store entirely. */
 export function discardCyber(instanceId: string): void {
   $ownedCyber.set(
-    $ownedCyber.get().filter(
-      (i) => i.instanceId !== instanceId && i.parentId !== instanceId,
-    ),
+    $ownedCyber
+      .get()
+      .filter((i) => i.instanceId !== instanceId && i.parentId !== instanceId),
   );
 }
 
@@ -286,14 +288,17 @@ export function slotOption(
   const slotCost = template.slotCost ?? 1;
   if (max != null && used + slotCost > max) return;
 
-  const finalHc = container.installed
-    ? (hc ?? rollHcDice(template.hc))
-    : 0;
+  const finalHc = container.installed ? (hc ?? rollHcDice(template.hc)) : 0;
 
   $ownedCyber.set(
     items.map((i) =>
       i.instanceId === optionInstanceId
-        ? { ...i, parentId: containerInstanceId, installed: container.installed, hc: finalHc }
+        ? {
+            ...i,
+            parentId: containerInstanceId,
+            installed: container.installed,
+            hc: finalHc,
+          }
         : i,
     ),
   );
@@ -302,19 +307,23 @@ export function slotOption(
 /** Unslot an option from its container. Uninstalls if installed. */
 export function unslotOption(optionInstanceId: string): void {
   $ownedCyber.set(
-    $ownedCyber.get().map((i) =>
-      i.instanceId === optionInstanceId
-        ? { ...i, parentId: undefined, installed: false, hc: 0 }
-        : i,
-    ),
+    $ownedCyber
+      .get()
+      .map((i) =>
+        i.instanceId === optionInstanceId
+          ? { ...i, parentId: undefined, installed: false, hc: 0 }
+          : i,
+      ),
   );
 }
 
 export function setItemHc(instanceId: string, hc: number): void {
   $ownedCyber.set(
-    $ownedCyber.get().map((i) =>
-      i.instanceId === instanceId ? { ...i, hc: Math.max(0, hc) } : i,
-    ),
+    $ownedCyber
+      .get()
+      .map((i) =>
+        i.instanceId === instanceId ? { ...i, hc: Math.max(0, hc) } : i,
+      ),
   );
 }
 

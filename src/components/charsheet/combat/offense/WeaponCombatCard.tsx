@@ -1,13 +1,12 @@
 import { useStore } from "@nanostores/preact";
 import { useRef, useState } from "preact/hooks";
 
+import { Popover } from "@components/charsheet/shared/Popover";
 import { flashElement } from "@scripts/flash";
 import { WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
 import { $ammoByCaliberLookup, addAmmo, removeAmmo } from "@stores/ammo";
 import type { WeaponPiece } from "@stores/weapons";
 import { fireWeapon, reloadWeapon, setCurrentAmmo } from "@stores/weapons";
-
-import { Popover } from "../../shared/Popover";
 
 interface RangeEntry {
   label: string;
@@ -161,7 +160,9 @@ export const WeaponCombatCard = ({
       {/* Effects row (ammo effects, weapon effects, or both) */}
       {(weapon.loadedAmmo?.effects || weapon.effects) && (
         <div class="cc-effect">
-          {[weapon.loadedAmmo?.effects, weapon.effects].filter(Boolean).join(" \u00B7 ")}
+          {[weapon.loadedAmmo?.effects, weapon.effects]
+            .filter(Boolean)
+            .join(" \u00B7 ")}
         </div>
       )}
 

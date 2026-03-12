@@ -1,6 +1,9 @@
 import { useStore } from "@nanostores/preact";
 import { useRef, useState } from "preact/hooks";
 
+import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
+import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
+import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import type { Availability } from "@scripts/catalog-common";
 import type {
   Concealability,
@@ -24,10 +27,6 @@ import {
   resolveWeaponTemplate,
   updateCustomWeapon,
 } from "@stores/weapons";
-
-import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "../../shared/ConfirmPopover";
-import { ItemForm } from "../../shared/ItemForm";
 
 import { WeaponDetail } from "./WeaponDetail";
 import { WeaponFormFields } from "./WeaponFormFields";

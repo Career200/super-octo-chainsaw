@@ -180,9 +180,7 @@ function GroupedSkillsList({
   emptyMessage?: string;
 }) {
   if (skills.length === 0) {
-    return (
-      <div class="empty-message">{emptyMessage ?? "No skills yet"}</div>
-    );
+    return <div class="empty-message">{emptyMessage ?? "No skills yet"}</div>;
   }
   const { byStat, ma } = groupSkills(skills);
   return (

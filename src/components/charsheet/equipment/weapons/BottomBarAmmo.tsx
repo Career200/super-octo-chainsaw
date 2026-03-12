@@ -1,6 +1,8 @@
 import { useStore } from "@nanostores/preact";
 import { useCallback, useRef, useState } from "preact/hooks";
 
+import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
+import { Tip } from "@components/charsheet/shared";
 import type { AmmoTemplate, Availability } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
 import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
@@ -15,9 +17,6 @@ import {
   updateCustomAmmo,
 } from "@stores/ammo";
 import { $addingAmmo, $selectedAmmo, selectAmmo } from "@stores/ui";
-
-import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
-import { Tip } from "../../shared";
 
 interface Props {
   expanded: boolean;

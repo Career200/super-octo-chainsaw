@@ -1,10 +1,9 @@
+import { Tip } from "@components/charsheet/shared";
 import {
   BODY_PARTS,
   type BodyPartName,
   PART_ABBREV,
 } from "@scripts/armor/core";
-
-import { Tip } from "../../shared";
 
 interface Props {
   bodyParts: BodyPartName[];

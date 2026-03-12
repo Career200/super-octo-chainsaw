@@ -1,7 +1,6 @@
+import { ItemCard } from "@components/charsheet/shared/ItemCard";
+import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
 import type { ArmorPiece, ArmorTemplate } from "@scripts/armor/core";
-
-import { ItemCard } from "../../shared/ItemCard";
-import { ItemMeta } from "../../shared/ItemMeta";
 
 import { getConditionClassFromSP } from "../utils";
 

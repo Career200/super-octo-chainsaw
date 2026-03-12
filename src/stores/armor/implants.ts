@@ -1,5 +1,10 @@
 import { getTemplate, IMPLANT_TEMPLATES } from "@scripts/armor/catalog";
-import type { ArmorLayer, ArmorPiece, ArmorTemplate, BodyPartName } from "@scripts/armor/core";
+import type {
+  ArmorLayer,
+  ArmorPiece,
+  ArmorTemplate,
+  BodyPartName,
+} from "@scripts/armor/core";
 import { getPartSpMax } from "@scripts/armor/core";
 
 import type { WearResult } from "./actions";

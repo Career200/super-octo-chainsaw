@@ -2,6 +2,10 @@ import { useStore } from "@nanostores/preact";
 import type { RefObject } from "preact";
 import { useRef, useState } from "preact/hooks";
 
+import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
+import { Panel } from "@components/charsheet/shared/Panel";
+import { TabStrip } from "@components/charsheet/shared/TabStrip";
+import { useScrollOnSelect } from "@components/charsheet/shared/useScrollOnSelect";
 import type { AmmoTemplate } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG, CALIBER_ORDER } from "@scripts/ammo/catalog";
 import { WEAPON_CATALOG } from "@scripts/weapons/catalog";
@@ -13,11 +17,6 @@ import {
   tabStore,
 } from "@stores/ui";
 import { $allOwnedWeapons } from "@stores/weapons";
-
-import { CollapsibleGroup } from "../../shared/CollapsibleGroup";
-import { Panel } from "../../shared/Panel";
-import { TabStrip } from "../../shared/TabStrip";
-import { useScrollOnSelect } from "../../shared/useScrollOnSelect";
 
 import { AmmoRow } from "./AmmoRow";
 

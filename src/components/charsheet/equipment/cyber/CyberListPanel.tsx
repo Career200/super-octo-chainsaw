@@ -2,18 +2,17 @@ import { useStore } from "@nanostores/preact";
 import type { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
 
+import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
+import { ItemCard } from "@components/charsheet/shared/ItemCard";
+import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
+import { Panel } from "@components/charsheet/shared/Panel";
+import { TabStrip } from "@components/charsheet/shared/TabStrip";
 import {
   CATEGORY_LABELS,
   CATEGORY_ORDER,
   type CyberCategory,
 } from "@scripts/cyber/catalog";
 import { tabStore } from "@stores/ui";
-
-import { CollapsibleGroup } from "../../shared/CollapsibleGroup";
-import { ItemCard } from "../../shared/ItemCard";
-import { ItemMeta } from "../../shared/ItemMeta";
-import { Panel } from "../../shared/Panel";
-import { TabStrip } from "../../shared/TabStrip";
 
 import type { CyberItem, CyberlimbCell, LimbOption } from "./cyberViewTypes";
 
@@ -195,9 +194,7 @@ function OwnedItemList({
   onSelect: (id: string) => void;
 }) {
   const containers = items.filter((i) => i.role === "container");
-  const slottedOptions = items.filter(
-    (i) => i.role === "option" && i.parentId,
-  );
+  const slottedOptions = items.filter((i) => i.role === "option" && i.parentId);
   const unslottedOptions = items.filter(
     (i) => i.role === "option" && !i.parentId,
   );

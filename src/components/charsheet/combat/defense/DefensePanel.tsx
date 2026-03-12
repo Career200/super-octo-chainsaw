@@ -1,7 +1,7 @@
-import { HitPopover } from "../../equipment/armor/HitPopover";
-import { BodyPartGrid } from "../../equipment/body/BodyPartGrid";
-import { HelpPopover } from "../../shared/HelpPopover";
-import { Panel } from "../../shared/Panel";
+import { HitPopover } from "@components/charsheet/equipment/armor/HitPopover";
+import { BodyPartGrid } from "@components/charsheet/equipment/body/BodyPartGrid";
+import { HelpPopover } from "@components/charsheet/shared/HelpPopover";
+import { Panel } from "@components/charsheet/shared/Panel";
 
 import WoundTracker from "../wounds/WoundTracker";
 

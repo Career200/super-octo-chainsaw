@@ -2,6 +2,7 @@ import { useStore } from "@nanostores/preact";
 import type { RefObject } from "preact";
 import { useState } from "preact/hooks";
 
+import { Popover } from "@components/charsheet/shared/Popover";
 import {
   type ArmorTemplate,
   type BodyPartName,
@@ -11,8 +12,6 @@ import {
 import { getArmorPiece, setArmorSP } from "@stores/armor";
 import { recordManipulation } from "@stores/damage-history";
 import { $homerules } from "@stores/homerules";
-
-import { Popover } from "../../shared/Popover";
 
 import { getConditionClassFromSP } from "../utils";
 
@@ -73,7 +72,8 @@ export const RepairPopover = ({
 
   const handleApply = () => {
     const armor = getArmorPiece(armorId);
-    const partsArray = effectiveSelected === "all" ? bodyParts : [effectiveSelected];
+    const partsArray =
+      effectiveSelected === "all" ? bodyParts : [effectiveSelected];
     const oldSP = spByPart[partsArray[0]] ?? maxSP;
 
     if (oldSP !== sp && armor) {

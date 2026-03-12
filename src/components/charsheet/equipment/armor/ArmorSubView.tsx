@@ -1,5 +1,8 @@
 import { useStore } from "@nanostores/preact";
 
+import { HelpPopover } from "@components/charsheet/shared/HelpPopover";
+import { Panel } from "@components/charsheet/shared/Panel";
+import { TwoPanelView } from "@components/charsheet/shared/TwoPanelView";
 import {
   $ownedArmor,
   getAllOwnedArmor,
@@ -7,10 +10,6 @@ import {
   unwearAll,
 } from "@stores/armor";
 import { $selectedArmor, selectArmor } from "@stores/ui";
-
-import { HelpPopover } from "../../shared/HelpPopover";
-import { Panel } from "../../shared/Panel";
-import { TwoPanelView } from "../../shared/TwoPanelView";
 
 import { BodyPartGrid } from "../body/BodyPartGrid";
 

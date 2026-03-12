@@ -1,4 +1,4 @@
-import { TwoPanelView } from "../../shared/TwoPanelView";
+import { TwoPanelView } from "@components/charsheet/shared/TwoPanelView";
 
 import { AmmoListPanel } from "./AmmoListPanel";
 import { WeaponListPanel } from "./WeaponListPanel";

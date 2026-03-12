@@ -48,8 +48,7 @@ function SkillDetail({
           {STAT_LABELS[stat as keyof typeof STAT_LABELS] ?? "SPECIAL"}
         </span>
         <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Diff</span>
-          x{diffMod}
+          <span class="weapon-detail-label">Diff</span>x{diffMod}
         </span>
         {melee && (
           <span class="weapon-detail-stat">
@@ -68,8 +67,8 @@ function SkillDetail({
         <div class="skill-detail-attacks">
           {activeAttacks.map((m) => (
             <span key={m} class="skill-detail-attack">
-              <span class="weapon-detail-label">{MANEUVER_LABELS[m]}</span>
-              +{keyAttacks[m]}
+              <span class="weapon-detail-label">{MANEUVER_LABELS[m]}</span>+
+              {keyAttacks[m]}
             </span>
           ))}
         </div>

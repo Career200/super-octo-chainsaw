@@ -1,13 +1,12 @@
 import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
+import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
+import { TabStrip } from "@components/charsheet/shared/TabStrip";
 import type { GearTemplate } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import { $customGear, $gear, $ownedGear, $ownedGearCount } from "@stores/gear";
 import { $selectedGear, startAddingGear, tabStore } from "@stores/ui";
-
-import { CollapsibleGroup } from "../../shared/CollapsibleGroup";
-import { TabStrip } from "../../shared/TabStrip";
 
 import { GearCard } from "./GearCard";
 

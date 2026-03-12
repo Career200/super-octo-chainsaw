@@ -47,7 +47,8 @@ export const MeleeWeaponCard = ({
       <div class="cc-hero">
         <div class="cc-hero-cell">
           <span class="cc-hero-value">
-            {weapon.damage} ({dmSign}{dmgExtra})
+            {weapon.damage} ({dmSign}
+            {dmgExtra})
           </span>
         </div>
         <div class="cc-hero-cell cc-hero-skill">

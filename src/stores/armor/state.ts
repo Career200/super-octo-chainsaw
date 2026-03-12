@@ -265,4 +265,10 @@ export function updateInstance(
 
 // --- Re-export catalog for UI ---
 export { ARMOR_CATALOG, getTemplate, IMPLANT_TEMPLATES };
-export type { ArmorInstance, ArmorLayer, ArmorPiece, ArmorTemplate, BodyPartName };
+export type {
+  ArmorInstance,
+  ArmorLayer,
+  ArmorPiece,
+  ArmorTemplate,
+  BodyPartName,
+};

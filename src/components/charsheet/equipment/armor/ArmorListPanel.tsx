@@ -1,5 +1,7 @@
 import { useStore } from "@nanostores/preact";
 
+import { Panel } from "@components/charsheet/shared/Panel";
+import { TabStrip } from "@components/charsheet/shared/TabStrip";
 import {
   $customArmorList,
   $ownedArmor,
@@ -10,9 +12,6 @@ import {
 } from "@stores/armor";
 import { startAddingArmor } from "@stores/ui";
 import { $highlightedPart, tabStore } from "@stores/ui";
-
-import { Panel } from "../../shared/Panel";
-import { TabStrip } from "../../shared/TabStrip";
 
 import { ArmorCard } from "./ArmorCard";
 import { ImplantCard } from "./ImplantCard";
