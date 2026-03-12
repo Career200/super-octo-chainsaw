@@ -7,7 +7,7 @@ import { $ammoByCaliberLookup, addAmmo, removeAmmo } from "@stores/ammo";
 import type { WeaponPiece } from "@stores/weapons";
 import { fireWeapon, reloadWeapon, setCurrentAmmo } from "@stores/weapons";
 
-import { Popover } from "../shared/Popover";
+import { Popover } from "../../shared/Popover";
 
 interface RangeEntry {
   label: string;

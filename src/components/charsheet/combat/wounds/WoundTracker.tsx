@@ -4,10 +4,10 @@ import { useEffect, useState } from "preact/hooks";
 import { WOUND_LEVELS } from "@scripts/combat/types";
 import { $health, syncStunToPhysical } from "@stores/health";
 
-import { HelpPopover } from "../shared/HelpPopover";
+import { HelpPopover } from "../../shared/HelpPopover";
 
-import { WoundHelpContent } from "./help/WoundHelpContent";
 import { StabilizedControl } from "./StabilizedControl";
+import { WoundHelpContent } from "./WoundHelpContent";
 import { WoundLevelGroup } from "./WoundLevelGroup";
 
 export default function WoundTracker() {

@@ -12,9 +12,10 @@ import { HelpPopover } from "../../shared/HelpPopover";
 import { Panel } from "../../shared/Panel";
 import { TwoPanelView } from "../../shared/TwoPanelView";
 
-import { ArmorListPanel } from "./ArmorListPanel";
 import { BodyPartGrid } from "../body/BodyPartGrid";
+
 import { ArmorHelpContent } from "./ArmorHelpContent";
+import { ArmorListPanel } from "./ArmorListPanel";
 
 export default function ArmorSubView() {
   const selectedArmorId = useStore($selectedArmor);

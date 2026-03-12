@@ -1,9 +1,9 @@
 import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
+import { AMMO_CATALOG } from "@scripts/ammo/catalog";
 import type { WeaponTemplate, WeaponType } from "@scripts/weapons/catalog";
 import { WEAPON_CATALOG, WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
-import { AMMO_CATALOG } from "@scripts/ammo/catalog";
 import { $customAmmoItems } from "@stores/ammo";
 import {
   $selectedAmmo,
@@ -20,8 +20,8 @@ import { HelpPopover } from "../../shared/HelpPopover";
 import { Panel } from "../../shared/Panel";
 import { TabStrip } from "../../shared/TabStrip";
 
-import { WeaponHelpContent } from "./WeaponHelpContent";
 import { WeaponCard } from "./WeaponCard";
+import { WeaponHelpContent } from "./WeaponHelpContent";
 
 // Weapon type display order
 const TYPE_ORDER: WeaponType[] = [

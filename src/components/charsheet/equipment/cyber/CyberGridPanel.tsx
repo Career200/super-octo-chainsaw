@@ -1,7 +1,8 @@
 import { CATEGORY_LABELS, type CyberCategory } from "@scripts/cyber/catalog";
 
-import type { CyberItem, CyberlimbCell } from "./cyberViewTypes";
 import { getConditionClassFromSP } from "../utils";
+
+import type { CyberItem, CyberlimbCell } from "./cyberViewTypes";
 
 // --- CategoryCard ---
 

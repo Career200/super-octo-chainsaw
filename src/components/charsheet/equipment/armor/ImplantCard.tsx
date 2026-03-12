@@ -4,9 +4,10 @@ import type { ArmorPiece } from "@scripts/armor/core";
 
 import { ItemCard } from "../../shared/ItemCard";
 
+import { getConditionClassFromSP } from "../utils";
+
 import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { RepairPopover } from "./RepairPopover";
-import { getConditionClassFromSP } from "../utils";
 
 interface Props {
   implant: ArmorPiece;

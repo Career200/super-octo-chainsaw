@@ -1,12 +1,12 @@
 import { useStore } from "@nanostores/preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
+import { CALIBER_ORDER } from "@scripts/ammo/catalog";
 import type {
   Concealability,
   Reliability,
   WeaponType,
 } from "@scripts/weapons/catalog";
-import { CALIBER_ORDER } from "@scripts/ammo/catalog";
 import {
   CONCEALABILITY_LABELS,
   RELIABILITY_LABELS,

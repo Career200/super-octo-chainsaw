@@ -3,8 +3,9 @@ import type { ArmorPiece, ArmorTemplate } from "@scripts/armor/core";
 import { ItemCard } from "../../shared/ItemCard";
 import { ItemMeta } from "../../shared/ItemMeta";
 
-import { BodyPartsCoverage } from "./BodyPartsCoverage";
 import { getConditionClassFromSP } from "../utils";
+
+import { BodyPartsCoverage } from "./BodyPartsCoverage";
 
 interface Props {
   armor: ArmorPiece | ArmorTemplate;

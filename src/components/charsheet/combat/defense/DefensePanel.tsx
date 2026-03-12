@@ -1,12 +1,13 @@
-import { BodyPartGrid } from "../equipment/body/BodyPartGrid";
-import { HitPopover } from "../equipment/armor/HitPopover";
-import { HelpPopover } from "../shared/HelpPopover";
-import { Panel } from "../shared/Panel";
+import { HitPopover } from "../../equipment/armor/HitPopover";
+import { BodyPartGrid } from "../../equipment/body/BodyPartGrid";
+import { HelpPopover } from "../../shared/HelpPopover";
+import { Panel } from "../../shared/Panel";
 
+import WoundTracker from "../wounds/WoundTracker";
+
+import { ArmorHelpContent } from "./ArmorHelpContent";
 import { DamageInfo } from "./DamageInfo";
-import { ArmorHelpContent } from "./help/ArmorHelpContent";
-import { DefenseHelpContent } from "./help/DefenseHelpContent";
-import WoundTracker from "./WoundTracker";
+import { DefenseHelpContent } from "./DefenseHelpContent";
 
 export default function DefensePanel({
   expanded,

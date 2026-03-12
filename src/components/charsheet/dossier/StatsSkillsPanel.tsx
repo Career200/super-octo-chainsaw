@@ -3,7 +3,6 @@ import { useStore } from "@nanostores/preact";
 import { $mySkillsCount } from "@stores/skills";
 import { tabStore } from "@stores/ui";
 
-import { StatsPanel } from "../combat/StatsPanel";
 import { HelpPopover } from "../shared/HelpPopover";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
@@ -11,6 +10,7 @@ import { TabStrip } from "../shared/TabStrip";
 import { StatsSkillsHelpContent } from "./help/StatsSkillsHelpContent";
 import type { SkillFilter } from "./SkillsPanel";
 import { SkillsList } from "./SkillsPanel";
+import { StatsPanel } from "./StatsPanel";
 
 export const StatsSkillsPanel = ({
   expanded,

@@ -27,9 +27,10 @@ import { BottomBarItemShell } from "../../common/bottombar/BottomBarItemShell";
 import { ConfirmPopover } from "../../shared/ConfirmPopover";
 import { ItemForm } from "../../shared/ItemForm";
 
+import { getConditionClassFromSP } from "../utils";
+
 import { ArmorFormFields } from "./ArmorFormFields";
 import { RepairPopover } from "./RepairPopover";
-import { getConditionClassFromSP } from "../utils";
 
 interface Props {
   expanded: boolean;

@@ -4,15 +4,15 @@ import { useEffect, useState } from "preact/hooks";
 
 import { tabStore } from "@stores/ui";
 
-import { BodyInfo } from "./combat/BodyInfo";
-import { StatsStrip } from "./combat/StatsStrip";
 import { BottomBar } from "./common/bottombar/BottomBar";
+import { BodyInfo } from "./common/topbar/BodyInfo";
+import { StatsStrip } from "./common/topbar/StatsStrip";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { TabStrip } from "./shared/TabStrip";
 
 // Deferred
-const WoundIndicator = lazy(() => import("./combat/WoundIndicator"));
-const AwarenessLine = lazy(() => import("./combat/AwarenessLine"));
+const WoundIndicator = lazy(() => import("./common/topbar/WoundIndicator"));
+const AwarenessLine = lazy(() => import("./common/topbar/AwarenessLine"));
 
 // Views
 const CombatView = lazy(() => import("./combat/CombatView"));
