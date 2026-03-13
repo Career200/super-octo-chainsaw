@@ -38,13 +38,13 @@ export const $ownedCyber = persistentAtom<OwnedItem[]>("owned-cyber", [], {
 
 // --- Houserule helpers ---
 
-/** If the template is a cyber eye and the preinstalled rule is on, push a TSM item. */
+/** If the template is an optics container and the preinstalled rule is on, push a TSM item. */
 function appendPreinstalled(
   template: CyberTemplate,
   parentInstanceId: string,
   out: OwnedItem[],
 ): void {
-  if (template.id !== "basic-eye") return;
+  if (template.category !== "optics" || template.role !== "container") return;
   const rules = $homerules.get();
   if (!rules.cyberEyePreinstalled) return;
 
@@ -62,6 +62,16 @@ function appendPreinstalled(
 
 // --- Helpers ---
 
+const TSM_IDS = ["tsm", "tsm-plus"];
+
+/** Effective slot cost, respecting tsmFreeSlot houserule. */
+function effectiveSlotCost(templateId: string): number {
+  const t = CYBER_CATALOG[templateId];
+  if (!t) return 1;
+  if ($homerules.get().tsmFreeSlot && TSM_IDS.includes(templateId)) return 0;
+  return t.slotCost ?? 1;
+}
+
 /** Count options slotted into a container vs its maxSlots. */
 export function getSlotUsage(containerInstanceId: string): {
   used: number;
@@ -73,10 +83,10 @@ export function getSlotUsage(containerInstanceId: string): {
 
   const template = CYBER_CATALOG[container.templateId];
   const children = items.filter((i) => i.parentId === containerInstanceId);
-  const used = children.reduce((sum, child) => {
-    const ct = CYBER_CATALOG[child.templateId];
-    return sum + (ct?.slotCost ?? 1);
-  }, 0);
+  const used = children.reduce(
+    (sum, child) => sum + effectiveSlotCost(child.templateId),
+    0,
+  );
 
   return { used, max: template?.maxSlots ?? null };
 }
@@ -90,7 +100,7 @@ export function getContainersForOption(
     return [];
 
   const items = $ownedCyber.get();
-  const optSlotCost = template.slotCost ?? 1;
+  const optSlotCost = effectiveSlotCost(templateId);
   const results: {
     container: HydratedCyberItem;
     used: number;
@@ -286,7 +296,7 @@ export function slotOption(
 
   // Check slot availability
   const { used, max } = getSlotUsage(containerInstanceId);
-  const slotCost = template.slotCost ?? 1;
+  const slotCost = effectiveSlotCost(option.templateId);
   if (max != null && used + slotCost > max) return;
 
   const finalHc = container.installed ? (hc ?? rollHcDice(template.hc)) : 0;
@@ -345,9 +355,11 @@ $ownedCyber.listen((items) => deriveEffects(items));
 
 // --- Computed stores ---
 
+// Depends on $homerules so downstream memos recompute on any houserule change
+// (e.g. tsmFreeSlot affects slot counts, future rules may affect other derived data)
 export const $hydratedCyber = computed(
-  [$ownedCyber],
-  (items): HydratedCyberItem[] =>
+  [$ownedCyber, $homerules],
+  (items, _rules): HydratedCyberItem[] =>
     items.flatMap((item) => {
       const template = CYBER_CATALOG[item.templateId];
       if (!template) return [];

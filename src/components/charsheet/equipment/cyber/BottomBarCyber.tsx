@@ -59,7 +59,6 @@ function CyberHeaderActions({
           <button
             ref={popoverBtnRef}
             class="bar-action"
-            disabled={install.disabled}
             onClick={(e) => {
               e.stopPropagation();
               setPopoverOpen(true);

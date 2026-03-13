@@ -204,7 +204,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "optics",
     "container",
     "3d6",
-    "Dual-lens cybereye implant covering both eye slots. 6 option slots.",
+    "Replace your entire optic ridge and both eyes with a single wide-angle cyberoptic, giving you that cool, visored look so 'in' with today's boosters!",
     { cost: 650, availability: "P", maxSlots: 6, instanceCost: 2 },
   ),
   "color-shift": c(
@@ -232,7 +232,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Advanced LED screen with full-color video display.",
-    { cost: 500, availability: "C", containerCategory: "optics" },
+    { cost: 500, availability: "C", containerCategory: "optics", slotCost: 3 },
   ),
 
   // === Audio ===

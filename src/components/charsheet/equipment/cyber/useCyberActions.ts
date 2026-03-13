@@ -28,7 +28,6 @@ export function useCyberActions(
   action: { label: string; run: () => void } | null;
   install: {
     label: string;
-    disabled?: boolean;
     blockedHint?: string;
     containers?: ContainerChoice[];
     noContainerHint?: string;
@@ -79,7 +78,6 @@ export function useCyberActions(
       },
       install: {
         label: "Install",
-        disabled: isOption && containerChoices.every((c) => c.full),
         blockedHint:
           isContainer &&
           !canInstallContainer(
@@ -117,8 +115,7 @@ export function useCyberActions(
         action: null,
         install: {
           label: "Slot",
-          disabled: containerChoices.length === 0,
-          containers: containerChoices,
+            containers: containerChoices,
           noContainerHint,
           hcRowDefs: [
             {
