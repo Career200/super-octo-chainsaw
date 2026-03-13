@@ -35,16 +35,21 @@
   margin-bottom: var(--space-12);
 }
 
-.repair-selectable {
+.badge-selectable {
   cursor: pointer;
 }
 
-.repair-selectable:hover {
+.badge-selectable:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.badge-selectable:hover:not(:disabled) {
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.repair-selectable.selected {
+.badge-selectable.selected {
   background: var(--accent);
   border-color: var(--accent);
   color: #000;
@@ -72,7 +77,6 @@
 .popover-danger .popover-input::placeholder {
   color: var(--fg-soft);
 }
-
 
 .popover-hit {
   width: min(360px, var(--popover-max-width));

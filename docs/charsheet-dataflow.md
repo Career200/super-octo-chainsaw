@@ -71,7 +71,8 @@
                │  gear-tab,        │                       CombatView (offense-tab)
                │  skills-filter,   │
                │  notes-tab,       │
-               │  offense-tab      │
+               │  offense-tab,     │
+               │  cyber-list-tab  │
                └────────────────────┘
 
                ┌────────────────────┐
@@ -275,6 +276,31 @@
                 Cross-highlighting: selectAmmo/startAddingAmmo clear $selectedWeapon/$addingWeapon
 
                ┌────────────────────┐
+               │   $ownedCyber   │─────────────────────▸ CyberSubView ◂──▸
+               │     (persist)    │                       BottomBarCyber ◂──▸
+               │  OwnedItem[]    │                       (takeCyber, installCyber, installOwned,
+               └──┬──┬───────────┘                        uninstallCyber, discardCyber, slotOption,
+                  │  │                                     unslotOption, setItemHc)
+                  │  │
+                  │  ▾
+                  │ ┌──────────────┐
+                  │ │$hydratedCyber│──▸ $installedByCategory
+                  │ │  (computed)  │
+                  │ └──────────────┘
+                  │
+                  ▾
+               ┌──────────────────┐
+               │  $cyberEffects   │──▸ $hcData (+ $EMP)
+               │     (persist)    │    { humanity, hcTotal, empBase, empCurrent }
+               │  listener-driven │
+               └──────────────────┘
+
+               ┌────────────────────┐
+               │  $selectedCyber   │─────────────────────▸ BottomBarCyber (detail view)
+               │      (atom)       │                       CyberSubView (highlight)
+               └────────────────────┘
+
+               ┌────────────────────┐
                │  $selectedArmor  │─────────────────────▸ BottomBarArmor (detail view)
                │      (atom)       │                       ArmorCard (highlight)
                └────────────────────┘                      BodyPartCard (layer active state)
@@ -293,11 +319,12 @@
 
 ## Key patterns
 
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$homerules`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`, `$unarmedSkill`) own the data, persist to localStorage
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$homerules`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`, `$unarmedSkill`, `$ownedCyber`, `$cyberEffects`) own the data, persist to localStorage
 - **Tab stores** via `tabStore()` factory — 8 keys (`spa-tab`, `equipment-sub-tab`, `armor-list-tab`, `weapon-list-tab`, `gear-tab`, `skills-filter`, `notes-tab`, `offense-tab`) each persist to localStorage, cached by key so all subscribers share one atom
 - **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only id → quantity. Full objects come from static catalogs at read time. Custom skills are stored as full objects in `$skills`; custom gear definitions live in a separate `$customGearItems` store (persists independently of quantity).
-- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$meleeSkills`, `$myMartialArts`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`) derive from persistent stores
-- **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`
+- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$meleeSkills`, `$myMartialArts`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`, `$hydratedCyber`, `$installedByCategory`, `$hcData`) derive from persistent stores
+- **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`; `$cyberEffects` + `$EMP` → `$hcData`
+- **Cyber** uses instance-based persistence (like armor). `$ownedCyber` stores all owned instances with an `installed` flag — only installed items contribute HC. `$cyberEffects` is a listener-derived summary (catalog-free, safe for eager import). HC is rolled on install, zeroed on uninstall.
 - **Mutations**: components call action functions exported from store modules, never set computed stores directly
 - **UI atoms**: `$selectedSkill`/`$addingSkill`, `$selectedGear`/`$addingGear`, `$selectedArmor`/`$addingArmor`, and `$selectedWeapon`/`$addingWeapon` are each mutually exclusive pairs — setting one clears the other via helper functions. `$highlightedPart` is an independent atom for body part highlighting on the inventory grid.
 - **Weapons** use instance-based persistence (like armor, unlike gear's quantity-based). Each weapon has its own ammo state. Template resolution via `resolveWeaponTemplate()` checks `WEAPON_CATALOG` + `$customWeaponTemplates`. Combat panel will read `$allOwnedWeapons` + `$allSkills` + stat stores for skill breakdowns (render-time, no new computed store needed).

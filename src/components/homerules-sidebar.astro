@@ -2,7 +2,14 @@
 import Sidebar from './sidebar.astro';
 
 const KEY = "homerules";
-const DEFAULTS = { locationalDegradation: true, scaledDegradation: true };
+const DEFAULTS = {
+  locationalDegradation: true,
+  scaledDegradation: true,
+  cyberEyePreinstalled: true,
+  cyberEyePreinstalledOption: "tsm-plus",
+  tsmFreeHc: true,
+  tsmFreeSlot: true,
+};
 
 const rules = [
   { id: "hr-locational", field: "locationalDegradation", label: "Locational degradation", desc: "leg hit only degrades leg SP" },
@@ -24,6 +31,39 @@ const rules = [
       </>
     ))}
     <p class="homerules-note">Turn both off for RAW armor degradation.</p>
+  </fieldset>
+  <hr/>
+  <fieldset>
+    <legend>Cybernetics</legend>
+    <label>
+      <input type="checkbox" id="hr-eye-preinstalled" data-field="cyberEyePreinstalled" />
+      CyberEyes preinstalled with:
+      <select id="hr-eye-option" data-field="cyberEyePreinstalledOption">
+        <option value="tsm">TSM</option>
+        <option value="tsm-plus">TSM+</option>
+      </select>
+    </label>
+    <label>
+      <input type="checkbox" id="hr-tsm-free-hc" data-field="tsmFreeHc" />
+      TSM/TSM+ Humanity Cost 0
+    </label>
+    <label>
+      <input type="checkbox" id="hr-tsm-free-slot" data-field="tsmFreeSlot" />
+      TSM/TSM+ Slot Cost 0
+    </label>
+  </fieldset>
+
+  <fieldset class="clear-data">
+    <legend>Danger Zone</legend>
+    <label>
+      <input type="checkbox" id="clear-confirm-1" />
+      I want to erase all saved data
+    </label>
+    <label>
+      <input type="checkbox" id="clear-confirm-2" />
+      I understand this cannot be undone
+    </label>
+    <button id="clear-data-btn" disabled>Clear all data</button>
   </fieldset>
 </Sidebar>
 
@@ -58,5 +98,31 @@ const rules = [
       s[field] = el.checked;
       persist(s);
     });
+  });
+
+  document.querySelectorAll("#homerules select[data-field]").forEach((el) => {
+    const field = el.dataset.field;
+    el.value = state[field] ?? DEFAULTS[field];
+    el.addEventListener("change", () => {
+      const s = load();
+      s[field] = el.value;
+      persist(s);
+    });
+  });
+
+  // Clear all data
+  const c1 = document.getElementById("clear-confirm-1");
+  const c2 = document.getElementById("clear-confirm-2");
+  const btn = document.getElementById("clear-data-btn");
+
+  function updateBtn() {
+    btn.disabled = !(c1.checked && c2.checked);
+  }
+  c1.addEventListener("change", updateBtn);
+  c2.addEventListener("change", updateBtn);
+
+  btn.addEventListener("click", () => {
+    localStorage.clear();
+    location.reload();
   });
 </script>

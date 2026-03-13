@@ -15,6 +15,7 @@ import { STAT_STORES } from "@stores/stats";
 import { $selectedSkill, selectSkill, startAddingSkill } from "@stores/ui";
 
 import { Chevron } from "../shared/Chevron";
+import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 export type SkillFilter = "catalog" | "custom" | "my";
 
 const STAT_GROUP_ORDER: SkillStat[] = [
@@ -69,13 +70,7 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
   const selected = useStore($selectedSkill);
   const isSelected = selected === name;
   const inputRef = useRef<HTMLInputElement>(null);
-  const rowRef = useRef<HTMLDivElement>(null);
-  const wasSelected = useRef(false);
-
-  if (isSelected && !wasSelected.current && rowRef.current) {
-    rowRef.current.scrollIntoView({ block: "nearest" });
-  }
-  wasSelected.current = isSelected;
+  const rowRef = useScrollOnSelect<HTMLDivElement>(isSelected);
 
   return (
     <div
@@ -185,9 +180,7 @@ function GroupedSkillsList({
   emptyMessage?: string;
 }) {
   if (skills.length === 0) {
-    return (
-      <div class="empty-message">{emptyMessage ?? "No skills yet"}</div>
-    );
+    return <div class="empty-message">{emptyMessage ?? "No skills yet"}</div>;
   }
   const { byStat, ma } = groupSkills(skills);
   return (

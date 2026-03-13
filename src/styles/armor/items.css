@@ -3,7 +3,6 @@
   border-color: var(--accent);
 }
 
-
 .armor-sp {
   font-size: var(--font-ui-lg);
   font-weight: bold;
@@ -28,8 +27,7 @@
   color: var(--fg-soft);
 }
 
-
-.coverage-badge {
+.badge {
   display: inline-block;
   padding: var(--space-2) 5px;
   font-size: var(--font-ui);
@@ -41,7 +39,7 @@
   text-transform: uppercase;
 }
 
-.coverage-badge.coverage-full {
+.badge.badge-full {
   padding: var(--space-2) var(--space-12);
   letter-spacing: 1px;
 }
@@ -53,7 +51,6 @@
 .armor-actions button {
   flex: 1;
 }
-
 
 /* === ArmorCard (extends .item-card) === */
 .armor-group-label {
@@ -128,8 +125,8 @@
   color: var(--condition-color);
 }
 
-.coverage-badge.condition-damaged,
-.coverage-badge.condition-critical {
+.badge.condition-damaged,
+.badge.condition-critical {
   border-color: var(--condition-color);
   color: var(--condition-color);
 }
@@ -143,27 +140,30 @@
   flex: 1 1 100%;
 }
 
-.armor-form-row-error .coverage-badge-toggle:not(.active) {
+.armor-form-row-error .badge-toggle:not(.active) {
   border-color: var(--danger);
 }
 
-.coverage-badge-toggle {
+.badge-toggle {
   cursor: pointer;
-  transition: background 0.1s, border-color 0.1s, color 0.1s;
+  transition:
+    background 0.1s,
+    border-color 0.1s,
+    color 0.1s;
 }
 
-.coverage-badge-toggle:hover:not(:disabled) {
+.badge-toggle:hover:not(:disabled) {
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.coverage-badge-toggle.active {
+.badge-toggle.active {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--bg);
 }
 
-.coverage-badge-toggle:disabled {
+.badge-toggle:disabled {
   cursor: default;
 }
 

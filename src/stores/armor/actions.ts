@@ -1,4 +1,9 @@
-import type { ArmorInstance, ArmorLayer, ArmorPiece, BodyPartName } from "@scripts/armor/core";
+import type {
+  ArmorInstance,
+  ArmorLayer,
+  ArmorPiece,
+  BodyPartName,
+} from "@scripts/armor/core";
 import { countsAsLayer, generateId, getPartSpMax } from "@scripts/armor/core";
 import { type Availability, normalizeKey } from "@scripts/catalog-common";
 

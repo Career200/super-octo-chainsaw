@@ -127,3 +127,10 @@ export function selectAmmo(id: string | null): void {
 export function startAddingAmmo(): void {
   $weaponAmmoFocus.set({ kind: "adding-ammo" });
 }
+
+/** Currently selected cyber item ID, or null. */
+export const $selectedCyber = atom<string | null>(null);
+
+export function selectCyber(id: string | null): void {
+  $selectedCyber.set(id);
+}

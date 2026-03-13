@@ -1,6 +1,6 @@
 export const saveToLocalStorage = (
   key: string,
-  value: Record<string, unknown>
+  value: Record<string, unknown>,
 ) => {
   localStorage.setItem(key, JSON.stringify(value));
 };

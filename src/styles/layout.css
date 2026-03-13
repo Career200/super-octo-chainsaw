@@ -119,10 +119,48 @@ footer {
   cursor: pointer;
 }
 
+.homerules-content select {
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0 0.2rem;
+  cursor: pointer;
+}
+
 .homerules-content .homerules-note {
   font-size: 0.7rem;
   color: var(--fg-soft);
   margin-top: 0.5rem;
+}
+
+.homerules-content .clear-data {
+  margin-top: auto;
+  border-top: 1px solid var(--fg-soft);
+  padding-top: 1rem;
+}
+
+.homerules-content .clear-data legend {
+  color: #c44;
+}
+
+#clear-data-btn {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.4rem;
+  background: #c44;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+#clear-data-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .nav-content {

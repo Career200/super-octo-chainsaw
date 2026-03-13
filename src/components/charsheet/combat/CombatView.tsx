@@ -7,10 +7,10 @@ import { Panel } from "../shared";
 import { TabStrip } from "../shared/TabStrip";
 import { TwoPanelView } from "../shared/TwoPanelView";
 
-import DefensePanel from "./DefensePanel";
+import DefensePanel from "./defense/DefensePanel";
 
-const RangedPanel = lazy(() => import("./RangedPanel"));
-const MeleePanel = lazy(() => import("./MeleePanel"));
+const RangedPanel = lazy(() => import("./offense/RangedPanel"));
+const MeleePanel = lazy(() => import("./offense/MeleePanel"));
 
 const $offenseTab = tabStore("offense-tab", "ranged");
 

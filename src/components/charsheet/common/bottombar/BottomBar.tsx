@@ -7,6 +7,7 @@ import {
   $addingGear,
   $addingSkill,
   $selectedArmor,
+  $selectedCyber,
   $selectedGear,
   $selectedSkill,
   $weaponAmmoFocus,
@@ -17,12 +18,21 @@ import { useAutoExpand } from "./useAutoExpand";
 
 const BottomBarHistory = lazy(() => import("../../combat/BottomBarHistory"));
 const BottomBarSkills = lazy(() => import("../../dossier/BottomBarSkills"));
-const BottomBarArmor = lazy(() => import("../../equipment/BottomBarArmor"));
-const BottomBarEquipment = lazy(
-  () => import("../../equipment/BottomBarEquipment"),
+const BottomBarArmor = lazy(
+  () => import("../../equipment/armor/BottomBarArmor"),
 );
-const BottomBarWeapon = lazy(() => import("../../equipment/BottomBarWeapon"));
-const BottomBarAmmo = lazy(() => import("../../equipment/BottomBarAmmo"));
+const BottomBarEquipment = lazy(
+  () => import("../../equipment/gear/BottomBarEquipment"),
+);
+const BottomBarWeapon = lazy(
+  () => import("../../equipment/weapons/BottomBarWeapon"),
+);
+const BottomBarAmmo = lazy(
+  () => import("../../equipment/weapons/BottomBarAmmo"),
+);
+const BottomBarCyber = lazy(
+  () => import("../../equipment/cyber/BottomBarCyber"),
+);
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "combat"));
@@ -32,6 +42,7 @@ export const BottomBar = () => {
   const selectedGear = useStore($selectedGear);
   const addingArmor = useStore($addingArmor);
   const selectedArmor = useStore($selectedArmor);
+  const selectedCyber = useStore($selectedCyber);
   const weaponAmmoFocus = useStore($weaponAmmoFocus);
   const equipSubTab = useStore(tabStore("equipment-sub-tab", "gear"));
   const [expanded, setExpanded] = useState(false);
@@ -46,6 +57,7 @@ export const BottomBar = () => {
   useAutoExpand(addingSkill, selectedSkill, expanded, setExpanded);
   useAutoExpand(addingGear, selectedGear, expanded, setExpanded);
   useAutoExpand(addingArmor, selectedArmor, expanded, setExpanded);
+  useAutoExpand(false, selectedCyber, expanded, setExpanded);
   const hasWeaponAmmo = weaponAmmoFocus !== null;
   const isAddingWeaponAmmo =
     weaponAmmoFocus?.kind === "adding-weapon" ||
@@ -65,7 +77,8 @@ export const BottomBar = () => {
     (tab === "equipment" &&
       ((equipSubTab === "gear" && (selectedGear || addingGear)) ||
         (equipSubTab === "weapons" && hasWeaponAmmo) ||
-        (equipSubTab === "armor" && (!!selectedArmor || addingArmor)))) ||
+        (equipSubTab === "armor" && (!!selectedArmor || addingArmor)) ||
+        (equipSubTab === "cyber" && !!selectedCyber))) ||
     tab === "combat"; // combat always has history content
   if (expanded && !hasContent) {
     setExpanded(false);
@@ -107,6 +120,9 @@ export const BottomBar = () => {
           ))}
         {tab === "equipment" && equipSubTab === "armor" && (
           <BottomBarArmor expanded={expanded} onToggle={toggle} />
+        )}
+        {tab === "equipment" && equipSubTab === "cyber" && (
+          <BottomBarCyber expanded={expanded} onToggle={toggle} />
         )}
       </Suspense>
     </div>

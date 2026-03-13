@@ -149,7 +149,10 @@ export function generateId(prefix: string): string {
 }
 
 // Face on worn (non-implant) armor gets half SP; everything else gets full SP
-export function getPartSpMax(template: ArmorTemplate, part: BodyPartName): number {
+export function getPartSpMax(
+  template: ArmorTemplate,
+  part: BodyPartName,
+): number {
   if (part === "face" && !template.layer) {
     return Math.floor(template.spMax / 2);
   }

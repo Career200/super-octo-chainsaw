@@ -783,7 +783,10 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1,
     200,
     'Mono-sectional crystal blade. Incredibly sharp. In the Japanese "tanto" style.',
-    { effects: "Mono: 2\u00D7 dmg on nat 10, breaks on nat 1. 1/3 SP soft, 2/3 SP hard" },
+    {
+      effects:
+        "Mono: 2\u00D7 dmg on nat 10, breaks on nat 1. 1/3 SP soft, 2/3 SP hard",
+    },
   ),
   kendachi_monokatana: w(
     "kendachi_monokatana",
@@ -800,7 +803,10 @@ export const WEAPON_CATALOG: Record<string, WeaponTemplate> = {
     1,
     600,
     "Sword length version of monoblade. Resembles a hightech katana with a milky, nearly transparent blade.",
-    { effects: "Mono: 2\u00D7 dmg on nat 10, breaks on nat 1. 1/3 SP soft, 2/3 SP hard" },
+    {
+      effects:
+        "Mono: 2\u00D7 dmg on nat 10, breaks on nat 1. 1/3 SP soft, 2/3 SP hard",
+    },
   ),
   spm1_battleglove: w(
     "spm1_battleglove",

@@ -7,7 +7,10 @@
   color: var(--border-green);
   display: flex;
   flex-direction: column;
-  transition: background-color var(--transition-speed), box-shadow var(--transition-speed), transform var(--transition-speed);
+  transition:
+    background-color var(--transition-speed),
+    box-shadow var(--transition-speed),
+    transform var(--transition-speed);
   &:hover {
     background: var(--bg-card-hover);
     box-shadow: var(--glow-accent);

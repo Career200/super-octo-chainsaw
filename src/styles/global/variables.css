@@ -17,6 +17,7 @@
   --accent: #00ffcc;
   --accent-muted: #0ff2c2a0;
   --accent-subtle: rgba(0, 255, 204, 0.1);
+  --border-owned: #3d8a7a;
 
   /* Terminal green palette */
   --terminal-green: #00ff99;

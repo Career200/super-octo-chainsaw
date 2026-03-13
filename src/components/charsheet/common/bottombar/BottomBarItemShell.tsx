@@ -1,9 +1,9 @@
 import type { ComponentChildren } from "preact";
 import { useRef, useState } from "preact/hooks";
 
-import { Chevron } from "../../shared/Chevron";
-import { ConfirmPopover } from "../../shared/ConfirmPopover";
-import { Popover } from "../../shared/Popover";
+import { Chevron } from "@components/charsheet/shared/Chevron";
+import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
+import { Popover } from "@components/charsheet/shared/Popover";
 
 interface Props {
   expanded: boolean;
