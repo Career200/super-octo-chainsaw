@@ -8,7 +8,7 @@
   background: transparent;
   color: var(--fg-soft);
   font: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--font-ui-xs);
   font-weight: bold;
   cursor: pointer;
   flex-shrink: 0;
@@ -30,7 +30,7 @@
 .popover-help h3 {
   margin: 0 0 12px 0;
   color: var(--accent);
-  font-size: 15px;
+  font-size: var(--font-ui-lg);
 }
 
 .popover-help section {
@@ -50,7 +50,7 @@
 .popover-help p {
   margin: 0 0 4px 0;
   color: var(--fg-soft);
-  font-size: 12px;
+  font-size: var(--font-ui-md);
   line-height: 1.5;
 }
 
@@ -62,7 +62,7 @@
   margin: 0;
   padding: 0 0 0 16px;
   color: var(--fg-soft);
-  font-size: 12px;
+  font-size: var(--font-ui-md);
   line-height: 1.6;
 }
 
@@ -77,7 +77,7 @@
 .popover-help table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: var(--font-ui-md);
   margin: 6px 0 4px;
 }
 
@@ -98,7 +98,7 @@
   margin: 12px 0 0 0;
   padding: 8px 12px;
   border-left: 2px solid var(--border-light);
-  font-size: 11px;
+  font-size: var(--font-ui-sm);
   font-style: italic;
   color: var(--fg-soft);
   line-height: 1.5;
@@ -138,7 +138,7 @@
 
 .popover-help details summary::before {
   content: "▸";
-  font-size: 10px;
+  font-size: var(--font-ui-xs);
   color: var(--fg-soft);
   transition: transform 0.15s;
 }
