@@ -1,5 +1,6 @@
 import type { ComponentChildren, Ref } from "preact";
 
+import { cls } from ".";
 import { Chevron } from "./Chevron";
 
 interface Props {
@@ -28,13 +29,13 @@ export function CollapsibleGroup({
 }: Props) {
   const canExpand = !!onToggle && restCount > 0;
   return (
-    <div
-      ref={rootRef}
-      class={`gear-group${extraClass ? ` ${extraClass}` : ""}`}
-      {...rootProps}
-    >
+    <div ref={rootRef} class={cls("gear-group", extraClass)} {...rootProps}>
       <div
-        class={`gear-group-label${collapsed && canExpand ? " collapsed" : ""}${canExpand ? "" : " no-expand"}`}
+        class={cls(
+          "gear-group-label",
+          collapsed && canExpand && "collapsed",
+          !canExpand && "no-expand",
+        )}
         onClick={onToggle}
       >
         <span>

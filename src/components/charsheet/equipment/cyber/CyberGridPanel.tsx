@@ -1,3 +1,4 @@
+import { cls } from "@components/charsheet/shared";
 import { CATEGORY_LABELS, type CyberCategory } from "@scripts/cyber/catalog";
 
 import { getConditionClassFromSP } from "../utils";
@@ -91,9 +92,12 @@ function CyberlimbsCard({
         return (
           <div
             key={limb.slot}
-            class={`cyber-limb-cell${limb.isCyber ? "" : " cyber-limb-meat"}${
-              selectedId === limbId ? " cyber-limb-selected" : ""
-            }${conditionClass ? ` ${conditionClass}` : ""}`}
+            class={cls(
+              "cyber-limb-cell",
+              !limb.isCyber && "cyber-limb-meat",
+              selectedId === limbId && "cyber-limb-selected",
+              conditionClass,
+            )}
             onClick={() => onLimbClick(limbId)}
           >
             <span class="cyber-limb-label">{limb.label}</span>
