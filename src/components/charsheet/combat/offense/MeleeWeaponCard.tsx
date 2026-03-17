@@ -35,11 +35,11 @@ export const MeleeWeaponCard = ({
           {meleeSkills.map(([name, entry]) => (
             <button
               key={name}
-              class={`label-chip melee-skill-btn${name === selected ? " active" : ""}`}
+              class={`label-chip${name === selected ? " active" : ""}`}
               onClick={() => setMeleeSkill(weapon.id, name)}
             >
-              <span class="label-chip-label">{name}</span>
-              <span class="label-chip-value">{entry.level}</span>
+              <span class="label-chip-sub">{name}</span>
+              <span class="label-chip-main">{entry.level}</span>
             </button>
           ))}
         </div>

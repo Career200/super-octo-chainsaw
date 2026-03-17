@@ -1,4 +1,5 @@
 export { ConfirmPopover } from "./ConfirmPopover";
+export { groupBy } from "./groupBy";
 export { HelpPopover } from "./HelpPopover";
 export { Panel } from "./Panel";
 export { Popover } from "./Popover";

@@ -6,6 +6,7 @@ import { Panel } from "@components/charsheet/shared/Panel";
 import { TabStrip } from "@components/charsheet/shared/TabStrip";
 import { useCollapsibleGroups } from "@components/charsheet/shared/useCollapsibleGroups";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
+import { groupBy } from "@components/charsheet/shared/groupBy";
 import type { WeaponTemplate, WeaponType } from "@scripts/weapons/catalog";
 import { WEAPON_CATALOG, WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
 import { $customAmmoItems } from "@stores/ammo";
@@ -41,16 +42,9 @@ type GroupItem = {
 };
 
 function groupByType(items: GroupItem[]): [string, GroupItem[]][] {
-  const grouped = new Map<string, GroupItem[]>();
-  for (const item of items) {
-    const type = item.weapon.type;
-    if (!grouped.has(type)) grouped.set(type, []);
-    grouped.get(type)!.push(item);
-  }
-  return TYPE_ORDER.filter((t) => grouped.has(t)).map((t) => [
-    WEAPON_TYPE_LABELS[t],
-    grouped.get(t)!,
-  ]);
+  return groupBy(items, (i) => i.weapon.type, TYPE_ORDER).map(
+    ([type, list]) => [WEAPON_TYPE_LABELS[type as WeaponType] ?? type, list],
+  );
 }
 
 function WeaponGroup({

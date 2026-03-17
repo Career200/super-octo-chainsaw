@@ -35,26 +35,6 @@
   margin-bottom: var(--space-12);
 }
 
-.badge-selectable {
-  cursor: pointer;
-}
-
-.badge-selectable:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.badge-selectable:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.badge-selectable.selected {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--bg-black);
-}
-
 /* === Hit Popover === */
 .popover-danger .popover-input {
   width: 100%;

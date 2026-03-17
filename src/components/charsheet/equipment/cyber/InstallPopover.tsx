@@ -116,7 +116,7 @@ function ContainerPicker({
           <button
             key={c.instanceId}
             type="button"
-            class={`badge badge-selectable${selected === c.instanceId ? " selected" : ""}`}
+            class={`badge badge-toggle${selected === c.instanceId ? " selected" : ""}`}
             disabled={c.full}
             onClick={() => onSelect(c.instanceId)}
           >

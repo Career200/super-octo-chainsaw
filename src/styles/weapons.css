@@ -458,7 +458,7 @@
 }
 
 /* === Filter Badge Bar === */
-.filter-badge-bar {
+.filter-chips-bar {
   position: sticky;
   top: 0;
   z-index: 2;
@@ -471,28 +471,8 @@
   background: var(--code-bg);
 }
 
-.filter-badge {
+.filter-chips-bar > * {
   flex-shrink: 0;
-  padding: var(--space-2) var(--space-8);
-  font-size: var(--font-ui-sm);
-  font-weight: bold;
-  text-transform: uppercase;
-  color: var(--fg-soft);
-  background: transparent;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.filter-badge:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.filter-badge.active {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: var(--accent-subtle);
 }
 
 /* Ammo panel: single-column layout (no CSS columns splitting groups) */
@@ -568,20 +548,6 @@
   margin-right: var(--space-4);
 }
 
-/* --- Selectable skill chips on melee weapon cards --- */
-
-.melee-skill-btn {
-  cursor: pointer;
-}
-
-.melee-skill-btn.active {
-  background: var(--accent-subtle);
-  border-color: var(--accent);
-}
-
-.melee-skill-btn.active .label-chip-value {
-  color: var(--accent);
-}
 
 .melee-card-skills {
   display: flex;

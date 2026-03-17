@@ -11,9 +11,9 @@ export function BodyInfo() {
         <span class="body-type-name">{body.name}</span>
       </div>
       <div class="label-chip">
-        <span class="label-chip-label">Carry</span>
+        <span class="label-chip-sub">Carry</span>
         <span class="carry-value">{body.carry}kg</span>
-        <span class="label-chip-label"> Lift</span>
+        <span class="label-chip-sub"> Lift</span>
         <span class="carry-value">{body.deadlift}kg</span>
       </div>
     </div>

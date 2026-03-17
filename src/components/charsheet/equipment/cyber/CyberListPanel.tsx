@@ -372,27 +372,27 @@ export function CyberListPanel({
         />
       }
     >
-      <div class="filter-badge-bar">
+      <div class="filter-chips-bar">
         {badgeCategories.map((cat) => (
           <button
             key={cat}
-            class={`filter-badge${activeCategory === cat ? " active" : ""}`}
+            class={`label-chip${activeCategory === cat ? " active" : ""}`}
             onClick={() => onCategoryChange(cat)}
           >
-            {CATEGORY_LABELS[cat]}
+            <span class="label-chip-main">{CATEGORY_LABELS[cat]}</span>
           </button>
         ))}
       </div>
 
       {isLimbs && (
-        <div class="filter-badge-bar">
+        <div class="filter-chips-bar">
           {limbs.map((limb) => (
             <button
               key={limb.slot}
-              class={`filter-badge${activeSlot === limb.slot ? " active" : ""}`}
+              class={`label-chip${activeSlot === limb.slot ? " active" : ""}`}
               onClick={() => onSlotChange(limb.slot)}
             >
-              {limb.label}
+              <span class="label-chip-main">{limb.label}</span>
             </button>
           ))}
         </div>

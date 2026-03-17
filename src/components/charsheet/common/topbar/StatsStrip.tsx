@@ -37,8 +37,8 @@ const StatChip = ({
 
   return (
     <span class="label-chip">
-      <span class="label-chip-label">{label}</span>
-      <span class={`label-chip-value${diminished ? " diminished" : ""}`}>
+      <span class="label-chip-sub">{label}</span>
+      <span class={`label-chip-main${diminished ? " diminished" : ""}`}>
         {values.current}
       </span>
     </span>

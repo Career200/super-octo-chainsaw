@@ -3,6 +3,7 @@ import type { RefObject } from "preact";
 import { useRef } from "preact/hooks";
 
 import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
+import { groupBy } from "@components/charsheet/shared/groupBy";
 import { Panel } from "@components/charsheet/shared/Panel";
 import { TabStrip } from "@components/charsheet/shared/TabStrip";
 import { useCollapsibleGroups } from "@components/charsheet/shared/useCollapsibleGroups";
@@ -31,18 +32,7 @@ type AmmoItem = {
 };
 
 function groupByCaliber(items: AmmoItem[]): [string, AmmoItem[]][] {
-  const grouped = new Map<string, AmmoItem[]>();
-  for (const item of items) {
-    const cal = item.template.caliber;
-    if (!grouped.has(cal)) grouped.set(cal, []);
-    grouped.get(cal)!.push(item);
-  }
-  // Sort groups by CALIBER_ORDER; unknown calibers go to the end
-  return [...grouped.entries()].sort((a, b) => {
-    const ai = CALIBER_ORDER.indexOf(a[0]);
-    const bi = CALIBER_ORDER.indexOf(b[0]);
-    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
-  });
+  return groupBy(items, (i) => i.template.caliber, CALIBER_ORDER);
 }
 
 function CaliberGroup({
@@ -117,14 +107,14 @@ function CaliberBadgeBar({
   };
   if (calibers.length < 2) return null;
   return (
-    <div class="filter-badge-bar">
+    <div class="filter-chips-bar">
       {calibers.map((cal) => (
         <button
           key={cal}
-          class={`filter-badge${activeCaliber === cal ? " active" : ""}`}
+          class={`label-chip${activeCaliber === cal ? " active" : ""}`}
           onClick={() => handleClick(cal)}
         >
-          {cal}
+          <span class="label-chip-main">{cal}</span>
         </button>
       ))}
     </div>

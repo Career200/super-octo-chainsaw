@@ -9,12 +9,12 @@ export const DamageInfo = () => {
   return (
     <div class="damage-info">
       <div class="label-chip">
-        <span class="label-chip-label">BTM</span>
-        <span class="label-chip-value">{body.btm}</span>
+        <span class="label-chip-sub">BTM</span>
+        <span class="label-chip-main">{body.btm}</span>
       </div>
       <div class="label-chip body-save">
-        <span class="label-chip-label">Save</span>
-        <span class="label-chip-value">{body.currentSave}</span>
+        <span class="label-chip-sub">Save</span>
+        <span class="label-chip-main">{body.currentSave}</span>
         <span
           class={`save-penalty${body.savePenalty < 0 ? " has-penalty" : ""}`}
         >
@@ -22,8 +22,8 @@ export const DamageInfo = () => {
         </span>
         {showDeathSave && (
           <>
-            <span class="label-chip-label"> Death</span>
-            <span class="label-chip-value death-save">{body.deathSave}</span>
+            <span class="label-chip-sub"> Death</span>
+            <span class="label-chip-main death-save">{body.deathSave}</span>
           </>
         )}
       </div>
