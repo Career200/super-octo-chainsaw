@@ -10,7 +10,7 @@
   flex: 1;
   resize: none;
   padding: var(--space-8);
-  font-size: var(--text-sm);
+  font-size: var(--font-ui-sm);
 }
 
 .contact-card {
@@ -37,7 +37,7 @@
   min-height: calc(3em + 20px);
   resize: none;
   margin-top: var(--space-8);
-  font-size: var(--text-sm);
+  font-size: var(--font-ui-sm);
 }
 
 .notes-add-btn {

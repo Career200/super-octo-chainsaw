@@ -208,7 +208,7 @@
   min-height: 152px;
   resize: none;
   font-family: inherit;
-  font-size: var(--text-sm);
+  font-size: var(--font-ui-sm);
   line-height: 1.6;
   padding: var(--space-6) var(--space-8);
   color: var(--fg);

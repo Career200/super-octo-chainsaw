@@ -52,7 +52,7 @@
 .badge-selectable.selected {
   background: var(--accent);
   border-color: var(--accent);
-  color: #000;
+  color: var(--bg-black);
 }
 
 /* === Hit Popover === */
@@ -105,7 +105,7 @@
 .popover-hit .select-option.selected {
   background: var(--danger);
   border-color: var(--danger);
-  color: #fff;
+  color: var(--fg-white);
 }
 
 @media (hover: hover) {
@@ -121,12 +121,12 @@
   gap: var(--space-8);
 }
 
-.hit-shot-count {
-  width: 80px !important;
-  margin: 0 !important;
-  padding: var(--space-4) var(--space-8) !important;
-  font-size: var(--font-ui-sm) !important;
-  margin-left: auto !important;
+.popover-hit .hit-shot-count {
+  width: 80px;
+  margin: 0;
+  margin-left: auto;
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-ui-sm);
   text-align: center;
 }
 

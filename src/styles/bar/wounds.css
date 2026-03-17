@@ -174,12 +174,12 @@
 }
 
 .stabilized-control.stabilized .wound-box {
-  background: var(--terminal);
-  border-color: var(--terminal);
+  background: var(--terminal-green-bright);
+  border-color: var(--terminal-green-bright);
 }
 
 .stabilized-control.stabilized .stabilized-label {
-  color: var(--terminal);
+  color: var(--terminal-green-bright);
 }
 
 .stabilized-control.unstable .wound-box {
