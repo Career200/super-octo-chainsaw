@@ -1,8 +1,9 @@
 import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
+import { AcquireDiscardActions } from "@components/charsheet/common/bottombar/AcquireDiscardActions";
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
+import { parseNum } from "@components/charsheet/shared";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import {
@@ -65,11 +66,6 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
   // Owned instance action state
   const [wearError, setWearError] = useState<string | null>(null);
   const {
-    ref: discardBtnRef,
-    open: confirmOpen,
-    setOpen: setConfirmOpen,
-  } = usePopoverState();
-  const {
     ref: repairBtnRef,
     open: repairOpen,
     setOpen: setRepairOpen,
@@ -91,13 +87,12 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
       if (!trimmed) return "Name cannot be empty";
       return "Select at least one body part";
     }
-    const cost = newCost ? Number(newCost) : 0;
     const instanceId = addCustomArmor(trimmed, {
       type: newType,
       spMax: newSp,
       bodyParts: newBodyParts,
       ev: newEv,
-      cost: !isNaN(cost) ? cost : 0,
+      cost: parseNum(newCost, 0),
       description: newDescription.trim(),
       availability: newAvailability || "C",
     });
@@ -134,84 +129,60 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
   const hasContent = adding || !!(ownedPiece || template);
 
   // --- Header actions by mode ---
-  let headerActions = null;
-
-  if (template && !adding) {
-    // Template selected (catalog or custom) — show Take button
-    const handleAcquire = (e: MouseEvent) => {
-      e.stopPropagation();
-      const instance = acquireArmor(template.templateId);
-      if (instance) selectArmor(instance.id);
-    };
-    headerActions = (
-      <button class="bar-action" onClick={handleAcquire}>
-        Take
-      </button>
-    );
-  } else if (ownedPiece) {
-    // Owned instance — show Wear/Remove + Repair + Discard
-    const handleWear = (e: MouseEvent) => {
-      e.stopPropagation();
-      const result = toggleArmor(ownedPiece.id);
-      if (!result.success) {
-        setWearError(result.error);
-        setTimeout(() => setWearError(null), 3000);
-      }
-    };
-    headerActions = (
-      <>
-        <button
-          class={ownedPiece.worn ? "bar-action active" : "bar-action"}
-          onClick={handleWear}
-        >
-          {ownedPiece.worn ? "Remove" : "Wear"}
-        </button>
-        <button
-          ref={repairBtnRef}
-          class="bar-action"
-          onClick={(e) => {
-            e.stopPropagation();
-            setRepairOpen(true);
-          }}
-        >
-          Repair
-        </button>
-        <RepairPopover
-          anchorRef={repairBtnRef}
-          open={repairOpen}
-          onClose={() => setRepairOpen(false)}
-          armorId={ownedPiece.id}
-          template={ownedPiece}
-          bodyParts={ownedPiece.bodyParts}
-          spByPart={ownedPiece.spByPart}
-        />
-        <button
-          ref={discardBtnRef}
-          class="bar-action bar-remove"
-          onClick={(e) => {
-            e.stopPropagation();
-            setConfirmOpen(true);
-          }}
-        >
-          Discard
-        </button>
-        <ConfirmPopover
-          anchorRef={discardBtnRef}
-          open={confirmOpen}
-          message={`Discard ${ownedPiece.name}?`}
-          confirmText="Discard"
-          cancelText="Keep"
-          type="danger"
-          onConfirm={() => {
-            discardArmor(ownedPiece.id);
-            selectArmor(null);
-            setConfirmOpen(false);
-          }}
-          onCancel={() => setConfirmOpen(false)}
-        />
-      </>
-    );
-  }
+  const headerActions =
+    template || ownedPiece ? (
+      <AcquireDiscardActions
+        showAcquire={!!template && !adding}
+        onAcquire={(e) => {
+          e.stopPropagation();
+          const instance = acquireArmor(template!.templateId);
+          if (instance) selectArmor(instance.id);
+        }}
+        showDiscard={!!ownedPiece}
+        discardName={ownedPiece?.name}
+        onDiscard={() => {
+          discardArmor(ownedPiece!.id);
+          selectArmor(null);
+        }}
+      >
+        {ownedPiece && (
+          <>
+            <button
+              class={ownedPiece.worn ? "bar-action active" : "bar-action"}
+              onClick={(e) => {
+                e.stopPropagation();
+                const result = toggleArmor(ownedPiece.id);
+                if (!result.success) {
+                  setWearError(result.error);
+                  setTimeout(() => setWearError(null), 3000);
+                }
+              }}
+            >
+              {ownedPiece.worn ? "Remove" : "Wear"}
+            </button>
+            <button
+              ref={repairBtnRef}
+              class="bar-action"
+              onClick={(e) => {
+                e.stopPropagation();
+                setRepairOpen(true);
+              }}
+            >
+              Repair
+            </button>
+            <RepairPopover
+              anchorRef={repairBtnRef}
+              open={repairOpen}
+              onClose={() => setRepairOpen(false)}
+              armorId={ownedPiece.id}
+              template={ownedPiece}
+              bodyParts={ownedPiece.bodyParts}
+              spByPart={ownedPiece.spByPart}
+            />
+          </>
+        )}
+      </AcquireDiscardActions>
+    ) : null;
 
   // --- Body content ---
   let bodyContent = null;
@@ -261,14 +232,11 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
           notifyIfRemoved(updateCustomArmor(armorId!, { description: v }))
         }
         cost={template.cost != null ? String(template.cost) : ""}
-        onCostChange={(v) => {
-          const n = v ? Number(v) : undefined;
+        onCostChange={(v) =>
           notifyIfRemoved(
-            updateCustomArmor(armorId!, {
-              cost: n != null && !isNaN(n) ? n : 0,
-            }),
-          );
-        }}
+            updateCustomArmor(armorId!, { cost: parseNum(v, 0) }),
+          )
+        }
         availability={template.availability ?? ""}
         onAvailabilityChange={(v) =>
           notifyIfRemoved(

@@ -2,287 +2,26 @@ import { useStore } from "@nanostores/preact";
 import { useCallback, useRef, useState } from "preact/hooks";
 
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { Tip } from "@components/charsheet/shared";
+import { parseNum, useEditToggle } from "@components/charsheet/shared";
 import type { AmmoTemplate, Availability } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
-import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
 import { CALIBER_DAMAGE } from "@scripts/weapons/catalog";
 import {
   $customAmmoItems,
   $ownedAmmo,
-  addAmmo,
   addCustomAmmo,
-  removeAmmo,
   removeCustomAmmo,
   updateCustomAmmo,
 } from "@stores/ammo";
 import { $addingAmmo, $selectedAmmo, selectAmmo } from "@stores/ui";
 
+import { AmmoDetail } from "./AmmoDetail";
+import { AmmoForm } from "./AmmoForm";
+
 interface Props {
   expanded: boolean;
   onToggle: () => void;
 }
-
-// --- Detail view ---
-
-function AmmoDetail({
-  template,
-  quantity,
-}: {
-  template: AmmoTemplate;
-  quantity: number;
-}) {
-  return (
-    <div class="weapon-detail">
-      <div class="weapon-detail-stats">
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Caliber</span>
-          {template.caliber}
-        </span>
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Type</span>
-          {template.type}
-        </span>
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Damage</span>
-          {template.damage}
-        </span>
-        {template.cost != null && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Cost</span>
-            {template.cost}eb / {template.boxSize}
-          </span>
-        )}
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Avail.</span>
-          <span class={`avail-${template.availability ?? "C"}`}>
-            {AVAILABILITY_LABELS[template.availability ?? "C"]}
-          </span>
-        </span>
-      </div>
-      {template.effects && (
-        <p class="text-desc" style="color: var(--accent)">
-          {template.effects}
-        </p>
-      )}
-      {template.description && <p class="text-desc">{template.description}</p>}
-      <div class="gear-qty-controls cc-ammo-stepper">
-        <button
-          class="btn-sm ammo-qty-btn ammo-qty-btn-box"
-          onClick={() => removeAmmo(template.templateId, template.boxSize)}
-        >
-          −{template.boxSize}
-        </button>
-        <button
-          class="btn-sm ammo-qty-btn"
-          onClick={() => removeAmmo(template.templateId)}
-        >
-          −
-        </button>
-        <span class="gear-qty-value cc-ammo-value">{quantity}</span>
-        <button
-          class="btn-sm ammo-qty-btn"
-          onClick={() => addAmmo(template.templateId, 1)}
-        >
-          +
-        </button>
-        <button
-          class="btn-sm ammo-qty-btn ammo-qty-btn-box"
-          onClick={() => addAmmo(template.templateId, template.boxSize)}
-        >
-          +{template.boxSize}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// --- Form (add / edit custom) ---
-
-function AmmoForm({
-  caliber,
-  onCaliberChange,
-  type,
-  onTypeChange,
-  damage,
-  onDamageChange,
-  effects,
-  onEffectsChange,
-  description,
-  onDescriptionChange,
-  cost,
-  onCostChange,
-  boxSize,
-  onBoxSizeChange,
-  availability,
-  onAvailabilityChange,
-  errors,
-  autoFocus,
-}: {
-  caliber: string;
-  onCaliberChange?: (v: string) => void;
-  type: string;
-  onTypeChange?: (v: string) => void;
-  damage: string;
-  onDamageChange?: (v: string) => void;
-  effects: string;
-  onEffectsChange?: (v: string) => void;
-  description: string;
-  onDescriptionChange?: (v: string) => void;
-  cost: string;
-  onCostChange?: (v: string) => void;
-  boxSize: string;
-  onBoxSizeChange?: (v: string) => void;
-  availability: string;
-  onAvailabilityChange?: (v: string) => void;
-  errors?: ReadonlySet<string>;
-  autoFocus?: boolean;
-}) {
-  const inp = (
-    field: string,
-    value: string,
-    onChange: ((v: string) => void) | undefined,
-    placeholder: string,
-    title: string,
-    className: string,
-    opts?: { type?: string; min?: string; autoFocus?: boolean; list?: string },
-  ) => (
-    <input
-      type={opts?.type ?? "text"}
-      list={opts?.list}
-      class={`input item-form-input ${className}${errors?.has(field) ? " input-error" : ""}`}
-      value={value}
-      disabled={!onChange}
-      onInput={
-        onChange
-          ? (e) => onChange((e.target as HTMLInputElement).value)
-          : undefined
-      }
-      placeholder={placeholder}
-      title={title}
-      autoFocus={opts?.autoFocus}
-      min={opts?.min}
-    />
-  );
-
-  return (
-    <div class="item-form">
-      <div class="item-form-fields">
-        <span class="weapon-form-ammo">
-          {inp(
-            "caliber",
-            caliber,
-            onCaliberChange,
-            "Caliber",
-            "Caliber (e.g. 9mm, .45)",
-            "",
-            { autoFocus, list: "caliber-suggestions" },
-          )}
-          <datalist id="caliber-suggestions">
-            {Object.keys(CALIBER_DAMAGE).map((c) => (
-              <option key={c} value={c} />
-            ))}
-          </datalist>
-        </span>
-        {inp(
-          "type",
-          type,
-          onTypeChange,
-          "Type",
-          "Ammo type (e.g. std, ap)",
-          "weapon-form-type",
-        )}
-        {inp(
-          "damage",
-          damage,
-          onDamageChange,
-          "Damage",
-          "Damage dice (e.g. 2D6+1)",
-          "weapon-form-damage",
-        )}
-        <Tip label="Cost per box (eb)" class="item-form-cost">
-          {inp(
-            "cost",
-            cost,
-            onCostChange,
-            "Cost",
-            "Cost per box in eurobucks",
-            "",
-            { type: "number", min: "0" },
-          )}
-        </Tip>
-        <Tip label="Box size" class="item-form-box-size">
-          {inp(
-            "boxSize",
-            boxSize,
-            onBoxSizeChange,
-            "Box",
-            "Rounds per box",
-            "",
-            { type: "number", min: "1" },
-          )}
-        </Tip>
-        <Tip label="Street availability" class="item-form-availability">
-          <select
-            class={`input item-form-input avail-${availability || "C"}`}
-            value={availability}
-            disabled={!onAvailabilityChange}
-            onChange={
-              onAvailabilityChange
-                ? (e) =>
-                    onAvailabilityChange((e.target as HTMLSelectElement).value)
-                : undefined
-            }
-            title="Street availability"
-          >
-            <option value="">Availability</option>
-            {Object.entries(AVAILABILITY_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
-            ))}
-          </select>
-        </Tip>
-      </div>
-      <div class="ammo-form-bottom">
-        <div class="ammo-form-half">
-          <span class="text-desc">Effects</span>
-          <textarea
-            class={`input ammo-form-effects${errors?.has("effects") ? " input-error" : ""}`}
-            value={effects}
-            disabled={!onEffectsChange}
-            onInput={
-              onEffectsChange
-                ? (e) =>
-                    onEffectsChange((e.target as HTMLTextAreaElement).value)
-                : undefined
-            }
-            placeholder="Effects"
-            title="Special effects"
-          />
-        </div>
-        <div class="ammo-form-half">
-          <span class="text-desc">Description</span>
-          <textarea
-            class="input item-form-description"
-            value={description}
-            disabled={!onDescriptionChange}
-            onInput={
-              onDescriptionChange
-                ? (e) =>
-                    onDescriptionChange((e.target as HTMLTextAreaElement).value)
-                : undefined
-            }
-            placeholder="No description"
-            title="Description"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// --- Main component ---
 
 export default function BottomBarAmmo({ expanded, onToggle }: Props) {
   const ammoId = useStore($selectedAmmo);
@@ -313,8 +52,10 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
   const quantity = ammoId ? (quantities[ammoId] ?? 0) : 0;
 
   // Edit toggle for custom ammo (view ↔ edit)
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const editing = isCustom && !!customDef && editingId === ammoId;
+  const { editing, toggleEdit } = useEditToggle(
+    ammoId,
+    isCustom && !!customDef,
+  );
 
   // Add-mode form state
   const [newCaliber, setNewCaliber] = useState("");
@@ -353,14 +94,13 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
       if (!typ) return "Type cannot be empty";
       return "Damage cannot be empty";
     }
-    const cost = newCost ? Number(newCost) : undefined;
-    const bs = newBoxSize ? Number(newBoxSize) : undefined;
+    const bs = newBoxSize ? parseNum(newBoxSize, 50) : 0;
     const id = addCustomAmmo(cal, typ, {
       damage: dmg,
       effects: newEffects.trim(),
       description: newDescription.trim(),
-      cost: cost != null && !isNaN(cost) ? cost : undefined,
-      boxSize: bs != null && !isNaN(bs) && bs > 0 ? bs : undefined,
+      cost: newCost ? parseNum(newCost, 0) : undefined,
+      boxSize: bs > 0 ? bs : undefined,
       availability: (newAvailability as Availability) || undefined,
     });
     if (id) {
@@ -433,18 +173,13 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
           updateCustomAmmo(ammoId!, { description: v })
         }
         cost={resolved.cost != null ? String(resolved.cost) : ""}
-        onCostChange={(v) => {
-          const n = v ? Number(v) : undefined;
-          updateCustomAmmo(ammoId!, {
-            cost: n != null && !isNaN(n) ? n : 0,
-          });
-        }}
+        onCostChange={(v) =>
+          updateCustomAmmo(ammoId!, { cost: parseNum(v, 0) })
+        }
         boxSize={String(resolved.boxSize)}
         onBoxSizeChange={(v) => {
-          const n = v ? Number(v) : undefined;
-          updateCustomAmmo(ammoId!, {
-            boxSize: n != null && !isNaN(n) && n > 0 ? n : 50,
-          });
+          const n = parseNum(v, 50);
+          updateCustomAmmo(ammoId!, { boxSize: n > 0 ? n : 50 });
         }}
         availability={resolved.availability ?? ""}
         onAvailabilityChange={(v) =>
@@ -476,7 +211,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
             class="bar-action"
             onClick={(e) => {
               e.stopPropagation();
-              setEditingId(editing ? null : ammoId);
+              toggleEdit();
             }}
           >
             {editing ? "Done" : "Edit"}

@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { Tip } from "@components/charsheet/shared";
+import { parseNum, Tip, useEditToggle } from "@components/charsheet/shared";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import type { Availability } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
@@ -44,8 +44,10 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
   const isOwned = !!resolved && ownedGear.some((i) => i.templateId === gearId);
 
   // Edit-in-place for owned custom items (auto-resets on selection change)
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const editing = isOwned && isCustom && hasCustomDef && editingId === gearId;
+  const { editing, toggleEdit } = useEditToggle(
+    gearId,
+    isOwned && isCustom && hasCustomDef,
+  );
 
   // Add-mode form state
   const [newName, setNewName] = useState("");
@@ -63,12 +65,11 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
     }
     const typeVal = newType.trim() || "gear";
     if (/^armor$/i.test(typeVal)) return "Please use custom armor tab";
-    const cost = newCost ? Number(newCost) : undefined;
     if (
       addCustomGear(trimmed, {
         description: newDescription.trim(),
         type: typeVal,
-        cost: cost != null && !isNaN(cost) ? cost : undefined,
+        cost: newCost ? parseNum(newCost, 0) : undefined,
         availability: newAvailability || "C",
       })
     ) {
@@ -128,7 +129,7 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
             class="bar-action"
             onClick={(e) => {
               e.stopPropagation();
-              setEditingId(editing ? null : gearId);
+              toggleEdit();
             }}
           >
             {editing ? "Done" : "Edit"}
@@ -163,12 +164,11 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
             updateCustomGear(gearId!, { description: v })
           }
           cost={resolved.cost != null ? String(resolved.cost) : ""}
-          onCostChange={(v) => {
-            const n = v ? Number(v) : undefined;
+          onCostChange={(v) =>
             updateCustomGear(gearId!, {
-              cost: n != null && !isNaN(n) ? n : undefined,
-            });
-          }}
+              cost: v ? parseNum(v, 0) : undefined,
+            })
+          }
           availability={resolved.availability ?? ""}
           onAvailabilityChange={(v) =>
             updateCustomGear(gearId!, {

@@ -1,10 +1,10 @@
 import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
+import { AcquireDiscardActions } from "@components/charsheet/common/bottombar/AcquireDiscardActions";
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
+import { parseNum } from "@components/charsheet/shared";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
-import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import type { Availability } from "@scripts/catalog-common";
 import type {
   Concealability,
@@ -53,13 +53,6 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
 
   const isCustom = weaponId ? isCustomWeapon(weaponId) : false;
   const hasCustomDef = weaponId ? weaponId in customDefs : false;
-
-  // Owned instance action state
-  const {
-    ref: discardBtnRef,
-    open: confirmOpen,
-    setOpen: setConfirmOpen,
-  } = usePopoverState();
 
   // Add-mode form state — all empty, showing placeholders
   const [newName, setNewName] = useState("");
@@ -111,11 +104,6 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
     return raw.trim();
   };
 
-  const num = (s: string, fallback: number) => {
-    const n = Number(s);
-    return s === "" || isNaN(n) ? fallback : n;
-  };
-
   const handleAdd = (): string | null => {
     const trimmed = newName.trim();
     if (!trimmed || !newDamage.trim()) {
@@ -130,16 +118,16 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
       skill: isSkillCustom
         ? resolveSkillName(newSkill) || skillForType(newType)
         : skillForType(newType),
-      wa: num(newWa, 0),
+      wa: parseNum(newWa, 0),
       concealability: newConcealability,
       availability: (newAvailability as Availability) || "C",
       damage: newDamage.trim(),
       ammo: isMelee ? "" : newAmmo.trim(),
-      shots: isMelee ? 0 : num(newShots, 0),
-      rof: num(newRof, 1),
+      shots: isMelee ? 0 : parseNum(newShots, 0),
+      rof: parseNum(newRof, 1),
       reliability: newReliability,
-      range: isMelee ? 1 : num(newRange, 50),
-      cost: num(newCost, 0),
+      range: isMelee ? 1 : parseNum(newRange, 50),
+      cost: parseNum(newCost, 0),
       description: newDescription.trim(),
       effects: newEffects.trim(),
       melee: isMelee,
@@ -180,51 +168,23 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   const hasContent = adding || !!resolved;
 
   // Header actions
-  let headerActions = null;
-
-  if (template && !adding) {
-    // Template (catalog or custom not owned) — Take button
-    const handleAcquire = (e: MouseEvent) => {
-      e.stopPropagation();
-      const id = acquireWeapon(template.templateId);
-      if (id) selectWeapon(id);
-    };
-    headerActions = (
-      <button class="bar-action" onClick={handleAcquire}>
-        Take
-      </button>
-    );
-  } else if (ownedPiece) {
-    // Owned instance — Discard
-    headerActions = (
-      <>
-        <button
-          ref={discardBtnRef}
-          class="bar-action bar-remove"
-          onClick={(e) => {
-            e.stopPropagation();
-            setConfirmOpen(true);
-          }}
-        >
-          Discard
-        </button>
-        <ConfirmPopover
-          anchorRef={discardBtnRef}
-          open={confirmOpen}
-          message={`Discard ${ownedPiece.name}?`}
-          confirmText="Discard"
-          cancelText="Keep"
-          type="danger"
-          onConfirm={() => {
-            discardWeapon(ownedPiece.id);
-            selectWeapon(null);
-            setConfirmOpen(false);
-          }}
-          onCancel={() => setConfirmOpen(false)}
-        />
-      </>
-    );
-  }
+  const headerActions =
+    template || ownedPiece ? (
+      <AcquireDiscardActions
+        showAcquire={!!template && !adding}
+        onAcquire={(e) => {
+          e.stopPropagation();
+          const id = acquireWeapon(template!.templateId);
+          if (id) selectWeapon(id);
+        }}
+        showDiscard={!!ownedPiece}
+        discardName={ownedPiece?.name}
+        onDiscard={() => {
+          discardWeapon(ownedPiece!.id);
+          selectWeapon(null);
+        }}
+      />
+    ) : null;
 
   // Body content
   let bodyContent = null;
@@ -290,12 +250,9 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           updateCustomWeapon(weaponId!, { description: v })
         }
         cost={resolved.cost != null ? String(resolved.cost) : ""}
-        onCostChange={(v) => {
-          const n = v ? Number(v) : undefined;
-          updateCustomWeapon(weaponId!, {
-            cost: n != null && !isNaN(n) ? n : 0,
-          });
-        }}
+        onCostChange={(v) =>
+          updateCustomWeapon(weaponId!, { cost: parseNum(v, 0) })
+        }
         availability={resolved.availability ?? ""}
         onAvailabilityChange={(v) =>
           updateCustomWeapon(weaponId!, {
@@ -316,7 +273,7 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           onSkillChange={(v) => updateCustomWeapon(weaponId!, { skill: v })}
           wa={String(resolved.wa)}
           onWaChange={(v) =>
-            updateCustomWeapon(weaponId!, { wa: Number(v) || 0 })
+            updateCustomWeapon(weaponId!, { wa: parseNum(v, 0) })
           }
           concealability={resolved.concealability}
           onConcealabilityChange={(v) =>
@@ -334,12 +291,12 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           shots={String(resolved.shots)}
           onShotsChange={(v) =>
             updateCustomWeapon(weaponId!, {
-              shots: Math.max(0, Number(v) || 0),
+              shots: Math.max(0, parseNum(v, 0)),
             })
           }
           rof={String(resolved.rof)}
           onRofChange={(v) =>
-            updateCustomWeapon(weaponId!, { rof: Math.max(0, Number(v) || 0) })
+            updateCustomWeapon(weaponId!, { rof: Math.max(0, parseNum(v, 0)) })
           }
           reliability={resolved.reliability}
           onReliabilityChange={(v) =>
@@ -348,7 +305,7 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           range={String(resolved.range)}
           onRangeChange={(v) =>
             updateCustomWeapon(weaponId!, {
-              range: Math.max(0, Number(v) || 0),
+              range: Math.max(0, parseNum(v, 0)),
             })
           }
           melee={resolved.melee}
