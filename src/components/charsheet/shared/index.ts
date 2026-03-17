@@ -7,6 +7,7 @@ export { Tip } from "./Tip";
 export { useCollapsibleGroups } from "./useCollapsibleGroups";
 export { useDebouncedCallback } from "./useDebouncedCallback";
 export { useEditToggle } from "./useEditToggle";
+export { useFormState } from "./useFormState";
 export { usePopoverState } from "./usePopoverState";
 
 export function cls(...parts: (string | false | undefined | null)[]): string {

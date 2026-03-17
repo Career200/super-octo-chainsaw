@@ -3,7 +3,7 @@ import { useState } from "preact/hooks";
 
 import { AcquireDiscardActions } from "@components/charsheet/common/bottombar/AcquireDiscardActions";
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { parseNum } from "@components/charsheet/shared";
+import { parseNum, useFormState } from "@components/charsheet/shared";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import type { Availability } from "@scripts/catalog-common";
 import type {
@@ -54,31 +54,32 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   const isCustom = weaponId ? isCustomWeapon(weaponId) : false;
   const hasCustomDef = weaponId ? weaponId in customDefs : false;
 
-  // Add-mode form state — all empty, showing placeholders
-  const [newName, setNewName] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [newCost, setNewCost] = useState("");
-  const [newAvailability, setNewAvailability] = useState<Availability | "">("");
-  const [newType, setNewType] = useState<WeaponType>("P");
-  const [newSkill, setNewSkill] = useState("");
-  const [newWa, setNewWa] = useState("");
-  const [newConcealability, setNewConcealability] =
-    useState<Concealability>("J");
-  const [newDamage, setNewDamage] = useState("");
-  const [newAmmo, setNewAmmo] = useState("");
-  const [newShots, setNewShots] = useState("");
-  const [newRof, setNewRof] = useState("");
-  const [newReliability, setNewReliability] = useState<Reliability>("ST");
-  const [newRange, setNewRange] = useState("");
-  const [newMelee, setNewMelee] = useState(false);
-  const [newEffects, setNewEffects] = useState("");
+  // Add-mode form state
+  const { fields: f, setField, reset } = useFormState({
+    name: "",
+    description: "",
+    cost: "",
+    availability: "" as Availability | "",
+    type: "P" as WeaponType,
+    skill: "",
+    wa: "",
+    concealability: "J" as Concealability,
+    damage: "",
+    ammo: "",
+    shots: "",
+    rof: "",
+    reliability: "ST" as Reliability,
+    range: "",
+    melee: false,
+    effects: "",
+  });
 
   // Validation: track whether user attempted to add
   const [addAttempted, setAddAttempted] = useState(false);
 
   const handleTypeChange = (t: WeaponType) => {
-    setNewType(t);
-    setNewMelee(t === "melee");
+    setField("type", t);
+    setField("melee", t === "melee");
   };
 
   /** Case-insensitive CALIBER_DAMAGE lookup */
@@ -90,9 +91,9 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   };
 
   const handleAmmoChange = (caliber: string) => {
-    setNewAmmo(caliber);
+    setField("ammo", caliber);
     const dmg = lookupCaliberDamage(caliber);
-    if (dmg) setNewDamage(dmg);
+    if (dmg) setField("damage", dmg);
   };
 
   /** Resolve proper casing of a skill name from $allSkills */
@@ -105,52 +106,37 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   };
 
   const handleAdd = (): string | null => {
-    const trimmed = newName.trim();
-    if (!trimmed || !newDamage.trim()) {
+    const trimmed = f.name.trim();
+    if (!trimmed || !f.damage.trim()) {
       setAddAttempted(true);
       if (!trimmed) return "Name cannot be empty";
       return "Damage cannot be empty";
     }
-    const isMelee = newType === "melee";
-    const isSkillCustom = newType === "EX" || isMelee;
+    const isMelee = f.type === "melee";
+    const isSkillCustom = f.type === "EX" || isMelee;
     const ok = addCustomWeapon(trimmed, {
-      type: newType,
+      type: f.type,
       skill: isSkillCustom
-        ? resolveSkillName(newSkill) || skillForType(newType)
-        : skillForType(newType),
-      wa: parseNum(newWa, 0),
-      concealability: newConcealability,
-      availability: (newAvailability as Availability) || "C",
-      damage: newDamage.trim(),
-      ammo: isMelee ? "" : newAmmo.trim(),
-      shots: isMelee ? 0 : parseNum(newShots, 0),
-      rof: parseNum(newRof, 1),
-      reliability: newReliability,
-      range: isMelee ? 1 : parseNum(newRange, 50),
-      cost: parseNum(newCost, 0),
-      description: newDescription.trim(),
-      effects: newEffects.trim(),
+        ? resolveSkillName(f.skill) || skillForType(f.type)
+        : skillForType(f.type),
+      wa: parseNum(f.wa, 0),
+      concealability: f.concealability,
+      availability: (f.availability as Availability) || "C",
+      damage: f.damage.trim(),
+      ammo: isMelee ? "" : f.ammo.trim(),
+      shots: isMelee ? 0 : parseNum(f.shots, 0),
+      rof: parseNum(f.rof, 1),
+      reliability: f.reliability,
+      range: isMelee ? 1 : parseNum(f.range, 50),
+      cost: parseNum(f.cost, 0),
+      description: f.description.trim(),
+      effects: f.effects.trim(),
       melee: isMelee,
       smartchipped: false,
     });
     if (ok) {
       setAddAttempted(false);
-      setNewName("");
-      setNewDescription("");
-      setNewCost("");
-      setNewAvailability("");
-      setNewType("P");
-      setNewSkill("");
-      setNewWa("");
-      setNewConcealability("J");
-      setNewDamage("");
-      setNewAmmo("");
-      setNewShots("");
-      setNewRof("");
-      setNewReliability("ST");
-      setNewRange("");
-      setNewMelee(false);
-      setNewEffects("");
+      reset();
       selectWeapon(trimmed);
       return null;
     }
@@ -192,46 +178,46 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   if (adding) {
     const addErrors = new Set<string>();
     if (addAttempted) {
-      if (!newName.trim()) addErrors.add("name");
-      if (!newDamage.trim()) addErrors.add("damage");
+      if (!f.name.trim()) addErrors.add("name");
+      if (!f.damage.trim()) addErrors.add("damage");
     }
     bodyContent = (
       <ItemForm
         disabled={false}
-        name={newName}
-        onNameChange={setNewName}
-        description={newDescription}
-        onDescriptionChange={setNewDescription}
-        cost={newCost}
-        onCostChange={setNewCost}
-        availability={newAvailability}
-        onAvailabilityChange={setNewAvailability}
+        name={f.name}
+        onNameChange={(v) => setField("name", v)}
+        description={f.description}
+        onDescriptionChange={(v) => setField("description", v)}
+        cost={f.cost}
+        onCostChange={(v) => setField("cost", v)}
+        availability={f.availability}
+        onAvailabilityChange={(v) => setField("availability", v)}
         errors={addErrors}
       >
         <WeaponFormFields
-          type={newType}
+          type={f.type}
           onTypeChange={handleTypeChange}
-          skill={newSkill}
-          onSkillChange={setNewSkill}
-          wa={newWa}
-          onWaChange={setNewWa}
-          concealability={newConcealability}
-          onConcealabilityChange={setNewConcealability}
-          damage={newDamage}
-          onDamageChange={setNewDamage}
-          ammo={newAmmo}
+          skill={f.skill}
+          onSkillChange={(v) => setField("skill", v)}
+          wa={f.wa}
+          onWaChange={(v) => setField("wa", v)}
+          concealability={f.concealability}
+          onConcealabilityChange={(v) => setField("concealability", v)}
+          damage={f.damage}
+          onDamageChange={(v) => setField("damage", v)}
+          ammo={f.ammo}
           onAmmoChange={handleAmmoChange}
-          shots={newShots}
-          onShotsChange={setNewShots}
-          rof={newRof}
-          onRofChange={setNewRof}
-          reliability={newReliability}
-          onReliabilityChange={setNewReliability}
-          range={newRange}
-          onRangeChange={setNewRange}
-          melee={newMelee || newType === "melee"}
-          effects={newEffects}
-          onEffectsChange={setNewEffects}
+          shots={f.shots}
+          onShotsChange={(v) => setField("shots", v)}
+          rof={f.rof}
+          onRofChange={(v) => setField("rof", v)}
+          reliability={f.reliability}
+          onReliabilityChange={(v) => setField("reliability", v)}
+          range={f.range}
+          onRangeChange={(v) => setField("range", v)}
+          melee={f.melee || f.type === "melee"}
+          effects={f.effects}
+          onEffectsChange={(v) => setField("effects", v)}
           errors={addErrors}
         />
       </ItemForm>

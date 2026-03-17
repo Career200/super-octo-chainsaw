@@ -3,7 +3,7 @@ import { useState } from "preact/hooks";
 
 import { AcquireDiscardActions } from "@components/charsheet/common/bottombar/AcquireDiscardActions";
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { parseNum } from "@components/charsheet/shared";
+import { parseNum, useFormState } from "@components/charsheet/shared";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import {
@@ -51,14 +51,16 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
   const hasCustomDef = armorId ? armorId in customDefs : false;
 
   // Add-mode form state
-  const [newName, setNewName] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [newCost, setNewCost] = useState("");
-  const [newAvailability, setNewAvailability] = useState<Availability | "">("");
-  const [newBodyParts, setNewBodyParts] = useState<BodyPartName[]>([]);
-  const [newType, setNewType] = useState<"soft" | "hard">("soft");
-  const [newSp, setNewSp] = useState(0);
-  const [newEv, setNewEv] = useState(0);
+  const { fields: f, setField, reset } = useFormState({
+    name: "",
+    description: "",
+    cost: "",
+    availability: "" as Availability | "",
+    bodyParts: [] as BodyPartName[],
+    type: "soft" as "soft" | "hard",
+    sp: 0,
+    ev: 0,
+  });
 
   const [editNotice, setEditNotice] = useState<string | null>(null);
   const [addAttempted, setAddAttempted] = useState(false);
@@ -81,31 +83,24 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
   };
 
   const handleAdd = (): string | null => {
-    const trimmed = newName.trim();
-    if (!trimmed || newBodyParts.length === 0) {
+    const trimmed = f.name.trim();
+    if (!trimmed || f.bodyParts.length === 0) {
       setAddAttempted(true);
       if (!trimmed) return "Name cannot be empty";
       return "Select at least one body part";
     }
     const instanceId = addCustomArmor(trimmed, {
-      type: newType,
-      spMax: newSp,
-      bodyParts: newBodyParts,
-      ev: newEv,
-      cost: parseNum(newCost, 0),
-      description: newDescription.trim(),
-      availability: newAvailability || "C",
+      type: f.type,
+      spMax: f.sp,
+      bodyParts: f.bodyParts,
+      ev: f.ev,
+      cost: parseNum(f.cost, 0),
+      description: f.description.trim(),
+      availability: f.availability || "C",
     });
     if (instanceId) {
       setAddAttempted(false);
-      setNewName("");
-      setNewDescription("");
-      setNewCost("");
-      setNewAvailability("");
-      setNewBodyParts([]);
-      setNewType("soft");
-      setNewSp(0);
-      setNewEv(0);
+      reset();
       selectArmor(instanceId);
       return null;
     }
@@ -190,31 +185,31 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
   if (adding) {
     const addErrors = new Set<string>();
     if (addAttempted) {
-      if (!newName.trim()) addErrors.add("name");
-      if (newBodyParts.length === 0) addErrors.add("bodyParts");
+      if (!f.name.trim()) addErrors.add("name");
+      if (f.bodyParts.length === 0) addErrors.add("bodyParts");
     }
     bodyContent = (
       <ItemForm
         disabled={false}
-        name={newName}
-        onNameChange={setNewName}
-        description={newDescription}
-        onDescriptionChange={setNewDescription}
-        cost={newCost}
-        onCostChange={setNewCost}
-        availability={newAvailability}
-        onAvailabilityChange={setNewAvailability}
+        name={f.name}
+        onNameChange={(v) => setField("name", v)}
+        description={f.description}
+        onDescriptionChange={(v) => setField("description", v)}
+        cost={f.cost}
+        onCostChange={(v) => setField("cost", v)}
+        availability={f.availability}
+        onAvailabilityChange={(v) => setField("availability", v)}
         errors={addErrors}
       >
         <ArmorFormFields
-          bodyParts={newBodyParts}
-          onBodyPartsChange={setNewBodyParts}
-          type={newType}
-          onTypeChange={setNewType}
-          spMax={newSp}
-          onSpMaxChange={setNewSp}
-          ev={newEv}
-          onEvChange={setNewEv}
+          bodyParts={f.bodyParts}
+          onBodyPartsChange={(v) => setField("bodyParts", v)}
+          type={f.type}
+          onTypeChange={(v) => setField("type", v)}
+          spMax={f.sp}
+          onSpMaxChange={(v) => setField("sp", v)}
+          ev={f.ev}
+          onEvChange={(v) => setField("ev", v)}
           errors={addErrors}
         />
       </ItemForm>

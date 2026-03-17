@@ -2,7 +2,11 @@ import { useStore } from "@nanostores/preact";
 import { useCallback, useRef, useState } from "preact/hooks";
 
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { parseNum, useEditToggle } from "@components/charsheet/shared";
+import {
+  parseNum,
+  useEditToggle,
+  useFormState,
+} from "@components/charsheet/shared";
 import type { AmmoTemplate, Availability } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
 import { CALIBER_DAMAGE } from "@scripts/weapons/catalog";
@@ -58,62 +62,60 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
   );
 
   // Add-mode form state
-  const [newCaliber, setNewCaliber] = useState("");
-  const [newType, setNewType] = useState("");
-  const [newDamage, setNewDamage] = useState("");
+  const { fields: f, setField, reset } = useFormState({
+    caliber: "",
+    type: "",
+    damage: "",
+    effects: "",
+    description: "",
+    cost: "",
+    boxSize: "50",
+    availability: "" as Availability | "",
+  });
   const damageAutoFilled = useRef(false);
   const handleCaliberChange = useCallback(
     (cal: string) => {
-      setNewCaliber(cal);
+      setField("caliber", cal);
       const lookup = CALIBER_DAMAGE[cal] ?? CALIBER_DAMAGE[cal.toLowerCase()];
-      if (lookup && (!newDamage || damageAutoFilled.current)) {
-        setNewDamage(lookup);
+      if (lookup && (!f.damage || damageAutoFilled.current)) {
+        setField("damage", lookup);
         damageAutoFilled.current = true;
       }
     },
-    [newDamage],
+    [f.damage, setField],
   );
-  const handleDamageChange = useCallback((v: string) => {
-    damageAutoFilled.current = false;
-    setNewDamage(v);
-  }, []);
-  const [newEffects, setNewEffects] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [newCost, setNewCost] = useState("");
-  const [newBoxSize, setNewBoxSize] = useState("50");
-  const [newAvailability, setNewAvailability] = useState<Availability | "">("");
+  const handleDamageChange = useCallback(
+    (v: string) => {
+      damageAutoFilled.current = false;
+      setField("damage", v);
+    },
+    [setField],
+  );
   const [addAttempted, setAddAttempted] = useState(false);
 
   const handleAdd = (): string | null => {
-    const cal = newCaliber.trim();
-    const typ = newType.trim();
-    const dmg = newDamage.trim();
+    const cal = f.caliber.trim();
+    const typ = f.type.trim();
+    const dmg = f.damage.trim();
     if (!cal || !typ || !dmg) {
       setAddAttempted(true);
       if (!cal) return "Caliber cannot be empty";
       if (!typ) return "Type cannot be empty";
       return "Damage cannot be empty";
     }
-    const bs = newBoxSize ? parseNum(newBoxSize, 50) : 0;
+    const bs = f.boxSize ? parseNum(f.boxSize, 50) : 0;
     const id = addCustomAmmo(cal, typ, {
       damage: dmg,
-      effects: newEffects.trim(),
-      description: newDescription.trim(),
-      cost: newCost ? parseNum(newCost, 0) : undefined,
+      effects: f.effects.trim(),
+      description: f.description.trim(),
+      cost: f.cost ? parseNum(f.cost, 0) : undefined,
       boxSize: bs > 0 ? bs : undefined,
-      availability: (newAvailability as Availability) || undefined,
+      availability: (f.availability as Availability) || undefined,
     });
     if (id) {
       setAddAttempted(false);
       damageAutoFilled.current = false;
-      setNewCaliber("");
-      setNewType("");
-      setNewDamage("");
-      setNewEffects("");
-      setNewDescription("");
-      setNewCost("");
-      setNewBoxSize("50");
-      setNewAvailability("");
+      reset();
       selectAmmo(id);
       return null;
     }
@@ -133,28 +135,30 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
   if (adding) {
     const addErrors = new Set<string>();
     if (addAttempted) {
-      if (!newCaliber.trim()) addErrors.add("caliber");
-      if (!newType.trim()) addErrors.add("type");
-      if (!newDamage.trim()) addErrors.add("damage");
+      if (!f.caliber.trim()) addErrors.add("caliber");
+      if (!f.type.trim()) addErrors.add("type");
+      if (!f.damage.trim()) addErrors.add("damage");
     }
     bodyContent = (
       <AmmoForm
-        caliber={newCaliber}
+        caliber={f.caliber}
         onCaliberChange={handleCaliberChange}
-        type={newType}
-        onTypeChange={setNewType}
-        damage={newDamage}
+        type={f.type}
+        onTypeChange={(v) => setField("type", v)}
+        damage={f.damage}
         onDamageChange={handleDamageChange}
-        effects={newEffects}
-        onEffectsChange={setNewEffects}
-        description={newDescription}
-        onDescriptionChange={setNewDescription}
-        cost={newCost}
-        onCostChange={setNewCost}
-        boxSize={newBoxSize}
-        onBoxSizeChange={setNewBoxSize}
-        availability={newAvailability}
-        onAvailabilityChange={(v) => setNewAvailability(v as Availability | "")}
+        effects={f.effects}
+        onEffectsChange={(v) => setField("effects", v)}
+        description={f.description}
+        onDescriptionChange={(v) => setField("description", v)}
+        cost={f.cost}
+        onCostChange={(v) => setField("cost", v)}
+        boxSize={f.boxSize}
+        onBoxSizeChange={(v) => setField("boxSize", v)}
+        availability={f.availability}
+        onAvailabilityChange={(v) =>
+          setField("availability", v as Availability | "")
+        }
         errors={addErrors}
         autoFocus
       />

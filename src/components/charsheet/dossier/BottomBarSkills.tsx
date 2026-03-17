@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
-import { useState } from "preact/hooks";
 
+import { useFormState } from "@components/charsheet/shared";
 import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
 import { SKILL_CATALOG } from "@scripts/skills/catalog";
 import {
@@ -30,15 +30,15 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
   const entry = skillName ? allSkills[skillName] : null;
 
   // Add-mode form state
-  const [newName, setNewName] = useState("");
-  const [newStat, setNewStat] = useState<SkillStat>("ref");
-  const [newMelee, setNewMelee] = useState(false);
-  const [newMartialArt, setNewMartialArt] = useState(false);
-  const [newKeyAttacks, setNewKeyAttacks] = useState<
-    Partial<Record<Maneuver, number>>
-  >({});
-  const [newDiffMod, setNewDiffMod] = useState(1);
-  const [newDescription, setNewDescription] = useState("");
+  const { fields: f, setField, reset } = useFormState({
+    name: "",
+    stat: "ref" as SkillStat,
+    melee: false,
+    martialArt: false,
+    keyAttacks: {} as Partial<Record<Maneuver, number>>,
+    diffMod: 1,
+    description: "",
+  });
 
   const isCustom = skillName ? isCustomSkill(skillName) : false;
   const catalogDef = skillName && !isCustom ? SKILL_CATALOG[skillName] : null;
@@ -48,26 +48,20 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
   const keyAttacks = catalogDef?.keyAttacks ?? entry?.keyAttacks ?? {};
 
   const handleAdd = (): string | null => {
-    const trimmed = newName.trim();
+    const trimmed = f.name.trim();
     if (!trimmed) return "Name cannot be empty";
     if (
-      addSkill(trimmed, newStat, newMelee, {
-        description: newDescription.trim() || undefined,
-        martialArt: newMartialArt || undefined,
+      addSkill(trimmed, f.stat, f.melee, {
+        description: f.description.trim() || undefined,
+        martialArt: f.martialArt || undefined,
         keyAttacks:
-          newMartialArt && Object.keys(newKeyAttacks).length > 0
-            ? newKeyAttacks
+          f.martialArt && Object.keys(f.keyAttacks).length > 0
+            ? f.keyAttacks
             : undefined,
-        diffMod: newDiffMod !== 1 ? newDiffMod : undefined,
+        diffMod: f.diffMod !== 1 ? f.diffMod : undefined,
       })
     ) {
-      setNewName("");
-      setNewStat("ref");
-      setNewMelee(false);
-      setNewMartialArt(false);
-      setNewKeyAttacks({});
-      setNewDiffMod(1);
-      setNewDescription("");
+      reset();
       selectSkill(trimmed);
       return null;
     }
@@ -95,20 +89,20 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
       {adding ? (
         <SkillForm
           disabled={false}
-          name={newName}
-          onNameChange={setNewName}
-          stat={newStat}
-          onStatChange={setNewStat}
-          diffMod={newDiffMod}
-          onDiffModChange={setNewDiffMod}
-          melee={newMelee}
-          onMeleeChange={setNewMelee}
-          martialArt={newMartialArt}
-          onMartialArtChange={setNewMartialArt}
-          keyAttacks={newKeyAttacks}
-          onKeyAttacksChange={setNewKeyAttacks}
-          description={newDescription}
-          onDescriptionChange={setNewDescription}
+          name={f.name}
+          onNameChange={(v) => setField("name", v)}
+          stat={f.stat}
+          onStatChange={(v) => setField("stat", v)}
+          diffMod={f.diffMod}
+          onDiffModChange={(v) => setField("diffMod", v)}
+          melee={f.melee}
+          onMeleeChange={(v) => setField("melee", v)}
+          martialArt={f.martialArt}
+          onMartialArtChange={(v) => setField("martialArt", v)}
+          keyAttacks={f.keyAttacks}
+          onKeyAttacksChange={(v) => setField("keyAttacks", v)}
+          description={f.description}
+          onDescriptionChange={(v) => setField("description", v)}
         />
       ) : entry && isCustom ? (
         <SkillForm
