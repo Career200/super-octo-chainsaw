@@ -115,7 +115,7 @@ export function useCyberActions(
         action: null,
         install: {
           label: "Slot",
-            containers: containerChoices,
+          containers: containerChoices,
           noContainerHint,
           hcRowDefs: [
             {

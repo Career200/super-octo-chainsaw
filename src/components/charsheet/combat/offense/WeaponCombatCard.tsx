@@ -42,7 +42,11 @@ export const WeaponCombatCard = ({
   skillLevel,
   skillName,
 }: Props) => {
-  const { ref: ammoRef, open: ammoOpen, setOpen: setAmmoOpen } = usePopoverState();
+  const {
+    ref: ammoRef,
+    open: ammoOpen,
+    setOpen: setAmmoOpen,
+  } = usePopoverState();
 
   const ammoLookup = useStore($ammoByCaliberLookup);
   const caliberAmmo = weapon.ammo ? (ammoLookup[weapon.ammo] ?? []) : [];

@@ -12,7 +12,11 @@ interface Props {
 }
 
 export const ImplantCard = ({ implant }: Props) => {
-  const { ref: repairRef, open: repairOpen, setOpen: setRepairOpen } = usePopoverState();
+  const {
+    ref: repairRef,
+    open: repairOpen,
+    setOpen: setRepairOpen,
+  } = usePopoverState();
 
   const damaged = implant.spCurrent < implant.spMax;
 

@@ -64,8 +64,16 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
 
   // Owned instance action state
   const [wearError, setWearError] = useState<string | null>(null);
-  const { ref: discardBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
-  const { ref: repairBtnRef, open: repairOpen, setOpen: setRepairOpen } = usePopoverState();
+  const {
+    ref: discardBtnRef,
+    open: confirmOpen,
+    setOpen: setConfirmOpen,
+  } = usePopoverState();
+  const {
+    ref: repairBtnRef,
+    open: repairOpen,
+    setOpen: setRepairOpen,
+  } = usePopoverState();
 
   const notifyIfRemoved = (removed: number) => {
     if (removed > 0) {

@@ -19,7 +19,11 @@ import { usePopoverState } from "../shared/usePopoverState";
 // --- Contact Card ---
 
 const ContactCard = ({ contact }: { contact: Contact }) => {
-  const { ref: deleteBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
+  const {
+    ref: deleteBtnRef,
+    open: confirmOpen,
+    setOpen: setConfirmOpen,
+  } = usePopoverState();
 
   const debouncedUpdate = useDebouncedCallback(
     (patch: Partial<Pick<Contact, "name" | "note">>) =>

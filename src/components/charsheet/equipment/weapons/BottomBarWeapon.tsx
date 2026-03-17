@@ -55,7 +55,11 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   const hasCustomDef = weaponId ? weaponId in customDefs : false;
 
   // Owned instance action state
-  const { ref: discardBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
+  const {
+    ref: discardBtnRef,
+    open: confirmOpen,
+    setOpen: setConfirmOpen,
+  } = usePopoverState();
 
   // Add-mode form state — all empty, showing placeholders
   const [newName, setNewName] = useState("");

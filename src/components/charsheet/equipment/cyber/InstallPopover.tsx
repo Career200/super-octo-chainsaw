@@ -181,8 +181,7 @@ export function InstallPopover({
   };
 
   const hasContainer = !containers || selectedContainer != null;
-  const noContainers =
-    containers != null && containers.every((c) => c.full);
+  const noContainers = containers != null && containers.every((c) => c.full);
 
   // When container is uninstalled, option gets no HC (slotted but not installed)
   const selectedIsInstalled =

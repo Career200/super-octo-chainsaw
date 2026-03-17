@@ -66,7 +66,11 @@ interface Props {
 export default function BottomBarHistory({ expanded, onToggle }: Props) {
   const history = useStore($damageHistory);
   const lastEntry = history[0];
-  const { ref: clearBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
+  const {
+    ref: clearBtnRef,
+    open: confirmOpen,
+    setOpen: setConfirmOpen,
+  } = usePopoverState();
 
   return (
     <>

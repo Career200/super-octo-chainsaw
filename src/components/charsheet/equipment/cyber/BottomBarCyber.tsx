@@ -27,8 +27,16 @@ function CyberHeaderActions({
   ownedItem: HydratedCyberItem | null;
   catalogTemplate: CyberTemplate | null;
 }) {
-  const { ref: popoverBtnRef, open: popoverOpen, setOpen: setPopoverOpen } = usePopoverState();
-  const { ref: discardBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
+  const {
+    ref: popoverBtnRef,
+    open: popoverOpen,
+    setOpen: setPopoverOpen,
+  } = usePopoverState();
+  const {
+    ref: discardBtnRef,
+    open: confirmOpen,
+    setOpen: setConfirmOpen,
+  } = usePopoverState();
 
   useEffect(() => {
     setPopoverOpen(false);

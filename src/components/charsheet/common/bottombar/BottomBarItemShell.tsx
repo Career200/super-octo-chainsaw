@@ -37,7 +37,11 @@ export function BottomBarItemShell({
 }: Props) {
   const addBtnRef = useRef<HTMLButtonElement>(null);
   const [addError, setAddError] = useState<string | null>(null);
-  const { ref: removeBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
+  const {
+    ref: removeBtnRef,
+    open: confirmOpen,
+    setOpen: setConfirmOpen,
+  } = usePopoverState();
 
   if (!hasContent) {
     return (

@@ -28,7 +28,11 @@ interface Props {
 }
 
 export const HitPopover = ({ forPart, children }: Props) => {
-  const { ref: triggerRef, open: isOpen, setOpen: setIsOpen } = usePopoverState();
+  const {
+    ref: triggerRef,
+    open: isOpen,
+    setOpen: setIsOpen,
+  } = usePopoverState();
   const [damageType, setDamageType] = useState<DamageType>("normal");
   const [damage, setDamage] = useState("");
   const [dieType, setDieType] = useState<null | 6 | 10>(null);

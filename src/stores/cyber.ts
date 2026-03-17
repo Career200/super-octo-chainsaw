@@ -94,7 +94,12 @@ export function getSlotUsage(containerInstanceId: string): {
 /** Find owned containers that can accept an option, with slot availability. */
 export function getContainersForOption(
   templateId: string,
-): { container: HydratedCyberItem; used: number; max: number | null; full: boolean }[] {
+): {
+  container: HydratedCyberItem;
+  used: number;
+  max: number | null;
+  full: boolean;
+}[] {
   const template = CYBER_CATALOG[templateId];
   if (!template || template.role !== "option" || !template.containerCategory)
     return [];
