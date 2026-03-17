@@ -1,5 +1,4 @@
 import { useStore } from "@nanostores/preact";
-import { useCallback, useRef, useState } from "preact/hooks";
 
 import {
   $notes,
@@ -14,28 +13,13 @@ import { tabStore } from "@stores/ui";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
 import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
-
-// --- Debounce helper ---
-
-function useDebouncedCallback<A extends unknown[]>(
-  fn: (...args: A) => void,
-  delay: number,
-): (...args: A) => void {
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
-  return useCallback(
-    (...args: A) => {
-      clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => fn(...args), delay);
-    },
-    [fn, delay],
-  );
-}
+import { useDebouncedCallback } from "../shared/useDebouncedCallback";
+import { usePopoverState } from "../shared/usePopoverState";
 
 // --- Contact Card ---
 
 const ContactCard = ({ contact }: { contact: Contact }) => {
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const deleteBtnRef = useRef<HTMLButtonElement>(null);
+  const { ref: deleteBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
 
   const debouncedUpdate = useDebouncedCallback(
     (patch: Partial<Pick<Contact, "name" | "note">>) =>

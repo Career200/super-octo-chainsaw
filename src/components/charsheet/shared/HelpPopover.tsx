@@ -1,7 +1,7 @@
 import type { ComponentChildren } from "preact";
-import { useRef, useState } from "preact/hooks";
 
 import { Popover } from "./Popover";
+import { usePopoverState } from "./usePopoverState";
 
 interface Props {
   id: string;
@@ -9,25 +9,24 @@ interface Props {
 }
 
 export const HelpPopover = ({ id, content }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const { ref, open, setOpen } = usePopoverState();
 
   return (
     <>
       <button
-        ref={buttonRef}
+        ref={ref}
         class="help-trigger"
         id={id}
         type="button"
         aria-label="Help"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setOpen(!open)}
       >
         ?
       </button>
       <Popover
-        anchorRef={buttonRef}
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
+        anchorRef={ref}
+        open={open}
+        onClose={() => setOpen(false)}
         className="popover-help"
       >
         {content}

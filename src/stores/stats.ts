@@ -14,6 +14,7 @@ import type { StatName, StatsState, StatValues } from "@scripts/combat/types";
 import { getWoundLevel } from "@scripts/combat/wounds";
 
 import { $encumbrance } from "./armor";
+import { decodeJson } from "./decode";
 import { $health } from "./health";
 
 function defaultState(): StatsState {
@@ -35,13 +36,7 @@ export const $stats = persistentAtom<StatsState>(
   defaultState(),
   {
     encode: JSON.stringify,
-    decode: (raw: string): StatsState => {
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return defaultState();
-      }
-    },
+    decode: decodeJson(defaultState()),
   },
 );
 

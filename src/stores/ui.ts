@@ -4,6 +4,8 @@ import { atom, computed } from "nanostores";
 
 import type { BodyPartName } from "@scripts/armor/core";
 
+import { decodeJson } from "./decode";
+
 const tabStoreCache = new Map<string, WritableAtom<string>>();
 
 export function tabStore(
@@ -14,13 +16,7 @@ export function tabStore(
   if (!store) {
     store = persistentAtom<string>(key, defaultVal, {
       encode: JSON.stringify,
-      decode: (raw) => {
-        try {
-          return JSON.parse(raw);
-        } catch {
-          return defaultVal;
-        }
-      },
+      decode: decodeJson(defaultVal),
     });
     tabStoreCache.set(key, store);
   }

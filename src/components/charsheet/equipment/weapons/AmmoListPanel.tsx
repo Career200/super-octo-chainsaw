@@ -1,10 +1,11 @@
 import { useStore } from "@nanostores/preact";
 import type { RefObject } from "preact";
-import { useRef, useState } from "preact/hooks";
+import { useRef } from "preact/hooks";
 
 import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
 import { Panel } from "@components/charsheet/shared/Panel";
 import { TabStrip } from "@components/charsheet/shared/TabStrip";
+import { useCollapsibleGroups } from "@components/charsheet/shared/useCollapsibleGroups";
 import { useScrollOnSelect } from "@components/charsheet/shared/useScrollOnSelect";
 import type { AmmoTemplate } from "@scripts/ammo/catalog";
 import { AMMO_CATALOG, CALIBER_ORDER } from "@scripts/ammo/catalog";
@@ -146,18 +147,9 @@ export const AmmoListPanel = ({
   const customAmmo = useStore($customAmmoList);
   const selectedId = useStore($selectedAmmo);
   const tab = useStore(tabStore("ammo-tab", "catalog"));
-  const [collapsed, setCollapsed] = useState<Set<string>>(
+  const { collapsed, toggle: toggleGroup } = useCollapsibleGroups(
     () => new Set(CALIBER_ORDER),
   );
-
-  const toggleGroup = (caliber: string) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(caliber)) next.delete(caliber);
-      else next.add(caliber);
-      return next;
-    });
-  };
 
   // Cross-highlighting: derive caliber from selected weapon (catalog or owned)
   const selectedWeaponId = useStore($selectedWeapon);

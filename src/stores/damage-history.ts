@@ -1,9 +1,10 @@
-import { atom } from "nanostores";
+import { persistentAtom } from "@nanostores/persistent";
 
 import type { BodyPartName } from "../scripts/armor/core";
 import type { DamageType } from "../scripts/armor/hit";
 
 import { $ownedArmor, setArmorSP } from "./armor";
+import { decodeJson } from "./decode";
 import { $health, isMortal } from "./health";
 
 export interface ArmorDamageEntry {
@@ -43,29 +44,14 @@ export interface ManipulationHistoryEntry {
 
 export type HistoryEntry = DamageHistoryEntry | ManipulationHistoryEntry;
 
-const STORAGE_KEY = "damage-history";
-
-function loadState(): HistoryEntry[] {
-  if (typeof localStorage === "undefined") return [];
-
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) return [];
-
-  try {
-    return JSON.parse(stored) as HistoryEntry[];
-  } catch {
-    return [];
-  }
-}
-
-export const $damageHistory = atom<HistoryEntry[]>(loadState());
-
-// Persist on change
-$damageHistory.subscribe((state) => {
-  if (typeof localStorage !== "undefined") {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
-});
+export const $damageHistory = persistentAtom<HistoryEntry[]>(
+  "damage-history",
+  [],
+  {
+    encode: JSON.stringify,
+    decode: decodeJson<HistoryEntry[]>([]),
+  },
+);
 
 let entryCounter = 0;
 

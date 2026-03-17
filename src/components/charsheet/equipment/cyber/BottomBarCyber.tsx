@@ -1,9 +1,10 @@
 import { useStore } from "@nanostores/preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
 import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
 import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
+import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import { CYBER_CATALOG, type CyberTemplate } from "@scripts/cyber/catalog";
 import {
   $hydratedCyber,
@@ -26,10 +27,8 @@ function CyberHeaderActions({
   ownedItem: HydratedCyberItem | null;
   catalogTemplate: CyberTemplate | null;
 }) {
-  const popoverBtnRef = useRef<HTMLButtonElement>(null);
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const discardBtnRef = useRef<HTMLButtonElement>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  const { ref: popoverBtnRef, open: popoverOpen, setOpen: setPopoverOpen } = usePopoverState();
+  const { ref: discardBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
 
   useEffect(() => {
     setPopoverOpen(false);

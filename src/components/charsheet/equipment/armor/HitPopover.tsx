@@ -2,6 +2,7 @@ import type { ComponentChildren } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 import { Popover } from "@components/charsheet/shared/Popover";
+import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import type { BodyPartName } from "@scripts/armor/core";
 import {
   DAMAGE_TYPE_OPTIONS,
@@ -27,7 +28,7 @@ interface Props {
 }
 
 export const HitPopover = ({ forPart, children }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { ref: triggerRef, open: isOpen, setOpen: setIsOpen } = usePopoverState();
   const [damageType, setDamageType] = useState<DamageType>("normal");
   const [damage, setDamage] = useState("");
   const [dieType, setDieType] = useState<null | 6 | 10>(null);
@@ -35,7 +36,6 @@ export const HitPopover = ({ forPart, children }: Props) => {
   const [ignoreSP, setIgnoreSP] = useState(false);
   const [rollLocation, setRollLocation] = useState(true);
   const [shotCount, setShotCount] = useState("");
-  const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

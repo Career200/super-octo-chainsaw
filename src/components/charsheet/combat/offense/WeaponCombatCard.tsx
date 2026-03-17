@@ -1,7 +1,8 @@
 import { useStore } from "@nanostores/preact";
-import { useRef, useState } from "preact/hooks";
+import { useRef } from "preact/hooks";
 
 import { Popover } from "@components/charsheet/shared/Popover";
+import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import { flashElement } from "@scripts/flash";
 import { WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
 import { $ammoByCaliberLookup, addAmmo, removeAmmo } from "@stores/ammo";
@@ -41,8 +42,7 @@ export const WeaponCombatCard = ({
   skillLevel,
   skillName,
 }: Props) => {
-  const [ammoOpen, setAmmoOpen] = useState(false);
-  const ammoRef = useRef<HTMLButtonElement>(null);
+  const { ref: ammoRef, open: ammoOpen, setOpen: setAmmoOpen } = usePopoverState();
 
   const ammoLookup = useStore($ammoByCaliberLookup);
   const caliberAmmo = weapon.ammo ? (ammoLookup[weapon.ammo] ?? []) : [];

@@ -4,6 +4,7 @@ import { useRef, useState } from "preact/hooks";
 import { Chevron } from "@components/charsheet/shared/Chevron";
 import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
 import { Popover } from "@components/charsheet/shared/Popover";
+import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 
 interface Props {
   expanded: boolean;
@@ -36,9 +37,7 @@ export function BottomBarItemShell({
 }: Props) {
   const addBtnRef = useRef<HTMLButtonElement>(null);
   const [addError, setAddError] = useState<string | null>(null);
-
-  const removeBtnRef = useRef<HTMLButtonElement>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  const { ref: removeBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
 
   if (!hasContent) {
     return (

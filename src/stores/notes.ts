@@ -1,5 +1,7 @@
 import { persistentAtom } from "@nanostores/persistent";
 
+import { decodeJson } from "./decode";
+
 export interface Contact {
   id: string;
   name: string;
@@ -16,13 +18,7 @@ export const $notes = persistentAtom<NotesState>(
   { freeform: "", contacts: [] },
   {
     encode: JSON.stringify,
-    decode: (raw: string): NotesState => {
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return { freeform: "", contacts: [] };
-      }
-    },
+    decode: decodeJson<NotesState>({ freeform: "", contacts: [] }),
   },
 );
 

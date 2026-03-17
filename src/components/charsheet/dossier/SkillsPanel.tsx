@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import { useRef, useState } from "preact/hooks";
+import { useRef } from "preact/hooks";
 
 import type { StatName } from "@scripts/combat/types";
 import { STAT_LABELS } from "@scripts/combat/types";
@@ -15,6 +15,7 @@ import { STAT_STORES } from "@stores/stats";
 import { $selectedSkill, selectSkill, startAddingSkill } from "@stores/ui";
 
 import { Chevron } from "../shared/Chevron";
+import { useCollapsibleGroups } from "../shared/useCollapsibleGroups";
 import { useScrollOnSelect } from "../shared/useScrollOnSelect";
 export type SkillFilter = "catalog" | "custom" | "my";
 
@@ -221,17 +222,8 @@ export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
   const allSkills = useStore($allSkills);
   const customSkills = useStore($customSkills);
   const mySkills = useStore($mySkills);
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set(["special"]));
+  const { collapsed, toggle } = useCollapsibleGroups(new Set(["special"]));
   const stablePicks = useRef(new Map<string, string>());
-
-  const toggle = (key: string) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
 
   const skills =
     filter === "custom"

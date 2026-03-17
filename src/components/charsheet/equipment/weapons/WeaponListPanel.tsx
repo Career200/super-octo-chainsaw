@@ -1,10 +1,10 @@
 import { useStore } from "@nanostores/preact";
-import { useState } from "preact/hooks";
 
 import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
 import { HelpPopover } from "@components/charsheet/shared/HelpPopover";
 import { Panel } from "@components/charsheet/shared/Panel";
 import { TabStrip } from "@components/charsheet/shared/TabStrip";
+import { useCollapsibleGroups } from "@components/charsheet/shared/useCollapsibleGroups";
 import { AMMO_CATALOG } from "@scripts/ammo/catalog";
 import type { WeaponTemplate, WeaponType } from "@scripts/weapons/catalog";
 import { WEAPON_CATALOG, WEAPON_TYPE_LABELS } from "@scripts/weapons/catalog";
@@ -121,7 +121,7 @@ export const WeaponListPanel = ({
   const customTemplates = useStore($customWeaponList);
   const selectedId = useStore($selectedWeapon);
   const tab = useStore(tabStore("weapon-list-tab", "catalog"));
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const { collapsed, toggle: toggleGroup } = useCollapsibleGroups();
 
   // Cross-highlighting: derive caliber from selected ammo
   const selectedAmmoId = useStore($selectedAmmo);
@@ -132,15 +132,6 @@ export const WeaponListPanel = ({
         customAmmoDefs[selectedAmmoId]?.caliber ??
         null)
       : null;
-
-  const toggleGroup = (type: string) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(type)) next.delete(type);
-      else next.add(type);
-      return next;
-    });
-  };
 
   // Ownership lookup for catalog/custom tabs
   const ownedTemplateIds = new Set(ownedWeapons.map((w) => w.templateId));

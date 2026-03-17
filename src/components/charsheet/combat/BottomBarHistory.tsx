@@ -1,5 +1,4 @@
 import { useStore } from "@nanostores/preact";
-import { useRef, useState } from "preact/hooks";
 
 import {
   $damageHistory,
@@ -11,6 +10,7 @@ import {
 
 import { Chevron } from "../shared/Chevron";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
+import { usePopoverState } from "../shared/usePopoverState";
 
 import {
   DamageEntry,
@@ -66,8 +66,7 @@ interface Props {
 export default function BottomBarHistory({ expanded, onToggle }: Props) {
   const history = useStore($damageHistory);
   const lastEntry = history[0];
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const clearBtnRef = useRef<HTMLButtonElement>(null);
+  const { ref: clearBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
 
   return (
     <>

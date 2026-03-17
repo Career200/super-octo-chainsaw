@@ -1,9 +1,10 @@
 import { useStore } from "@nanostores/preact";
-import { useRef, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
 import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
+import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import type { Availability } from "@scripts/catalog-common";
 import type {
   Concealability,
@@ -54,8 +55,7 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   const hasCustomDef = weaponId ? weaponId in customDefs : false;
 
   // Owned instance action state
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const discardBtnRef = useRef<HTMLButtonElement>(null);
+  const { ref: discardBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
 
   // Add-mode form state — all empty, showing placeholders
   const [newName, setNewName] = useState("");

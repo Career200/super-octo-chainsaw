@@ -1,9 +1,10 @@
 import { useStore } from "@nanostores/preact";
-import { useRef, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
 import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
+import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import {
   type BodyPartName,
   getPartSpMax,
@@ -63,10 +64,8 @@ export default function BottomBarArmor({ expanded, onToggle }: Props) {
 
   // Owned instance action state
   const [wearError, setWearError] = useState<string | null>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [repairOpen, setRepairOpen] = useState(false);
-  const discardBtnRef = useRef<HTMLButtonElement>(null);
-  const repairBtnRef = useRef<HTMLButtonElement>(null);
+  const { ref: discardBtnRef, open: confirmOpen, setOpen: setConfirmOpen } = usePopoverState();
+  const { ref: repairBtnRef, open: repairOpen, setOpen: setRepairOpen } = usePopoverState();
 
   const notifyIfRemoved = (removed: number) => {
     if (removed > 0) {

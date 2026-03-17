@@ -1,8 +1,8 @@
 import { useStore } from "@nanostores/preact";
-import { useState } from "preact/hooks";
 
 import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
 import { TabStrip } from "@components/charsheet/shared/TabStrip";
+import { useCollapsibleGroups } from "@components/charsheet/shared/useCollapsibleGroups";
 import type { GearTemplate } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import { $customGear, $gear, $ownedGear, $ownedGearCount } from "@stores/gear";
@@ -92,16 +92,7 @@ export default function GearPanel() {
   const customGear = useStore($customGear);
   const selectedId = useStore($selectedGear);
   const tab = useStore(tabStore("gear-tab", "catalog"));
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-
-  const toggleGroup = (type: string) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(type)) next.delete(type);
-      else next.add(type);
-      return next;
-    });
-  };
+  const { collapsed, toggle: toggleGroup } = useCollapsibleGroups();
 
   // Catalog view: all templates grouped by type
   const catalogGroups = groupByType(
