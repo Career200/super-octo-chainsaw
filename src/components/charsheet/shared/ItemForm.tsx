@@ -1,11 +1,9 @@
 import type { ComponentChildren } from "preact";
 
 import type { Availability } from "@scripts/catalog-common";
-import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
-
-type AvailabilityWithEmpty = Availability | "";
 
 import { cls, Tip } from ".";
+import { AvailabilitySelect } from "./AvailabilitySelect";
 
 interface Props {
   disabled: boolean;
@@ -14,7 +12,7 @@ interface Props {
   cost: string;
   onCostChange?: (v: string) => void;
   availability: string;
-  onAvailabilityChange?: (v: AvailabilityWithEmpty) => void;
+  onAvailabilityChange?: (v: Availability | "") => void;
   description: string;
   onDescriptionChange?: (v: string) => void;
   /** Field names that should show error styling */
@@ -72,30 +70,10 @@ export function ItemForm({
             min="0"
           />
         </Tip>
-        <Tip label="Street availability" class="item-form-availability">
-          <select
-            class={`input item-form-input avail-${availability || "C"}`}
-            value={availability}
-            disabled={!onAvailabilityChange}
-            onChange={
-              onAvailabilityChange
-                ? (e) =>
-                    onAvailabilityChange(
-                      (e.target as HTMLSelectElement)
-                        .value as AvailabilityWithEmpty,
-                    )
-                : undefined
-            }
-            title="Street availability"
-          >
-            <option value="">Availability</option>
-            {Object.entries(AVAILABILITY_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
-            ))}
-          </select>
-        </Tip>
+        <AvailabilitySelect
+          value={availability}
+          onChange={onAvailabilityChange}
+        />
       </div>
       <textarea
         class="input item-form-description"

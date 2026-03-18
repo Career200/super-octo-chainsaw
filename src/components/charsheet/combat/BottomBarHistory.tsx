@@ -8,7 +8,7 @@ import {
   undoLatest,
 } from "@stores/damage-history";
 
-import { Chevron } from "../shared/Chevron";
+import { BottomBarShell } from "../common/bottombar/BottomBarShell";
 import { ConfirmPopover } from "../shared/ConfirmPopover";
 import { usePopoverState } from "../shared/usePopoverState";
 
@@ -73,69 +73,65 @@ export default function BottomBarHistory({ expanded, onToggle }: Props) {
   } = usePopoverState();
 
   return (
-    <>
-      <div class="bottom-bar-row expandable" onClick={onToggle}>
-        <div class="bottom-bar-content">
-          {lastEntry ? (
-            lastEntry.type === "damage" ? (
-              <DamageSummary entry={lastEntry} />
-            ) : (
-              <ManipulationSummary entry={lastEntry} />
-            )
+    <BottomBarShell
+      expanded={expanded}
+      onToggle={onToggle}
+      headerContent={
+        lastEntry ? (
+          lastEntry.type === "damage" ? (
+            <DamageSummary entry={lastEntry} />
           ) : (
-            <span class="bottom-bar-hint">No damage recorded</span>
-          )}
-        </div>
-        <div class="flex-between gap-8">
-          {expanded && history.length > 0 && (
-            <>
-              <button
-                ref={clearBtnRef}
-                class="btn-ghost-danger btn-sm"
-                onClick={(e: Event) => {
-                  e.stopPropagation();
-                  setConfirmOpen(true);
-                }}
-              >
-                Clear
-              </button>
-              <ConfirmPopover
-                anchorRef={clearBtnRef}
-                open={confirmOpen}
-                message={`Clear ${history.length} entries?`}
-                confirmText="Clear"
-                cancelText="Keep"
-                type="danger"
-                onConfirm={() => {
-                  clearHistory();
-                  setConfirmOpen(false);
-                }}
-                onCancel={() => setConfirmOpen(false)}
-              />
-            </>
-          )}
-          <Chevron expanded={expanded} />
-        </div>
-      </div>
-      {expanded && (
-        <div class="bottom-bar-body">
-          {history.map((entry, i) =>
-            entry.type === "manipulation" ? (
-              <ManipulationEntry
-                key={entry.id}
-                entry={entry}
-                onUndo={i === 0 ? undoLatest : undefined}
-              />
-            ) : (
-              <DamageEntry
-                key={entry.id}
-                entry={entry}
-                onUndo={i === 0 ? undoLatest : undefined}
-              />
-            ),
-          )}
-        </div>
+            <ManipulationSummary entry={lastEntry} />
+          )
+        ) : (
+          <span class="bottom-bar-hint">No damage recorded</span>
+        )
+      }
+      actions={
+        expanded && history.length > 0 ? (
+          <>
+            <button
+              ref={clearBtnRef}
+              class="btn-ghost-danger btn-sm"
+              onClick={(e: Event) => {
+                e.stopPropagation();
+                setConfirmOpen(true);
+              }}
+            >
+              Clear
+            </button>
+            <ConfirmPopover
+              anchorRef={clearBtnRef}
+              open={confirmOpen}
+              message={`Clear ${history.length} entries?`}
+              confirmText="Clear"
+              cancelText="Keep"
+              type="danger"
+              onConfirm={() => {
+                clearHistory();
+                setConfirmOpen(false);
+              }}
+              onCancel={() => setConfirmOpen(false)}
+            />
+          </>
+        ) : undefined
+      }
+    >
+      {history.map((entry, i) =>
+        entry.type === "manipulation" ? (
+          <ManipulationEntry
+            key={entry.id}
+            entry={entry}
+            onUndo={i === 0 ? undoLatest : undefined}
+          />
+        ) : (
+          <DamageEntry
+            key={entry.id}
+            entry={entry}
+            onUndo={i === 0 ? undoLatest : undefined}
+          />
+        ),
       )}
-    </>
+    </BottomBarShell>
   );
 }

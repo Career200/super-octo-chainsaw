@@ -1,5 +1,5 @@
 import { Tip } from "@components/charsheet/shared";
-import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
+import { AvailabilitySelect } from "@components/charsheet/shared/AvailabilitySelect";
 import { CALIBER_DAMAGE } from "@scripts/weapons/catalog";
 
 export function AmmoForm({
@@ -125,27 +125,10 @@ export function AmmoForm({
             { type: "number", min: "1" },
           )}
         </Tip>
-        <Tip label="Street availability" class="item-form-availability">
-          <select
-            class={`input item-form-input avail-${availability || "C"}`}
-            value={availability}
-            disabled={!onAvailabilityChange}
-            onChange={
-              onAvailabilityChange
-                ? (e) =>
-                    onAvailabilityChange((e.target as HTMLSelectElement).value)
-                : undefined
-            }
-            title="Street availability"
-          >
-            <option value="">Availability</option>
-            {Object.entries(AVAILABILITY_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
-            ))}
-          </select>
-        </Tip>
+        <AvailabilitySelect
+          value={availability}
+          onChange={onAvailabilityChange}
+        />
       </div>
       <div class="ammo-form-bottom">
         <div class="ammo-form-half">

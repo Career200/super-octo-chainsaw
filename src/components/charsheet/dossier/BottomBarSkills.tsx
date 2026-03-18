@@ -88,7 +88,7 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
     >
       {adding ? (
         <SkillForm
-          disabled={false}
+          autoFocus
           name={f.name}
           onNameChange={(v) => setField("name", v)}
           stat={f.stat}
@@ -106,7 +106,7 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
         />
       ) : entry && isCustom ? (
         <SkillForm
-          disabled
+          commitOnBlur
           name={skillName!}
           onNameChange={(v) => {
             if (renameSkill(skillName!, v)) selectSkill(v);

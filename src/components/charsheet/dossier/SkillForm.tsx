@@ -19,7 +19,8 @@ const KEY_ATTACK_OPTIONS = [
 ];
 
 export interface SkillFormProps {
-  disabled: boolean;
+  autoFocus?: boolean;
+  commitOnBlur?: boolean;
   name: string;
   onNameChange?: (v: string) => void;
   stat: SkillStat;
@@ -37,7 +38,8 @@ export interface SkillFormProps {
 }
 
 export function SkillForm({
-  disabled,
+  autoFocus,
+  commitOnBlur,
   name,
   onNameChange,
   stat,
@@ -54,7 +56,7 @@ export function SkillForm({
   onDescriptionChange,
 }: SkillFormProps) {
   // Rename mode: local state + commit on blur/Enter
-  const isRename = disabled && !!onNameChange;
+  const isRename = commitOnBlur && !!onNameChange;
   const [localName, setLocalName] = useState(name);
   const prevName = useRef(name);
   if (name !== prevName.current) {
@@ -93,7 +95,7 @@ export function SkillForm({
                   : undefined
               }
               placeholder="Skill name"
-              autoFocus={!disabled}
+              autoFocus={autoFocus}
             />
           </label>
         )}
@@ -102,7 +104,7 @@ export function SkillForm({
           <select
             class="input skill-form-input"
             value={stat}
-            disabled={disabled}
+            disabled={!onStatChange}
             onChange={
               onStatChange
                 ? (e) =>
@@ -146,7 +148,7 @@ export function SkillForm({
           <input
             type="checkbox"
             checked={melee}
-            disabled={disabled}
+            disabled={!onMeleeChange}
             onChange={
               onMeleeChange
                 ? (e) => onMeleeChange((e.target as HTMLInputElement).checked)
@@ -159,7 +161,7 @@ export function SkillForm({
           <input
             type="checkbox"
             checked={martialArt}
-            disabled={disabled}
+            disabled={!onMartialArtChange}
             onChange={
               onMartialArtChange
                 ? (e) =>

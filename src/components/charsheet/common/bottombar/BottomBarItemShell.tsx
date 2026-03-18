@@ -1,10 +1,11 @@
 import type { ComponentChildren } from "preact";
 import { useRef, useState } from "preact/hooks";
 
-import { Chevron } from "@components/charsheet/shared/Chevron";
 import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
 import { Popover } from "@components/charsheet/shared/Popover";
 import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
+
+import { BottomBarShell } from "./BottomBarShell";
 
 interface Props {
   expanded: boolean;
@@ -52,12 +53,12 @@ export function BottomBarItemShell({
   }
 
   return (
-    <>
-      <div class="bottom-bar-row expandable" onClick={onToggle}>
-        <div class="bottom-bar-content">
-          <span class="bottom-bar-name">{headerLabel}</span>
-        </div>
-        <div class="bottom-bar-actions">
+    <BottomBarShell
+      expanded={expanded}
+      onToggle={onToggle}
+      headerContent={<span class="bottom-bar-name">{headerLabel}</span>}
+      actions={
+        <>
           {headerActions}
           {adding && onAdd && (
             <>
@@ -109,10 +110,10 @@ export function BottomBarItemShell({
               />
             </>
           )}
-          <Chevron expanded={expanded} />
-        </div>
-      </div>
-      {expanded && <div class="bottom-bar-body">{children}</div>}
-    </>
+        </>
+      }
+    >
+      {children}
+    </BottomBarShell>
   );
 }
