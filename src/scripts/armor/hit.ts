@@ -185,14 +185,28 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   return result;
 }
 
+/** D10 hit location table: [maxRoll, bodyPart] */
+const HIT_TABLE: [number, BodyPartName][] = [
+  [1, "head"],
+  [4, "torso"],
+  [5, "right_arm"],
+  [6, "left_arm"],
+  [8, "right_leg"],
+  [10, "left_leg"],
+];
+
 export function rollHitLocation(): BodyPartName {
   const roll = Math.floor(Math.random() * 10) + 1;
-  if (roll === 1) return "head";
-  if (roll <= 4) return "torso";
-  if (roll === 5) return "right_arm";
-  if (roll === 6) return "left_arm";
-  if (roll <= 8) return "right_leg";
-  return "left_leg";
+  return HIT_TABLE.find(([max]) => roll <= max)![1];
+}
+
+function applyWound(penetrating: number, part: BodyPartName, btm: number) {
+  const isHeadOrFace = part === "head" || part === "face";
+  const afterBTM = Math.max(1, penetrating - btm);
+  return {
+    woundDamage: isHeadOrFace ? afterBTM * 2 : afterBTM,
+    headMultiplied: isHeadOrFace,
+  };
 }
 
 export function resolveLocationalHit(
@@ -203,10 +217,8 @@ export function resolveLocationalHit(
   const btm = $bodyType.get().btm;
 
   if (opts.ignoreSP) {
-    const isHeadOrFace = part === "head" || part === "face";
-    const afterBTM = Math.max(1, damage - btm);
-    const woundDamage = isHeadOrFace ? afterBTM * 2 : afterBTM;
-    takeDamage(woundDamage, "physical");
+    const wound = applyWound(damage, part, btm);
+    takeDamage(wound.woundDamage, "physical");
     recordDamage({
       rawDamage: damage,
       damageType: opts.damageType,
@@ -215,9 +227,9 @@ export function resolveLocationalHit(
       armorDamage: [],
       penetrating: damage,
       ignoredArmor: true,
-      headMultiplied: isHeadOrFace,
+      headMultiplied: wound.headMultiplied,
       btm,
-      woundDamage,
+      woundDamage: wound.woundDamage,
       diceRolls: opts.diceRolls,
     });
     return;
@@ -261,15 +273,11 @@ export function resolveLocationalHit(
     .filter((p) => p.sp > 0)
     .sort((a, b) => b.sp - a.sp);
 
-  let woundDamage: number | undefined;
-  let headMultiplied = false;
+  let wound: { woundDamage: number; headMultiplied: boolean } | undefined;
 
   if (result.penetrating > 0) {
-    const isHeadOrFace = part === "head" || part === "face";
-    headMultiplied = isHeadOrFace;
-    const afterBTM = Math.max(1, result.penetrating - btm);
-    woundDamage = isHeadOrFace ? afterBTM * 2 : afterBTM;
-    takeDamage(woundDamage, "physical");
+    wound = applyWound(result.penetrating, part, btm);
+    takeDamage(wound.woundDamage, "physical");
   }
 
   recordDamage({
@@ -281,9 +289,9 @@ export function resolveLocationalHit(
     armorDamage,
     penetrating: result.penetrating,
     ignoredArmor: false,
-    headMultiplied: headMultiplied || undefined,
+    headMultiplied: wound?.headMultiplied || undefined,
     btm,
-    woundDamage,
+    woundDamage: wound?.woundDamage,
     diceRolls: opts.diceRolls,
   });
 }
