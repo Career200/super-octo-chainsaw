@@ -113,6 +113,14 @@ Helpers: `getSlotUsage(containerInstanceId)`, `getContainersForOption(templateId
 
 Listener: re-derives `$cyberEffects` on every change (sums HC of `installed: true` items → humanityLoss).
 
+### `$armorEffects` (armor/effects.ts)
+
+```
+{ ev: number, maxLayers: number, maxLocation: BodyPartName | null }
+```
+
+Catalog-free summary of worn armor EV + layer penalty. Written by listener on `$ownedArmor` changes (in armor/state.ts). Safe to import from eagerly-loaded stores (no catalog dependency). Same pattern as `$cyberEffects`.
+
 ### `$cyberEffects` (cyber-effects.ts)
 
 ```
@@ -331,7 +339,7 @@ Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
 - `total` = inherent + cyber
 - `current` = total - wound penalties - EV penalty (REF only)
 - REF, INT, CL, TECH, MA: affected by wounds
-- REF: also affected by $encumbrance
+- REF: also affected by `$armorEffects.ev`
 
 ### `$bodyType` (stats.ts)
 
@@ -340,30 +348,6 @@ Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
 ```
 
 Depends on: `$BT`, `$health` (wound penalties on save)
-
-### `$encumbrance` (armor/)
-
-```
-number (total EV)
-```
-
-Depends on: `$ownedArmor` (worn armor EV + layer penalty)
-
-### `$character` (character.ts)
-
-```
-{ health, woundLevel, stunLevel, ev }
-```
-
-Aggregator. Depends on: `$health`, `$encumbrance`
-
-### `$woundLevel` (character.ts)
-
-```
-string | null (e.g. "Light", "Serious", "Mortal 2")
-```
-
-Depends on: `$health`
 
 ### `$allSkills` (skills.ts)
 
@@ -567,16 +551,14 @@ Depends on: `$cyberEffects`, `$EMP`
 
 ```
 $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
-          ├──▸ $bodyType.save
-          ├──▸ $woundLevel
-          └──▸ $character
+          └──▸ $bodyType.save
 
 $stats ────▸ all 9 computed stat stores ──▸ $bodyType
 
 $customArmorTemplates ──▸ $customArmorList
                        ──▸ resolveTemplate() (used by $ownedArmor load, getArmorPiece, acquireArmor, setArmorSP)
 
-$ownedArmor ──▸ $encumbrance ──▸ $REF, $character
+$ownedArmor ──▸ listener ──▸ $armorEffects (persist, catalog-free) ──▸ $REF, EVDisplay
 
 $damageHistory (standalone, no dependents)
 

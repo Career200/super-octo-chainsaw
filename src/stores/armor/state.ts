@@ -12,11 +12,12 @@ import {
   type ArmorPiece,
   type ArmorTemplate,
   type BodyPartName,
-  type EVResult,
   getPartSpMax,
   getTotalEV,
 } from "@scripts/armor/core";
 import type { Availability } from "@scripts/catalog-common";
+
+import { $armorEffects } from "./effects";
 
 // --- Custom Armor Definitions ---
 
@@ -218,13 +219,16 @@ export function getImplantsForPart(part: BodyPartName): ArmorPiece[] {
   return getInstalledImplants().filter((p) => p.bodyParts.includes(part));
 }
 
-// --- Computed Stores ---
+// --- Armor Effects Sync ---
 
-export const $encumbrance = computed($ownedArmor, (): EVResult => {
+function syncArmorEffects(): void {
   const wornArmor = getAllOwnedArmor().filter((a) => a.worn && !a.layer);
   const implants = getInstalledImplants();
-  return getTotalEV(wornArmor, implants);
-});
+  $armorEffects.set(getTotalEV(wornArmor, implants));
+}
+
+$ownedArmor.listen(syncArmorEffects);
+syncArmorEffects(); // validate cache on module load
 
 export const $customArmorList = computed(
   $customArmorTemplates,
