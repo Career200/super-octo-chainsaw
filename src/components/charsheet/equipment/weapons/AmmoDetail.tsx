@@ -1,14 +1,7 @@
 import type { AmmoTemplate } from "@scripts/ammo/catalog";
 import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
-import { addAmmo, removeAmmo } from "@stores/ammo";
 
-export function AmmoDetail({
-  template,
-  quantity,
-}: {
-  template: AmmoTemplate;
-  quantity: number;
-}) {
+export function AmmoDetail({ template }: { template: AmmoTemplate }) {
   return (
     <div class="weapon-detail">
       <div class="weapon-detail-stats">
@@ -43,33 +36,6 @@ export function AmmoDetail({
         </p>
       )}
       {template.description && <p class="text-desc">{template.description}</p>}
-      <div class="gear-qty-controls cc-ammo-stepper">
-        <button
-          class="btn-sm ammo-qty-btn ammo-qty-btn-box"
-          onClick={() => removeAmmo(template.templateId, template.boxSize)}
-        >
-          −{template.boxSize}
-        </button>
-        <button
-          class="btn-sm ammo-qty-btn"
-          onClick={() => removeAmmo(template.templateId)}
-        >
-          −
-        </button>
-        <span class="gear-qty-value cc-ammo-value">{quantity}</span>
-        <button
-          class="btn-sm ammo-qty-btn"
-          onClick={() => addAmmo(template.templateId, 1)}
-        >
-          +
-        </button>
-        <button
-          class="btn-sm ammo-qty-btn ammo-qty-btn-box"
-          onClick={() => addAmmo(template.templateId, template.boxSize)}
-        >
-          +{template.boxSize}
-        </button>
-      </div>
     </div>
   );
 }

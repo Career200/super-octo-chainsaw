@@ -13,7 +13,9 @@ import { CALIBER_DAMAGE } from "@scripts/weapons/catalog";
 import {
   $customAmmoItems,
   $ownedAmmo,
+  addAmmo,
   addCustomAmmo,
+  removeAmmo,
   removeCustomAmmo,
   updateCustomAmmo,
 } from "@stores/ammo";
@@ -194,7 +196,7 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
       />
     );
   } else if (resolved) {
-    bodyContent = <AmmoDetail template={resolved} quantity={quantity} />;
+    bodyContent = <AmmoDetail template={resolved} />;
   }
 
   return (
@@ -210,17 +212,60 @@ export default function BottomBarAmmo({ expanded, onToggle }: Props) {
       removeName={displayName}
       onRemove={handleRemove}
       headerActions={
-        isCustom && !adding && customDef ? (
-          <button
-            class="bar-action"
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleEdit();
-            }}
-          >
-            {editing ? "Done" : "Edit"}
-          </button>
-        ) : null
+        <>
+          {resolved && !adding && !editing && (
+            <div class="gear-qty-controls cc-ammo-stepper">
+              <button
+                class="btn-sm ammo-qty-btn ammo-qty-btn-box"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeAmmo(resolved.templateId, resolved.boxSize);
+                }}
+              >
+                −{resolved.boxSize}
+              </button>
+              <button
+                class="btn-sm ammo-qty-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeAmmo(resolved.templateId);
+                }}
+              >
+                −
+              </button>
+              <span class="gear-qty-value cc-ammo-value">{quantity}</span>
+              <button
+                class="btn-sm ammo-qty-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addAmmo(resolved.templateId, 1);
+                }}
+              >
+                +
+              </button>
+              <button
+                class="btn-sm ammo-qty-btn ammo-qty-btn-box"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addAmmo(resolved.templateId, resolved.boxSize);
+                }}
+              >
+                +{resolved.boxSize}
+              </button>
+            </div>
+          )}
+          {isCustom && !adding && customDef && (
+            <button
+              class="bar-action"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleEdit();
+              }}
+            >
+              {editing ? "Done" : "Edit"}
+            </button>
+          )}
+        </>
       }
     >
       {bodyContent}

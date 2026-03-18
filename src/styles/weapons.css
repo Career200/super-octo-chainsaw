@@ -329,7 +329,7 @@
 }
 
 .cc-ammo-stepper {
-  margin-bottom: var(--space-12);
+  margin-left: auto;
 }
 
 .cc-ammo-value {
