@@ -9,6 +9,8 @@ export interface HomerulesState {
   cyberEyePreinstalledOption: "tsm" | "tsm-plus";
   tsmFreeHc: boolean;
   tsmFreeSlot: boolean;
+  skinweaveNoDegradation: boolean;
+  skinArmorNoDegradation: boolean;
 }
 
 const defaults: HomerulesState = {
@@ -18,6 +20,8 @@ const defaults: HomerulesState = {
   cyberEyePreinstalledOption: "tsm-plus",
   tsmFreeHc: true,
   tsmFreeSlot: true,
+  skinweaveNoDegradation: false,
+  skinArmorNoDegradation: true,
 };
 
 export const $homerules = persistentAtom<HomerulesState>(

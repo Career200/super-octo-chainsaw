@@ -12,8 +12,8 @@ import {
   type ArmorPiece,
   type ArmorTemplate,
   type BodyPartName,
+  computeArmorEffects,
   getPartSpMax,
-  getTotalEV,
 } from "@scripts/armor/core";
 import type { Availability } from "@scripts/catalog-common";
 
@@ -224,7 +224,7 @@ export function getImplantsForPart(part: BodyPartName): ArmorPiece[] {
 function syncArmorEffects(): void {
   const wornArmor = getAllOwnedArmor().filter((a) => a.worn && !a.layer);
   const implants = getInstalledImplants();
-  $armorEffects.set(getTotalEV(wornArmor, implants));
+  $armorEffects.set(computeArmorEffects(wornArmor, implants));
 }
 
 $ownedArmor.listen(syncArmorEffects);

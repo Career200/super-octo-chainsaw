@@ -110,7 +110,7 @@ export function calculateDamage(
 }
 
 export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
-  const { locationalDegradation, scaledDegradation } = $homerules.get();
+  const { locationalDegradation, scaledDegradation, skinweaveNoDegradation, skinArmorNoDegradation } = $homerules.get();
   const layers = getBodyPartLayers(bodyPart);
   // getBodyPartLayers already returns only worn armor, just filter for active SP
   const activeBefore = sortByLayerOrder(layers.filter((l) => l.spCurrent > 0));
@@ -132,10 +132,15 @@ export function applyHit(bodyPart: BodyPartName, damage: number): DamageResult {
   }
 
   // When penetrated, damage all implant layers (plating, skinweave, subdermal)
-  // Each layer takes 1 damage when penetrated
+  // Each layer takes 1 damage when penetrated — unless homerule skips it
   if (result.penetrating > 0) {
     for (const impl of implants) {
       if (getImplantSP(impl, bodyPart) > 0) {
+        // Skip degradation if homerule protects this implant type
+        if (impl.layer === "skinweave") {
+          if (impl.templateId === "skin_armor" && skinArmorNoDegradation) continue;
+          if (impl.templateId !== "skin_armor" && skinweaveNoDegradation) continue;
+        }
         degrade(impl.id, 1);
       }
     }

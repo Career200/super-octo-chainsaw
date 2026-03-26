@@ -1,12 +1,12 @@
 import { persistentAtom } from "@nanostores/persistent";
 
-import type { EVResult } from "@scripts/armor/core";
+import type { ArmorEffects } from "@scripts/armor/core";
 
 import { decodeJson } from "../decode";
 
-const DEFAULT: EVResult = { ev: 0, maxLayers: 0, maxLocation: null };
+const DEFAULT: ArmorEffects = { ev: 0, maxLayers: 0, maxLocation: null, layersByPart: {} };
 
-export const $armorEffects = persistentAtom<EVResult>(
+export const $armorEffects = persistentAtom<ArmorEffects>(
   "armor-effects",
   DEFAULT,
   { encode: JSON.stringify, decode: decodeJson(DEFAULT) },

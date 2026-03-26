@@ -14,12 +14,13 @@ import {
 } from "@stores/cyber";
 import { selectCyber } from "@stores/ui";
 
+import { useCyberArmorBlockedHint, useSkinweaveSwapWarning } from "./useCyberArmorHints";
 import {
   type ContainerChoice,
   getChildHcRows,
   useContainerChoices,
   useEffectiveHc,
-} from "./InstallPopover";
+} from "./useInstallHelpers";
 
 export function useCyberActions(
   ownedItem: HydratedCyberItem | null,
@@ -29,6 +30,7 @@ export function useCyberActions(
   install: {
     label: string;
     blockedHint?: string;
+    swapWarning?: string;
     containers?: ContainerChoice[];
     noContainerHint?: string;
     hcRowDefs: { key: string; name: string; notation: string }[];
@@ -44,6 +46,7 @@ export function useCyberActions(
   const effectiveHc = useEffectiveHc(template?.id, template?.hc ?? "0");
   const isOption = template?.role === "option";
   const isContainer = template?.role === "container";
+  const isCyberArmor = !!template?.armorTemplateId;
 
   const containerChoices = useContainerChoices(
     isOption ? template?.id : undefined,
@@ -57,16 +60,73 @@ export function useCyberActions(
     return getChildHcRows(ownedItem.instanceId);
   }, [ownedItem, isContainer]);
 
-  const discard = ownedItem
-    ? {
-        name: template?.name ?? "",
-        onDiscard: () => {
-          discardCyber(ownedItem.instanceId);
-          selectCyber(null);
-        },
-      }
-    : null;
+  const cyberArmorBlockedHint = useCyberArmorBlockedHint(
+    isCyberArmor ? template : null,
+  );
+  const skinweaveSwapWarning = useSkinweaveSwapWarning(
+    isCyberArmor ? template : null,
+  );
 
+  // Cyber-armor: no Take, no Discard (install-only lifecycle)
+  const discard =
+    ownedItem && !isCyberArmor
+      ? {
+          name: template?.name ?? "",
+          onDiscard: () => {
+            discardCyber(ownedItem.instanceId);
+            selectCyber(null);
+          },
+        }
+      : null;
+
+  // --- Cyber-armor: catalog item ---
+  if (catalogTemplate?.armorTemplateId) {
+    return {
+      action: null, // No "Take" for cyber-armor
+      install: {
+        label: "Install",
+        blockedHint: cyberArmorBlockedHint,
+        swapWarning: skinweaveSwapWarning,
+        hcRowDefs: [
+          {
+            key: catalogTemplate.id,
+            name: catalogTemplate.name,
+            notation: effectiveHc,
+          },
+        ],
+        onConfirm: (_containerId, hcMap) => {
+          import("@stores/cyber-armor").then(({ installCyberArmor }) => {
+            const result = installCyberArmor(
+              catalogTemplate.id,
+              hcMap[catalogTemplate.id],
+            );
+            if (result.success) selectCyber(null);
+            // TODO: surface result.error in popover (needs generic error display)
+          });
+        },
+      },
+      discard: null,
+    };
+  }
+
+  // --- Cyber-armor: installed item ---
+  if (ownedItem?.installed && ownedItem.template.armorTemplateId) {
+    return {
+      action: {
+        label: "Uninstall",
+        run: () => {
+          import("@stores/cyber-armor").then(({ uninstallCyberArmor }) => {
+            uninstallCyberArmor(ownedItem.instanceId);
+            selectCyber(null);
+          });
+        },
+      },
+      install: null,
+      discard: null,
+    };
+  }
+
+  // --- Regular catalog item ---
   if (catalogTemplate) {
     return {
       action: {

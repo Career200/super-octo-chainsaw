@@ -13,8 +13,8 @@ import {
 } from "@stores/cyber";
 import { $selectedCyber } from "@stores/ui";
 
+import { useCyberActions } from "./hooks/useCyberActions";
 import { InstallPopover } from "./InstallPopover";
-import { useCyberActions } from "./useCyberActions";
 
 // --- Header actions (rendering only) ---
 
@@ -80,6 +80,7 @@ function CyberHeaderActions({
             containers={install.containers}
             noContainerHint={install.noContainerHint}
             blockedHint={install.blockedHint}
+            swapWarning={install.swapWarning}
             hcRowDefs={install.hcRowDefs}
             onConfirm={(containerId, hcMap) => {
               install.onConfirm(containerId, hcMap);

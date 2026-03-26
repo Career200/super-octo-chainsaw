@@ -159,20 +159,53 @@ export function getPartSpMax(
   return template.spMax;
 }
 
-export interface EVResult {
+export interface PartLayerInfo {
+  countedLayers: number;
+  hasHardLayer: boolean;
+}
+
+export interface ArmorEffects {
   ev: number;
   maxLayers: number;
   maxLocation: BodyPartName | null;
+  layersByPart: Partial<Record<BodyPartName, PartLayerInfo>>;
 }
 
-// Calculate EV penalty:
+/**
+ * Check whether armor with given properties can fit on the given body parts,
+ * using pre-computed layer data (no store/catalog deps).
+ */
+export function checkLayerFit(
+  parts: BodyPartName[],
+  armorType: "soft" | "hard",
+  armorLayer: ArmorLayer | undefined,
+  layersByPart: Partial<Record<BodyPartName, PartLayerInfo>>,
+): { ok: true } | { ok: false; reason: string } {
+  if (!countsAsLayer(armorLayer)) return { ok: true };
+
+  for (const part of parts) {
+    const info = layersByPart[part];
+    const counted = info?.countedLayers ?? 0;
+    const partLabel = part.replace("_", " ");
+
+    if (counted >= 3) {
+      return { ok: false, reason: `Cannot add more than 3 layers to ${partLabel}` };
+    }
+    if (armorType === "hard" && info?.hasHardLayer) {
+      return { ok: false, reason: `Only 1 hard armor allowed per ${partLabel}` };
+    }
+  }
+  return { ok: true };
+}
+
+// Calculate EV penalty + per-part layer info:
 // - Every worn armor piece and implant contributes its base EV
 // - Layer penalty comes from the body part with the most layers
 // - HOMERULE: Skinweave doesn't count toward the limit (see countsAsLayer - faceplate as convenience)
-export function getTotalEV(
+export function computeArmorEffects(
   allWornArmor: ArmorPiece[],
   allInstalledImplants: ArmorPiece[],
-): EVResult {
+): ArmorEffects {
   let baseEV = allWornArmor.reduce((sum, armor) => sum + (armor.ev ?? 0), 0);
   baseEV += allInstalledImplants.reduce((sum, impl) => sum + (impl.ev ?? 0), 0);
 
@@ -182,16 +215,22 @@ export function getTotalEV(
 
   let maxLayers = 0;
   let maxLocation: BodyPartName | null = null;
+  const layersByPart: Partial<Record<BodyPartName, PartLayerInfo>> = {};
 
   for (const part of BODY_PARTS) {
     const wornAtPart = allWornArmor.filter((a) => a.bodyParts.includes(part));
     const implantsAtPart = countedImplants.filter((a) =>
       a.bodyParts.includes(part),
     );
-    const totalLayers = wornAtPart.length + implantsAtPart.length;
+    const countedLayers = wornAtPart.length + implantsAtPart.length;
+    const hasHardLayer =
+      wornAtPart.some((a) => a.type === "hard") ||
+      implantsAtPart.some((a) => a.type === "hard");
 
-    if (totalLayers > maxLayers) {
-      maxLayers = totalLayers;
+    layersByPart[part] = { countedLayers, hasHardLayer };
+
+    if (countedLayers > maxLayers) {
+      maxLayers = countedLayers;
       maxLocation = part;
     }
   }
@@ -202,5 +241,6 @@ export function getTotalEV(
     ev: baseEV + layerPenalty,
     maxLayers,
     maxLocation,
+    layersByPart,
   };
 }

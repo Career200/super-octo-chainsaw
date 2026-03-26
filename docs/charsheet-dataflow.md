@@ -95,8 +95,8 @@ Layer 4 — Panel-specific stores (catalog-dependent, lazy)
                ┌─────────┴──────────┐                  │
                │    $ownedArmor     │─────────────────┼──▸ ArmorListPanel, ArmorCard
                │     (persist)      │                  │    BodyPartCard, BottomBarArmor
-               │                    │                  │    SkinweaveDisplay, ImplantsDisplay
-               └─────────▲──────────┘                  │    HitPopover ◂──▸, RepairPopover
+               │                    │                  │    HitPopover ◂──▸, RepairPopover
+               └─────────▲──────────┘                  │    cyber-armor.ts (bridge)
                          │                             │
                ┌─────────┴──────────────┐              │
                │ $customArmorTemplates  │─────────────┼──▸ BottomBarArmor ◂──▸
@@ -114,10 +114,12 @@ Layer 4 — Panel-specific stores (catalog-dependent, lazy)
                └────────────────────┘                       (record entries)
 
                ┌────────────────────┐
-               │    $homerules     │─────────────────────────▸ applyHit() (degradation mode)
-               │     (persist)      │                          RepairPopover (hide part selector)
-               │ locationalDeg,    │                          ArmorHelpContent ×2 (conditional text)
-               │ scaledDeg         │  Mutated by vanilla JS dialog (localStorage + StorageEvent)
+               │    $homerules     │─────────────────────────▸ applyHit() (degradation mode,
+               │     (persist)      │                          skinweave/skin-armor non-degrade)
+               │ locationalDeg,    │                          RepairPopover (hide part selector)
+               │ scaledDeg,        │                          ArmorHelpContent ×2 (conditional text)
+               │ skinweaveNoDeg,   │  Mutated by vanilla JS dialog (localStorage + StorageEvent)
+               │ skinArmorNoDeg    │
                └────────────────────┘
 
                ┌────────────────────┐
@@ -345,7 +347,8 @@ Layer 4 — Panel-specific stores (catalog-dependent, lazy)
                │  OwnedItem[]    │                       (takeCyber, installCyber, installOwned,
                └──┬──┬───────────┘                        uninstallCyber, discardCyber, slotOption,
                   │  │                                     unslotOption, setItemHc)
-                  │  │
+                  │  │                                     cyber-armor.ts (lazy bridge →
+                  │  │                                       installCyberArmor, uninstallCyberArmor)
                   │  ▾
                   │ ┌──────────────┐
                   │ │$hydratedCyber│──▸ $installedByCategory

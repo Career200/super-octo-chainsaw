@@ -1,16 +1,17 @@
 import { useStore } from "@nanostores/preact";
-import { lazy, Suspense } from "preact/compat";
+import { Suspense } from "preact/compat";
 
 import { tabStore } from "@stores/ui";
 
 import { Panel } from "../shared";
 import { TabStrip } from "../shared/TabStrip";
 import { TwoPanelView } from "../shared/TwoPanelView";
+import { tracedLazy } from "../tracedLazy";
 
 import DefensePanel from "./defense/DefensePanel";
 
-const RangedPanel = lazy(() => import("./offense/RangedPanel"));
-const MeleePanel = lazy(() => import("./offense/MeleePanel"));
+const RangedPanel = tracedLazy("RangedPanel", () => import("./offense/RangedPanel"));
+const MeleePanel = tracedLazy("MeleePanel", () => import("./offense/MeleePanel"));
 
 const $offenseTab = tabStore("offense-tab", "ranged");
 

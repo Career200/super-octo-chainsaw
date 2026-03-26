@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import { lazy, Suspense } from "preact/compat";
+import { Suspense } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 
 import { tabStore } from "@stores/ui";
@@ -9,15 +9,16 @@ import { BodyInfo } from "./common/topbar/BodyInfo";
 import { StatsStrip } from "./common/topbar/StatsStrip";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { TabStrip } from "./shared/TabStrip";
+import { tracedLazy } from "./tracedLazy";
 
 // Deferred
-const WoundIndicator = lazy(() => import("./common/topbar/WoundIndicator"));
-const AwarenessLine = lazy(() => import("./common/topbar/AwarenessLine"));
+const WoundIndicator = tracedLazy("WoundIndicator", () => import("./common/topbar/WoundIndicator"));
+const AwarenessLine = tracedLazy("AwarenessLine", () => import("./common/topbar/AwarenessLine"));
 
 // Views
-const CombatView = lazy(() => import("./combat/CombatView"));
-const DossierView = lazy(() => import("./dossier/DossierView"));
-const EquipmentView = lazy(() => import("./equipment/EquipmentView"));
+const CombatView = tracedLazy("CombatView", () => import("./combat/CombatView"));
+const DossierView = tracedLazy("DossierView", () => import("./dossier/DossierView"));
+const EquipmentView = tracedLazy("EquipmentView", () => import("./equipment/EquipmentView"));
 
 const SPA_TABS = [
   { id: "combat", label: "COMBAT" },
@@ -32,12 +33,16 @@ export const Charsheet = () => {
   useEffect(() => {
     const id = requestIdleCallback(() => {
       setIdleReached(true);
-      import("./combat/CombatView");
-      import("./dossier/DossierView");
-      import("./equipment/EquipmentView");
-      import("./equipment/armor/ArmorSubView");
-      import("./equipment/weapons/WeaponsSubView");
-      import("./equipment/gear/GearPanel");
+      const t0 = performance.now();
+      console.log("[idle] prefetch start");
+      Promise.all([
+        import("./combat/CombatView"),
+        import("./dossier/DossierView"),
+        import("./equipment/EquipmentView"),
+        import("./equipment/armor/ArmorSubView"),
+        import("./equipment/weapons/WeaponsSubView"),
+        import("./equipment/gear/GearPanel"),
+      ]).then(() => console.log(`[idle] prefetch done in ${(performance.now() - t0).toFixed(1)}ms`));
     });
     return () => cancelIdleCallback(id);
   }, []);

@@ -49,6 +49,10 @@ export interface CyberTemplate {
   hc: string;
   cost?: number;
   availability?: Availability;
+  /** Links to an IMPLANT_TEMPLATES entry for cyber-armor items. */
+  armorTemplateId?: string;
+  /** True for skinweave-type cyber-armor (swaps existing skinweave on install). */
+  skinweave?: boolean;
 }
 
 /** Per-category limit on how many container instance-slots can be owned. */
@@ -58,24 +62,27 @@ export const CATEGORY_MAX_INSTANCES: Partial<Record<CyberCategory, number>> = {
 };
 
 export function isDiceNotation(notation: string): boolean {
-  return /\d+d\d+/.test(notation);
+  return /\d+d\d+/.test(notation.trim());
 }
 
-/** Parse and roll dice notation: "2", "0.5", "0", "2d6", "1d6", "1d6/2". */
+/** Parse and roll dice notation: "2", "0.5", "0", "2d6", "1d6", "1d6/2", "1d6+3". */
 export function rollHcDice(notation: string): number {
   const trimmed = notation.trim();
 
-  // dice with optional divisor: "2d6", "1d6/2"
-  const diceMatch = trimmed.match(/^(\d+)d(\d+)(?:\/(\d+))?$/);
+  // dice with optional modifier: "2d6", "1d6/2", "1d6+3", "2d6+4"
+  const diceMatch = trimmed.match(/^(\d+)d(\d+)(?:([/+])(\d+))?$/);
   if (diceMatch) {
     const count = parseInt(diceMatch[1], 10);
     const sides = parseInt(diceMatch[2], 10);
-    const divisor = diceMatch[3] ? parseInt(diceMatch[3], 10) : 1;
+    const modOp = diceMatch[3] as "/" | "+" | undefined;
+    const modVal = diceMatch[4] ? parseInt(diceMatch[4], 10) : 0;
     let total = 0;
     for (let i = 0; i < count; i++) {
       total += Math.floor(Math.random() * sides) + 1;
     }
-    return Math.max(1, Math.round(total / divisor));
+    if (modOp === "/") return Math.max(1, Math.round(total / modVal));
+    if (modOp === "+") return Math.max(1, total + modVal);
+    return Math.max(1, total);
   }
 
   const flat = parseFloat(trimmed);
@@ -98,6 +105,8 @@ function c(
     maxSlots?: number;
     slotCost?: number;
     instanceCost?: number;
+    armorTemplateId?: string;
+    skinweave?: boolean;
   },
 ): CyberTemplate {
   return {
@@ -113,6 +122,8 @@ function c(
     maxSlots: opts?.maxSlots,
     slotCost: opts?.slotCost,
     instanceCost: opts?.instanceCost,
+    armorTemplateId: opts?.armorTemplateId,
+    skinweave: opts?.skinweave,
   };
 }
 
@@ -262,5 +273,109 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "0.5",
     "Transmits sounds to a digital recorder.",
     { cost: 100, availability: "C", containerCategory: "audio" },
+  ),
+
+  // === Cyber Armor ===
+  "cyber-skinweave-6": c(
+    "cyber-skinweave-6",
+    "SkinWeave SP 6",
+    "cyber-armor",
+    "standalone",
+    "1d6",
+    "Woven armor fibers grown into the skin. SP 6 all body parts. Spot difficulty 15.",
+    { cost: 1000, availability: "P", armorTemplateId: "skinweave_6", skinweave: true },
+  ),
+  "cyber-skinweave-8": c(
+    "cyber-skinweave-8",
+    "SkinWeave SP 8",
+    "cyber-armor",
+    "standalone",
+    "1d6+1",
+    "Woven armor fibers grown into the skin. SP 8 all body parts. Spot difficulty 17.",
+    { cost: 1250, availability: "P", armorTemplateId: "skinweave_8", skinweave: true },
+  ),
+  "cyber-skinweave-10": c(
+    "cyber-skinweave-10",
+    "SkinWeave SP 10",
+    "cyber-armor",
+    "standalone",
+    "1d6+3",
+    "Woven armor fibers grown into the skin. SP 10 all body parts. Spot difficulty 19.",
+    { cost: 1600, availability: "P", armorTemplateId: "skinweave_10", skinweave: true },
+  ),
+  "cyber-skinweave-12": c(
+    "cyber-skinweave-12",
+    "SkinWeave SP 12",
+    "cyber-armor",
+    "standalone",
+    "2d6",
+    // TODO: M2 stat effects — REF -1
+    "Woven armor fibers grown into the skin. SP 12 all body parts. Spot difficulty 21. REF -1 (not yet applied).",
+    { cost: 2000, availability: "P", armorTemplateId: "skinweave_12", skinweave: true },
+  ),
+  "cyber-skinweave-14": c(
+    "cyber-skinweave-14",
+    "SkinWeave SP 14",
+    "cyber-armor",
+    "standalone",
+    "2d6+2",
+    // TODO: M2 stat effects — REF -2, ATT -1
+    "Woven armor fibers grown into the skin. SP 14 all body parts. Spot difficulty 23. REF -2, ATT -1 (not yet applied).",
+    { cost: 2400, availability: "P", armorTemplateId: "skinweave_14", skinweave: true },
+  ),
+  "cyber-skinweave-16": c(
+    "cyber-skinweave-16",
+    "SkinWeave SP 16",
+    "cyber-armor",
+    "standalone",
+    "2d6+4",
+    // TODO: M2 stat effects — REF -3, ATT -2
+    "Woven armor fibers grown into the skin. SP 16 all body parts. Spot difficulty 25. REF -3, ATT -2 (not yet applied).",
+    { cost: 2750, availability: "R", armorTemplateId: "skinweave_16", skinweave: true },
+  ),
+  "cyber-skin-armor": c(
+    "cyber-skin-armor",
+    "Skin Armor SP 6",
+    "cyber-armor",
+    "standalone",
+    "0",
+    "Nanotechnology-based armor woven into the skin. SP 6 all body parts. No Humanity Cost. Cannot be spotted.",
+    { cost: 5000, availability: "R", armorTemplateId: "skin_armor", skinweave: true },
+  ),
+  "cyber-subdermal": c(
+    "cyber-subdermal",
+    "Subdermal Armor",
+    "cyber-armor",
+    "standalone",
+    "2d6",
+    "Armored plastic laminates inserted under the skin. SP 18, torso only.",
+    { cost: 1200, availability: "P", armorTemplateId: "subdermal" },
+  ),
+  "cyber-cowl": c(
+    "cyber-cowl",
+    "Cowl",
+    "cyber-armor",
+    "standalone",
+    "1d6",
+    "Body plate covering the skull, anchored by minibolts to the scalp. SP 25, head only.",
+    { cost: 200, availability: "R", armorTemplateId: "cowl" },
+  ),
+  "cyber-faceplate": c(
+    "cyber-faceplate",
+    "Faceplate",
+    "cyber-armor",
+    "standalone",
+    "4d6",
+    "Covers the entire face with ports for breathing, eating and seeing. SP 25, face only.",
+    { cost: 400, availability: "R", armorTemplateId: "faceplate" },
+  ),
+  "cyber-torso-plate": c(
+    "cyber-torso-plate",
+    "Torso Plate",
+    "cyber-armor",
+    "standalone",
+    "3d6",
+    "Covers entire upper and lower torso with expansion joints for movement. SP 25, torso only. EV -3.",
+    { cost: 2000, availability: "R", armorTemplateId: "torso_plate" },
   ),
 };
