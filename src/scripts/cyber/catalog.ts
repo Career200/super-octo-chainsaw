@@ -283,7 +283,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "1d6",
     "Woven armor fibers grown into the skin. SP 6 all body parts. Spot difficulty: Impossible (35+).",
-    { cost: 1000, availability: "P", armorTemplateId: "skinweave_6", skinweave: true },
+    {
+      cost: 1000,
+      availability: "P",
+      armorTemplateId: "skinweave_6",
+      skinweave: true,
+    },
   ),
   "cyber-skinweave-8": c(
     "cyber-skinweave-8",
@@ -292,7 +297,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "1d6+1",
     "Woven armor fibers grown into the skin. SP 8 all body parts. Spot difficulty: Impossible (30).",
-    { cost: 1250, availability: "P", armorTemplateId: "skinweave_8", skinweave: true },
+    {
+      cost: 1250,
+      availability: "P",
+      armorTemplateId: "skinweave_8",
+      skinweave: true,
+    },
   ),
   "cyber-skinweave-10": c(
     "cyber-skinweave-10",
@@ -301,7 +311,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "1d6+3",
     "Woven armor fibers grown into the skin. SP 10 all body parts. Spot difficulty: Very Difficult (25).",
-    { cost: 1600, availability: "P", armorTemplateId: "skinweave_10", skinweave: true },
+    {
+      cost: 1600,
+      availability: "P",
+      armorTemplateId: "skinweave_10",
+      skinweave: true,
+    },
   ),
   "cyber-skinweave-12": c(
     "cyber-skinweave-12",
@@ -311,7 +326,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "2d6",
     // TODO: M2 stat effects — REF -1
     "Woven armor fibers grown into the skin. SP 12 all body parts. Spot difficulty: Difficult (20). REF -1 (not yet applied).",
-    { cost: 2000, availability: "P", armorTemplateId: "skinweave_12", skinweave: true },
+    {
+      cost: 2000,
+      availability: "P",
+      armorTemplateId: "skinweave_12",
+      skinweave: true,
+    },
   ),
   "cyber-skinweave-14": c(
     "cyber-skinweave-14",
@@ -321,7 +341,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "2d6+2",
     // TODO: M2 stat effects — REF -2, ATT -1
     "Woven armor fibers grown into the skin. SP 14 all body parts. Spot difficulty: Difficult (20). REF -2, ATT -1 (not yet applied).",
-    { cost: 2400, availability: "P", armorTemplateId: "skinweave_14", skinweave: true },
+    {
+      cost: 2400,
+      availability: "P",
+      armorTemplateId: "skinweave_14",
+      skinweave: true,
+    },
   ),
   "cyber-skinweave-16": c(
     "cyber-skinweave-16",
@@ -331,7 +356,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "2d6+4",
     // TODO: M2 stat effects — REF -3, ATT -2
     "Woven armor fibers grown into the skin. SP 16 all body parts. Spot difficulty: Average (15). REF -3, ATT -2 (not yet applied).",
-    { cost: 2750, availability: "R", armorTemplateId: "skinweave_16", skinweave: true },
+    {
+      cost: 2750,
+      availability: "R",
+      armorTemplateId: "skinweave_16",
+      skinweave: true,
+    },
   ),
   "cyber-skin-armor": c(
     "cyber-skin-armor",
@@ -339,8 +369,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "cyber-armor",
     "standalone",
     "0",
-    "Nanotechnology-based armor woven into the skin. SP 6 all body parts. No Humanity Cost. Cannot be spotted.",
-    { cost: 5000, availability: "R", armorTemplateId: "skin_armor", skinweave: true },
+    "Bleeding edge designer biotech. SP 6 all body parts. No Humanity Cost. Cannot be spotted.",
+    {
+      availability: "R",
+      armorTemplateId: "skin_armor",
+      skinweave: true,
+    },
   ),
   "cyber-subdermal": c(
     "cyber-subdermal",
