@@ -372,6 +372,27 @@ export const $hydratedCyber = computed(
     }),
 );
 
+/** Resolved default option names per container template (static defaults + homerules). */
+export const $catalogDefaults = computed([$homerules], (rules) => {
+  const defaults: Record<string, string[]> = {};
+  for (const t of Object.values(CYBER_CATALOG)) {
+    if (t.role !== "container") continue;
+    const names: string[] = [];
+    if (t.defaultOptions) {
+      for (const optId of t.defaultOptions) {
+        const opt = CYBER_CATALOG[optId];
+        if (opt) names.push(opt.name);
+      }
+    }
+    if (t.category === "optics" && rules.cyberEyePreinstalled) {
+      const opt = CYBER_CATALOG[rules.cyberEyePreinstalledOption];
+      if (opt) names.push(opt.name);
+    }
+    if (names.length > 0) defaults[t.id] = names;
+  }
+  return defaults;
+});
+
 export const $installedByCategory = computed([$hydratedCyber], (hydrated) => {
   const installed = hydrated.filter((i) => i.installed);
   return CATEGORY_ORDER.map((cat) => ({

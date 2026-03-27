@@ -53,6 +53,8 @@ export interface CyberTemplate {
   armorTemplateId?: string;
   /** True for skinweave-type cyber-armor (swaps existing skinweave on install). */
   skinweave?: boolean;
+  /** Template IDs of options that come preinstalled with this container. */
+  defaultOptions?: string[];
 }
 
 /** Per-category limit on how many container instance-slots can be owned. */
@@ -107,6 +109,7 @@ function c(
     instanceCost?: number;
     armorTemplateId?: string;
     skinweave?: boolean;
+    defaultOptions?: string[];
   },
 ): CyberTemplate {
   return {
@@ -124,6 +127,7 @@ function c(
     instanceCost: opts?.instanceCost,
     armorTemplateId: opts?.armorTemplateId,
     skinweave: opts?.skinweave,
+    defaultOptions: opts?.defaultOptions,
   };
 }
 

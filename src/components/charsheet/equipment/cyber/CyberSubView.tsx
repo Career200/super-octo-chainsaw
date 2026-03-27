@@ -9,6 +9,7 @@ import {
   type CyberCategory,
 } from "@scripts/cyber/catalog";
 import {
+  $catalogDefaults,
   $hcData,
   $hydratedCyber,
   $installedByCategory,
@@ -33,6 +34,7 @@ export default function CyberSubView() {
   const hydrated = useStore($hydratedCyber);
   const installedByCategory = useStore($installedByCategory);
   const hcData = useStore($hcData);
+  const catalogDefaults = useStore($catalogDefaults);
   const [activeCategory, setActiveCategory] =
     useState<CyberCategory>("fashionware");
   const [activeSlot, setActiveSlot] = useState<CyberlimbCell["slot"]>("ra");
@@ -58,11 +60,12 @@ export default function CyberSubView() {
         owned: ownedTemplateIds.has(t.id),
         installed: installedTemplateIds.has(t.id),
         isBase: t.role === "container",
+        installedOptions: catalogDefaults[t.id],
       };
       result[t.category].push(item);
     }
     return result;
-  }, [ownedTemplateIds, installedTemplateIds]);
+  }, [ownedTemplateIds, installedTemplateIds, catalogDefaults]);
 
   // All owned items for the "Owned" tab — with slotUsage and auto-numbering
   const owned = useMemo(() => {

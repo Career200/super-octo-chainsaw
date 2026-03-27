@@ -145,29 +145,19 @@ function CatalogItemList({
   onSelect: (id: string) => void;
 }) {
   const baseItems = items.filter((i) => i.isBase);
-  const optionItems = items.filter((i) => !i.isBase);
-
-  // Enrich installed bases with their installed option names
-  const installedOptionNames = optionItems
-    .filter((i) => i.installed)
-    .map((i) => i.name);
-  const enrichedBases = baseItems.map((item) =>
-    item.installed && installedOptionNames.length > 0
-      ? { ...item, installedOptions: installedOptionNames }
-      : item,
-  );
+  const options = items.filter((i) => !i.isBase);
 
   return (
     <>
-      {enrichedBases.length > 0 && (
+      {baseItems.length > 0 && (
         <BaseGroup
-          items={enrichedBases}
+          items={baseItems}
           selectedId={selectedId}
           catalog={true}
           onSelect={onSelect}
         />
       )}
-      {optionItems.map((item) => (
+      {options.map((item) => (
         <CyberItemCard
           key={item.id}
           item={item}
