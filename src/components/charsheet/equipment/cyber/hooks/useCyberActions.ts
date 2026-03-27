@@ -3,6 +3,7 @@ import { useMemo } from "preact/hooks";
 import { CATEGORY_LABELS, type CyberTemplate } from "@scripts/cyber/catalog";
 import {
   canInstallContainer,
+  canInstallTemplate,
   discardCyber,
   getChildHcRows,
   type HydratedCyberItem,
@@ -145,7 +146,9 @@ export function useCyberActions(
             catalogTemplate.instanceCost ?? 1,
           )
             ? `You cannot add any more ${CATEGORY_LABELS[catalogTemplate.category].toLowerCase()} base implants`
-            : undefined,
+            : !canInstallTemplate(catalogTemplate)
+              ? `${catalogTemplate.name} is already installed`
+              : undefined,
         containers: isOption ? containerChoices : undefined,
         noContainerHint,
         hcRowDefs: [
@@ -214,6 +217,9 @@ export function useCyberActions(
       action: null,
       install: {
         label: "Install",
+        blockedHint: !canInstallTemplate(ownedItem.template)
+          ? `${ownedItem.template.name} is already installed`
+          : undefined,
         hcRowDefs: [
           {
             key: ownedItem.instanceId,

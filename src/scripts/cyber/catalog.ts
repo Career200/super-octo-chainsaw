@@ -1,5 +1,6 @@
 export type { Availability } from "@scripts/catalog-common";
 import type { Availability } from "@scripts/catalog-common";
+import type { StatName } from "@scripts/combat/types";
 
 export type CyberCategory =
   | "neuralware"
@@ -55,6 +56,20 @@ export interface CyberTemplate {
   skinweave?: boolean;
   /** Template IDs of options that come preinstalled with this container. */
   defaultOptions?: string[];
+  /** Additive stat bonuses when installed, e.g. { bt: 2 }. Negative = penalty. */
+  statBonus?: Partial<Record<StatName, number>>;
+  /** Stat value overrides when installed, e.g. { bt: 12 }. */
+  statOverride?: Partial<Record<StatName, number>>;
+  /** Additive skill bonuses when installed, e.g. { "Resist Torture/Drugs": 2 }. */
+  skillBonus?: Record<string, number>;
+  /** Additive initiative bonus when installed. */
+  initiativeBonus?: number;
+  /** Prominent effect text shown in Effects tab (top tier). */
+  majorEffect?: string;
+  /** Secondary effect text shown in Effects tab (lower tier). */
+  minorEffect?: string;
+  /** Max installed copies of this template. Default: 1 for standalone (except fashionware), unlimited otherwise. */
+  maxInstalled?: number;
 }
 
 /** Per-category limit on how many container instance-slots can be owned. */
@@ -110,6 +125,13 @@ function c(
     armorTemplateId?: string;
     skinweave?: boolean;
     defaultOptions?: string[];
+    statBonus?: Partial<Record<StatName, number>>;
+    statOverride?: Partial<Record<StatName, number>>;
+    skillBonus?: Record<string, number>;
+    initiativeBonus?: number;
+    majorEffect?: string;
+    minorEffect?: string;
+    maxInstalled?: number;
   },
 ): CyberTemplate {
   return {
@@ -128,6 +150,13 @@ function c(
     armorTemplateId: opts?.armorTemplateId,
     skinweave: opts?.skinweave,
     defaultOptions: opts?.defaultOptions,
+    statBonus: opts?.statBonus,
+    statOverride: opts?.statOverride,
+    skillBonus: opts?.skillBonus,
+    initiativeBonus: opts?.initiativeBonus,
+    majorEffect: opts?.majorEffect,
+    minorEffect: opts?.minorEffect,
+    maxInstalled: opts?.maxInstalled,
   };
 }
 
@@ -169,8 +198,179 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "Decorative tattoo.",
     { cost: 20, availability: "C" },
   ),
+  biomonitor: c(
+    "biomonitor",
+    "Biomonitor",
+    "fashionware",
+    "standalone",
+    "1",
+    "Subdermally implanted biofunction monitor.",
+    { cost: 100, availability: "C", skillBonus: { "Resist Torture/Drugs": 2 } },
+  ),
+  chemskins: c(
+    "chemskins",
+    "ChemSkins",
+    "fashionware",
+    "standalone",
+    "1d6/2",
+    "Color/pattern changing skin tints.",
+    { cost: 200, availability: "C" },
+  ),
+  "shift-tacts": c(
+    "shift-tacts",
+    "Shift-Tacts",
+    "fashionware",
+    "standalone",
+    "0.5",
+    "Color changing contact lenses.",
+    { cost: 200, availability: "C" },
+  ),
 
   // === Implants ===
+  "nasal-filters": c(
+    "nasal-filters",
+    "Nasal Filters",
+    "implants",
+    "standalone",
+    "2",
+    "Stops toxic gases, fumes. 70% effective.",
+    { cost: 60, availability: "C", majorEffect: "+4 Saves vs poison/gas/toxins" },
+  ),
+  "gill-implant": c(
+    "gill-implant",
+    "Gill Implant",
+    "implants",
+    "standalone",
+    "3d6",
+    "Water breathing system, good for 4 hours.",
+    { cost: 400, availability: "P", minorEffect: "Water breathing, 4 hours" },
+  ),
+  "independent-air": c(
+    "independent-air",
+    "Independent Air Supply",
+    "implants",
+    "standalone",
+    "2d6",
+    "Good for 25 minutes.",
+    { cost: 300, availability: "P", minorEffect: "25 min independent air" },
+  ),
+  "mr-studd": c(
+    "mr-studd",
+    "Mr. Studd Sexual Implant",
+    "implants",
+    "standalone",
+    "2d6",
+    "All night, every night. And they say chivalry is dead.",
+    { cost: 300, availability: "P", skillBonus: { Seduction: 1 } },
+  ),
+  contraceptive: c(
+    "contraceptive",
+    "Contraceptive Implant",
+    "implants",
+    "standalone",
+    "0.5",
+    "Good for 5 years. 98% effective.",
+    { cost: 100, availability: "C" },
+  ),
+  "subdermal-pocket": c(
+    "subdermal-pocket",
+    "Subdermal Pocket",
+    "implants",
+    "standalone",
+    "2d6",
+    '2"×4" space with RealSkinn zipper.',
+    { cost: 200, availability: "C", minorEffect: "Concealed subdermal storage" },
+  ),
+  "adrenal-booster": c(
+    "adrenal-booster",
+    "Adrenal Booster",
+    "implants",
+    "standalone",
+    "2d6",
+    "+1 REF for 1d6+2 turns, 3× per day.",
+    { cost: 400, availability: "P", majorEffect: "Toggle: +1 REF, 1d6+2 turns, 3×/day" },
+  ),
+  "motion-detector": c(
+    "motion-detector",
+    "Motion Detector",
+    "implants",
+    "standalone",
+    "2d6",
+    "Detects motion in a 20m² area. 70% effective.",
+    { cost: 200, availability: "C", majorEffect: "Motion detect 20m², 70%" },
+  ),
+  "radar-sensor": c(
+    "radar-sensor",
+    "Radar Sensor",
+    "implants",
+    "standalone",
+    "2",
+    "100m range radar. Requires cyberoptic. 70% effective.",
+    { cost: 200, availability: "C", majorEffect: "100m radar, 70%" },
+  ),
+  "sonar-implant": c(
+    "sonar-implant",
+    "Sonar Implant",
+    "implants",
+    "standalone",
+    "2",
+    "50m range sonar. Water only. 70% effective.",
+    { cost: 300, availability: "C", majorEffect: "50m sonar (water), 70%" },
+  ),
+  "digital-recorder": c(
+    "digital-recorder",
+    "Digital Recorder",
+    "implants",
+    "standalone",
+    "2",
+    "2 hrs storage from any digital source.",
+    { cost: 200, availability: "C", minorEffect: "2hr digital recording" },
+  ),
+  "av-recorder": c(
+    "av-recorder",
+    "Audio/Video Tape Recorder",
+    "implants",
+    "standalone",
+    "2",
+    "2 hrs storage from video, audio links.",
+    { cost: 300, availability: "C", minorEffect: "2hr A/V recording" },
+  ),
+  "radiation-detector": c(
+    "radiation-detector",
+    "Radiation Detector",
+    "implants",
+    "standalone",
+    "2",
+    "10m range. 80% detection effectiveness.",
+    { cost: 200, availability: "C", minorEffect: "Radiation detect 10m, 80%" },
+  ),
+  "chemical-analyser": c(
+    "chemical-analyser",
+    "Chemical Analyser",
+    "implants",
+    "standalone",
+    "2",
+    "5m range. 70% effectiveness.",
+    { cost: 200, availability: "C", minorEffect: "Chemical analysis 5m, 70%" },
+  ),
+  "voice-synthesizer": c(
+    "voice-synthesizer",
+    "Voice Synthesizer",
+    "implants",
+    "standalone",
+    "1d6",
+    "Can mimic any recorded sound (60%), up to 10 sounds.",
+    { cost: 600, availability: "C", majorEffect: "+4 Disguise (voice mimicry)" },
+  ),
+  audiovox: c(
+    "audiovox",
+    "AudioVox",
+    "implants",
+    "standalone",
+    "2d6",
+    "Vocal synthesizer for special effects.",
+    { cost: 700, availability: "C", skillBonus: { Performance: 2 } },
+  ),
   "wearman-mk2": c(
     "wearman-mk2",
     "Wearman mk2",
@@ -197,6 +397,53 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "0.5",
     "Implanted comfort module for sleeping anywhere.",
     { cost: 80, availability: "C" },
+  ),
+
+  // === Bioware ===
+  "grafted-muscle": c(
+    "grafted-muscle",
+    "Grafted Muscle",
+    "bioware",
+    "standalone",
+    "2d6",
+    "Up to +2 BOD increase (install once per point).",
+    { cost: 1000, availability: "P", statBonus: { bt: 1 }, maxInstalled: 2 },
+  ),
+  "muscle-bone-lace": c(
+    "muscle-bone-lace",
+    "Muscle & Bone Lace",
+    "bioware",
+    "standalone",
+    "1d6/2",
+    "Raises Body Type by +2.",
+    { cost: 1500, availability: "P", statBonus: { bt: 2 } },
+  ),
+  "enhanced-antibodies": c(
+    "enhanced-antibodies",
+    "Enhanced Antibodies",
+    "bioware",
+    "standalone",
+    "1d6/2",
+    "Improved immune system.",
+    { cost: 3000, availability: "R", minorEffect: "+1 healing/day" },
+  ),
+  "toxin-binders": c(
+    "toxin-binders",
+    "Toxin Binders",
+    "bioware",
+    "standalone",
+    "1d6/2",
+    "Biochemical toxin neutralizers.",
+    { cost: 3000, availability: "R", majorEffect: "+4 Poison/Drug Saves" },
+  ),
+  nanosurgeons: c(
+    "nanosurgeons",
+    "Nanosurgeons",
+    "bioware",
+    "standalone",
+    "1d6/2",
+    "Microscopic surgical robots in the bloodstream.",
+    { cost: 6000, availability: "R", minorEffect: "Double healing rate" },
   ),
 
   // === Optics ===
@@ -328,13 +575,13 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "cyber-armor",
     "standalone",
     "2d6",
-    // TODO: M2 stat effects — REF -1
-    "Woven armor fibers grown into the skin. SP 12 all body parts. Spot difficulty: Difficult (20). REF -1 (not yet applied).",
+    "Woven armor fibers grown into the skin. SP 12 all body parts. Spot difficulty: Difficult (20). REF -1.",
     {
       cost: 2000,
       availability: "P",
       armorTemplateId: "skinweave_12",
       skinweave: true,
+      statBonus: { ref: -1 },
     },
   ),
   "cyber-skinweave-14": c(
@@ -343,13 +590,13 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "cyber-armor",
     "standalone",
     "2d6+2",
-    // TODO: M2 stat effects — REF -2, ATT -1
-    "Woven armor fibers grown into the skin. SP 14 all body parts. Spot difficulty: Difficult (20). REF -2, ATT -1 (not yet applied).",
+    "Woven armor fibers grown into the skin. SP 14 all body parts. Spot difficulty: Difficult (20). REF -2, ATT -1.",
     {
       cost: 2400,
       availability: "P",
       armorTemplateId: "skinweave_14",
       skinweave: true,
+      statBonus: { ref: -2, att: -1 },
     },
   ),
   "cyber-skinweave-16": c(
@@ -358,13 +605,13 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "cyber-armor",
     "standalone",
     "2d6+4",
-    // TODO: M2 stat effects — REF -3, ATT -2
-    "Woven armor fibers grown into the skin. SP 16 all body parts. Spot difficulty: Average (15). REF -3, ATT -2 (not yet applied).",
+    "Woven armor fibers grown into the skin. SP 16 all body parts. Spot difficulty: Average (15). REF -3, ATT -2.",
     {
       cost: 2750,
       availability: "R",
       armorTemplateId: "skinweave_16",
       skinweave: true,
+      statBonus: { ref: -3, att: -2 },
     },
   ),
   "cyber-skin-armor": c(

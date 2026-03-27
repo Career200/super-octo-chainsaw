@@ -11,8 +11,8 @@ export interface CyberEffects {
   skillBonuses: Record<string, number>;
   skillOverrides: Record<string, number>;
   initiativeBonus: number;
-  majorEffects: { key: string; text: string }[];
-  minorEffects: { key: string; text: string }[];
+  majorEffects: { key: string; text: string; category: string }[];
+  minorEffects: { key: string; text: string; category: string }[];
 }
 
 export const DEFAULT_EFFECTS: CyberEffects = {

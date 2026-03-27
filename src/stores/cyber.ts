@@ -199,6 +199,21 @@ export function canInstallContainer(
   return usedSlots + instanceCost <= limit;
 }
 
+/** Check whether another copy of this standalone template can be installed.
+ *  Default limit: 1 for standalone (except fashionware), unlimited for containers/options. */
+export function canInstallTemplate(template: CyberTemplate): boolean {
+  if (template.role !== "standalone") return true;
+  if (template.category === "fashionware") return true;
+  // Cyber-armor has its own swap/limit logic
+  if (template.armorTemplateId) return true;
+
+  const limit = template.maxInstalled ?? 1;
+  const count = $ownedCyber
+    .get()
+    .filter((i) => i.installed && i.templateId === template.id).length;
+  return count < limit;
+}
+
 // --- Actions ---
 
 /** Own without installing. No HC cost, no surgery. */
@@ -231,6 +246,8 @@ export function installCyber(
     if (!canInstallContainer(template.category, template.instanceCost ?? 1))
       return null;
   }
+
+  if (!canInstallTemplate(template)) return null;
 
   // Options must target a container
   if (template.role === "option") {
@@ -291,6 +308,8 @@ export function installOwned(
     !canInstallContainer(template.category, template.instanceCost ?? 1)
   )
     return;
+
+  if (template && !canInstallTemplate(template)) return;
 
   const resolveHc = (i: OwnedItem) => {
     if (hcMap && i.instanceId in hcMap) return hcMap[i.instanceId];
@@ -397,11 +416,60 @@ export function setItemHc(instanceId: string, hc: number): void {
 // --- Derive effects from installed items ---
 
 function deriveEffects(items: readonly OwnedItem[]): void {
-  const humanityLoss = items.reduce(
-    (sum, i) => (i.installed ? sum + i.hc : sum),
-    0,
-  );
-  $cyberEffects.set({ ...DEFAULT_EFFECTS, humanityLoss });
+  const statBonuses: Record<string, number> = {};
+  const statOverrides: Record<string, number> = {};
+  const skillBonuses: Record<string, number> = {};
+  const majorEffects: { key: string; text: string; category: string }[] = [];
+  const minorEffects: { key: string; text: string; category: string }[] = [];
+  let humanityLoss = 0;
+  let initiativeBonus = 0;
+
+  for (const item of items) {
+    if (!item.installed) continue;
+    humanityLoss += item.hc;
+
+    const t = CYBER_CATALOG[item.templateId];
+    if (!t) continue;
+
+    if (t.statBonus) {
+      for (const [stat, val] of Object.entries(t.statBonus)) {
+        statBonuses[stat] = (statBonuses[stat] ?? 0) + val!;
+      }
+    }
+    if (t.statOverride) {
+      Object.assign(statOverrides, t.statOverride);
+    }
+    if (t.skillBonus) {
+      for (const [skill, val] of Object.entries(t.skillBonus)) {
+        skillBonuses[skill] = (skillBonuses[skill] ?? 0) + val;
+      }
+    }
+    if (t.initiativeBonus) {
+      initiativeBonus += t.initiativeBonus;
+    }
+    if (t.majorEffect) {
+      majorEffects.push({ key: t.id, text: t.majorEffect, category: t.category });
+    }
+    if (t.minorEffect) {
+      minorEffects.push({ key: t.id, text: t.minorEffect, category: t.category });
+    }
+  }
+
+  // Stable display order: sort by category position
+  const catIdx = (cat: string) => CATEGORY_ORDER.indexOf(cat as CyberCategory);
+  majorEffects.sort((a, b) => catIdx(a.category) - catIdx(b.category));
+  minorEffects.sort((a, b) => catIdx(a.category) - catIdx(b.category));
+
+  $cyberEffects.set({
+    humanityLoss,
+    statBonuses,
+    statOverrides,
+    skillBonuses,
+    skillOverrides: {},
+    initiativeBonus,
+    majorEffects,
+    minorEffects,
+  });
 }
 
 // Derive on load (in case $cyberEffects localStorage is stale/cleared)

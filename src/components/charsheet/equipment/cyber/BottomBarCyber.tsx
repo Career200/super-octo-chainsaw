@@ -6,6 +6,7 @@ import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
 import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
 import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import { CYBER_CATALOG, type CyberTemplate } from "@scripts/cyber/catalog";
+import { STAT_LABELS, type StatName } from "@scripts/combat/types";
 import {
   $hydratedCyber,
   type HydratedCyberItem,
@@ -15,6 +16,40 @@ import { $selectedCyber } from "@stores/ui";
 
 import { useCyberActions } from "./hooks/useCyberActions";
 import { InstallPopover } from "./InstallPopover";
+
+function EffectTags({ template }: { template: CyberTemplate }) {
+  const tags: string[] = [];
+  if (template.statBonus) {
+    for (const [stat, val] of Object.entries(template.statBonus)) {
+      const label = STAT_LABELS[stat as StatName] ?? stat.toUpperCase();
+      tags.push(`${label} ${val! > 0 ? "+" : ""}${val}`);
+    }
+  }
+  if (template.statOverride) {
+    for (const [stat, val] of Object.entries(template.statOverride)) {
+      const label = STAT_LABELS[stat as StatName] ?? stat.toUpperCase();
+      tags.push(`${label} =${val}`);
+    }
+  }
+  if (template.skillBonus) {
+    for (const [skill, val] of Object.entries(template.skillBonus)) {
+      tags.push(`${skill} ${val > 0 ? "+" : ""}${val}`);
+    }
+  }
+  if (template.initiativeBonus) {
+    tags.push(`Init ${template.initiativeBonus > 0 ? "+" : ""}${template.initiativeBonus}`);
+  }
+  if (!tags.length) return null;
+  return (
+    <span class="cyber-effect-tags">
+      {tags.map((t) => (
+        <span key={t} class="cyber-effect-tag">
+          {t}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 // --- Header actions (rendering only) ---
 
@@ -162,6 +197,7 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
             min={0}
           />
           <span class="text-soft">({ownedItem.template.hc})</span>
+          <EffectTags template={ownedItem.template} />
         </div>
         <p class="text-desc">{ownedItem.template.description}</p>
       </>
@@ -172,6 +208,7 @@ export default function BottomBarCyber({ expanded, onToggle }: Props) {
         <div class="cyber-detail-meta">
           <span class="cyber-item-hc">HC {template.hc}</span>
           <ItemMeta availability={template.availability} cost={template.cost} />
+          <EffectTags template={template} />
         </div>
         <p class="text-desc">{template.description}</p>
       </>

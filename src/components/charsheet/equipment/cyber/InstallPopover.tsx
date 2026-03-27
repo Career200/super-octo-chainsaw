@@ -171,40 +171,43 @@ export function InstallPopover({
 
   return (
     <Popover anchorRef={anchorRef} open={open} onClose={onClose}>
-      {blockedHint && <p class="text-soft text-sm">{blockedHint}</p>}
-      {!blockedHint && swapWarning && (
-        <p class="text-soft text-sm" style="color:var(--warning)">
-          {swapWarning}
-        </p>
+      {blockedHint ? (
+        <p class="text-soft text-sm">{blockedHint}</p>
+      ) : (
+        <>
+          {swapWarning && (
+            <p class="text-soft text-sm" style="color:var(--warning)">
+              {swapWarning}
+            </p>
+          )}
+          {containers && (
+            <ContainerPicker
+              containers={containers}
+              selected={selectedContainer}
+              onSelect={setSelectedContainer}
+              noContainerHint={noContainerHint}
+            />
+          )}
+          {showHcRows && <HcRowInputs rows={hcRows} onChange={updateHc} />}
+          {!showHcRows && hasContainer && containers && (
+            <p class="text-soft text-sm">
+              No HC cost until the container is installed.
+            </p>
+          )}
+          <div class="popover-actions">
+            <button class="popover-btn popover-btn-cancel" onClick={onClose}>
+              Cancel
+            </button>
+            <button
+              class="popover-btn popover-btn-confirm"
+              disabled={!hasContainer || noContainers}
+              onClick={() => onConfirm(selectedContainer, buildHcMap())}
+            >
+              {confirmLabel ?? "Install"}
+            </button>
+          </div>
+        </>
       )}
-      {!blockedHint && containers && (
-        <ContainerPicker
-          containers={containers}
-          selected={selectedContainer}
-          onSelect={setSelectedContainer}
-          noContainerHint={noContainerHint}
-        />
-      )}
-      {!blockedHint && showHcRows && (
-        <HcRowInputs rows={hcRows} onChange={updateHc} />
-      )}
-      {!blockedHint && !showHcRows && hasContainer && containers && (
-        <p class="text-soft text-sm">
-          No HC cost until the container is installed.
-        </p>
-      )}
-      <div class="popover-actions">
-        <button class="popover-btn popover-btn-cancel" onClick={onClose}>
-          Cancel
-        </button>
-        <button
-          class="popover-btn popover-btn-confirm"
-          disabled={!!blockedHint || !hasContainer || noContainers}
-          onClick={() => onConfirm(selectedContainer, buildHcMap())}
-        >
-          {confirmLabel ?? "Install"}
-        </button>
-      </div>
     </Popover>
   );
 }
