@@ -2,7 +2,12 @@ import { useStore } from "@nanostores/preact";
 import { useState } from "preact/hooks";
 
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { Tip } from "@components/charsheet/shared";
+import {
+  parseNum,
+  Tip,
+  useEditToggle,
+  useFormState,
+} from "@components/charsheet/shared";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import type { Availability } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
@@ -44,40 +49,39 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
   const isOwned = !!resolved && ownedGear.some((i) => i.templateId === gearId);
 
   // Edit-in-place for owned custom items (auto-resets on selection change)
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const editing = isOwned && isCustom && hasCustomDef && editingId === gearId;
+  const { editing, toggleEdit } = useEditToggle(
+    gearId,
+    isOwned && isCustom && hasCustomDef,
+  );
 
   // Add-mode form state
-  const [newName, setNewName] = useState("");
-  const [newType, setNewType] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [newCost, setNewCost] = useState("");
-  const [newAvailability, setNewAvailability] = useState<Availability | "">("");
+  const { fields: f, setField, reset } = useFormState({
+    name: "",
+    type: "",
+    description: "",
+    cost: "",
+    availability: "" as Availability | "",
+  });
   const [addAttempted, setAddAttempted] = useState(false);
 
   const handleAdd = (): string | null => {
-    const trimmed = newName.trim();
+    const trimmed = f.name.trim();
     if (!trimmed) {
       setAddAttempted(true);
       return "Name cannot be empty";
     }
-    const typeVal = newType.trim() || "gear";
+    const typeVal = f.type.trim() || "gear";
     if (/^armor$/i.test(typeVal)) return "Please use custom armor tab";
-    const cost = newCost ? Number(newCost) : undefined;
     if (
       addCustomGear(trimmed, {
-        description: newDescription.trim(),
+        description: f.description.trim(),
         type: typeVal,
-        cost: cost != null && !isNaN(cost) ? cost : undefined,
-        availability: newAvailability || "C",
+        cost: f.cost ? parseNum(f.cost, 0) : undefined,
+        availability: f.availability || "C",
       })
     ) {
       setAddAttempted(false);
-      setNewName("");
-      setNewType("");
-      setNewDescription("");
-      setNewCost("");
-      setNewAvailability("");
+      reset();
       selectGear(trimmed);
       return null;
     }
@@ -108,7 +112,7 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
   );
 
   const addErrors =
-    addAttempted && !newName.trim() ? new Set<string>(["name"]) : undefined;
+    addAttempted && !f.name.trim() ? new Set<string>(["name"]) : undefined;
 
   return (
     <BottomBarItemShell
@@ -128,7 +132,7 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
             class="bar-action"
             onClick={(e) => {
               e.stopPropagation();
-              setEditingId(editing ? null : gearId);
+              toggleEdit();
             }}
           >
             {editing ? "Done" : "Edit"}
@@ -139,17 +143,17 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
       {adding ? (
         <ItemForm
           disabled={false}
-          name={newName}
-          onNameChange={setNewName}
-          description={newDescription}
-          onDescriptionChange={setNewDescription}
-          cost={newCost}
-          onCostChange={setNewCost}
-          availability={newAvailability}
-          onAvailabilityChange={setNewAvailability}
+          name={f.name}
+          onNameChange={(v) => setField("name", v)}
+          description={f.description}
+          onDescriptionChange={(v) => setField("description", v)}
+          cost={f.cost}
+          onCostChange={(v) => setField("cost", v)}
+          availability={f.availability}
+          onAvailabilityChange={(v) => setField("availability", v)}
           errors={addErrors}
         >
-          {typeField(newType, setNewType)}
+          {typeField(f.type, (v) => setField("type", v))}
         </ItemForm>
       ) : resolved && isCustom && hasCustomDef && (!isOwned || editing) ? (
         <ItemForm
@@ -163,12 +167,11 @@ export default function BottomBarEquipment({ expanded, onToggle }: Props) {
             updateCustomGear(gearId!, { description: v })
           }
           cost={resolved.cost != null ? String(resolved.cost) : ""}
-          onCostChange={(v) => {
-            const n = v ? Number(v) : undefined;
+          onCostChange={(v) =>
             updateCustomGear(gearId!, {
-              cost: n != null && !isNaN(n) ? n : undefined,
-            });
-          }}
+              cost: v ? parseNum(v, 0) : undefined,
+            })
+          }
           availability={resolved.availability ?? ""}
           onAvailabilityChange={(v) =>
             updateCustomGear(gearId!, {

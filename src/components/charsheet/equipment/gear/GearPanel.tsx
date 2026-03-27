@@ -1,8 +1,9 @@
 import { useStore } from "@nanostores/preact";
-import { useState } from "preact/hooks";
 
 import { CollapsibleGroup } from "@components/charsheet/shared/CollapsibleGroup";
+import { groupBy } from "@components/charsheet/shared/groupBy";
 import { TabStrip } from "@components/charsheet/shared/TabStrip";
+import { useCollapsibleGroups } from "@components/charsheet/shared/useCollapsibleGroups";
 import type { GearTemplate } from "@scripts/gear/catalog";
 import { GEAR_CATALOG } from "@scripts/gear/catalog";
 import { $customGear, $gear, $ownedGear, $ownedGearCount } from "@stores/gear";
@@ -62,7 +63,7 @@ function GearGroup({
   );
 }
 
-/** Group items by type. Returns groups in insertion order, types sorted alphabetically. */
+/** Group items by type, sorted alphabetically. */
 function groupByType(
   items: {
     id: string;
@@ -71,17 +72,7 @@ function groupByType(
     custom?: boolean;
   }[],
 ) {
-  const grouped = new Map<
-    string,
-    { id: string; template: GearTemplate; quantity: number; custom?: boolean }[]
-  >();
-  for (const item of items) {
-    const type = item.template.type;
-    if (!grouped.has(type)) grouped.set(type, []);
-    grouped.get(type)!.push(item);
-  }
-  // Sort groups alphabetically by type
-  return [...grouped.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  return groupBy(items, (i) => i.template.type);
 }
 
 const catalogItems = Object.values(GEAR_CATALOG);
@@ -92,16 +83,7 @@ export default function GearPanel() {
   const customGear = useStore($customGear);
   const selectedId = useStore($selectedGear);
   const tab = useStore(tabStore("gear-tab", "catalog"));
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-
-  const toggleGroup = (type: string) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(type)) next.delete(type);
-      else next.add(type);
-      return next;
-    });
-  };
+  const { collapsed, toggle: toggleGroup } = useCollapsibleGroups();
 
   // Catalog view: all templates grouped by type
   const catalogGroups = groupByType(

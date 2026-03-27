@@ -14,6 +14,7 @@ export {
   updateCustomArmor,
   wearArmor,
 } from "./actions";
+export { $armorEffects } from "./effects";
 export {
   getImplantLayer,
   getImplantTemplates,
@@ -39,7 +40,6 @@ export type {
 export {
   $customArmorList,
   $customArmorTemplates,
-  $encumbrance,
   $ownedArmor,
   ARMOR_CATALOG,
   getAllOwnedArmor,

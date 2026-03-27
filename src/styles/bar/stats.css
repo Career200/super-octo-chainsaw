@@ -10,21 +10,40 @@
   padding: var(--space-2) var(--space-6);
 }
 
-.label-chip-label {
+.label-chip-sub {
   color: var(--fg-soft);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-size: var(--font-ui-xs);
 }
 
-.label-chip-value {
+.label-chip-main {
   font-size: var(--font-ui-lg);
   font-weight: bold;
   color: var(--fg);
 }
 
-.label-chip-value.diminished {
+.label-chip-main.diminished {
   color: var(--danger);
+}
+
+/* Interactive label-chip (buttons) */
+button.label-chip {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button.label-chip:hover:not(.active) {
+  border-color: var(--accent);
+}
+
+.label-chip.active {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+}
+
+.label-chip.active .label-chip-main {
+  color: var(--accent);
 }
 
 /* === Chip Row (shared by stats strip + body info) === */

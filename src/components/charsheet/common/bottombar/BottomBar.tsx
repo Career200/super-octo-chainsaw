@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/preact";
-import { lazy, Suspense } from "preact/compat";
+import { Suspense } from "preact/compat";
 import { useRef, useState } from "preact/hooks";
 
 import {
@@ -14,25 +14,16 @@ import {
   tabStore,
 } from "@stores/ui";
 
+import { tracedLazy } from "../../tracedLazy";
 import { useAutoExpand } from "./useAutoExpand";
 
-const BottomBarHistory = lazy(() => import("../../combat/BottomBarHistory"));
-const BottomBarSkills = lazy(() => import("../../dossier/BottomBarSkills"));
-const BottomBarArmor = lazy(
-  () => import("../../equipment/armor/BottomBarArmor"),
-);
-const BottomBarEquipment = lazy(
-  () => import("../../equipment/gear/BottomBarEquipment"),
-);
-const BottomBarWeapon = lazy(
-  () => import("../../equipment/weapons/BottomBarWeapon"),
-);
-const BottomBarAmmo = lazy(
-  () => import("../../equipment/weapons/BottomBarAmmo"),
-);
-const BottomBarCyber = lazy(
-  () => import("../../equipment/cyber/BottomBarCyber"),
-);
+const BottomBarHistory = tracedLazy("BottomBarHistory", () => import("../../combat/BottomBarHistory"));
+const BottomBarSkills = tracedLazy("BottomBarSkills", () => import("../../dossier/BottomBarSkills"));
+const BottomBarArmor = tracedLazy("BottomBarArmor", () => import("../../equipment/armor/BottomBarArmor"));
+const BottomBarEquipment = tracedLazy("BottomBarEquipment", () => import("../../equipment/gear/BottomBarEquipment"));
+const BottomBarWeapon = tracedLazy("BottomBarWeapon", () => import("../../equipment/weapons/BottomBarWeapon"));
+const BottomBarAmmo = tracedLazy("BottomBarAmmo", () => import("../../equipment/weapons/BottomBarAmmo"));
+const BottomBarCyber = tracedLazy("BottomBarCyber", () => import("../../equipment/cyber/BottomBarCyber"));
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "combat"));

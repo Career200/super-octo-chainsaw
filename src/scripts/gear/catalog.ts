@@ -595,6 +595,13 @@ export const GEAR_CATALOG: Record<string, GearTemplate> = {
     "Ranging from book to briefcase in size. Determines purity of a known drug, or identifies molecular makeup and possible effects of an unknown substance.",
     { cost: 75 },
   ),
+  armorsaver: t(
+    "armorsaver",
+    "ArmorSaver®",
+    "medical",
+    "Restores 2 points of SP on Skinweave armor. Applied topically to damaged areas.",
+    { cost: 50 },
+  ),
 
   // === Furnishings ===
   nylon_carrybag: t(

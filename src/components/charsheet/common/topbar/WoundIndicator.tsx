@@ -22,9 +22,9 @@ export default function WoundIndicator() {
 
   return (
     <span class={`label-chip${colorClass}`}>
-      <span class="label-chip-label">Wounds</span>
-      <span class="label-chip-value">{health.physical}</span>
-      <span class="label-chip-label">({name})</span>
+      <span class="label-chip-sub">Wounds</span>
+      <span class="label-chip-main">{health.physical}</span>
+      <span class="label-chip-sub">({name})</span>
     </span>
   );
 }

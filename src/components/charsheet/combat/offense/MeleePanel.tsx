@@ -60,8 +60,8 @@ export default function MeleePanel() {
         <span class="melee-stats-spacer" />
         {DEFENSE_SKILLS.map((name) => (
           <div key={name} class="label-chip">
-            <span class="label-chip-label">{name}</span>
-            <span class="label-chip-value">{skills[name]?.level ?? 0}</span>
+            <span class="label-chip-sub">{name}</span>
+            <span class="label-chip-main">{skills[name]?.level ?? 0}</span>
           </div>
         ))}
       </div>
@@ -93,20 +93,20 @@ export default function MeleePanel() {
           <div class="cc-name">Unarmed</div>
           <div class="melee-card-skills">
             <button
-              class={`label-chip melee-skill-btn${!isMaSelected ? " active" : ""}`}
+              class={`label-chip${!isMaSelected ? " active" : ""}`}
               onClick={() => setUnarmedSkill("Brawling")}
             >
-              <span class="label-chip-label">Brawling</span>
-              <span class="label-chip-value">{brawlingEntry?.level ?? 0}</span>
+              <span class="label-chip-sub">Brawling</span>
+              <span class="label-chip-main">{brawlingEntry?.level ?? 0}</span>
             </button>
             {myMartialArts.map(([name, entry]) => (
               <button
                 key={name}
-                class={`label-chip melee-skill-btn${name === selectedName && isMaSelected ? " active" : ""}`}
+                class={`label-chip${name === selectedName && isMaSelected ? " active" : ""}`}
                 onClick={() => setUnarmedSkill(name)}
               >
-                <span class="label-chip-label">{name}</span>
-                <span class="label-chip-value">{entry.level}</span>
+                <span class="label-chip-sub">{name}</span>
+                <span class="label-chip-main">{entry.level}</span>
               </button>
             ))}
           </div>

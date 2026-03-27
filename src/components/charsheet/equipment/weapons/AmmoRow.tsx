@@ -1,3 +1,4 @@
+import { cls } from "@components/charsheet/shared";
 import type { AmmoTemplate } from "@scripts/ammo/catalog";
 import { addAmmo, removeAmmo } from "@stores/ammo";
 import { selectAmmo } from "@stores/ui";
@@ -21,7 +22,12 @@ export function AmmoRow({
   const box = template.boxSize;
   return (
     <div
-      class={`ammo-row${selected ? " selected" : ""}${highlighted ? " highlighted" : ""}${custom ? " ammo-row-custom" : ""}`}
+      class={cls(
+        "ammo-row",
+        selected && "selected",
+        highlighted && "highlighted",
+        custom && "ammo-row-custom",
+      )}
       onClick={() => selectAmmo(selected ? null : id)}
     >
       <span class={`ammo-row-type avail-${template.availability ?? "C"}`}>

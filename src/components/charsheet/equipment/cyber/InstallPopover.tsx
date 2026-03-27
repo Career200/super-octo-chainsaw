@@ -1,31 +1,9 @@
-import { useStore } from "@nanostores/preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 import { Popover } from "@components/charsheet/shared/Popover";
-import {
-  CYBER_CATALOG,
-  isDiceNotation,
-  rollHcDice,
-} from "@scripts/cyber/catalog";
-import {
-  $hydratedCyber,
-  $ownedCyber,
-  getContainersForOption,
-} from "@stores/cyber";
-import { $homerules } from "@stores/homerules";
+import { isDiceNotation, rollHcDice } from "@scripts/cyber/catalog";
 
-// --- Resolve effective HC notation (respects tsmFreeHc houserule) ---
-
-const TSM_IDS = ["tsm", "tsm-plus"];
-
-export function useEffectiveHc(
-  templateId: string | undefined,
-  rawHc: string,
-): string {
-  const rules = useStore($homerules);
-  if (rules.tsmFreeHc && templateId && TSM_IDS.includes(templateId)) return "0";
-  return rawHc;
-}
+import type { ContainerChoice } from "./hooks/useInstallHelpers";
 
 // --- HC row: name + editable pre-rolled input ---
 
@@ -81,13 +59,6 @@ function HcRowInputs({
 
 // --- Container picker badge row ---
 
-export interface ContainerChoice {
-  instanceId: string;
-  label: string;
-  installed: boolean;
-  full: boolean;
-}
-
 function ContainerPicker({
   containers,
   selected,
@@ -116,7 +87,7 @@ function ContainerPicker({
           <button
             key={c.instanceId}
             type="button"
-            class={`badge badge-selectable${selected === c.instanceId ? " selected" : ""}`}
+            class={`badge badge-toggle${selected === c.instanceId ? " selected" : ""}`}
             disabled={c.full}
             onClick={() => onSelect(c.instanceId)}
           >
@@ -141,6 +112,7 @@ export function InstallPopover({
   containers,
   noContainerHint,
   blockedHint,
+  swapWarning,
   hcRowDefs,
   onConfirm,
   confirmLabel,
@@ -151,6 +123,7 @@ export function InstallPopover({
   containers?: ContainerChoice[];
   noContainerHint?: string;
   blockedHint?: string;
+  swapWarning?: string;
   hcRowDefs: { key: string; name: string; notation: string }[];
   onConfirm: (
     containerId: string | null,
@@ -181,8 +154,7 @@ export function InstallPopover({
   };
 
   const hasContainer = !containers || selectedContainer != null;
-  const noContainers =
-    containers != null && containers.every((c) => c.full);
+  const noContainers = containers != null && containers.every((c) => c.full);
 
   // When container is uninstalled, option gets no HC (slotted but not installed)
   const selectedIsInstalled =
@@ -200,6 +172,11 @@ export function InstallPopover({
   return (
     <Popover anchorRef={anchorRef} open={open} onClose={onClose}>
       {blockedHint && <p class="text-soft text-sm">{blockedHint}</p>}
+      {!blockedHint && swapWarning && (
+        <p class="text-soft text-sm" style="color:var(--warning)">
+          {swapWarning}
+        </p>
+      )}
       {!blockedHint && containers && (
         <ContainerPicker
           containers={containers}
@@ -230,48 +207,4 @@ export function InstallPopover({
       </div>
     </Popover>
   );
-}
-
-// --- Build container choices for an option ---
-
-export function useContainerChoices(
-  templateId: string | undefined,
-): ContainerChoice[] {
-  const hydrated = useStore($hydratedCyber);
-  return useMemo(() => {
-    if (!templateId) return [];
-    const available = getContainersForOption(templateId);
-    // Count per-template for numbering
-    const counts: Record<string, number> = {};
-    const total: Record<string, number> = {};
-    for (const { container } of available) {
-      total[container.templateId] = (total[container.templateId] ?? 0) + 1;
-    }
-    return available.map(({ container, full }) => {
-      const n = (counts[container.templateId] =
-        (counts[container.templateId] ?? 0) + 1);
-      const needsNumber = total[container.templateId] > 1;
-      return {
-        instanceId: container.instanceId,
-        label: container.template.name + (needsNumber ? ` #${n}` : ""),
-        installed: container.installed,
-        full,
-      };
-    });
-  }, [templateId, hydrated]);
-}
-
-// --- Get children of a container for multi-row HC ---
-
-export function getChildHcRows(
-  containerId: string,
-): { key: string; name: string; notation: string }[] {
-  const items = $ownedCyber.get();
-  return items
-    .filter((i) => i.parentId === containerId)
-    .flatMap((i) => {
-      const t = CYBER_CATALOG[i.templateId];
-      if (!t) return [];
-      return [{ key: i.instanceId, name: t.name, notation: t.hc }];
-    });
 }

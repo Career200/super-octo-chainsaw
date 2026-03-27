@@ -2,65 +2,24 @@
 .body-grid {
   display: grid;
   grid-template-areas:
-    "sw face implants"
-    "sw head implants"
-    "larm torso rarm"
-    "lleg ev rleg";
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: auto 1fr auto auto;
+    "face head"
+    "torso torso"
+    "larm rarm"
+    "lleg rleg"
+    "ev ev";
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-12);
 }
 
 /* === Display Boxes (use .display-box utility) === */
-.skinweave-display {
-  grid-area: sw;
-}
-.implants-display {
-  grid-area: implants;
-  cursor: pointer;
-}
 .ev-display {
   grid-area: ev;
 }
 
-.skinweave-display.installed,
-.implants-display.has-implants {
-  border-style: solid;
-  border-color: var(--accent-muted);
-}
-
-.implants-display:hover {
-  border-color: var(--accent-muted);
-}
-
-/* Labels - base from .text-label-lg utility */
-.skinweave-label,
-.implants-label,
 .ev-label {
   margin-bottom: var(--space-6);
-}
-
-.ev-label {
   letter-spacing: 2px;
   font-weight: bold;
-}
-
-/* Descriptions - base from .text-desc-justified utility */
-.skinweave-desc {
-  margin-bottom: var(--space-12);
-}
-
-.skinweave-select {
-  background: var(--code-bg);
-  font-size: var(--font-ui-lg);
-  padding: var(--space-4) var(--space-8);
-  cursor: pointer;
-}
-
-.implants-list {
-  margin-top: var(--space-8);
-  font-size: var(--font-ui);
-  text-align: center;
 }
 
 /* === Body Parts === */

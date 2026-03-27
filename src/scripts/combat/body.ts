@@ -51,33 +51,33 @@ function computeSave(
   return Math.max(0, baseSave + penalty);
 }
 
+/** Body Type tier table — single source of truth for BT thresholds */
+const BT_TABLE: { max: number; name: BodyTypeName; dm: number; btm: number }[] =
+  [
+    { max: 2, name: "Very Weak", dm: -2, btm: 0 },
+    { max: 4, name: "Weak", dm: -1, btm: 1 },
+    { max: 7, name: "Average", dm: 0, btm: 2 },
+    { max: 9, name: "Strong", dm: 1, btm: 3 },
+    { max: 10, name: "Very Strong", dm: 2, btm: 4 },
+    { max: 12, name: "Superhuman", dm: 4, btm: 5 },
+    { max: 14, name: "Superhuman", dm: 6, btm: 5 },
+    { max: Infinity, name: "Superhuman", dm: 8, btm: 5 },
+  ];
+
+function lookupBT(bt: number) {
+  return BT_TABLE.find((row) => bt <= row.max)!;
+}
+
 export function getBodyTypeName(bt: number): BodyTypeName {
-  if (bt <= 2) return "Very Weak";
-  if (bt <= 4) return "Weak";
-  if (bt <= 7) return "Average";
-  if (bt <= 9) return "Strong";
-  if (bt === 10) return "Very Strong";
-  return "Superhuman";
+  return lookupBT(bt).name;
 }
 
 export function getDamageModifier(bt: number): number {
-  if (bt <= 2) return -2;
-  if (bt <= 4) return -1;
-  if (bt <= 7) return 0;
-  if (bt <= 9) return 1;
-  if (bt === 10) return 2;
-  if (bt <= 12) return 4;
-  if (bt <= 14) return 6;
-  return 8;
+  return lookupBT(bt).dm;
 }
 
 export function getBTM(bt: number): number {
-  if (bt <= 2) return 0;
-  if (bt <= 4) return 1;
-  if (bt <= 7) return 2;
-  if (bt <= 9) return 3;
-  if (bt === 10) return 4;
-  return 5;
+  return lookupBT(bt).btm;
 }
 
 export function getBodyTypeInfo(bt: number): BodyTypeInfo {

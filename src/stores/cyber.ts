@@ -27,7 +27,44 @@ export interface OwnedItem {
   sdpCurrent?: number;
 }
 
-export type HydratedCyberItem = OwnedItem & { template: CyberTemplate };
+export type HydratedCyberItem = OwnedItem & {
+  template: CyberTemplate;
+  slotUsage?: { used: number; max: number | null };
+};
+
+export interface CyberItem {
+  id: string;
+  name: string;
+  category: CyberCategory;
+  description: string;
+  hc: number | string;
+  owned: boolean;
+  installed: boolean;
+  availability?: string;
+  cost?: number;
+  isBase?: boolean;
+  role?: "container" | "option" | "standalone";
+  parentId?: string;
+  slotUsage?: { used: number; max: number | null };
+  installedOptions?: string[];
+}
+
+export function hydratedToCyberItem(h: HydratedCyberItem): CyberItem {
+  return {
+    id: h.instanceId,
+    name: h.template.name,
+    category: h.template.category,
+    description: h.template.description,
+    hc: h.hc,
+    owned: true,
+    installed: h.installed,
+    availability: h.template.availability,
+    cost: h.template.cost,
+    isBase: h.template.role === "container",
+    role: h.template.role,
+    parentId: h.parentId,
+  };
+}
 
 // --- Persistent atom ---
 
@@ -91,10 +128,29 @@ export function getSlotUsage(containerInstanceId: string): {
   return { used, max: template?.maxSlots ?? null };
 }
 
+/** Get children of a container for multi-row HC display. */
+export function getChildHcRows(
+  containerId: string,
+): { key: string; name: string; notation: string }[] {
+  const items = $ownedCyber.get();
+  return items
+    .filter((i) => i.parentId === containerId)
+    .flatMap((i) => {
+      const t = CYBER_CATALOG[i.templateId];
+      if (!t) return [];
+      return [{ key: i.instanceId, name: t.name, notation: t.hc }];
+    });
+}
+
 /** Find owned containers that can accept an option, with slot availability. */
 export function getContainersForOption(
   templateId: string,
-): { container: HydratedCyberItem; used: number; max: number | null; full: boolean }[] {
+): {
+  container: HydratedCyberItem;
+  used: number;
+  max: number | null;
+  full: boolean;
+}[] {
   const template = CYBER_CATALOG[templateId];
   if (!template || template.role !== "option" || !template.containerCategory)
     return [];
@@ -359,19 +415,118 @@ $ownedCyber.listen((items) => deriveEffects(items));
 // (e.g. tsmFreeSlot affects slot counts, future rules may affect other derived data)
 export const $hydratedCyber = computed(
   [$ownedCyber, $homerules],
-  (items, _rules): HydratedCyberItem[] =>
-    items.flatMap((item) => {
+  (items, _rules): HydratedCyberItem[] => {
+    // Pre-build children-per-container for slotUsage
+    const childrenByParent = new Map<string, OwnedItem[]>();
+    for (const item of items) {
+      if (item.parentId) {
+        let arr = childrenByParent.get(item.parentId);
+        if (!arr) {
+          arr = [];
+          childrenByParent.set(item.parentId, arr);
+        }
+        arr.push(item);
+      }
+    }
+
+    return items.flatMap((item) => {
       const template = CYBER_CATALOG[item.templateId];
       if (!template) return [];
-      return [{ ...item, template }];
-    }),
+      const hydrated: HydratedCyberItem = { ...item, template };
+      if (template.role === "container") {
+        const children = childrenByParent.get(item.instanceId) ?? [];
+        const used = children.reduce(
+          (sum, child) => sum + effectiveSlotCost(child.templateId),
+          0,
+        );
+        hydrated.slotUsage = { used, max: template.maxSlots ?? null };
+      }
+      return [hydrated];
+    });
+  },
+);
+
+/** Resolved default option names per container template (static defaults + homerules). */
+export const $catalogDefaults = computed([$homerules], (rules) => {
+  const defaults: Record<string, string[]> = {};
+  for (const t of Object.values(CYBER_CATALOG)) {
+    if (t.role !== "container") continue;
+    const names: string[] = [];
+    if (t.defaultOptions) {
+      for (const optId of t.defaultOptions) {
+        const opt = CYBER_CATALOG[optId];
+        if (opt) names.push(opt.name);
+      }
+    }
+    if (t.category === "optics" && rules.cyberEyePreinstalled) {
+      const opt = CYBER_CATALOG[rules.cyberEyePreinstalledOption];
+      if (opt) names.push(opt.name);
+    }
+    if (names.length > 0) defaults[t.id] = names;
+  }
+  return defaults;
+});
+
+/** Catalog templates enriched with owned/installed status and default options. */
+export const $cyberCatalog = computed(
+  [$hydratedCyber, $catalogDefaults],
+  (hydrated, defaults): Record<CyberCategory, CyberItem[]> => {
+    const ownedIds = new Set(hydrated.map((i) => i.templateId));
+    const installedIds = new Set(
+      hydrated.filter((i) => i.installed).map((i) => i.templateId),
+    );
+    const result = {} as Record<CyberCategory, CyberItem[]>;
+    for (const cat of CATEGORY_ORDER) result[cat] = [];
+    for (const t of Object.values(CYBER_CATALOG)) {
+      result[t.category].push({
+        ...t,
+        owned: ownedIds.has(t.id),
+        installed: installedIds.has(t.id),
+        isBase: t.role === "container",
+        installedOptions: defaults[t.id],
+      });
+    }
+    return result;
+  },
+);
+
+/** Owned items with auto-numbering and slotUsage, sorted by name. */
+export const $ownedCyberItems = computed(
+  [$hydratedCyber],
+  (hydrated): CyberItem[] => {
+    const containerCounts: Record<string, number> = {};
+    for (const h of hydrated) {
+      if (h.template.role === "container") {
+        containerCounts[h.templateId] =
+          (containerCounts[h.templateId] ?? 0) + 1;
+      }
+    }
+    const containerIndex: Record<string, number> = {};
+
+    return hydrated
+      .map((h) => {
+        const item = hydratedToCyberItem(h);
+        if (h.template.role === "container") {
+          item.slotUsage = h.slotUsage;
+          if (containerCounts[h.templateId] > 1) {
+            containerIndex[h.templateId] =
+              (containerIndex[h.templateId] ?? 0) + 1;
+            item.name = `${h.template.name} #${containerIndex[h.templateId]}`;
+          }
+        }
+        return item;
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
+  },
 );
 
 export const $installedByCategory = computed([$hydratedCyber], (hydrated) => {
   const installed = hydrated.filter((i) => i.installed);
   return CATEGORY_ORDER.map((cat) => ({
     category: cat,
-    items: installed.filter((i) => i.template.category === cat),
+    items: installed
+      .filter((i) => i.template.category === cat)
+      .map(hydratedToCyberItem),
   })).filter(
     ({ category, items }) => category === "cyberlimbs" || items.length > 0,
   );

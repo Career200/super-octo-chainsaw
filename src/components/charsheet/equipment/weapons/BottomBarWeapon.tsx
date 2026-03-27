@@ -1,8 +1,9 @@
 import { useStore } from "@nanostores/preact";
-import { useRef, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
+import { AcquireDiscardActions } from "@components/charsheet/common/bottombar/AcquireDiscardActions";
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
-import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
+import { parseNum, useFormState } from "@components/charsheet/shared";
 import { ItemForm } from "@components/charsheet/shared/ItemForm";
 import type { Availability } from "@scripts/catalog-common";
 import type {
@@ -53,35 +54,32 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   const isCustom = weaponId ? isCustomWeapon(weaponId) : false;
   const hasCustomDef = weaponId ? weaponId in customDefs : false;
 
-  // Owned instance action state
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const discardBtnRef = useRef<HTMLButtonElement>(null);
-
-  // Add-mode form state — all empty, showing placeholders
-  const [newName, setNewName] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [newCost, setNewCost] = useState("");
-  const [newAvailability, setNewAvailability] = useState<Availability | "">("");
-  const [newType, setNewType] = useState<WeaponType>("P");
-  const [newSkill, setNewSkill] = useState("");
-  const [newWa, setNewWa] = useState("");
-  const [newConcealability, setNewConcealability] =
-    useState<Concealability>("J");
-  const [newDamage, setNewDamage] = useState("");
-  const [newAmmo, setNewAmmo] = useState("");
-  const [newShots, setNewShots] = useState("");
-  const [newRof, setNewRof] = useState("");
-  const [newReliability, setNewReliability] = useState<Reliability>("ST");
-  const [newRange, setNewRange] = useState("");
-  const [newMelee, setNewMelee] = useState(false);
-  const [newEffects, setNewEffects] = useState("");
+  // Add-mode form state
+  const { fields: f, setField, reset } = useFormState({
+    name: "",
+    description: "",
+    cost: "",
+    availability: "" as Availability | "",
+    type: "P" as WeaponType,
+    skill: "",
+    wa: "",
+    concealability: "J" as Concealability,
+    damage: "",
+    ammo: "",
+    shots: "",
+    rof: "",
+    reliability: "ST" as Reliability,
+    range: "",
+    melee: false,
+    effects: "",
+  });
 
   // Validation: track whether user attempted to add
   const [addAttempted, setAddAttempted] = useState(false);
 
   const handleTypeChange = (t: WeaponType) => {
-    setNewType(t);
-    setNewMelee(t === "melee");
+    setField("type", t);
+    setField("melee", t === "melee");
   };
 
   /** Case-insensitive CALIBER_DAMAGE lookup */
@@ -93,9 +91,9 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   };
 
   const handleAmmoChange = (caliber: string) => {
-    setNewAmmo(caliber);
+    setField("ammo", caliber);
     const dmg = lookupCaliberDamage(caliber);
-    if (dmg) setNewDamage(dmg);
+    if (dmg) setField("damage", dmg);
   };
 
   /** Resolve proper casing of a skill name from $allSkills */
@@ -107,58 +105,38 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
     return raw.trim();
   };
 
-  const num = (s: string, fallback: number) => {
-    const n = Number(s);
-    return s === "" || isNaN(n) ? fallback : n;
-  };
-
   const handleAdd = (): string | null => {
-    const trimmed = newName.trim();
-    if (!trimmed || !newDamage.trim()) {
+    const trimmed = f.name.trim();
+    if (!trimmed || !f.damage.trim()) {
       setAddAttempted(true);
       if (!trimmed) return "Name cannot be empty";
       return "Damage cannot be empty";
     }
-    const isMelee = newType === "melee";
-    const isSkillCustom = newType === "EX" || isMelee;
+    const isMelee = f.type === "melee";
+    const isSkillCustom = f.type === "EX" || isMelee;
     const ok = addCustomWeapon(trimmed, {
-      type: newType,
+      type: f.type,
       skill: isSkillCustom
-        ? resolveSkillName(newSkill) || skillForType(newType)
-        : skillForType(newType),
-      wa: num(newWa, 0),
-      concealability: newConcealability,
-      availability: (newAvailability as Availability) || "C",
-      damage: newDamage.trim(),
-      ammo: isMelee ? "" : newAmmo.trim(),
-      shots: isMelee ? 0 : num(newShots, 0),
-      rof: num(newRof, 1),
-      reliability: newReliability,
-      range: isMelee ? 1 : num(newRange, 50),
-      cost: num(newCost, 0),
-      description: newDescription.trim(),
-      effects: newEffects.trim(),
+        ? resolveSkillName(f.skill) || skillForType(f.type)
+        : skillForType(f.type),
+      wa: parseNum(f.wa, 0),
+      concealability: f.concealability,
+      availability: (f.availability as Availability) || "C",
+      damage: f.damage.trim(),
+      ammo: isMelee ? "" : f.ammo.trim(),
+      shots: isMelee ? 0 : parseNum(f.shots, 0),
+      rof: parseNum(f.rof, 1),
+      reliability: f.reliability,
+      range: isMelee ? 1 : parseNum(f.range, 50),
+      cost: parseNum(f.cost, 0),
+      description: f.description.trim(),
+      effects: f.effects.trim(),
       melee: isMelee,
       smartchipped: false,
     });
     if (ok) {
       setAddAttempted(false);
-      setNewName("");
-      setNewDescription("");
-      setNewCost("");
-      setNewAvailability("");
-      setNewType("P");
-      setNewSkill("");
-      setNewWa("");
-      setNewConcealability("J");
-      setNewDamage("");
-      setNewAmmo("");
-      setNewShots("");
-      setNewRof("");
-      setNewReliability("ST");
-      setNewRange("");
-      setNewMelee(false);
-      setNewEffects("");
+      reset();
       selectWeapon(trimmed);
       return null;
     }
@@ -176,51 +154,23 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   const hasContent = adding || !!resolved;
 
   // Header actions
-  let headerActions = null;
-
-  if (template && !adding) {
-    // Template (catalog or custom not owned) — Take button
-    const handleAcquire = (e: MouseEvent) => {
-      e.stopPropagation();
-      const id = acquireWeapon(template.templateId);
-      if (id) selectWeapon(id);
-    };
-    headerActions = (
-      <button class="bar-action" onClick={handleAcquire}>
-        Take
-      </button>
-    );
-  } else if (ownedPiece) {
-    // Owned instance — Discard
-    headerActions = (
-      <>
-        <button
-          ref={discardBtnRef}
-          class="bar-action bar-remove"
-          onClick={(e) => {
-            e.stopPropagation();
-            setConfirmOpen(true);
-          }}
-        >
-          Discard
-        </button>
-        <ConfirmPopover
-          anchorRef={discardBtnRef}
-          open={confirmOpen}
-          message={`Discard ${ownedPiece.name}?`}
-          confirmText="Discard"
-          cancelText="Keep"
-          type="danger"
-          onConfirm={() => {
-            discardWeapon(ownedPiece.id);
-            selectWeapon(null);
-            setConfirmOpen(false);
-          }}
-          onCancel={() => setConfirmOpen(false)}
-        />
-      </>
-    );
-  }
+  const headerActions =
+    template || ownedPiece ? (
+      <AcquireDiscardActions
+        showAcquire={!!template && !adding}
+        onAcquire={(e) => {
+          e.stopPropagation();
+          const id = acquireWeapon(template!.templateId);
+          if (id) selectWeapon(id);
+        }}
+        showDiscard={!!ownedPiece}
+        discardName={ownedPiece?.name}
+        onDiscard={() => {
+          discardWeapon(ownedPiece!.id);
+          selectWeapon(null);
+        }}
+      />
+    ) : null;
 
   // Body content
   let bodyContent = null;
@@ -228,46 +178,46 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
   if (adding) {
     const addErrors = new Set<string>();
     if (addAttempted) {
-      if (!newName.trim()) addErrors.add("name");
-      if (!newDamage.trim()) addErrors.add("damage");
+      if (!f.name.trim()) addErrors.add("name");
+      if (!f.damage.trim()) addErrors.add("damage");
     }
     bodyContent = (
       <ItemForm
         disabled={false}
-        name={newName}
-        onNameChange={setNewName}
-        description={newDescription}
-        onDescriptionChange={setNewDescription}
-        cost={newCost}
-        onCostChange={setNewCost}
-        availability={newAvailability}
-        onAvailabilityChange={setNewAvailability}
+        name={f.name}
+        onNameChange={(v) => setField("name", v)}
+        description={f.description}
+        onDescriptionChange={(v) => setField("description", v)}
+        cost={f.cost}
+        onCostChange={(v) => setField("cost", v)}
+        availability={f.availability}
+        onAvailabilityChange={(v) => setField("availability", v)}
         errors={addErrors}
       >
         <WeaponFormFields
-          type={newType}
+          type={f.type}
           onTypeChange={handleTypeChange}
-          skill={newSkill}
-          onSkillChange={setNewSkill}
-          wa={newWa}
-          onWaChange={setNewWa}
-          concealability={newConcealability}
-          onConcealabilityChange={setNewConcealability}
-          damage={newDamage}
-          onDamageChange={setNewDamage}
-          ammo={newAmmo}
+          skill={f.skill}
+          onSkillChange={(v) => setField("skill", v)}
+          wa={f.wa}
+          onWaChange={(v) => setField("wa", v)}
+          concealability={f.concealability}
+          onConcealabilityChange={(v) => setField("concealability", v)}
+          damage={f.damage}
+          onDamageChange={(v) => setField("damage", v)}
+          ammo={f.ammo}
           onAmmoChange={handleAmmoChange}
-          shots={newShots}
-          onShotsChange={setNewShots}
-          rof={newRof}
-          onRofChange={setNewRof}
-          reliability={newReliability}
-          onReliabilityChange={setNewReliability}
-          range={newRange}
-          onRangeChange={setNewRange}
-          melee={newMelee || newType === "melee"}
-          effects={newEffects}
-          onEffectsChange={setNewEffects}
+          shots={f.shots}
+          onShotsChange={(v) => setField("shots", v)}
+          rof={f.rof}
+          onRofChange={(v) => setField("rof", v)}
+          reliability={f.reliability}
+          onReliabilityChange={(v) => setField("reliability", v)}
+          range={f.range}
+          onRangeChange={(v) => setField("range", v)}
+          melee={f.melee || f.type === "melee"}
+          effects={f.effects}
+          onEffectsChange={(v) => setField("effects", v)}
           errors={addErrors}
         />
       </ItemForm>
@@ -286,12 +236,9 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           updateCustomWeapon(weaponId!, { description: v })
         }
         cost={resolved.cost != null ? String(resolved.cost) : ""}
-        onCostChange={(v) => {
-          const n = v ? Number(v) : undefined;
-          updateCustomWeapon(weaponId!, {
-            cost: n != null && !isNaN(n) ? n : 0,
-          });
-        }}
+        onCostChange={(v) =>
+          updateCustomWeapon(weaponId!, { cost: parseNum(v, 0) })
+        }
         availability={resolved.availability ?? ""}
         onAvailabilityChange={(v) =>
           updateCustomWeapon(weaponId!, {
@@ -312,7 +259,7 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           onSkillChange={(v) => updateCustomWeapon(weaponId!, { skill: v })}
           wa={String(resolved.wa)}
           onWaChange={(v) =>
-            updateCustomWeapon(weaponId!, { wa: Number(v) || 0 })
+            updateCustomWeapon(weaponId!, { wa: parseNum(v, 0) })
           }
           concealability={resolved.concealability}
           onConcealabilityChange={(v) =>
@@ -330,12 +277,12 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           shots={String(resolved.shots)}
           onShotsChange={(v) =>
             updateCustomWeapon(weaponId!, {
-              shots: Math.max(0, Number(v) || 0),
+              shots: Math.max(0, parseNum(v, 0)),
             })
           }
           rof={String(resolved.rof)}
           onRofChange={(v) =>
-            updateCustomWeapon(weaponId!, { rof: Math.max(0, Number(v) || 0) })
+            updateCustomWeapon(weaponId!, { rof: Math.max(0, parseNum(v, 0)) })
           }
           reliability={resolved.reliability}
           onReliabilityChange={(v) =>
@@ -344,7 +291,7 @@ export default function BottomBarWeapon({ expanded, onToggle }: Props) {
           range={String(resolved.range)}
           onRangeChange={(v) =>
             updateCustomWeapon(weaponId!, {
-              range: Math.max(0, Number(v) || 0),
+              range: Math.max(0, parseNum(v, 0)),
             })
           }
           melee={resolved.melee}

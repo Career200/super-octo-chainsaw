@@ -143,15 +143,15 @@ footer {
 }
 
 .homerules-content .clear-data legend {
-  color: #c44;
+  color: var(--danger);
 }
 
 #clear-data-btn {
   width: 100%;
   margin-top: 0.25rem;
   padding: 0.4rem;
-  background: #c44;
-  color: #fff;
+  background: var(--danger);
+  color: var(--fg-white);
   border: none;
   border-radius: 4px;
   cursor: pointer;

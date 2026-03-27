@@ -1,9 +1,10 @@
 import { useStore } from "@nanostores/preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 
 import { BottomBarItemShell } from "@components/charsheet/common/bottombar/BottomBarItemShell";
 import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
 import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
+import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import { CYBER_CATALOG, type CyberTemplate } from "@scripts/cyber/catalog";
 import {
   $hydratedCyber,
@@ -12,8 +13,8 @@ import {
 } from "@stores/cyber";
 import { $selectedCyber } from "@stores/ui";
 
+import { useCyberActions } from "./hooks/useCyberActions";
 import { InstallPopover } from "./InstallPopover";
-import { useCyberActions } from "./useCyberActions";
 
 // --- Header actions (rendering only) ---
 
@@ -26,10 +27,16 @@ function CyberHeaderActions({
   ownedItem: HydratedCyberItem | null;
   catalogTemplate: CyberTemplate | null;
 }) {
-  const popoverBtnRef = useRef<HTMLButtonElement>(null);
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const discardBtnRef = useRef<HTMLButtonElement>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  const {
+    ref: popoverBtnRef,
+    open: popoverOpen,
+    setOpen: setPopoverOpen,
+  } = usePopoverState();
+  const {
+    ref: discardBtnRef,
+    open: confirmOpen,
+    setOpen: setConfirmOpen,
+  } = usePopoverState();
 
   useEffect(() => {
     setPopoverOpen(false);
@@ -73,6 +80,7 @@ function CyberHeaderActions({
             containers={install.containers}
             noContainerHint={install.noContainerHint}
             blockedHint={install.blockedHint}
+            swapWarning={install.swapWarning}
             hcRowDefs={install.hcRowDefs}
             onConfirm={(containerId, hcMap) => {
               install.onConfirm(containerId, hcMap);

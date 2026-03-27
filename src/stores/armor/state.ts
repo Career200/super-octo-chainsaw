@@ -1,4 +1,5 @@
-import { atom, computed } from "nanostores";
+import { persistentAtom } from "@nanostores/persistent";
+import { computed } from "nanostores";
 
 import {
   ARMOR_CATALOG,
@@ -11,11 +12,12 @@ import {
   type ArmorPiece,
   type ArmorTemplate,
   type BodyPartName,
-  type EVResult,
+  computeArmorEffects,
   getPartSpMax,
-  getTotalEV,
 } from "@scripts/armor/core";
 import type { Availability } from "@scripts/catalog-common";
+
+import { $armorEffects } from "./effects";
 
 // --- Custom Armor Definitions ---
 
@@ -32,14 +34,9 @@ export interface CustomArmorDef {
 
 export type CustomArmorState = Record<string, CustomArmorDef>;
 
-const CUSTOM_ARMOR_KEY = "character-custom-armor";
-
-function loadCustomArmor(): CustomArmorState {
-  if (typeof localStorage === "undefined") return {};
-  const stored = localStorage.getItem(CUSTOM_ARMOR_KEY);
-  if (!stored) return {};
+function decodeCustomArmor(raw: string): CustomArmorState {
   try {
-    const parsed = JSON.parse(stored);
+    const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
       return {};
     const result: CustomArmorState = {};
@@ -62,13 +59,11 @@ function loadCustomArmor(): CustomArmorState {
   }
 }
 
-export const $customArmorTemplates = atom<CustomArmorState>(loadCustomArmor());
-
-$customArmorTemplates.subscribe((state) => {
-  if (typeof localStorage !== "undefined") {
-    localStorage.setItem(CUSTOM_ARMOR_KEY, JSON.stringify(state));
-  }
-});
+export const $customArmorTemplates = persistentAtom<CustomArmorState>(
+  "character-custom-armor",
+  {},
+  { encode: JSON.stringify, decode: decodeCustomArmor },
+);
 
 // --- Template Resolution ---
 
@@ -108,16 +103,9 @@ export function isCustomArmor(id: string): boolean {
 
 export type OwnedArmorState = Record<string, ArmorInstance>;
 
-const STORAGE_KEY = "owned-armor";
-
-function loadState(): OwnedArmorState {
-  if (typeof localStorage === "undefined") return {};
-
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) return {};
-
+function decodeOwnedArmor(raw: string): OwnedArmorState {
   try {
-    const state = JSON.parse(stored) as OwnedArmorState;
+    const state = JSON.parse(raw) as OwnedArmorState;
 
     // Drop stale instances whose spByPart doesn't match current template
     for (const [id, instance] of Object.entries(state)) {
@@ -138,13 +126,11 @@ function loadState(): OwnedArmorState {
   }
 }
 
-export const $ownedArmor = atom<OwnedArmorState>(loadState());
-
-$ownedArmor.subscribe((state) => {
-  if (typeof localStorage !== "undefined") {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
-});
+export const $ownedArmor = persistentAtom<OwnedArmorState>(
+  "owned-armor",
+  {},
+  { encode: JSON.stringify, decode: decodeOwnedArmor },
+);
 
 // --- Derived Getters ---
 
@@ -233,13 +219,16 @@ export function getImplantsForPart(part: BodyPartName): ArmorPiece[] {
   return getInstalledImplants().filter((p) => p.bodyParts.includes(part));
 }
 
-// --- Computed Stores ---
+// --- Armor Effects Sync ---
 
-export const $encumbrance = computed($ownedArmor, (): EVResult => {
+function syncArmorEffects(): void {
   const wornArmor = getAllOwnedArmor().filter((a) => a.worn && !a.layer);
   const implants = getInstalledImplants();
-  return getTotalEV(wornArmor, implants);
-});
+  $armorEffects.set(computeArmorEffects(wornArmor, implants));
+}
+
+$ownedArmor.listen(syncArmorEffects);
+syncArmorEffects(); // validate cache on module load
 
 export const $customArmorList = computed(
   $customArmorTemplates,

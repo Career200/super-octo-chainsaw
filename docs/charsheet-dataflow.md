@@ -1,5 +1,74 @@
 # Charsheet Data Flow
 
+## State layers
+
+Stores are organized into layers by when they load and whether they depend on catalog data. This is what makes lazy-loading work — always-visible components (StatsStrip, BodyInfo, WoundIndicator) never import catalogs.
+
+```
+Layer 1 — Persistent inputs (synchronous, localStorage)
+─────────────────────────────────────────────────────────
+  $health, $stats, $homerules, $notes, $damageHistory
+  tabStore() keys (spa-tab, equipment-sub-tab, etc.)
+
+  User-entered data. No catalog dependency. Available immediately.
+
+
+Layer 2 — Cached domain effects (persistent atoms, written by listeners)
+────────────────────────────────────────────────────────────────────────
+  $armorEffects   ← listener on $ownedArmor (in armor/state.ts)
+  $cyberEffects   ← listener on $ownedCyber (in cyber.ts)
+
+  Catalog-free summaries of domain state. Read from localStorage on
+  first load (instant). Kept in sync by listeners that fire when their
+  lazy module loads and on every subsequent change.
+
+  This is the bridge: lazy modules write these, eager stores read them.
+
+
+Layer 3 — Always-visible computed stores (catalog-free)
+───────────────────────────────────────────────────────
+  $REF..$BT, $bodyType         ← L1 ($stats, $health) + L2 ($armorEffects)
+  $hcData                       ← L2 ($cyberEffects) + L3 ($EMP)
+
+  Derived from L1 + L2 only. Rendered by synchronous components
+  (StatsStrip, BodyInfo) and lazy-but-always-needed ones
+  (WoundIndicator, AwarenessLine).
+
+
+Layer 4 — Panel-specific stores (catalog-dependent, lazy)
+─────────────────────────────────────────────────────────
+  $allSkills, $awareness, $skillsByStat, $meleeSkills, ...
+  $ownedArmor → getArmorPiece(), getBodyPartLayers(), ...
+  $allOwnedWeapons, $ownedGear, $allOwnedAmmo, ...
+  $hydratedCyber, $installedByCategory, ...
+
+  Hydrate catalog data at read time. Only imported by view components
+  (CombatView, DossierView, EquipmentView) which are lazy-loaded.
+  Prefetched via requestIdleCallback after first paint.
+```
+
+### Loading sequence
+
+1. **Synchronous** — `StatsStrip`, `BodyInfo` import L1+L2 stores directly. Render with cached localStorage values. No catalogs touched.
+2. **Suspense** — `AwarenessLine`, `WoundIndicator` are `lazy()` but load early. AwarenessLine pulls in `SKILL_CATALOG` (L4) but only after first paint.
+3. **requestIdleCallback** — prefetches all three views + sub-views. This triggers L4 module loads, which register listeners that sync L2 atoms.
+4. **View render** — user navigates to a tab, view component mounts, L4 stores hydrate from catalog + persistent state.
+
+## Key patterns
+
+- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$homerules`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`, `$unarmedSkill`, `$ownedCyber`, `$cyberEffects`, `$armorEffects`) own the data, persist to localStorage
+- **Tab stores** via `tabStore()` factory — keys persist to localStorage, cached so all subscribers share one atom
+- **Sparse persistence** (`$skills`, `$gear`): only stores what differs from catalog defaults. Full objects hydrated from static catalogs at read time. Custom items stored as full objects (no catalog entry).
+- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$allSkills`, `$awareness`, `$skillsByStat`, `$meleeSkills`, `$myMartialArts`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`, `$hydratedCyber`, `$installedByCategory`, `$hcData`) derive from persistent stores
+- **Cross-store deps**: `$health` wounds affect stat penalties; `$armorEffects.ev` affects REF; `$INT` + `$allSkills` → `$awareness`; `$cyberEffects` + `$EMP` → `$hcData`
+- **Cyber** uses instance-based persistence (like armor). `$cyberEffects` is listener-driven (catalog-free, safe for eager import). HC is rolled on install, zeroed on uninstall.
+- **Mutations**: components call action functions, never set computed stores directly
+- **UI atoms**: `$selected*`/`$adding*` are mutually exclusive pairs — setting one clears the other. Cross-highlighting between weapon/ammo pairs.
+- **Weapons** use instance-based persistence (like armor, unlike gear's quantity-based). Each weapon has its own ammo state. Template resolution via `resolveWeaponTemplate()`.
+- `◂──▸` = component both reads and mutates that store
+
+## Detailed store chart
+
 ```
                         STORES                                    COMPONENTS
                         ══════                                    ══════════
@@ -19,15 +88,15 @@
                 └────────▲────────┘                    │
                          │ EV penalty (REF only)       │
                 ┌────────┴────────┐                    │
-                │  $encumbrance   │───────────────────┼──▸ EVDisplay
-                │   (computed)    │                    │
+                │ $armorEffects  │───────────────────┼──▸ EVDisplay
+                │ (persist, sync) │                    │
                 └────────▲────────┘                    │
-                         │                             │
+                         │ listener                    │
                ┌─────────┴──────────┐                  │
                │    $ownedArmor     │─────────────────┼──▸ ArmorListPanel, ArmorCard
                │     (persist)      │                  │    BodyPartCard, BottomBarArmor
-               │                    │                  │    SkinweaveDisplay, ImplantsDisplay
-               └─────────▲──────────┘                  │    HitPopover ◂──▸, RepairPopover
+               │                    │                  │    HitPopover ◂──▸, RepairPopover
+               └─────────▲──────────┘                  │    cyber-armor.ts (bridge)
                          │                             │
                ┌─────────┴──────────────┐              │
                │ $customArmorTemplates  │─────────────┼──▸ BottomBarArmor ◂──▸
@@ -45,15 +114,12 @@
                └────────────────────┘                       (record entries)
 
                ┌────────────────────┐
-               │    $homerules     │─────────────────────────▸ applyHit() (degradation mode)
-               │     (persist)      │                          RepairPopover (hide part selector)
-               │ locationalDeg,    │                          ArmorHelpContent ×2 (conditional text)
-               │ scaledDeg         │  Mutated by vanilla JS dialog (localStorage + StorageEvent)
-               └────────────────────┘
-
-               ┌────────────────────┐
-               │    $character      │  Aggregator: re-exports $health + $encumbrance
-               │    (computed)      │  Not directly subscribed by components
+               │    $homerules     │─────────────────────────▸ applyHit() (degradation mode,
+               │     (persist)      │                          skinweave/skin-armor non-degrade)
+               │ locationalDeg,    │                          RepairPopover (hide part selector)
+               │ scaledDeg,        │                          ArmorHelpContent ×2 (conditional text)
+               │ skinweaveNoDeg,   │  Mutated by vanilla JS dialog (localStorage + StorageEvent)
+               │ skinArmorNoDeg    │
                └────────────────────┘
 
                ┌────────────────────┐
@@ -281,7 +347,8 @@
                │  OwnedItem[]    │                       (takeCyber, installCyber, installOwned,
                └──┬──┬───────────┘                        uninstallCyber, discardCyber, slotOption,
                   │  │                                     unslotOption, setItemHc)
-                  │  │
+                  │  │                                     cyber-armor.ts (lazy bridge →
+                  │  │                                       installCyberArmor, uninstallCyberArmor)
                   │  ▾
                   │ ┌──────────────┐
                   │ │$hydratedCyber│──▸ $installedByCategory
@@ -316,16 +383,3 @@
                │      (atom)       │                       ArmorListPanel (card highlight)
                └────────────────────┘
 ```
-
-## Key patterns
-
-- **Persistent stores** (`$health`, `$stats`, `$ownedArmor`, `$customArmorTemplates`, `$damageHistory`, `$homerules`, `$notes`, `$skills`, `$gear`, `$customGearItems`, `$ownedWeapons`, `$customWeaponTemplates`, `$unarmedSkill`, `$ownedCyber`, `$cyberEffects`) own the data, persist to localStorage
-- **Tab stores** via `tabStore()` factory — 8 keys (`spa-tab`, `equipment-sub-tab`, `armor-list-tab`, `weapon-list-tab`, `gear-tab`, `skills-filter`, `notes-tab`, `offense-tab`) each persist to localStorage, cached by key so all subscribers share one atom
-- **Sparse persistence** (used by `$skills` and `$gear`): only stores what differs from catalog defaults. Catalog skills at level 0 are not persisted; gear stores only id → quantity. Full objects come from static catalogs at read time. Custom skills are stored as full objects in `$skills`; custom gear definitions live in a separate `$customGearItems` store (persists independently of quantity).
-- **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$encumbrance`, `$character`, `$allSkills`, `$awareness`, `$skillsByStat`, `$meleeSkills`, `$myMartialArts`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`, `$hydratedCyber`, `$installedByCategory`, `$hcData`) derive from persistent stores
-- **Cross-store deps**: `$health` wounds affect stat penalties; `$encumbrance` (from armor) affects REF; `$INT` + `$allSkills` → `$awareness`; `$cyberEffects` + `$EMP` → `$hcData`
-- **Cyber** uses instance-based persistence (like armor). `$ownedCyber` stores all owned instances with an `installed` flag — only installed items contribute HC. `$cyberEffects` is a listener-derived summary (catalog-free, safe for eager import). HC is rolled on install, zeroed on uninstall.
-- **Mutations**: components call action functions exported from store modules, never set computed stores directly
-- **UI atoms**: `$selectedSkill`/`$addingSkill`, `$selectedGear`/`$addingGear`, `$selectedArmor`/`$addingArmor`, and `$selectedWeapon`/`$addingWeapon` are each mutually exclusive pairs — setting one clears the other via helper functions. `$highlightedPart` is an independent atom for body part highlighting on the inventory grid.
-- **Weapons** use instance-based persistence (like armor, unlike gear's quantity-based). Each weapon has its own ammo state. Template resolution via `resolveWeaponTemplate()` checks `WEAPON_CATALOG` + `$customWeaponTemplates`. Combat panel will read `$allOwnedWeapons` + `$allSkills` + stat stores for skill breakdowns (render-time, no new computed store needed).
-- `◂──▸` = component both reads and mutates that store

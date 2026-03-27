@@ -395,29 +395,40 @@ export const ARMOR_CATALOG: Record<string, ArmorTemplate> = {
 };
 
 // =====================
-// IMPLANT TEMPLATES (managed separately via body grid, future cyberware system)
+// IMPLANT TEMPLATES (managed via cyber tab, display + repair on armor tab)
 // =====================
 
-const skinweaves = (levels: number[]): Record<string, ArmorTemplate> =>
-  Object.fromEntries(
-    levels.map((sp) => [
-      `skinweave_${sp}`,
-      template(
-        `skinweave_${sp}`,
-        `SkinWeave SP ${sp}`,
-        "soft",
-        sp,
-        allParts,
-        sp * 100,
-        "P",
-        "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
-        { shortName: `SW ${sp}`, layer: "skinweave" },
-      ),
-    ]),
+const sw = (sp: number, cost: number): ArmorTemplate =>
+  template(
+    `skinweave_${sp}`,
+    `SkinWeave SP ${sp}`,
+    "soft",
+    sp,
+    allParts,
+    cost,
+    "P",
+    "Woven armor fibers grown into the skin. Provides uniform protection across the entire body.",
+    { shortName: `SW ${sp}`, layer: "skinweave" },
   );
 
 export const IMPLANT_TEMPLATES: Record<string, ArmorTemplate> = {
-  ...skinweaves([8, 10, 12, 14]),
+  skinweave_6: sw(6, 1000),
+  skinweave_8: sw(8, 1250),
+  skinweave_10: sw(10, 1600),
+  skinweave_12: sw(12, 2000),
+  skinweave_14: sw(14, 2400),
+  skinweave_16: sw(16, 2750),
+  skin_armor: template(
+    "skin_armor",
+    "Skin Armor SP 6",
+    "soft",
+    6,
+    allParts,
+    5000,
+    "R",
+    "Nanotechnology-based armor woven into the skin. Provides uniform protection with no Humanity Cost.",
+    { shortName: "Skin Armor", layer: "skinweave" },
+  ),
   subdermal: template(
     "subdermal",
     "Subdermal Armor",

@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/preact";
 
+import { cls } from "@components/charsheet/shared";
 import { $health, isMortal, setStabilized } from "@stores/health";
 
 export const StabilizedControl = () => {
@@ -14,7 +15,11 @@ export const StabilizedControl = () => {
 
   return (
     <div
-      class={`stabilized-control ${isStable ? "stabilized" : "unstable"}${!mortal ? " disabled" : ""}`}
+      class={cls(
+        "stabilized-control",
+        isStable ? "stabilized" : "unstable",
+        !mortal && "disabled",
+      )}
       onClick={handleClick}
     >
       <div class={`wound-box ${isStable ? "filled" : ""}`} role={"checkbox"} />

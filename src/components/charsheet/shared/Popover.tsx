@@ -85,12 +85,12 @@ export function Popover({
 
   if (!open) return null;
 
-  const cls = ["popover", className].filter(Boolean).join(" ");
+  const classes = ["popover", className].filter(Boolean).join(" ");
 
   return createPortal(
     <div
       ref={popoverRef}
-      class={cls}
+      class={classes}
       style={{ position: "fixed", visibility: "hidden" }}
       onClick={(e) => e.stopPropagation()}
     >

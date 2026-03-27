@@ -12,9 +12,10 @@ import {
   CATEGORY_ORDER,
   type CyberCategory,
 } from "@scripts/cyber/catalog";
+import type { CyberItem } from "@stores/cyber";
 import { tabStore } from "@stores/ui";
 
-import type { CyberItem, CyberlimbCell, LimbOption } from "./cyberViewTypes";
+import type { CyberlimbCell, LimbOption } from "./cyberViewTypes";
 
 // --- Shared card rendering ---
 
@@ -145,29 +146,19 @@ function CatalogItemList({
   onSelect: (id: string) => void;
 }) {
   const baseItems = items.filter((i) => i.isBase);
-  const optionItems = items.filter((i) => !i.isBase);
-
-  // Enrich installed bases with their installed option names
-  const installedOptionNames = optionItems
-    .filter((i) => i.installed)
-    .map((i) => i.name);
-  const enrichedBases = baseItems.map((item) =>
-    item.installed && installedOptionNames.length > 0
-      ? { ...item, installedOptions: installedOptionNames }
-      : item,
-  );
+  const options = items.filter((i) => !i.isBase);
 
   return (
     <>
-      {enrichedBases.length > 0 && (
+      {baseItems.length > 0 && (
         <BaseGroup
-          items={enrichedBases}
+          items={baseItems}
           selectedId={selectedId}
           catalog={true}
           onSelect={onSelect}
         />
       )}
-      {optionItems.map((item) => (
+      {options.map((item) => (
         <CyberItemCard
           key={item.id}
           item={item}
@@ -372,27 +363,27 @@ export function CyberListPanel({
         />
       }
     >
-      <div class="filter-badge-bar">
+      <div class="filter-chips-bar">
         {badgeCategories.map((cat) => (
           <button
             key={cat}
-            class={`filter-badge${activeCategory === cat ? " active" : ""}`}
+            class={`label-chip${activeCategory === cat ? " active" : ""}`}
             onClick={() => onCategoryChange(cat)}
           >
-            {CATEGORY_LABELS[cat]}
+            <span class="label-chip-main">{CATEGORY_LABELS[cat]}</span>
           </button>
         ))}
       </div>
 
       {isLimbs && (
-        <div class="filter-badge-bar">
+        <div class="filter-chips-bar">
           {limbs.map((limb) => (
             <button
               key={limb.slot}
-              class={`filter-badge${activeSlot === limb.slot ? " active" : ""}`}
+              class={`label-chip${activeSlot === limb.slot ? " active" : ""}`}
               onClick={() => onSlotChange(limb.slot)}
             >
-              {limb.label}
+              <span class="label-chip-main">{limb.label}</span>
             </button>
           ))}
         </div>

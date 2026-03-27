@@ -8,6 +8,8 @@ import {
 } from "@scripts/combat/types";
 import { applyDamage, healDamage } from "@scripts/combat/wounds";
 
+import { decodeJson } from "./decode";
+
 // Mortal starts at box 13 (after 3 levels of 4 boxes each)
 const MORTAL_THRESHOLD = 3 * BOXES_PER_LEVEL;
 
@@ -20,13 +22,7 @@ export const $health = persistentAtom<WoundState>(
   defaultState(),
   {
     encode: JSON.stringify,
-    decode: (raw: string): WoundState => {
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return defaultState();
-      }
-    },
+    decode: decodeJson(defaultState()),
   },
 );
 

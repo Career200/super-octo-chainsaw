@@ -5,10 +5,13 @@
 ### `$homerules` (homerules.ts)
 
 ```
-{ locationalDegradation: boolean, scaledDegradation: boolean }
+{ locationalDegradation: boolean, scaledDegradation: boolean,
+  skinweaveNoDegradation: boolean, skinArmorNoDegradation: boolean,
+  cyberEyePreinstalled: boolean, cyberEyePreinstalledOption: "tsm"|"tsm-plus",
+  tsmFreeHc: boolean, tsmFreeSlot: boolean }
 ```
 
-Both default `true`. Read by `applyHit()` to pick degradation mode, and by RepairPopover / help balloons for conditional UI.
+Degradation booleans default `false` except `skinArmorNoDegradation` (default `true` — nano self-repair). Read by `applyHit()` to pick degradation mode, and by RepairPopover / help balloons for conditional UI.
 
 No actions — mutated by vanilla JS in Astro layout dialog via localStorage + synthetic `StorageEvent` bridge.
 
@@ -112,6 +115,27 @@ Actions:
 Helpers: `getSlotUsage(containerInstanceId)`, `getContainersForOption(templateId)`, `canInstallContainer(category, instanceCost?)`
 
 Listener: re-derives `$cyberEffects` on every change (sums HC of `installed: true` items → humanityLoss).
+
+### Cyber-Armor bridge (cyber-armor.ts)
+
+Lazy-loaded module (imported dynamically when user interacts with cyber-armor install/uninstall). Bridges `$ownedCyber` and `$ownedArmor` for implant armor.
+
+Actions:
+- `installCyberArmor(cyberTemplateId, hc)` — looks up `armorTemplateId`, installs armor (skinweave swap if needed), adds OwnedItem to `$ownedCyber`
+- `uninstallCyberArmor(cyberInstanceId)` — removes from both stores
+
+On module load: runs `cleanOrphanedImplants()` to remove pre-M3 implant armor that has no matching `$ownedCyber` entry.
+
+### `$armorEffects` (armor/effects.ts)
+
+```
+{ ev: number, maxLayers: number, maxLocation: BodyPartName | null,
+  layersByPart: Partial<Record<BodyPartName, { countedLayers: number, hasHardLayer: boolean }>> }
+```
+
+Catalog-free summary of worn armor EV + layer penalty + per-part layer info. Written by listener on `$ownedArmor` changes (in armor/state.ts). Safe to import from eagerly-loaded stores (no catalog dependency). Same pattern as `$cyberEffects`.
+
+`layersByPart` is used by `checkLayerFit()` for pre-validation in the cyber tab (avoids importing armor catalog).
 
 ### `$cyberEffects` (cyber-effects.ts)
 
@@ -331,7 +355,7 @@ Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
 - `total` = inherent + cyber
 - `current` = total - wound penalties - EV penalty (REF only)
 - REF, INT, CL, TECH, MA: affected by wounds
-- REF: also affected by $encumbrance
+- REF: also affected by `$armorEffects.ev`
 
 ### `$bodyType` (stats.ts)
 
@@ -340,30 +364,6 @@ Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
 ```
 
 Depends on: `$BT`, `$health` (wound penalties on save)
-
-### `$encumbrance` (armor/)
-
-```
-number (total EV)
-```
-
-Depends on: `$ownedArmor` (worn armor EV + layer penalty)
-
-### `$character` (character.ts)
-
-```
-{ health, woundLevel, stunLevel, ev }
-```
-
-Aggregator. Depends on: `$health`, `$encumbrance`
-
-### `$woundLevel` (character.ts)
-
-```
-string | null (e.g. "Light", "Serious", "Mortal 2")
-```
-
-Depends on: `$health`
 
 ### `$allSkills` (skills.ts)
 
@@ -567,20 +567,18 @@ Depends on: `$cyberEffects`, `$EMP`
 
 ```
 $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
-          ├──▸ $bodyType.save
-          ├──▸ $woundLevel
-          └──▸ $character
+          └──▸ $bodyType.save
 
 $stats ────▸ all 9 computed stat stores ──▸ $bodyType
 
 $customArmorTemplates ──▸ $customArmorList
                        ──▸ resolveTemplate() (used by $ownedArmor load, getArmorPiece, acquireArmor, setArmorSP)
 
-$ownedArmor ──▸ $encumbrance ──▸ $REF, $character
+$ownedArmor ──▸ listener ──▸ $armorEffects (persist, catalog-free) ──▸ $REF, EVDisplay
 
 $damageHistory (standalone, no dependents)
 
-$homerules ──▸ applyHit() (locational/scaled degradation mode)
+$homerules ──▸ applyHit() (locational/scaled degradation, skinweave/skin-armor non-degrade)
              ──▸ RepairPopover, ArmorHelpContent ×2 (conditional UI)
 
 HitPopover reads $bodyType.btm, mutates $health via takeDamage
@@ -602,7 +600,8 @@ $customAmmoItems────┼──▸ $customAmmoList
                     └──▸ resolveAmmoTemplate() (used by addAmmo)
 
 $ownedCyber ──┬──▸ listener ──▸ $cyberEffects (installed only) ──▸ $hcData (+ $EMP)
-              └──▸ $hydratedCyber (all owned) ──▸ $installedByCategory (installed only)
+              ├──▸ $hydratedCyber (all owned) ──▸ $installedByCategory (installed only)
+              └──▸ cyber-armor.ts (lazy bridge → $ownedArmor, orphan cleanup on load)
 
 $selectedCyber ──▸ CyberSubView, BottomBarCyber
 

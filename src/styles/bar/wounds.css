@@ -174,12 +174,12 @@
 }
 
 .stabilized-control.stabilized .wound-box {
-  background: var(--terminal);
-  border-color: var(--terminal);
+  background: var(--terminal-green-bright);
+  border-color: var(--terminal-green-bright);
 }
 
 .stabilized-control.stabilized .stabilized-label {
-  color: var(--terminal);
+  color: var(--terminal-green-bright);
 }
 
 .stabilized-control.unstable .wound-box {
@@ -206,7 +206,7 @@
   color: var(--warning);
 }
 
-.label-chip-warning .label-chip-value {
+.label-chip-warning .label-chip-main {
   color: var(--warning);
 }
 
@@ -214,7 +214,7 @@
   color: var(--warning-hot);
 }
 
-.label-chip-critical .label-chip-value {
+.label-chip-critical .label-chip-main {
   color: var(--warning-hot);
 }
 
@@ -222,7 +222,7 @@
   color: var(--danger);
 }
 
-.label-chip-danger .label-chip-value {
+.label-chip-danger .label-chip-main {
   color: var(--danger);
 }
 

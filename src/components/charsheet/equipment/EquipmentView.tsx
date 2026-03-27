@@ -1,15 +1,16 @@
 import { useStore } from "@nanostores/preact";
-import { lazy, Suspense } from "preact/compat";
+import { Suspense } from "preact/compat";
 
 import { $eurodollars, setEurodollars } from "@stores/gear";
 import { tabStore } from "@stores/ui";
 
 import { TabStrip } from "../shared/TabStrip";
+import { tracedLazy } from "../tracedLazy";
 
-const ArmorSubView = lazy(() => import("./armor/ArmorSubView"));
-const WeaponsSubView = lazy(() => import("./weapons/WeaponsSubView"));
-const GearPanel = lazy(() => import("./gear/GearPanel"));
-const CyberSubView = lazy(() => import("./cyber/CyberSubView"));
+const ArmorSubView = tracedLazy("ArmorSubView", () => import("./armor/ArmorSubView"));
+const WeaponsSubView = tracedLazy("WeaponsSubView", () => import("./weapons/WeaponsSubView"));
+const GearPanel = tracedLazy("GearPanel", () => import("./gear/GearPanel"));
+const CyberSubView = tracedLazy("CyberSubView", () => import("./cyber/CyberSubView"));
 
 const EQUIPMENT_TABS = [
   { id: "gear", label: "Gear" },

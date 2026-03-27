@@ -1,4 +1,4 @@
-/* === Armor Items (used by ImplantsDisplay) === */
+/* === Armor Items === */
 .armor-item.armor-worn {
   border-color: var(--accent);
 }
@@ -157,14 +157,16 @@
   color: var(--accent);
 }
 
-.badge-toggle.active {
+.badge-toggle.active,
+.badge-toggle.selected {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--bg);
+  color: var(--bg-black);
 }
 
 .badge-toggle:disabled {
-  cursor: default;
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .armor-form-select {

@@ -1,6 +1,5 @@
-import { useRef, useState } from "preact/hooks";
-
 import { ItemCard } from "@components/charsheet/shared/ItemCard";
+import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
 import type { ArmorPiece } from "@scripts/armor/core";
 
 import { getConditionClassFromSP } from "../utils";
@@ -13,8 +12,11 @@ interface Props {
 }
 
 export const ImplantCard = ({ implant }: Props) => {
-  const [repairOpen, setRepairOpen] = useState(false);
-  const repairRef = useRef<HTMLButtonElement>(null);
+  const {
+    ref: repairRef,
+    open: repairOpen,
+    setOpen: setRepairOpen,
+  } = usePopoverState();
 
   const damaged = implant.spCurrent < implant.spMax;
 

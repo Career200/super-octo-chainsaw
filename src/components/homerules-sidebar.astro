@@ -9,6 +9,8 @@ const DEFAULTS = {
   cyberEyePreinstalledOption: "tsm-plus",
   tsmFreeHc: true,
   tsmFreeSlot: true,
+  skinweaveNoDegradation: false,
+  skinArmorNoDegradation: true,
 };
 
 const rules = [
@@ -31,6 +33,20 @@ const rules = [
       </>
     ))}
     <p class="homerules-note">Turn both off for RAW armor degradation.</p>
+  </fieldset>
+  <hr/>
+  <fieldset>
+    <legend>Cyber Armor</legend>
+    <label>
+      <input type="checkbox" id="hr-skinweave-no-deg" data-field="skinweaveNoDegradation" />
+      SkinWeave doesn't degrade
+    </label>
+    <p class="text-desc"><i>SkinWeave SP is not reduced when penetrated</i></p>
+    <label>
+      <input type="checkbox" id="hr-skinarmor-no-deg" data-field="skinArmorNoDegradation" />
+      Skin Armor doesn't degrade
+    </label>
+    <p class="text-desc"><i>Skin Armor SP is not reduced when penetrated (default on — nano repairs)</i></p>
   </fieldset>
   <hr/>
   <fieldset>

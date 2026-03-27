@@ -13,7 +13,8 @@ import { calculateStat } from "@scripts/combat/stats";
 import type { StatName, StatsState, StatValues } from "@scripts/combat/types";
 import { getWoundLevel } from "@scripts/combat/wounds";
 
-import { $encumbrance } from "./armor";
+import { $armorEffects } from "./armor/effects";
+import { decodeJson } from "./decode";
 import { $health } from "./health";
 
 function defaultState(): StatsState {
@@ -35,24 +36,18 @@ export const $stats = persistentAtom<StatsState>(
   defaultState(),
   {
     encode: JSON.stringify,
-    decode: (raw: string): StatsState => {
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return defaultState();
-      }
-    },
+    decode: decodeJson(defaultState()),
   },
 );
 
 // --- Computed stats ---
 
 export const $REF = computed(
-  [$stats, $health, $encumbrance],
-  (stats, health, encumbrance): StatValues =>
+  [$stats, $health, $armorEffects],
+  (stats, health, armorEffects): StatValues =>
     calculateStat(stats.ref.inherent, stats.ref.cyber, health.stun, {
       woundPenaltyType: "ref",
-      evPenalty: encumbrance.ev,
+      evPenalty: armorEffects.ev,
       stabilized: health.stabilized,
     }),
 );
