@@ -171,8 +171,10 @@ export function InstallPopover({
 
   return (
     <Popover anchorRef={anchorRef} open={open} onClose={onClose}>
-      {blockedHint ? (
-        <p class="text-soft text-sm">{blockedHint}</p>
+      {blockedHint || (containers && containers.length === 0) ? (
+        <p class="text-soft text-sm">
+          {blockedHint ?? noContainerHint ?? "No container available"}
+        </p>
       ) : (
         <>
           {swapWarning && (
