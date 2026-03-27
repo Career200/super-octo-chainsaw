@@ -4,6 +4,7 @@ import { CATEGORY_LABELS, type CyberTemplate } from "@scripts/cyber/catalog";
 import {
   canInstallContainer,
   discardCyber,
+  getChildHcRows,
   type HydratedCyberItem,
   installCyber,
   installOwned,
@@ -17,7 +18,6 @@ import { selectCyber } from "@stores/ui";
 import { useCyberArmorBlockedHint, useSkinweaveSwapWarning } from "./useCyberArmorHints";
 import {
   type ContainerChoice,
-  getChildHcRows,
   useContainerChoices,
   useEffectiveHc,
 } from "./useInstallHelpers";

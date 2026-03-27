@@ -1,9 +1,10 @@
 import { cls } from "@components/charsheet/shared";
 import { CATEGORY_LABELS, type CyberCategory } from "@scripts/cyber/catalog";
+import type { CyberItem } from "@stores/cyber";
 
 import { getConditionClassFromSP } from "../utils";
 
-import type { CyberItem, CyberlimbCell } from "./cyberViewTypes";
+import type { CyberlimbCell } from "./cyberViewTypes";
 
 // --- CategoryCard ---
 

@@ -12,9 +12,10 @@ import {
   CATEGORY_ORDER,
   type CyberCategory,
 } from "@scripts/cyber/catalog";
+import type { CyberItem } from "@stores/cyber";
 import { tabStore } from "@stores/ui";
 
-import type { CyberItem, CyberlimbCell, LimbOption } from "./cyberViewTypes";
+import type { CyberlimbCell, LimbOption } from "./cyberViewTypes";
 
 // --- Shared card rendering ---
 
