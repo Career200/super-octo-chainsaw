@@ -61,7 +61,7 @@ Layer 4 — Panel-specific stores (catalog-dependent, lazy)
 - **Sparse persistence** (`$skills`, `$gear`): only stores what differs from catalog defaults. Full objects hydrated from static catalogs at read time. Custom items stored as full objects (no catalog entry).
 - **Computed stores** (`$REF`..`$BT`, `$bodyType`, `$allSkills`, `$awareness`, `$skillsByStat`, `$meleeSkills`, `$myMartialArts`, `$mySkills`, `$mySkillsCount`, `$customSkills`, `$ownedGear`, `$ownedGearCount`, `$customArmorList`, `$allOwnedWeapons`, `$customWeaponList`, `$hydratedCyber`, `$installedByCategory`, `$hcData`) derive from persistent stores
 - **Cross-store deps**: `$health` wounds affect stat penalties; `$armorEffects.ev` affects REF; `$INT` + `$allSkills` → `$awareness`; `$cyberEffects` + `$EMP` → `$hcData`
-- **Cyber** uses instance-based persistence (like armor). `$cyberEffects` is listener-driven (catalog-free, safe for eager import). HC is rolled on install, zeroed on uninstall.
+- **Cyber** uses instance-based persistence (like armor). `$cyberEffects` is listener-driven (catalog-free, safe for eager import): aggregates HC, stat/skill bonuses, initiative, and effect text. Per-template install limits via `canInstallTemplate()`. HC is rolled on install, zeroed on uninstall.
 - **Mutations**: components call action functions, never set computed stores directly
 - **UI atoms**: `$selected*`/`$adding*` are mutually exclusive pairs — setting one clears the other. Cross-highlighting between weapon/ammo pairs.
 - **Weapons** use instance-based persistence (like armor, unlike gear's quantity-based). Each weapon has its own ammo state. Template resolution via `resolveWeaponTemplate()`.
@@ -124,8 +124,9 @@ Layer 4 — Panel-specific stores (catalog-dependent, lazy)
 
                ┌────────────────────┐
                │      $notes       │─────────────────────▸ NotesPanel ◂──▸ (mutates $notes)
-               │     (persist)      │                       (freeform notes + contacts)
+               │     (persist)      │                       (freeform notes + contacts + effects)
                └────────────────────┘
+                NotesPanel Effects tab also reads $cyberEffects (L2, catalog-free)
 
                ┌────────────────────┐
                │  tabStore()       │─────────────────────▸ TabStrip (self-persisting)

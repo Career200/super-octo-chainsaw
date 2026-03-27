@@ -1,5 +1,7 @@
 import { useStore } from "@nanostores/preact";
 
+import { STAT_LABELS, type StatName } from "@scripts/combat/types";
+import { $cyberEffects, type CyberEffects } from "@stores/cyber-effects";
 import {
   $notes,
   addContact,
@@ -15,6 +17,89 @@ import { Panel } from "../shared/Panel";
 import { TabStrip } from "../shared/TabStrip";
 import { useDebouncedCallback } from "../shared/useDebouncedCallback";
 import { usePopoverState } from "../shared/usePopoverState";
+
+// --- Effects View ---
+
+function formatStat(stat: string, val: number) {
+  const label = STAT_LABELS[stat as StatName] ?? stat.toUpperCase();
+  return `${label} ${val > 0 ? "+" : ""}${val}`;
+}
+
+function formatSkill(skill: string, val: number) {
+  return `${skill} ${val > 0 ? "+" : ""}${val}`;
+}
+
+function BonusLine({ label, items }: { label: string; items: string[] }) {
+  if (!items.length) return null;
+  return (
+    <p class="effects-bonus-line">
+      <span class="text-soft">{label}:</span>{" "}
+      {items.join(",\u2002")}
+    </p>
+  );
+}
+
+function EffectBlock({
+  label,
+  effects,
+}: {
+  label: string;
+  effects: CyberEffects["majorEffects"];
+}) {
+  if (!effects.length) return null;
+  return (
+    <div class="effects-block">
+      <p class="effects-block-label text-soft">{label}</p>
+      {effects.map((e) => (
+        <p key={e.key} class="effects-block-item">{e.text}</p>
+      ))}
+    </div>
+  );
+}
+
+const EffectsView = ({ effects }: { effects: CyberEffects }) => {
+  const skillOverrides = Object.entries(effects.skillOverrides).map(
+    ([skill, val]) => `${skill} =${val}`,
+  );
+  const statOverrides = Object.entries(effects.statOverrides).map(
+    ([stat, val]) => {
+      const label = STAT_LABELS[stat as StatName] ?? stat.toUpperCase();
+      return `${label} =${val}`;
+    },
+  );
+  const statBonuses = Object.entries(effects.statBonuses).map(([s, v]) =>
+    formatStat(s, v!),
+  );
+  if (effects.initiativeBonus) {
+    statBonuses.push(`Init ${effects.initiativeBonus > 0 ? "+" : ""}${effects.initiativeBonus}`);
+  }
+  const skillBonuses = Object.entries(effects.skillBonuses).map(([s, v]) =>
+    formatSkill(s, v),
+  );
+
+  const hasAny =
+    skillOverrides.length ||
+    statOverrides.length ||
+    statBonuses.length ||
+    skillBonuses.length ||
+    effects.majorEffects.length ||
+    effects.minorEffects.length;
+
+  if (!hasAny) {
+    return <p class="empty-message">No active cyber effects.</p>;
+  }
+
+  return (
+    <div class="effects-view">
+      <BonusLine label="Skill overrides" items={skillOverrides} />
+      <BonusLine label="Stat overrides" items={statOverrides} />
+      <BonusLine label="Stat bonuses" items={statBonuses} />
+      <BonusLine label="Skill bonuses" items={skillBonuses} />
+      <EffectBlock label="Major" effects={effects.majorEffects} />
+      <EffectBlock label="Minor" effects={effects.minorEffects} />
+    </div>
+  );
+};
 
 // --- Contact Card ---
 
@@ -85,6 +170,7 @@ export const NotesPanel = ({
   onToggle: () => void;
 }) => {
   const notes = useStore($notes);
+  const effects = useStore($cyberEffects);
   const tab = useStore(tabStore("notes-tab", "notes"));
 
   const debouncedSetFreeform = useDebouncedCallback(setFreeformNote, 300);
@@ -101,6 +187,7 @@ export const NotesPanel = ({
           tabs={[
             { id: "notes", label: "Notes" },
             { id: "contacts", label: "Contacts" },
+            { id: "effects", label: "Effects" },
           ]}
         />
       }
@@ -115,6 +202,7 @@ export const NotesPanel = ({
           }
         />
       )}
+      {tab === "effects" && <EffectsView effects={effects} />}
       {tab === "contacts" && (
         <div>
           {notes.contacts.length === 0 ? (

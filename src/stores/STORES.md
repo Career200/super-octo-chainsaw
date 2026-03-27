@@ -87,7 +87,7 @@ Keys in use:
 - `gear-tab` (default: `"catalog"`) — Catalog/Custom/Owned in GearPanel
 - `weapon-list-tab` (default: `"catalog"`) — Catalog/Custom/Owned in WeaponListPanel
 - `skills-filter` (default: `"default"`) — Default/Custom/My in StatsSkillsPanel
-- `notes-tab` (default: `"notes"`) — Notes/Contacts in NotesPanel
+- `notes-tab` (default: `"notes"`) — Notes/Contacts/Effects in NotesPanel
 - `offense-tab` (default: `"ranged"`) — Ranged/Melee in CombatView offense panel
 - `cyber-list-tab` (default: `"catalog"`) — Catalog/Owned in CyberListPanel
 
@@ -99,7 +99,7 @@ OwnedItem[] (each: { templateId, instanceId, parentId?, slot?, hc, installed, sd
 
 All owned cyberware instances (both installed and not). `installed: true` means active (HC counts, shows on grid). Template data comes from `CYBER_CATALOG` at read time (sparse persistence).
 
-Container/option model: containers have `maxSlots`, options have `containerCategory` + `slotCost`. Options are linked to containers via `parentId`. Per-category body limits via `CATEGORY_MAX_INSTANCES` (e.g., optics: 2 eyes, audio: 1). Containers have `instanceCost` (default 1; a dual-eye implant would cost 2).
+Container/option model: containers have `maxSlots`, options have `containerCategory` + `slotCost`. Options are linked to containers via `parentId`. Per-category body limits via `CATEGORY_MAX_INSTANCES` (optics: 2, audio: 1, neuralware: 1). Containers have `instanceCost` (default 1; a dual-eye implant would cost 2). Per-template install limit via `maxInstalled` (default 1 for standalone except fashionware); checked by `canInstallTemplate()`.
 
 Actions:
 
@@ -114,7 +114,7 @@ Actions:
 
 Helpers: `getSlotUsage(containerInstanceId)`, `getContainersForOption(templateId)`, `canInstallContainer(category, instanceCost?)`
 
-Listener: re-derives `$cyberEffects` on every change (sums HC of `installed: true` items → humanityLoss).
+Listener: re-derives `$cyberEffects` on every change (sums HC, stat/skill bonuses, initiative bonus, major/minor effect text from installed items).
 
 ### Cyber-Armor bridge (cyber-armor.ts)
 
@@ -140,10 +140,11 @@ Catalog-free summary of worn armor EV + layer penalty + per-part layer info. Wri
 ### `$cyberEffects` (cyber-effects.ts)
 
 ```
-{ humanityLoss, statBonuses, statOverrides, skillBonuses, skillOverrides, initiativeBonus, majorEffects, minorEffects }
+{ humanityLoss, statBonuses, statOverrides, skillBonuses, skillOverrides, initiativeBonus,
+  majorEffects: { key, text, category }[], minorEffects: { key, text, category }[] }
 ```
 
-Catalog-free summary of all active cyberware effects. Safe to import from eagerly-loaded stores. Step 1: only `humanityLoss` is populated; other fields default to empty.
+Catalog-free summary of all active cyberware effects. Safe to import from eagerly-loaded stores. Listener-driven from `$ownedCyber`: aggregates stat/skill bonuses, initiative, and effect text from installed items' templates. Sorted by `CATEGORY_ORDER` for stable display.
 
 ### `$selectedCyber` (ui.ts)
 

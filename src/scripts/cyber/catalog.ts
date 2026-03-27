@@ -280,7 +280,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "2d6",
     '2"×4" space with RealSkinn zipper.',
-    { cost: 200, availability: "C", minorEffect: "Concealed subdermal storage" },
+    { cost: 200, availability: "C" },
   ),
   "adrenal-booster": c(
     "adrenal-booster",
@@ -325,7 +325,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "2",
     "2 hrs storage from any digital source.",
-    { cost: 200, availability: "C", minorEffect: "2hr digital recording" },
+    { cost: 200, availability: "C" },
   ),
   "av-recorder": c(
     "av-recorder",
@@ -334,7 +334,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "2",
     "2 hrs storage from video, audio links.",
-    { cost: 300, availability: "C", minorEffect: "2hr A/V recording" },
+    { cost: 300, availability: "C" },
   ),
   "radiation-detector": c(
     "radiation-detector",
@@ -379,7 +379,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "0",
     "Stereo music system, implanted version.",
-    { cost: 200, availability: "C", minorEffect: "Implanted stereo music system" },
+    { cost: 200, availability: "C" },
   ),
   "mediaware-phone": c(
     "mediaware-phone",
@@ -388,7 +388,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "3",
     "Implanted cellular phone for voice communication.",
-    { cost: 500, availability: "C", minorEffect: "Implanted cellular phone" },
+    { cost: 500, availability: "C" },
   ),
   cyberpillow: c(
     "cyberpillow",
@@ -590,7 +590,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Stereo music system.",
-    { cost: 100, availability: "C", containerCategory: "audio", minorEffect: "Stereo music playback" },
+    { cost: 100, availability: "C", containerCategory: "audio" },
   ),
   "digital-recording-link": c(
     "digital-recording-link",
@@ -599,7 +599,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Transmits sounds to a digital recorder.",
-    { cost: 100, availability: "C", containerCategory: "audio", minorEffect: "Transmit audio to recorder" },
+    { cost: 100, availability: "C", containerCategory: "audio" },
   ),
   "amplified-hearing": c(
     "amplified-hearing",
@@ -617,7 +617,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Internal radio transceiver with 1 mile range. Encrypted channel.",
-    { cost: 100, availability: "C", containerCategory: "audio", minorEffect: "1mi radio transceiver" },
+    { cost: 100, availability: "C", containerCategory: "audio" },
   ),
   "phone-splice": c(
     "phone-splice",
@@ -626,7 +626,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Allows direct phone calls through cyberaudio. Rings in your head.",
-    { cost: 150, availability: "C", containerCategory: "audio", minorEffect: "Internal phone" },
+    { cost: 150, availability: "C", containerCategory: "audio" },
   ),
   scrambler: c(
     "scrambler",
@@ -635,7 +635,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Encrypts and decrypts audio transmissions.",
-    { cost: 100, availability: "C", containerCategory: "audio", minorEffect: "Audio encryption/decryption" },
+    { cost: 100, availability: "C", containerCategory: "audio" },
   ),
   "bug-detector": c(
     "bug-detector",
@@ -662,7 +662,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Filter, enhance, and edit sounds in real-time. Isolate specific sounds from background noise.",
-    { cost: 150, availability: "C", containerCategory: "audio", minorEffect: "Real-time sound editing" },
+    { cost: 150, availability: "C", containerCategory: "audio", majorEffect: "+2 sound-related Awareness, real-time sound editing allows zero-in on a particular sound" },
   ),
   "enhanced-hearing-range": c(
     "enhanced-hearing-range",
@@ -707,7 +707,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Directional radio link. Harder to intercept than standard radio. 1 mile range.",
-    { cost: 100, availability: "C", containerCategory: "audio", minorEffect: "Secure directional radio 1mi" },
+    { cost: 100, availability: "C", containerCategory: "audio" },
   ),
   "wide-band-scanner": c(
     "wide-band-scanner",
@@ -716,7 +716,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Scan and monitor all radio frequencies in range. Can eavesdrop on open channels.",
-    { cost: 100, availability: "C", containerCategory: "audio", minorEffect: "Wide-band radio scanning" },
+    { cost: 100, availability: "C", containerCategory: "audio" },
   ),
 
   // === Cyber Armor ===
@@ -865,7 +865,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "container",
     "1d6",
     "Artificial neural sub-brain with its own memory and co-processors. Required for all neuralware options.",
-    { cost: 1000, availability: "C", majorEffect: "Required for all neuralware" },
+    { cost: 1000, availability: "C" },
   ),
   "interface-plugs": c(
     "interface-plugs",
@@ -874,7 +874,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1d6",
     "Plugs in the wrist for direct machine interface. Required for vehicle links, smartgun links, and decking.",
-    { cost: 200, availability: "C", containerCategory: "neuralware", minorEffect: "Direct machine interface via plugs" },
+    { cost: 200, availability: "C", containerCategory: "neuralware" },
   ),
   "chipware-socket": c(
     "chipware-socket",
@@ -883,7 +883,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1d6/2",
     "Slots for APTR skillchips, language chips, and other chipware. Accepts standard Dataflex chips.",
-    { cost: 200, availability: "C", containerCategory: "neuralware", minorEffect: "Chipware slot for skillchips" },
+    { cost: 200, availability: "C", containerCategory: "neuralware" },
   ),
   "smartgun-link": c(
     "smartgun-link",
@@ -901,7 +901,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "3",
     "Direct neural control of a vehicle. Requires interface plugs.",
-    { cost: 100, availability: "C", containerCategory: "neuralware", minorEffect: "Neural vehicle control" },
+    { cost: 100, availability: "C", containerCategory: "neuralware" },
   ),
   "machine-tech-link": c(
     "machine-tech-link",
@@ -919,7 +919,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Direct neural interface to public DataTerm net for information access.",
-    { cost: 100, availability: "C", containerCategory: "neuralware", minorEffect: "DataTerm net access" },
+    { cost: 100, availability: "C", containerCategory: "neuralware" },
   ),
   "kerenzikov-lv1": c(
     "kerenzikov-lv1",
@@ -1085,7 +1085,7 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Allows the cyberlimb hand to be swapped for a tool, weapon, or alternate hand in one action.",
-    { cost: 200, availability: "C", containerCategory: "cyberlimbs", minorEffect: "Hot-swap hand/tool mount" },
+    { cost: 200, availability: "C", containerCategory: "cyberlimbs" },
   ),
   "tool-hand": c(
     "tool-hand",
