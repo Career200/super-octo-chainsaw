@@ -12,8 +12,7 @@ import {
   $REF,
   $TECH,
 } from "@stores/stats";
-
-import { StatColumn } from "./StatColumn";
+import { $selectedStat, selectStat } from "@stores/ui";
 
 const STAT_STORES = {
   ref: $REF,
@@ -27,17 +26,32 @@ const STAT_STORES = {
   bt: $BT,
 } as const;
 
-// Wrapper to isolate store subscription per stat
-const StatColumnWrapper = ({ name }: { name: StatName }) => {
+const StatCard = ({ name }: { name: StatName }) => {
   const values = useStore(STAT_STORES[name]);
-  return <StatColumn name={name} label={STAT_LABELS[name]} values={values} />;
+  const selected = useStore($selectedStat);
+  const isDiminished = values.current < values.total;
+  const isSelected = selected === name;
+
+  return (
+    <button
+      class={`stat-card${isSelected ? " active" : ""}`}
+      data-stat={name}
+      onClick={() => selectStat(isSelected ? null : name)}
+    >
+      <span class={`stat-card-value${isDiminished ? " diminished" : ""}`}>
+        {values.current}
+      </span>
+      <span class="stat-card-label">{STAT_LABELS[name]}</span>
+      <span class="stat-card-chevron">›››</span>
+    </button>
+  );
 };
 
 export const StatsPanel = () => {
   return (
     <div class="stats-container">
       {STAT_NAMES.map((name) => (
-        <StatColumnWrapper key={name} name={name} />
+        <StatCard key={name} name={name} />
       ))}
     </div>
   );

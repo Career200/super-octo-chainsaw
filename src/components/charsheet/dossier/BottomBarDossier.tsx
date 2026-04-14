@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/preact";
 
 import { useFormState } from "@components/charsheet/shared";
+import { STAT_LABELS, type StatName } from "@scripts/combat/types";
 import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
 import { SKILL_CATALOG } from "@scripts/skills/catalog";
 import {
@@ -11,26 +12,56 @@ import {
   renameSkill,
   updateSkill,
 } from "@stores/skills";
-import { $addingSkill, $selectedSkill, selectSkill } from "@stores/ui";
+import { STAT_STORES } from "@stores/stats";
+import {
+  $addingSkill,
+  $selectedSkill,
+  $selectedStat,
+  selectSkill,
+} from "@stores/ui";
 
 import { BottomBarItemShell } from "../common/bottombar/BottomBarItemShell";
+import { BottomBarShell } from "../common/bottombar/BottomBarShell";
 
 import { SkillDetail } from "./SkillDetail";
 import { SkillForm } from "./SkillForm";
+import { StatDetail } from "./StatDetail";
 
 interface Props {
   expanded: boolean;
   onToggle: () => void;
 }
 
-export default function BottomBarSkills({ expanded, onToggle }: Props) {
+function BottomBarStat({
+  expanded,
+  onToggle,
+  statName,
+}: Props & { statName: StatName }) {
+  const values = useStore(STAT_STORES[statName]);
+  const fullName = STAT_LABELS[statName];
+
+  return (
+    <BottomBarShell
+      expanded={expanded}
+      onToggle={onToggle}
+      headerContent={<span class="bottom-bar-name">{fullName}</span>}
+    >
+      <StatDetail name={statName} values={values} />
+    </BottomBarShell>
+  );
+}
+
+function BottomBarSkill({ expanded, onToggle }: Props) {
   const skillName = useStore($selectedSkill);
   const adding = useStore($addingSkill);
   const allSkills = useStore($allSkills);
   const entry = skillName ? allSkills[skillName] : null;
 
-  // Add-mode form state
-  const { fields: f, setField, reset } = useFormState({
+  const {
+    fields: f,
+    setField,
+    reset,
+  } = useFormState({
     name: "",
     stat: "ref" as SkillStat,
     melee: false,
@@ -79,7 +110,7 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
       onToggle={onToggle}
       headerLabel={adding ? "New custom skill" : (skillName ?? "")}
       hasContent={!!(entry && skillName) || adding}
-      hintText="Select a skill"
+      hintText="Select a stat or skill"
       adding={adding}
       onAdd={handleAdd}
       isCustom={isCustom}
@@ -135,4 +166,20 @@ export default function BottomBarSkills({ expanded, onToggle }: Props) {
       ) : null}
     </BottomBarItemShell>
   );
+}
+
+export default function BottomBarDossier({ expanded, onToggle }: Props) {
+  const statName = useStore($selectedStat);
+
+  if (statName) {
+    return (
+      <BottomBarStat
+        expanded={expanded}
+        onToggle={onToggle}
+        statName={statName}
+      />
+    );
+  }
+
+  return <BottomBarSkill expanded={expanded} onToggle={onToggle} />;
 }

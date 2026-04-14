@@ -10,23 +10,47 @@ import {
   $selectedCyber,
   $selectedGear,
   $selectedSkill,
+  $selectedStat,
   $weaponAmmoFocus,
   tabStore,
 } from "@stores/ui";
 
 import { tracedLazy } from "../../tracedLazy";
+
 import { useAutoExpand } from "./useAutoExpand";
 
-const BottomBarHistory = tracedLazy("BottomBarHistory", () => import("../../combat/BottomBarHistory"));
-const BottomBarSkills = tracedLazy("BottomBarSkills", () => import("../../dossier/BottomBarSkills"));
-const BottomBarArmor = tracedLazy("BottomBarArmor", () => import("../../equipment/armor/BottomBarArmor"));
-const BottomBarEquipment = tracedLazy("BottomBarEquipment", () => import("../../equipment/gear/BottomBarEquipment"));
-const BottomBarWeapon = tracedLazy("BottomBarWeapon", () => import("../../equipment/weapons/BottomBarWeapon"));
-const BottomBarAmmo = tracedLazy("BottomBarAmmo", () => import("../../equipment/weapons/BottomBarAmmo"));
-const BottomBarCyber = tracedLazy("BottomBarCyber", () => import("../../equipment/cyber/BottomBarCyber"));
+const BottomBarHistory = tracedLazy(
+  "BottomBarHistory",
+  () => import("../../combat/BottomBarHistory"),
+);
+const BottomBarDossier = tracedLazy(
+  "BottomBarDossier",
+  () => import("../../dossier/BottomBarDossier"),
+);
+const BottomBarArmor = tracedLazy(
+  "BottomBarArmor",
+  () => import("../../equipment/armor/BottomBarArmor"),
+);
+const BottomBarEquipment = tracedLazy(
+  "BottomBarEquipment",
+  () => import("../../equipment/gear/BottomBarEquipment"),
+);
+const BottomBarWeapon = tracedLazy(
+  "BottomBarWeapon",
+  () => import("../../equipment/weapons/BottomBarWeapon"),
+);
+const BottomBarAmmo = tracedLazy(
+  "BottomBarAmmo",
+  () => import("../../equipment/weapons/BottomBarAmmo"),
+);
+const BottomBarCyber = tracedLazy(
+  "BottomBarCyber",
+  () => import("../../equipment/cyber/BottomBarCyber"),
+);
 
 export const BottomBar = () => {
   const tab = useStore(tabStore("spa-tab", "combat"));
+  const selectedStat = useStore($selectedStat);
   const addingSkill = useStore($addingSkill);
   const selectedSkill = useStore($selectedSkill);
   const addingGear = useStore($addingGear);
@@ -45,7 +69,10 @@ export const BottomBar = () => {
     if (expanded) setExpanded(false);
   }
 
-  useAutoExpand(addingSkill, selectedSkill, expanded, setExpanded);
+  // Stat + skill share the dossier bottom bar — combine into one selection
+  // so deselecting one while selecting the other doesn't collapse the bar.
+  const dossierSelection = selectedStat ?? selectedSkill;
+  useAutoExpand(addingSkill, dossierSelection, expanded, setExpanded);
   useAutoExpand(addingGear, selectedGear, expanded, setExpanded);
   useAutoExpand(addingArmor, selectedArmor, expanded, setExpanded);
   useAutoExpand(false, selectedCyber, expanded, setExpanded);
@@ -64,7 +91,7 @@ export const BottomBar = () => {
 
   // Safety: collapse if current tab has no active content
   const hasContent =
-    (tab === "dossier" && (selectedSkill || addingSkill)) ||
+    (tab === "dossier" && (selectedStat || selectedSkill || addingSkill)) ||
     (tab === "equipment" &&
       ((equipSubTab === "gear" && (selectedGear || addingGear)) ||
         (equipSubTab === "weapons" && hasWeaponAmmo) ||
@@ -93,7 +120,7 @@ export const BottomBar = () => {
     <div class={`bottom-bar${expanded ? " expanded" : ""}`}>
       <Suspense fallback={null}>
         {tab === "dossier" && (
-          <BottomBarSkills expanded={expanded} onToggle={toggle} />
+          <BottomBarDossier expanded={expanded} onToggle={toggle} />
         )}
         {tab === "combat" && (
           <BottomBarHistory expanded={expanded} onToggle={toggle} />

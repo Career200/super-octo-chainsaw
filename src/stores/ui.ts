@@ -3,6 +3,7 @@ import type { WritableAtom } from "nanostores";
 import { atom, computed } from "nanostores";
 
 import type { BodyPartName } from "@scripts/armor/core";
+import type { StatName } from "@scripts/combat/types";
 
 import { decodeJson } from "./decode";
 
@@ -23,6 +24,14 @@ export function tabStore(
   return store;
 }
 
+/** Currently selected stat name, or null if none selected. */
+export const $selectedStat = atom<StatName | null>(null);
+
+export function selectStat(name: StatName | null): void {
+  $selectedStat.set(name);
+  if (name !== null) $selectedSkill.set(null);
+}
+
 /** Currently selected skill name, or null if none selected. */
 export const $selectedSkill = atom<string | null>(null);
 
@@ -32,11 +41,13 @@ export const $addingSkill = atom<boolean>(false);
 export function selectSkill(name: string | null): void {
   $addingSkill.set(false);
   $selectedSkill.set(name);
+  if (name !== null) $selectedStat.set(null);
 }
 
 export function startAddingSkill(): void {
   $selectedSkill.set(null);
   $addingSkill.set(true);
+  $selectedStat.set(null);
 }
 
 /** Currently selected gear item ID (templateId or custom name), or null. */

@@ -179,93 +179,87 @@ button.label-chip:hover:not(.active) {
 .stats-container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-4);
 }
 
-.stat-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 93px;
-  flex-shrink: 0;
-  margin-bottom: 0;
-  border-radius: var(--radius);
-}
-
-/* Uses .text-label-lg pattern with accent color + bold */
-.stat-name {
-  font-size: var(--font-ui-lg);
-  font-weight: bold;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: var(--space-8);
-  padding-bottom: var(--space-4);
-  border-bottom: 1px solid var(--border-light);
-  width: 100%;
-  text-align: center;
-}
-
-.stat-row {
+/* --- Stat Card (compact, clickable) --- */
+.stat-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  padding: var(--space-2) 0;
   gap: var(--space-8);
+  width: 100%;
+  padding: var(--space-6) var(--space-8);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition:
+    border-color var(--transition-speed),
+    background var(--transition-speed);
 }
 
-/* Uses .text-label-xs pattern */
-.stat-label {
-  font-size: var(--font-ui-xs);
-  color: var(--fg-soft);
+.stat-card:hover {
+  border-color: var(--accent-muted);
+  background: var(--bg-card-hover);
+}
+
+.stat-card-label {
+  font-weight: bold;
+  color: var(--accent);
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
-/* Uses .text-value-lg pattern */
-.stat-value {
-  font-size: var(--font-ui-lg);
+.stat-card-value {
+  font-size: var(--font-ui-xl);
   font-weight: bold;
   color: var(--fg);
-  text-align: right;
 }
 
-.stat-input {
-  width: 40px;
+.stat-card-value.diminished {
+  color: var(--danger);
+}
+
+.stat-card-chevron {
+  font-size: var(--font-ui-lg);
+  letter-spacing: -4px;
+  color: var(--fg-soft);
+  flex-shrink: 0;
+  transition: color var(--transition-speed);
+}
+
+.stat-card:hover .stat-card-chevron {
+  color: var(--accent);
+}
+
+/* --- Stat Detail (bottom bar body) --- */
+.stat-detail-input {
+  width: 48px;
   padding: var(--padding-input);
   font-size: var(--font-ui);
   text-align: right;
 }
 
-.stat-row.stat-total {
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border-light);
+.stat-detail-cyber {
+  color: var(--accent);
+  font-weight: bold;
 }
 
-.stat-penalties {
-  padding-top: var(--space-4);
-  font-size: var(--font-ui);
+.stat-detail-penalty {
   color: var(--danger);
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: center;
+  font-size: var(--font-ui-sm);
 }
 
-.stat-row.stat-current {
-  background: var(--bg);
-  margin: var(--space-4) calc(-1 * var(--space-4)) calc(-1 * var(--space-4));
-  padding: var(--space-6) var(--space-4);
-  border-radius: var(--radius-sm);
+.stat-detail-current {
+  font-size: var(--font-ui-lg);
+  font-weight: bold;
+  color: var(--fg);
 }
 
-.stat-row.stat-current .stat-value {
-  font-size: var(--font-ui-xl);
-}
-
-.stat-row.stat-current.diminished .stat-value {
+.stat-detail-current.diminished {
   color: var(--danger);
 }
 
