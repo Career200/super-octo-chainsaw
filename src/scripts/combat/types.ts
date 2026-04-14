@@ -67,6 +67,18 @@ export const STAT_LABELS: Record<StatName, string> = {
   bt: "BT",
 };
 
+export const STAT_FULL_NAMES: Record<StatName, string> = {
+  int: "Intelligence",
+  ref: "Reflexes",
+  cl: "Cool",
+  tech: "Technical Ability",
+  lk: "Luck",
+  att: "Attractiveness",
+  ma: "Movement Allowance",
+  emp: "Empathy",
+  bt: "Body Type",
+};
+
 export interface StatValues {
   inherent: number;
   cyber: number;

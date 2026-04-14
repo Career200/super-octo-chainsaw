@@ -44,7 +44,7 @@ function HcRowInputs({
             value={row.value}
             onInput={(e) => {
               const val = parseFloat((e.target as HTMLInputElement).value);
-              if (!isNaN(val)) onChange(row.key, val);
+              if (!isNaN(val)) onChange(row.key, Math.max(0, val));
             }}
             min={0}
           />
@@ -140,13 +140,8 @@ export function InstallPopover({
   useEffect(() => {
     if (!open) return;
     setHcRows(initHcRows(hcRowDefs));
-    // Auto-select if exactly one non-full container
     const selectable = containers?.filter((c) => !c.full);
-    if (selectable && selectable.length === 1) {
-      setSelectedContainer(selectable[0].instanceId);
-    } else {
-      setSelectedContainer(null);
-    }
+    setSelectedContainer(selectable?.[0]?.instanceId ?? null);
   }, [open]);
 
   const updateHc = (key: string, value: number) => {
@@ -161,7 +156,8 @@ export function InstallPopover({
     selectedContainer != null &&
     containers?.find((c) => c.instanceId === selectedContainer)?.installed !==
       false;
-  const showHcRows = hasContainer && (selectedIsInstalled || !containers);
+  const showHcRows =
+    !containers || selectedContainer == null || selectedIsInstalled;
 
   const buildHcMap = () => {
     const m: Record<string, number> = {};

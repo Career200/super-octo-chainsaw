@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/preact";
 
 import { useFormState } from "@components/charsheet/shared";
-import { STAT_LABELS, type StatName } from "@scripts/combat/types";
+import { STAT_FULL_NAMES, STAT_LABELS, type StatName } from "@scripts/combat/types";
 import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
 import { SKILL_CATALOG } from "@scripts/skills/catalog";
 import {
@@ -38,7 +38,7 @@ function BottomBarStat({
   statName,
 }: Props & { statName: StatName }) {
   const values = useStore(STAT_STORES[statName]);
-  const fullName = STAT_LABELS[statName];
+  const fullName = `${STAT_FULL_NAMES[statName]} (${STAT_LABELS[statName]})`;
 
   return (
     <BottomBarShell

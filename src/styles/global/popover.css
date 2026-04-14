@@ -55,9 +55,14 @@
   color: var(--fg);
 }
 
-.popover-btn-confirm:hover {
+.popover-btn-confirm:hover:not(:disabled) {
   background: var(--accent);
   color: #000;
+}
+
+.popover-btn-confirm:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .popover-danger .popover-btn-confirm {
