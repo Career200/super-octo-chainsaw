@@ -235,7 +235,11 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "2",
     "Stops toxic gases, fumes. 70% effective.",
-    { cost: 60, availability: "C", majorEffect: "+4 Saves vs poison/gas/toxins" },
+    {
+      cost: 60,
+      availability: "C",
+      majorEffect: "+4 Saves vs poison/gas/toxins",
+    },
   ),
   "gill-implant": c(
     "gill-implant",
@@ -289,7 +293,11 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "2d6",
     "+1 REF for 1d6+2 turns, 3× per day.",
-    { cost: 400, availability: "P", majorEffect: "Toggle: +1 REF, 1d6+2 turns, 3×/day" },
+    {
+      cost: 400,
+      availability: "P",
+      majorEffect: "Toggle: +1 REF, 1d6+2 turns, 3×/day",
+    },
   ),
   "motion-detector": c(
     "motion-detector",
@@ -361,7 +369,11 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "1d6",
     "Can mimic any recorded sound (60%), up to 10 sounds.",
-    { cost: 600, availability: "C", majorEffect: "+4 Disguise (voice mimicry)" },
+    {
+      cost: 600,
+      availability: "C",
+      majorEffect: "+4 Disguise (voice mimicry)",
+    },
   ),
   audiovox: c(
     "audiovox",
@@ -507,7 +519,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "See heat patterns and thermal signatures. Allows sight in total darkness via heat.",
-    { cost: 200, availability: "C", containerCategory: "optics", minorEffect: "Infrared/thermal vision" },
+    {
+      cost: 200,
+      availability: "C",
+      containerCategory: "optics",
+      minorEffect: "Infrared/thermal vision",
+    },
   ),
   "low-lite": c(
     "low-lite",
@@ -516,7 +533,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Enhanced light amplification. See in near-total darkness (requires some light source).",
-    { cost: 200, availability: "C", containerCategory: "optics", minorEffect: "Low-light vision" },
+    {
+      cost: 200,
+      availability: "C",
+      containerCategory: "optics",
+      minorEffect: "Low-light vision",
+    },
   ),
   "image-enhance": c(
     "image-enhance",
@@ -525,7 +547,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Sharpens and clarifies visual data. +2 to Awareness for sight-based perception.",
-    { cost: 300, availability: "C", containerCategory: "optics", majorEffect: "+2 Awareness/Notice (sight)" },
+    {
+      cost: 300,
+      availability: "C",
+      containerCategory: "optics",
+      majorEffect: "+2 Awareness/Notice (sight)",
+    },
   ),
   "targeting-scope": c(
     "targeting-scope",
@@ -534,7 +561,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Crosshair display with range-finding. +1 to ranged attacks.",
-    { cost: 400, availability: "E", containerCategory: "optics", majorEffect: "+1 ranged attacks" },
+    {
+      cost: 400,
+      availability: "E",
+      containerCategory: "optics",
+      majorEffect: "+1 ranged attacks",
+    },
   ),
   "anti-dazzle": c(
     "anti-dazzle",
@@ -543,7 +575,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Automatic polarization filter. Immunity to flash and dazzle effects.",
-    { cost: 200, availability: "C", containerCategory: "optics", majorEffect: "Immune to flash/dazzle" },
+    {
+      cost: 200,
+      availability: "C",
+      containerCategory: "optics",
+      majorEffect: "Immune to flash/dazzle",
+    },
   ),
   "micro-optics": c(
     "micro-optics",
@@ -552,7 +589,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Microscopic magnification (up to 400\u00D7). Useful for electronics work, forgery, and medical tasks.",
-    { cost: 150, availability: "C", containerCategory: "optics", minorEffect: "400\u00D7 magnification" },
+    {
+      cost: 150,
+      availability: "C",
+      containerCategory: "optics",
+      minorEffect: "400\u00D7 magnification",
+    },
   ),
   dartgun: c(
     "dartgun",
@@ -561,7 +603,13 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Concealed single-shot dartgun in cyberoptic. 1 meter range, poison/drug dart. 1P damage.",
-    { cost: 200, availability: "P", containerCategory: "optics", slotCost: 2, majorEffect: "Concealed dartgun (1m, 1P, drug/poison)" },
+    {
+      cost: 200,
+      availability: "P",
+      containerCategory: "optics",
+      slotCost: 2,
+      majorEffect: "Concealed dartgun (1m, 1P, drug/poison)",
+    },
   ),
   teleoptics: c(
     "teleoptics",
@@ -570,7 +618,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Telescopic vision up to 800m. Can ID faces at 400m.",
-    { cost: 150, availability: "C", containerCategory: "optics", minorEffect: "Telescopic vision 800m" },
+    {
+      cost: 150,
+      availability: "C",
+      containerCategory: "optics",
+      minorEffect: "Telescopic vision 800m",
+    },
   ),
 
   // === Audio ===
@@ -608,7 +661,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Enhanced audio sensitivity. +1 to Awareness for hearing-based perception.",
-    { cost: 150, availability: "C", containerCategory: "audio", majorEffect: "+1 Awareness/Notice (hearing)" },
+    {
+      cost: 150,
+      availability: "C",
+      containerCategory: "audio",
+      majorEffect: "+1 Awareness/Notice (hearing)",
+    },
   ),
   "radio-link": c(
     "radio-link",
@@ -644,7 +702,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Detects surveillance devices (bugs, taps) within 6m. 60% base effectiveness.",
-    { cost: 200, availability: "E", containerCategory: "audio", majorEffect: "Bug detect 6m, 60%" },
+    {
+      cost: 200,
+      availability: "E",
+      containerCategory: "audio",
+      majorEffect: "Bug detect 6m, 60%",
+    },
   ),
   "voice-stress-analyzer": c(
     "voice-stress-analyzer",
@@ -653,7 +716,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Detects stress patterns in speech. +2 Human Perception for lie detection.",
-    { cost: 200, availability: "E", containerCategory: "audio", majorEffect: "+2 Human Perception (lie detection)" },
+    {
+      cost: 200,
+      availability: "E",
+      containerCategory: "audio",
+      majorEffect: "+2 Human Perception (lie detection)",
+    },
   ),
   "sound-editing": c(
     "sound-editing",
@@ -662,7 +730,13 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Filter, enhance, and edit sounds in real-time. Isolate specific sounds from background noise.",
-    { cost: 150, availability: "C", containerCategory: "audio", majorEffect: "+2 sound-related Awareness, real-time sound editing allows zero-in on a particular sound" },
+    {
+      cost: 150,
+      availability: "C",
+      containerCategory: "audio",
+      majorEffect:
+        "+2 sound-related Awareness, real-time sound editing allows zero-in on a particular sound",
+    },
   ),
   "enhanced-hearing-range": c(
     "enhanced-hearing-range",
@@ -671,7 +745,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Extends hearing range into ultra/subsonic frequencies.",
-    { cost: 150, availability: "C", containerCategory: "audio", minorEffect: "Ultra/subsonic hearing" },
+    {
+      cost: 150,
+      availability: "C",
+      containerCategory: "audio",
+      minorEffect: "Ultra/subsonic hearing",
+    },
   ),
   "level-dampener": c(
     "level-dampener",
@@ -680,7 +759,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Automatic sound level adjustment. Protects against loud sounds, sonic attacks, and flashbangs (audio component).",
-    { cost: 200, availability: "C", containerCategory: "audio", majorEffect: "Immune to sonic stun/deafening" },
+    {
+      cost: 200,
+      availability: "C",
+      containerCategory: "audio",
+      majorEffect: "Immune to sonic stun/deafening",
+    },
   ),
   "radar-detector-audio": c(
     "radar-detector-audio",
@@ -689,7 +773,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Detects radar emissions directed at you. 50% effectiveness.",
-    { cost: 200, availability: "E", containerCategory: "audio", minorEffect: "Radar emission detect, 50%" },
+    {
+      cost: 200,
+      availability: "E",
+      containerCategory: "audio",
+      minorEffect: "Radar emission detect, 50%",
+    },
   ),
   "homing-tracer": c(
     "homing-tracer",
@@ -698,7 +787,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "0.5",
     "Track a planted homing beacon via cyberaudio. 1km range.",
-    { cost: 200, availability: "E", containerCategory: "audio", minorEffect: "Homing beacon tracking 1km" },
+    {
+      cost: 200,
+      availability: "E",
+      containerCategory: "audio",
+      minorEffect: "Homing beacon tracking 1km",
+    },
   ),
   "tight-beam-radio": c(
     "tight-beam-radio",
@@ -768,13 +862,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "cyber-armor",
     "standalone",
     "2d6",
-    "Woven armor fibers grown into the skin. SP 12 all body parts. Spot difficulty: Difficult (20). REF -1.",
+    "Woven armor fibers grown into the skin. SP 12 all body parts. Spot difficulty: Difficult (20). 50% chance of -1 ATT — roll when installed and set manually.",
     {
       cost: 2000,
       availability: "P",
       armorTemplateId: "skinweave_12",
       skinweave: true,
-      statBonus: { ref: -1 },
     },
   ),
   "cyber-skinweave-14": c(
@@ -783,13 +876,13 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "cyber-armor",
     "standalone",
     "2d6+2",
-    "Woven armor fibers grown into the skin. SP 14 all body parts. Spot difficulty: Difficult (20). REF -2, ATT -1.",
+    "Woven armor fibers grown into the skin. SP 14 all body parts. Spot difficulty: Difficult (20). ATT -1.",
     {
       cost: 2400,
       availability: "P",
       armorTemplateId: "skinweave_14",
       skinweave: true,
-      statBonus: { ref: -2, att: -1 },
+      statBonus: { att: -1 },
     },
   ),
   "cyber-skinweave-16": c(
@@ -798,13 +891,13 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "cyber-armor",
     "standalone",
     "2d6+4",
-    "Woven armor fibers grown into the skin. SP 16 all body parts. Spot difficulty: Average (15). REF -3, ATT -2.",
+    "Woven armor fibers grown into the skin. SP 16 all body parts. Spot difficulty: Average (15). ATT -2.",
     {
       cost: 2750,
       availability: "R",
       armorTemplateId: "skinweave_16",
       skinweave: true,
-      statBonus: { ref: -3, att: -2 },
+      statBonus: { att: -2 },
     },
   ),
   "cyber-skin-armor": c(
@@ -892,7 +985,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Direct neural interface to a smartchipped weapon. Provides targeting data overlay. Requires interface plugs.",
-    { cost: 100, availability: "C", containerCategory: "neuralware", majorEffect: "+2 Handgun/SMG/Rifle w/ smartchipped weapon" },
+    {
+      cost: 100,
+      availability: "C",
+      containerCategory: "neuralware",
+      majorEffect: "+2 Handgun/SMG/Rifle w/ smartchipped weapon",
+    },
   ),
   "vehicle-link": c(
     "vehicle-link",
@@ -910,7 +1008,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Direct neural link for tech/machine operations. Requires interface plugs.",
-    { cost: 100, availability: "C", containerCategory: "neuralware", majorEffect: "+2 CyberTech/Electronics/Basic Tech when linked" },
+    {
+      cost: 100,
+      availability: "C",
+      containerCategory: "neuralware",
+      majorEffect: "+2 CyberTech/Electronics/Basic Tech when linked",
+    },
   ),
   "dataterm-link": c(
     "dataterm-link",
@@ -928,7 +1031,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1",
     "Enhanced reflex co-processor. +1 initiative.",
-    { cost: 500, availability: "E", containerCategory: "neuralware", initiativeBonus: 1 },
+    {
+      cost: 500,
+      availability: "E",
+      containerCategory: "neuralware",
+      initiativeBonus: 1,
+    },
   ),
   "kerenzikov-lv2": c(
     "kerenzikov-lv2",
@@ -937,7 +1045,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Advanced reflex co-processor. +2 initiative.",
-    { cost: 1000, availability: "P", containerCategory: "neuralware", initiativeBonus: 2 },
+    {
+      cost: 1000,
+      availability: "P",
+      containerCategory: "neuralware",
+      initiativeBonus: 2,
+    },
   ),
   "sandevistan-boost": c(
     "sandevistan-boost",
@@ -946,7 +1059,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "1d6",
     "Adrenaline-boosted speed enhancement. +3 initiative for one turn, usable once per day.",
-    { cost: 1600, availability: "R", containerCategory: "neuralware", majorEffect: "Toggle: +3 Initiative, 1 turn, 1\u00D7/day" },
+    {
+      cost: 1600,
+      availability: "R",
+      containerCategory: "neuralware",
+      majorEffect: "Toggle: +3 Initiative, 1 turn, 1\u00D7/day",
+    },
   ),
   "tactile-boost": c(
     "tactile-boost",
@@ -955,7 +1073,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Enhanced tactile sensitivity. Allows detection by touch at +2.",
-    { cost: 100, availability: "C", containerCategory: "neuralware", majorEffect: "+2 Awareness/Notice (touch)" },
+    {
+      cost: 100,
+      availability: "C",
+      containerCategory: "neuralware",
+      majorEffect: "+2 Awareness/Notice (touch)",
+    },
   ),
   "olfactory-boost": c(
     "olfactory-boost",
@@ -964,7 +1087,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Enhanced sense of smell. Allows scent-based detection at +2.",
-    { cost: 100, availability: "C", containerCategory: "neuralware", majorEffect: "+2 Awareness/Notice (scent)" },
+    {
+      cost: 100,
+      availability: "C",
+      containerCategory: "neuralware",
+      majorEffect: "+2 Awareness/Notice (scent)",
+    },
   ),
 
   // === Cyberweapons ===
@@ -984,7 +1112,11 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "3d6",
     "Cybermetallic fangs with tiny drug injectors. 1d6 damage + drug/poison delivery.",
-    { cost: 200, availability: "P", majorEffect: "Melee: 1d6 + drug/poison bite" },
+    {
+      cost: 200,
+      availability: "P",
+      majorEffect: "Melee: 1d6 + drug/poison bite",
+    },
   ),
   rippers: c(
     "rippers",
@@ -1002,7 +1134,11 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "3d6+1",
     'Heavy, reinforced claws that extend from the back of the hand (3" length). 3d6 damage. Cannot be concealed.',
-    { cost: 600, availability: "R", majorEffect: "Melee: 3d6 claws, not concealable" },
+    {
+      cost: 600,
+      availability: "R",
+      majorEffect: "Melee: 3d6 claws, not concealable",
+    },
   ),
   "big-knucks": c(
     "big-knucks",
@@ -1020,7 +1156,11 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "3d6+1",
     "Monofilament whip implanted in the finger. 4ft range. 2d6 damage. Can be concealed in finger.",
-    { cost: 700, availability: "R", majorEffect: "Melee: 2d6 monowhip, 4ft reach" },
+    {
+      cost: 700,
+      availability: "R",
+      majorEffect: "Melee: 2d6 monowhip, 4ft reach",
+    },
   ),
   cybersnake: c(
     "cybersnake",
@@ -1029,7 +1169,11 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "standalone",
     "2d6",
     'Articulated metal snake (24"), hidden in throat. Bite attack with drug/poison delivery, or mount small gun/camera.',
-    { cost: 1200, availability: "R", majorEffect: "Throat-mounted cybersnake, poison/weapon" },
+    {
+      cost: 1200,
+      availability: "R",
+      majorEffect: "Throat-mounted cybersnake, poison/weapon",
+    },
   ),
 
   // === Cyberlimbs ===
@@ -1049,7 +1193,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "container",
     "2d6",
     "Full replacement cybernetic leg. SDP 20. Can mount options. +4 to leap distance.",
-    { cost: 2000, availability: "C", maxSlots: 3, minorEffect: "+4 leap distance" },
+    {
+      cost: 2000,
+      availability: "C",
+      maxSlots: 3,
+      minorEffect: "+4 leap distance",
+    },
   ),
   "superchrome-cover": c(
     "superchrome-cover",
@@ -1067,7 +1216,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "3",
     "Hydraulic power boosters for a cyberlimb. +3 damage in crushing grip, +2 to Feats of Strength with that limb.",
-    { cost: 200, availability: "P", containerCategory: "cyberlimbs", majorEffect: "+3 crush damage, +2 STR feats (limb)" },
+    {
+      cost: 200,
+      availability: "P",
+      containerCategory: "cyberlimbs",
+      majorEffect: "+3 crush damage, +2 STR feats (limb)",
+    },
   ),
   "thickened-myomar": c(
     "thickened-myomar",
@@ -1076,7 +1230,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Enhanced artificial muscle fiber. +2 damage for melee attacks with this limb.",
-    { cost: 250, availability: "P", containerCategory: "cyberlimbs", majorEffect: "+2 melee damage (limb)" },
+    {
+      cost: 250,
+      availability: "P",
+      containerCategory: "cyberlimbs",
+      majorEffect: "+2 melee damage (limb)",
+    },
   ),
   "quick-change-mount": c(
     "quick-change-mount",
@@ -1094,7 +1253,12 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Hand replaced with built-in tool set (screwdriver, wrench, soldering iron, etc.). +2 to relevant tech tasks.",
-    { cost: 200, availability: "C", containerCategory: "cyberlimbs", majorEffect: "+2 Basic Tech (tool hand)" },
+    {
+      cost: 200,
+      availability: "C",
+      containerCategory: "cyberlimbs",
+      majorEffect: "+2 Basic Tech (tool hand)",
+    },
   ),
   "buzz-hand": c(
     "buzz-hand",
@@ -1103,6 +1267,11 @@ export const CYBER_CATALOG: Record<string, CyberTemplate> = {
     "option",
     "2",
     "Hand replaced with high-speed circular saw. 2d6 damage in melee. Not subtle.",
-    { cost: 300, availability: "P", containerCategory: "cyberlimbs", majorEffect: "Melee: 2d6 buzzsaw hand" },
+    {
+      cost: 300,
+      availability: "P",
+      containerCategory: "cyberlimbs",
+      majorEffect: "Melee: 2d6 buzzsaw hand",
+    },
   ),
 };

@@ -4,6 +4,7 @@ import { useRef } from "preact/hooks";
 import type { StatName } from "@scripts/combat/stats";
 import { STAT_LABELS } from "@scripts/combat/stats";
 import type { SkillStat } from "@scripts/skills/catalog";
+import { $cyberEffects } from "@stores/cyber-effects";
 import type { SkillEntry } from "@stores/skills";
 import {
   $allSkills,
@@ -67,7 +68,15 @@ function StatLabel({ stat }: { stat: StatName }) {
   return <span class="skill-group-stat-value">{label}</span>;
 }
 
-function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
+function SkillRow({
+  name,
+  entry,
+  cyberBonus = 0,
+}: {
+  name: string;
+  entry: SkillEntry;
+  cyberBonus?: number;
+}) {
   const selected = useStore($selectedSkill);
   const isSelected = selected === name;
   const inputRef = useRef<HTMLInputElement>(null);
@@ -98,6 +107,11 @@ function SkillRow({ name, entry }: { name: string; entry: SkillEntry }) {
         }}
       />
       <span class="skill-name">{name}</span>
+      {cyberBonus !== 0 && (
+        <span class="skill-cyber-bonus">
+          {cyberBonus > 0 ? `+${cyberBonus}` : cyberBonus}
+        </span>
+      )}
     </div>
   );
 }
@@ -109,6 +123,7 @@ function SkillGroup({
   collapsed,
   onToggle,
   stablePicks,
+  cyberBonuses,
 }: {
   groupKey: string;
   label?: string;
@@ -116,6 +131,7 @@ function SkillGroup({
   collapsed: boolean;
   onToggle: () => void;
   stablePicks: Map<string, string>;
+  cyberBonuses: Record<string, number>;
 }) {
   const topSkill = collapsed
     ? pickTopSkill(entries, stablePicks, groupKey)
@@ -137,7 +153,11 @@ function SkillGroup({
       </div>
       {collapsed ? (
         <>
-          <SkillRow name={topSkill![0]} entry={topSkill![1]} />
+          <SkillRow
+            name={topSkill![0]}
+            entry={topSkill![1]}
+            cyberBonus={cyberBonuses[topSkill![0]] ?? 0}
+          />
           {entries.length > 1 && (
             <div class="skill-group-more" onClick={onToggle}>
               +{entries.length - 1} more
@@ -146,7 +166,12 @@ function SkillGroup({
         </>
       ) : (
         entries.map(([name, entry]) => (
-          <SkillRow key={name} name={name} entry={entry} />
+          <SkillRow
+            key={name}
+            name={name}
+            entry={entry}
+            cyberBonus={cyberBonuses[name] ?? 0}
+          />
         ))
       )}
     </div>
@@ -172,12 +197,14 @@ function GroupedSkillsList({
   collapsed,
   onToggle,
   stablePicks,
+  cyberBonuses,
   emptyMessage,
 }: {
   skills: [string, SkillEntry][];
   collapsed: Set<string>;
   onToggle: (key: string) => void;
   stablePicks: Map<string, string>;
+  cyberBonuses: Record<string, number>;
   emptyMessage?: string;
 }) {
   if (skills.length === 0) {
@@ -197,6 +224,7 @@ function GroupedSkillsList({
             collapsed={collapsed.has(stat)}
             onToggle={() => onToggle(stat)}
             stablePicks={stablePicks}
+            cyberBonuses={cyberBonuses}
           />
         );
       })}
@@ -208,6 +236,7 @@ function GroupedSkillsList({
           collapsed={collapsed.has("ma-group")}
           onToggle={() => onToggle("ma-group")}
           stablePicks={stablePicks}
+          cyberBonuses={cyberBonuses}
         />
       )}
     </div>
@@ -222,6 +251,7 @@ export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
   const allSkills = useStore($allSkills);
   const customSkills = useStore($customSkills);
   const mySkills = useStore($mySkills);
+  const cyberEffects = useStore($cyberEffects);
   const { collapsed, toggle } = useCollapsibleGroups(new Set(["special"]));
   const stablePicks = useRef(new Map<string, string>());
 
@@ -249,6 +279,7 @@ export const SkillsList = ({ filter = "catalog" }: SkillsListProps) => {
         collapsed={collapsed}
         onToggle={toggle}
         stablePicks={stablePicks.current}
+        cyberBonuses={cyberEffects.skillBonuses}
         emptyMessage={
           filter === "my"
             ? "Set skill levels in the Catalog tab to see them here."

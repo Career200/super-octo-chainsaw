@@ -1,9 +1,14 @@
 import { useStore } from "@nanostores/preact";
 
 import { useFormState } from "@components/charsheet/shared";
-import { STAT_FULL_NAMES, STAT_LABELS, type StatName } from "@scripts/combat/stats";
+import {
+  STAT_FULL_NAMES,
+  STAT_LABELS,
+  type StatName,
+} from "@scripts/combat/stats";
 import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
 import { SKILL_CATALOG } from "@scripts/skills/catalog";
+import { $cyberEffects } from "@stores/cyber-effects";
 import {
   $allSkills,
   addSkill,
@@ -55,6 +60,7 @@ function BottomBarSkill({ expanded, onToggle }: Props) {
   const skillName = useStore($selectedSkill);
   const adding = useStore($addingSkill);
   const allSkills = useStore($allSkills);
+  const cyberEffects = useStore($cyberEffects);
   const entry = skillName ? allSkills[skillName] : null;
 
   const {
@@ -162,6 +168,9 @@ function BottomBarSkill({ expanded, onToggle }: Props) {
           martialArt={martialArt}
           keyAttacks={keyAttacks}
           description={description}
+          cyberBonus={
+            skillName ? (cyberEffects.skillBonuses[skillName] ?? 0) : 0
+          }
         />
       ) : null}
     </BottomBarItemShell>

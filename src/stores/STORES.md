@@ -26,10 +26,12 @@ Actions: `takeDamage`, `heal`, `setDamage`, `setStabilized`, `syncStunToPhysical
 ### `$stats` (stats.ts)
 
 ```
-{ [ref|int|cl|tech|lk|att|ma|emp|bt]: { inherent: number, cyber: number } }
+{ [ref|int|cl|tech|lk|att|ma|emp|bt]: { inherent: number, bonus: number } }
 ```
 
-Actions: `setStatInherent`, `setStatCyber`
+`bonus` is user-controlled (drugs, GM buffs). Auto-derived cyber bonus comes from `$cyberEffects.statBonuses`.
+
+Actions: `setStatInherent`, `setStatBonus`
 
 ### `$customArmorTemplates` (armor/)
 
@@ -350,13 +352,16 @@ Mutually exclusive with `$selectedGear` — use `startAddingGear()` to set.
 ### Per-stat: `$REF`, `$INT`, `$CL`, `$TECH`, `$LK`, `$ATT`, `$MA`, `$EMP`, `$BT` (stats.ts)
 
 ```
-{ inherent, cyber, total, current, penalties: string[] }
+{ inherent, cyber, bonus, override?, total, current, penalties: string[] }
 ```
 
-- `total` = inherent + cyber
+- `cyber` = auto-derived from `$cyberEffects.statBonuses`
+- `bonus` = user-controlled misc (drugs, GM buffs)
+- `override` = set when `$cyberEffects.statOverrides` has a value (e.g. Linear Frame)
+- `total` = `(override ?? inherent + cyber) + bonus`
 - `current` = total - wound penalties - EV penalty (REF only)
-- REF, INT, CL, TECH, MA: affected by wounds
-- REF: also affected by `$armorEffects.ev`
+- REF, INT, CL, TECH, MA: affected by wounds. REF: also affected by `$armorEffects.ev`
+- All stats depend on `$cyberEffects`
 
 ### `$bodyType` (stats.ts)
 
@@ -389,9 +394,10 @@ Sum of all skill levels. Depends on: `$allSkills`
 { int, awarenessNotice, combatSense, total, totalCombat }
 ```
 
-- `total` = INT.current + skills["Awareness/Notice"].level
-- `totalCombat` = total + skills["Combat Sense"].level
-- Depends on: `$INT`, `$allSkills`
+- `total` = INT.current + effectiveLevel("Awareness/Notice")
+- `totalCombat` = total + effectiveLevel("Combat Sense")
+- `effectiveLevel` = `skill.level + ($cyberEffects.skillBonuses[name] ?? 0)`
+- Depends on: `$INT`, `$allSkills`, `$cyberEffects`
 
 ### `$skillsByStat` (skills.ts)
 
@@ -571,6 +577,7 @@ $health ──┬──▸ stat penalties (REF, INT, CL, TECH, MA)
           └──▸ $bodyType.save
 
 $stats ────▸ all 9 computed stat stores ──▸ $bodyType
+$cyberEffects ──▸ all 9 computed stat stores (cyberBonus / cyberOverride)
 
 $customArmorTemplates ──▸ $customArmorList
                        ──▸ resolveTemplate() (used by $ownedArmor load, getArmorPiece, acquireArmor, setArmorSP)
@@ -618,7 +625,7 @@ $selectedGear ◂──▸ $addingGear (mutually exclusive via selectGear/startA
 
 $selectedSkill ◂──▸ $addingSkill (mutually exclusive via selectSkill/startAddingSkill)
 
-$skills ──┬──▸ $allSkills ──┬──▸ $awareness (+ $INT)
+$skills ──┬──▸ $allSkills ──┬──▸ $awareness (+ $INT + $cyberEffects)
           │                 ├──▸ $skillsByStat
           │                 ├──▸ $skillTotal
           │                 ├──▸ $meleeSkills

@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/preact";
 
-import { $allSkills } from "@stores/skills";
+import { $cyberEffects } from "@stores/cyber-effects";
+import { $allSkills, getEffectiveSkillLevel } from "@stores/skills";
 import { $REF } from "@stores/stats";
 import { $allOwnedWeapons } from "@stores/weapons";
 
@@ -10,6 +11,7 @@ export default function RangedPanel() {
   const weapons = useStore($allOwnedWeapons);
   const skills = useStore($allSkills);
   const ref = useStore($REF);
+  const cyber = useStore($cyberEffects);
 
   const rangedWeapons = weapons.filter((w) => !w.melee);
 
@@ -30,7 +32,11 @@ export default function RangedPanel() {
             key={weapon.id}
             weapon={weapon}
             refCurrent={ref.current}
-            skillLevel={skillEntry?.level ?? 0}
+            skillLevel={getEffectiveSkillLevel(
+              skillEntry?.level ?? 0,
+              weapon.skill,
+              cyber,
+            )}
             skillName={weapon.skill}
           />
         );

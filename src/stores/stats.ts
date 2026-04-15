@@ -9,24 +9,31 @@ import {
   getDeathSave,
   getStunSavePenalty,
 } from "@scripts/combat/body";
-import { calculateStat, type StatName, type StatsState, type StatValues } from "@scripts/combat/stats";
+import {
+  calculateStat,
+  type StatName,
+  type StatsState,
+  type StatValues,
+  type WoundPenaltyType,
+} from "@scripts/combat/stats";
 import { getWoundLevel } from "@scripts/combat/wounds";
 
 import { $armorEffects } from "./armor/effects";
+import { $cyberEffects } from "./cyber-effects";
 import { decodeJson } from "./decode";
 import { $health } from "./health";
 
 function defaultState(): StatsState {
   return {
-    ref: { inherent: 8, cyber: 0 },
-    int: { inherent: 8, cyber: 0 },
-    cl: { inherent: 8, cyber: 0 },
-    tech: { inherent: 8, cyber: 0 },
-    lk: { inherent: 8, cyber: 0 },
-    att: { inherent: 8, cyber: 0 },
-    ma: { inherent: 8, cyber: 0 },
-    emp: { inherent: 8, cyber: 0 },
-    bt: { inherent: 8, cyber: 0 },
+    ref: { inherent: 8, bonus: 0 },
+    int: { inherent: 8, bonus: 0 },
+    cl: { inherent: 8, bonus: 0 },
+    tech: { inherent: 8, bonus: 0 },
+    lk: { inherent: 8, bonus: 0 },
+    att: { inherent: 8, bonus: 0 },
+    ma: { inherent: 8, bonus: 0 },
+    emp: { inherent: 8, bonus: 0 },
+    bt: { inherent: 8, bonus: 0 },
   };
 }
 
@@ -41,75 +48,33 @@ export const $stats = persistentAtom<StatsState>(
 
 // --- Computed stats ---
 
-export const $REF = computed(
-  [$stats, $health, $armorEffects],
-  (stats, health, armorEffects): StatValues =>
-    calculateStat(stats.ref.inherent, stats.ref.cyber, health.stun, {
-      woundPenaltyType: "ref",
-      evPenalty: armorEffects.ev,
-      stabilized: health.stabilized,
-    }),
-);
+function makeStatStore(
+  key: StatName,
+  penaltyType?: WoundPenaltyType,
+  withEV?: boolean,
+): ReadableAtom<StatValues> {
+  return computed(
+    [$stats, $health, $armorEffects, $cyberEffects],
+    (stats, health, armorEffects, cyber): StatValues =>
+      calculateStat(stats[key].inherent, stats[key].bonus ?? 0, health.stun, {
+        woundPenaltyType: penaltyType,
+        evPenalty: withEV ? armorEffects.ev : 0,
+        stabilized: health.stabilized,
+        cyberBonus: cyber.statBonuses[key],
+        cyberOverride: cyber.statOverrides[key],
+      }),
+  );
+}
 
-export const $INT = computed(
-  [$stats, $health],
-  (stats, health): StatValues =>
-    calculateStat(stats.int.inherent, stats.int.cyber, health.stun, {
-      woundPenaltyType: "intcl",
-      stabilized: health.stabilized,
-    }),
-);
-
-export const $CL = computed(
-  [$stats, $health],
-  (stats, health): StatValues =>
-    calculateStat(stats.cl.inherent, stats.cl.cyber, health.stun, {
-      woundPenaltyType: "intcl",
-      stabilized: health.stabilized,
-    }),
-);
-
-export const $TECH = computed(
-  [$stats, $health],
-  (stats, health): StatValues =>
-    calculateStat(stats.tech.inherent, stats.tech.cyber, health.stun, {
-      woundPenaltyType: "intcl",
-      stabilized: health.stabilized,
-    }),
-);
-
-export const $LK = computed(
-  [$stats],
-  (stats): StatValues =>
-    // special logic later
-    calculateStat(stats.lk.inherent, stats.lk.cyber, 0),
-);
-
-export const $ATT = computed(
-  [$stats],
-  (stats): StatValues => calculateStat(stats.att.inherent, stats.att.cyber, 0),
-);
-
-export const $MA = computed(
-  [$stats, $health],
-  (stats, health): StatValues =>
-    calculateStat(stats.ma.inherent, stats.ma.cyber, health.stun, {
-      woundPenaltyType: "ref",
-      stabilized: health.stabilized,
-    }),
-);
-
-export const $EMP = computed(
-  [$stats],
-  (stats): StatValues => calculateStat(stats.emp.inherent, stats.emp.cyber, 0),
-);
-
-export const $BT = computed(
-  [$stats],
-  (stats): StatValues =>
-    // major logic later
-    calculateStat(stats.bt.inherent, stats.bt.cyber, 0),
-);
+export const $REF = makeStatStore("ref", "ref", true);
+export const $INT = makeStatStore("int", "intcl");
+export const $CL = makeStatStore("cl", "intcl");
+export const $TECH = makeStatStore("tech", "intcl");
+export const $LK = makeStatStore("lk");
+export const $ATT = makeStatStore("att");
+export const $MA = makeStatStore("ma", "ref");
+export const $EMP = makeStatStore("emp");
+export const $BT = makeStatStore("bt");
 
 export const STAT_STORES: Record<StatName, ReadableAtom<StatValues>> = {
   ref: $REF,
@@ -159,11 +124,11 @@ export function setStatInherent(stat: keyof StatsState, value: number): void {
   });
 }
 
-export function setStatCyber(stat: keyof StatsState, value: number): void {
-  const clamped = Math.max(0, Math.round(value));
+export function setStatBonus(stat: keyof StatsState, value: number): void {
+  const clamped = Math.round(value);
   const current = $stats.get();
   $stats.set({
     ...current,
-    [stat]: { ...current[stat], cyber: clamped },
+    [stat]: { ...current[stat], bonus: clamped },
   });
 }

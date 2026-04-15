@@ -44,21 +44,24 @@ export const STAT_FULL_NAMES: Record<StatName, string> = {
 export interface StatValues {
   inherent: number;
   cyber: number;
+  /** User-controlled misc bonus (drugs, GM buffs, etc.). */
+  bonus: number;
+  override?: number;
   total: number;
   current: number;
   penalties: string[];
 }
 
 export interface StatsState {
-  ref: { inherent: number; cyber: number };
-  int: { inherent: number; cyber: number };
-  cl: { inherent: number; cyber: number };
-  tech: { inherent: number; cyber: number };
-  lk: { inherent: number; cyber: number };
-  att: { inherent: number; cyber: number };
-  ma: { inherent: number; cyber: number };
-  emp: { inherent: number; cyber: number };
-  bt: { inherent: number; cyber: number };
+  ref: { inherent: number; bonus: number };
+  int: { inherent: number; bonus: number };
+  cl: { inherent: number; bonus: number };
+  tech: { inherent: number; bonus: number };
+  lk: { inherent: number; bonus: number };
+  att: { inherent: number; bonus: number };
+  ma: { inherent: number; bonus: number };
+  emp: { inherent: number; bonus: number };
+  bt: { inherent: number; bonus: number };
 }
 
 export type WoundPenaltyType = "ref" | "intcl" | "none";
@@ -67,6 +70,8 @@ export interface CalculateStatOptions {
   woundPenaltyType?: WoundPenaltyType;
   evPenalty?: number;
   stabilized?: boolean;
+  cyberBonus?: number;
+  cyberOverride?: number;
 }
 
 // --- Functions ---
@@ -143,7 +148,7 @@ export function getWoundPenalty(
 
 export function calculateStat(
   inherent: number,
-  cyber: number,
+  bonus: number,
   damage: number,
   options: CalculateStatOptions = {},
 ): StatValues {
@@ -151,9 +156,13 @@ export function calculateStat(
     woundPenaltyType = "none",
     evPenalty = 0,
     stabilized = false,
+    cyberBonus = 0,
+    cyberOverride,
   } = options;
 
-  const total = Math.max(0, inherent + cyber);
+  // Override replaces inherent+cyber; user bonus still stacks on top.
+  const base = cyberOverride != null ? cyberOverride : inherent + cyberBonus;
+  const total = Math.max(0, base + bonus);
   const penalties: string[] = [];
 
   const woundLevel = damage > 0 ? getWoundLevel(damage) : null;
@@ -177,7 +186,9 @@ export function calculateStat(
 
   return {
     inherent,
-    cyber,
+    cyber: cyberBonus,
+    bonus,
+    ...(cyberOverride != null ? { override: cyberOverride } : {}),
     total,
     current,
     penalties,

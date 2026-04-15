@@ -1,11 +1,13 @@
 import { useStore } from "@nanostores/preact";
 
 import { getDamageModifier } from "@scripts/combat/body";
+import { $cyberEffects } from "@stores/cyber-effects";
 import {
   $allSkills,
   $meleeSkills,
   $myMartialArts,
   $resolvedUnarmedSkill,
+  getEffectiveSkillLevel,
   setUnarmedSkill,
 } from "@stores/skills";
 import { $BT, $REF } from "@stores/stats";
@@ -28,13 +30,18 @@ export default function MeleePanel() {
   } = useStore($resolvedUnarmedSkill);
   const ref = useStore($REF);
   const bt = useStore($BT);
+  const cyber = useStore($cyberEffects);
 
   const meleeWeapons = weapons.filter((w) => w.melee);
   const dm = getDamageModifier(bt.current);
   const dmSign = dm >= 0 ? `+${dm}` : `${dm}`;
 
   const brawlingEntry = skills["Brawling"];
-  const selectedLevel = selectedEntry?.level ?? 0;
+  const selectedLevel = getEffectiveSkillLevel(
+    selectedEntry?.level ?? 0,
+    selectedName,
+    cyber,
+  );
   const strikeBonus = (isMaSelected && selectedEntry?.keyAttacks?.strike) || 0;
   const kickBonus = (isMaSelected && selectedEntry?.keyAttacks?.kick) || 0;
 
@@ -85,6 +92,7 @@ export default function MeleePanel() {
           dmSign={dmSign}
           meleeSkills={meleeSkills}
           refCurrent={ref.current}
+          cyberBonuses={cyber.skillBonuses}
         />
       ))}
 
@@ -97,7 +105,13 @@ export default function MeleePanel() {
               onClick={() => setUnarmedSkill("Brawling")}
             >
               <span class="label-chip-sub">Brawling</span>
-              <span class="label-chip-main">{brawlingEntry?.level ?? 0}</span>
+              <span class="label-chip-main">
+                {getEffectiveSkillLevel(
+                  brawlingEntry?.level ?? 0,
+                  "Brawling",
+                  cyber,
+                )}
+              </span>
             </button>
             {myMartialArts.map(([name, entry]) => (
               <button
@@ -106,7 +120,9 @@ export default function MeleePanel() {
                 onClick={() => setUnarmedSkill(name)}
               >
                 <span class="label-chip-sub">{name}</span>
-                <span class="label-chip-main">{entry.level}</span>
+                <span class="label-chip-main">
+                  {getEffectiveSkillLevel(entry.level, name, cyber)}
+                </span>
               </button>
             ))}
           </div>

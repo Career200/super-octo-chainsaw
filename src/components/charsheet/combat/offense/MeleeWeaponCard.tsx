@@ -7,6 +7,7 @@ interface Props {
   dmSign: string;
   meleeSkills: [string, SkillEntry][];
   refCurrent: number;
+  cyberBonuses?: Record<string, number>;
 }
 
 export const MeleeWeaponCard = ({
@@ -14,10 +15,12 @@ export const MeleeWeaponCard = ({
   dmSign,
   meleeSkills,
   refCurrent,
+  cyberBonuses = {},
 }: Props) => {
   const selected = weapon.meleeSkill ?? weapon.skill;
   const selectedEntry = meleeSkills.find(([name]) => name === selected)?.[1];
-  const skillLevel = selectedEntry?.level ?? 0;
+  const skillLevel =
+    (selectedEntry?.level ?? 0) + (cyberBonuses[selected] ?? 0);
   const isMa = selectedEntry?.martialArt ?? false;
   const total = refCurrent + skillLevel + weapon.wa;
 
@@ -39,7 +42,9 @@ export const MeleeWeaponCard = ({
               onClick={() => setMeleeSkill(weapon.id, name)}
             >
               <span class="label-chip-sub">{name}</span>
-              <span class="label-chip-main">{entry.level}</span>
+              <span class="label-chip-main">
+                {entry.level + (cyberBonuses[name] ?? 0)}
+              </span>
             </button>
           ))}
         </div>

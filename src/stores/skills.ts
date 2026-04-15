@@ -10,6 +10,7 @@ import {
   SKILL_CATALOG,
 } from "@scripts/skills/catalog";
 
+import { $cyberEffects, type CyberEffects } from "./cyber-effects";
 import { $INT } from "./stats";
 
 export interface SkillEntry {
@@ -36,6 +37,14 @@ export const $skills = persistentAtom<SkillsState>(
 
 export function isCustomSkill(name: string): boolean {
   return !(name in SKILL_CATALOG);
+}
+
+export function getEffectiveSkillLevel(
+  level: number,
+  name: string,
+  effects: CyberEffects,
+): number {
+  return level + (effects.skillBonuses[name] ?? 0);
 }
 
 // --- Actions ---
@@ -177,17 +186,28 @@ export const $allSkills = computed($skills, (stored) => {
 
 // --- Computed Stores ---
 
-export const $awareness = computed([$INT, $allSkills], (int, skills) => {
-  const awn = skills[AWARENESS_SKILL]?.level ?? 0;
-  const cs = skills[COMBAT_SENSE_SKILL]?.level ?? 0;
-  return {
-    int: int.current,
-    awarenessNotice: awn,
-    combatSense: cs,
-    total: int.current + awn,
-    totalCombat: int.current + awn + cs,
-  };
-});
+export const $awareness = computed(
+  [$INT, $allSkills, $cyberEffects],
+  (int, skills, effects) => {
+    const awn = getEffectiveSkillLevel(
+      skills[AWARENESS_SKILL]?.level ?? 0,
+      AWARENESS_SKILL,
+      effects,
+    );
+    const cs = getEffectiveSkillLevel(
+      skills[COMBAT_SENSE_SKILL]?.level ?? 0,
+      COMBAT_SENSE_SKILL,
+      effects,
+    );
+    return {
+      int: int.current,
+      awarenessNotice: awn,
+      combatSense: cs,
+      total: int.current + awn,
+      totalCombat: int.current + awn + cs,
+    };
+  },
+);
 
 export const $skillTotal = computed($allSkills, (skills) => {
   let total = 0;

@@ -96,6 +96,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+}
+
+.skill-cyber-bonus {
+  font-size: var(--font-ui-sm);
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-left: var(--space-4);
 }
 
 .skill-input {

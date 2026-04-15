@@ -10,6 +10,7 @@ export function SkillDetail({
   martialArt,
   keyAttacks,
   description,
+  cyberBonus = 0,
 }: {
   stat: SkillStat;
   diffMod: number;
@@ -17,6 +18,7 @@ export function SkillDetail({
   martialArt: boolean;
   keyAttacks: Partial<Record<Maneuver, number>>;
   description: string;
+  cyberBonus?: number;
 }) {
   const activeAttacks = martialArt
     ? MANEUVER_NAMES.filter((m) => keyAttacks[m])
@@ -42,6 +44,14 @@ export function SkillDetail({
           <span class="detail-stat">
             <span class="detail-label">MA</span>
             Yes
+          </span>
+        )}
+        {cyberBonus !== 0 && (
+          <span class="detail-stat">
+            <span class="detail-label">Cyber</span>
+            <span class="stat-detail-cyber">
+              {cyberBonus > 0 ? `+${cyberBonus}` : cyberBonus}
+            </span>
           </span>
         )}
       </div>
