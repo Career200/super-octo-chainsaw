@@ -24,32 +24,32 @@ export function SkillDetail({
 
   return (
     <div class="skill-detail">
-      <div class="weapon-detail-stats">
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Stat</span>
+      <div class="detail-stats">
+        <span class="detail-stat">
+          <span class="detail-label">Stat</span>
           {STAT_LABELS[stat as keyof typeof STAT_LABELS] ?? "SPECIAL"}
         </span>
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Diff</span>x{diffMod}
+        <span class="detail-stat">
+          <span class="detail-label">Diff</span>x{diffMod}
         </span>
         {melee && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Melee</span>
+          <span class="detail-stat">
+            <span class="detail-label">Melee</span>
             Yes
           </span>
         )}
         {martialArt && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">MA</span>
+          <span class="detail-stat">
+            <span class="detail-label">MA</span>
             Yes
           </span>
         )}
       </div>
       {activeAttacks.length > 0 && (
-        <div class="skill-detail-attacks">
+        <div class="detail-stats">
           {activeAttacks.map((m) => (
-            <span key={m} class="skill-detail-attack">
-              <span class="weapon-detail-label">{MANEUVER_LABELS[m]}</span>+
+            <span key={m} class="detail-stat">
+              <span class="detail-label">{MANEUVER_LABELS[m]}</span>+
               {keyAttacks[m]}
             </span>
           ))}

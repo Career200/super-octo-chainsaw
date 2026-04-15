@@ -26,9 +26,9 @@ export function StatDetail({ name, values }: Props) {
 
   return (
     <div class="stat-detail">
-      <div class="weapon-detail-stats">
-        <label class="weapon-detail-stat">
-          <span class="weapon-detail-label">Base</span>
+      <div class="detail-stats">
+        <label class="detail-stat">
+          <span class="detail-label">Base</span>
           <input
             type="number"
             class="stat-detail-input"
@@ -42,23 +42,23 @@ export function StatDetail({ name, values }: Props) {
           />
         </label>
         {cyberBonus !== 0 && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Cyber</span>
+          <span class="detail-stat">
+            <span class="detail-label">Cyber</span>
             <span class="stat-detail-cyber">
               {cyberBonus > 0 ? `+${cyberBonus}` : cyberBonus}
             </span>
           </span>
         )}
         {values.penalties.length > 0 && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Penalties</span>
+          <span class="detail-stat">
+            <span class="detail-label">Penalties</span>
             <span class="stat-detail-penalty">
               {values.penalties.join(" ")}
             </span>
           </span>
         )}
-        <label class="weapon-detail-stat">
-          <span class="weapon-detail-label">Bonus</span>
+        <label class="detail-stat">
+          <span class="detail-label">Bonus</span>
           <input
             type="number"
             class="stat-detail-input"
@@ -71,8 +71,8 @@ export function StatDetail({ name, values }: Props) {
             }}
           />
         </label>
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Current</span>
+        <span class="detail-stat">
+          <span class="detail-label">Current</span>
           <span
             class={`stat-detail-current${values.current < values.total ? " diminished" : ""}`}
           >

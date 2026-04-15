@@ -9,19 +9,19 @@ interface Props {
 export function GearDetail({ item }: Props) {
   return (
     <div class="gear-detail">
-      <div class="weapon-detail-stats">
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Type</span>
+      <div class="detail-stats">
+        <span class="detail-stat">
+          <span class="detail-label">Type</span>
           {item.type}
         </span>
         {item.cost != null && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Cost</span>
+          <span class="detail-stat">
+            <span class="detail-label">Cost</span>
             {item.cost}eb
           </span>
         )}
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Avail.</span>
+        <span class="detail-stat">
+          <span class="detail-label">Avail.</span>
           <span class={`avail-${item.availability ?? "C"}`}>
             {AVAILABILITY_LABELS[item.availability ?? "C"]}
           </span>

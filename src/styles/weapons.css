@@ -30,26 +30,6 @@
   min-height: 0;
 }
 
-.weapon-detail-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-6) var(--space-12);
-  margin-bottom: var(--space-8);
-}
-
-.weapon-detail-stat {
-  display: flex;
-  flex-direction: column;
-  font-size: var(--font-ui);
-}
-
-.weapon-detail-label {
-  font-size: var(--font-ui-sm);
-  color: var(--fg-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
 /* === Weapon Form Fields (add/edit custom weapon) === */
 .weapon-form-type {
   flex: 0 1 100px;

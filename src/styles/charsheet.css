@@ -350,6 +350,27 @@
   background: var(--danger-subtle);
 }
 
+/* === Detail View (labeled key-value grid shown in bottom bar) === */
+.detail-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6) var(--space-12);
+  margin-bottom: var(--space-8);
+}
+
+.detail-stat {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-ui);
+}
+
+.detail-label {
+  font-size: var(--font-ui-sm);
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* === Error Boundary === */
 .error-boundary {
   display: flex;

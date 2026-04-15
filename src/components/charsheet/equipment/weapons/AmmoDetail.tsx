@@ -4,27 +4,27 @@ import { AVAILABILITY_LABELS } from "@scripts/catalog-common";
 export function AmmoDetail({ template }: { template: AmmoTemplate }) {
   return (
     <div class="weapon-detail">
-      <div class="weapon-detail-stats">
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Caliber</span>
+      <div class="detail-stats">
+        <span class="detail-stat">
+          <span class="detail-label">Caliber</span>
           {template.caliber}
         </span>
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Type</span>
+        <span class="detail-stat">
+          <span class="detail-label">Type</span>
           {template.type}
         </span>
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Damage</span>
+        <span class="detail-stat">
+          <span class="detail-label">Damage</span>
           {template.damage}
         </span>
         {template.cost != null && (
-          <span class="weapon-detail-stat">
-            <span class="weapon-detail-label">Cost</span>
+          <span class="detail-stat">
+            <span class="detail-label">Cost</span>
             {template.cost}eb / {template.boxSize}
           </span>
         )}
-        <span class="weapon-detail-stat">
-          <span class="weapon-detail-label">Avail.</span>
+        <span class="detail-stat">
+          <span class="detail-label">Avail.</span>
           <span class={`avail-${template.availability ?? "C"}`}>
             {AVAILABILITY_LABELS[template.availability ?? "C"]}
           </span>
