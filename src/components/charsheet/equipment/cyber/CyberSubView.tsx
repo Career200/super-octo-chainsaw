@@ -10,7 +10,7 @@ import {
   $installedByCategory,
   $ownedCyberItems,
 } from "@stores/cyber";
-import { $selectedCyber, selectCyber } from "@stores/ui";
+import { $selectedCyber, selectCyber, tabStore } from "@stores/ui";
 
 import { CyberGridPanel, HcRow } from "./CyberGridPanel";
 import { CyberListPanel } from "./CyberListPanel";
@@ -37,6 +37,7 @@ export default function CyberSubView() {
   const handleItemClick = (item: { id: string; category: CyberCategory }) => {
     selectCyber(selectedId === item.id ? null : item.id);
     setActiveCategory(item.category);
+    tabStore("cyber-list-tab", "catalog").set("owned");
   };
 
   const handleLimbClick = (limbId: string) => {
