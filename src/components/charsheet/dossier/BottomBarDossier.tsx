@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/preact";
 
 import { useFormState } from "@components/charsheet/shared";
-import { STAT_FULL_NAMES, STAT_LABELS, type StatName } from "@scripts/combat/types";
+import { STAT_FULL_NAMES, STAT_LABELS, type StatName } from "@scripts/combat/stats";
 import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
 import { SKILL_CATALOG } from "@scripts/skills/catalog";
 import {

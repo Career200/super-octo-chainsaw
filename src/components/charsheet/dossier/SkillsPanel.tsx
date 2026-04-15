@@ -1,8 +1,8 @@
 import { useStore } from "@nanostores/preact";
 import { useRef } from "preact/hooks";
 
-import type { StatName } from "@scripts/combat/types";
-import { STAT_LABELS } from "@scripts/combat/types";
+import type { StatName } from "@scripts/combat/stats";
+import { STAT_LABELS } from "@scripts/combat/stats";
 import type { SkillStat } from "@scripts/skills/catalog";
 import type { SkillEntry } from "@stores/skills";
 import {

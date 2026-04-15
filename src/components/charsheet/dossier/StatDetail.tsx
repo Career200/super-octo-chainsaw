@@ -1,4 +1,4 @@
-import type { StatName, StatValues } from "@scripts/combat/types";
+import type { StatName, StatValues } from "@scripts/combat/stats";
 import { setStatCyber, setStatInherent } from "@stores/stats";
 
 const STAT_DESCRIPTIONS: Record<StatName, string> = {

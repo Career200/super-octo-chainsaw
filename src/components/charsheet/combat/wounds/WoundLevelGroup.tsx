@@ -2,7 +2,7 @@ import {
   BOXES_PER_LEVEL,
   WOUND_LEVEL_NAMES,
   type WoundLevel,
-} from "@scripts/combat/types";
+} from "@scripts/combat/wounds";
 import { $health, setDamage } from "@stores/health";
 
 import { WoundBox } from "./WoundBox";

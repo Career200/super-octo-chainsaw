@@ -1,6 +1,6 @@
 import { useRef, useState } from "preact/hooks";
 
-import { STAT_LABELS, STAT_NAMES } from "@scripts/combat/types";
+import { STAT_LABELS, STAT_NAMES } from "@scripts/combat/stats";
 import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
 import { MANEUVER_LABELS, MANEUVER_NAMES } from "@scripts/skills/catalog";
 

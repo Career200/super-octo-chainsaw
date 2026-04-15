@@ -1,4 +1,4 @@
-import { STAT_LABELS } from "@scripts/combat/types";
+import { STAT_LABELS } from "@scripts/combat/stats";
 import type { Maneuver, SkillStat } from "@scripts/skills/catalog";
 import { MANEUVER_LABELS, MANEUVER_NAMES } from "@scripts/skills/catalog";
 

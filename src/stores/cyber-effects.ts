@@ -1,6 +1,6 @@
 import { persistentAtom } from "@nanostores/persistent";
 
-import type { StatName } from "@scripts/combat/types";
+import type { StatName } from "@scripts/combat/stats";
 
 import { decodeJson } from "./decode";
 

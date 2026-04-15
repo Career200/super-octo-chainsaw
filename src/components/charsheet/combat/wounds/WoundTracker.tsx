@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/preact";
 import { useEffect, useState } from "preact/hooks";
 
 import { HelpPopover } from "@components/charsheet/shared/HelpPopover";
-import { WOUND_LEVELS } from "@scripts/combat/types";
+import { WOUND_LEVELS } from "@scripts/combat/wounds";
 import { $health, syncStunToPhysical } from "@stores/health";
 
 import { StabilizedControl } from "./StabilizedControl";

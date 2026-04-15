@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 
-import { WOUND_LEVEL_NAMES } from "@scripts/combat/types";
+import { WOUND_LEVEL_NAMES } from "@scripts/combat/wounds";
 import { getWoundLevel } from "@scripts/combat/wounds";
 import { $health } from "@stores/health";
 

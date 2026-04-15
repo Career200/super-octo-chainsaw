@@ -9,8 +9,7 @@ import {
   getDeathSave,
   getStunSavePenalty,
 } from "@scripts/combat/body";
-import { calculateStat } from "@scripts/combat/stats";
-import type { StatName, StatsState, StatValues } from "@scripts/combat/types";
+import { calculateStat, type StatName, type StatsState, type StatValues } from "@scripts/combat/stats";
 import { getWoundLevel } from "@scripts/combat/wounds";
 
 import { $armorEffects } from "./armor/effects";

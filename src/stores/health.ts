@@ -5,7 +5,7 @@ import {
   type DamageType,
   TOTAL_BOXES,
   type WoundState,
-} from "@scripts/combat/types";
+} from "@scripts/combat/wounds";
 import { applyDamage, healDamage } from "@scripts/combat/wounds";
 
 import { decodeJson } from "./decode";

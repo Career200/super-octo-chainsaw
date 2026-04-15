@@ -1,10 +1,75 @@
-import type {
-  CalculateStatOptions,
-  StatValues,
-  WoundLevel,
-  WoundPenaltyType,
-} from "./types";
+import type { WoundLevel } from "./wounds";
 import { getWoundLevel } from "./wounds";
+
+// --- Types and constants ---
+
+export const STAT_NAMES = [
+  "ref",
+  "int",
+  "cl",
+  "tech",
+  "lk",
+  "att",
+  "ma",
+  "emp",
+  "bt",
+] as const;
+
+export type StatName = (typeof STAT_NAMES)[number];
+
+export const STAT_LABELS: Record<StatName, string> = {
+  ref: "REF",
+  int: "INT",
+  cl: "CL",
+  tech: "TECH",
+  lk: "LK",
+  att: "ATT",
+  ma: "MA",
+  emp: "EMP",
+  bt: "BT",
+};
+
+export const STAT_FULL_NAMES: Record<StatName, string> = {
+  int: "Intelligence",
+  ref: "Reflexes",
+  cl: "Cool",
+  tech: "Technical Ability",
+  lk: "Luck",
+  att: "Attractiveness",
+  ma: "Movement Allowance",
+  emp: "Empathy",
+  bt: "Body Type",
+};
+
+export interface StatValues {
+  inherent: number;
+  cyber: number;
+  total: number;
+  current: number;
+  penalties: string[];
+}
+
+export interface StatsState {
+  ref: { inherent: number; cyber: number };
+  int: { inherent: number; cyber: number };
+  cl: { inherent: number; cyber: number };
+  tech: { inherent: number; cyber: number };
+  lk: { inherent: number; cyber: number };
+  att: { inherent: number; cyber: number };
+  ma: { inherent: number; cyber: number };
+  emp: { inherent: number; cyber: number };
+  bt: { inherent: number; cyber: number };
+}
+
+export type WoundPenaltyType = "ref" | "intcl" | "none";
+
+export interface CalculateStatOptions {
+  woundPenaltyType?: WoundPenaltyType;
+  evPenalty?: number;
+  stabilized?: boolean;
+}
+
+// --- Functions ---
 
 function isMortal(level: WoundLevel): boolean {
   return level.startsWith("mortal");

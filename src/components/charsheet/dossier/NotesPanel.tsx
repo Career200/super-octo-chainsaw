@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 
-import { STAT_LABELS, type StatName } from "@scripts/combat/types";
+import { STAT_LABELS, type StatName } from "@scripts/combat/stats";
 import { $cyberEffects, type CyberEffects } from "@stores/cyber-effects";
 import {
   $notes,

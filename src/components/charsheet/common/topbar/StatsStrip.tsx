@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 
-import type { StatValues } from "@scripts/combat/types";
+import type { StatValues } from "@scripts/combat/stats";
 import {
   $ATT,
   $BT,

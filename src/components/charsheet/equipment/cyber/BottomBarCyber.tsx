@@ -5,8 +5,8 @@ import { BottomBarItemShell } from "@components/charsheet/common/bottombar/Botto
 import { ConfirmPopover } from "@components/charsheet/shared/ConfirmPopover";
 import { ItemMeta } from "@components/charsheet/shared/ItemMeta";
 import { usePopoverState } from "@components/charsheet/shared/usePopoverState";
+import { STAT_LABELS, type StatName } from "@scripts/combat/stats";
 import { CYBER_CATALOG, type CyberTemplate } from "@scripts/cyber/catalog";
-import { STAT_LABELS, type StatName } from "@scripts/combat/types";
 import {
   $hydratedCyber,
   type HydratedCyberItem,
@@ -37,7 +37,9 @@ function EffectTags({ template }: { template: CyberTemplate }) {
     }
   }
   if (template.initiativeBonus) {
-    tags.push(`Init ${template.initiativeBonus > 0 ? "+" : ""}${template.initiativeBonus}`);
+    tags.push(
+      `Init ${template.initiativeBonus > 0 ? "+" : ""}${template.initiativeBonus}`,
+    );
   }
   if (!tags.length) return null;
   return (

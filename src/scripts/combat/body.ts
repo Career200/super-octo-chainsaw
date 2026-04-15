@@ -1,4 +1,4 @@
-import type { WoundLevel } from "./types";
+import type { WoundLevel } from "./wounds";
 
 export type BodyTypeName =
   | "Very Weak"

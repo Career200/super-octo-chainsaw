@@ -1,4 +1,4 @@
-import type { StatName } from "@scripts/combat/types";
+import type { StatName } from "@scripts/combat/stats";
 
 export type SkillStat = StatName | "special";
 

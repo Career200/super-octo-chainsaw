@@ -1,6 +1,6 @@
 export type { Availability } from "@scripts/catalog-common";
 import type { Availability } from "@scripts/catalog-common";
-import type { StatName } from "@scripts/combat/types";
+import type { StatName } from "@scripts/combat/stats";
 
 export type CyberCategory =
   | "neuralware"
